@@ -2,7 +2,7 @@
 Self-custody Bitcoin checkout for woocommerce. No middle man, privacy oriented, minimal maintenance, simple.
 
 Get paid directly into your self-custody wallet without any middleman or any KYD'd APIs.
-No signups, no Terms of Service, nobody takign a cut. Make a sale on your site and it drops straight into 
+No signups, no Terms of Service, nobody taking a cut. Make a sale on your site and it drops straight into 
 your Electrum (or whatever) wallet. Payments are between you and the Bitcoin network (well and possibly
 the public API providers somewhat).
 
