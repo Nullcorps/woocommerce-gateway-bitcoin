@@ -56,6 +56,7 @@ $woobtc_files_full_path = "";
 $nl = "<BR>\n";
 $checksum = "";
 $woobtc_hashsecret = "fm4f90f390d8e3dusowll2uccvhjkjaslit890u"; //  << this needs to b user settable
+$woobtc_dbg = false;
 
 
 session_start();
@@ -187,7 +188,7 @@ function wc_bitcoin_gateway_init() {
 				'xpub' => array(
 					'title'       => __( 'xpub', 'wc-gateway-bitcoin' ),
 					'type'        => 'text',
-					'description' => __( 'The xpub for your HD wallet, used to generate addresses to pay to', 'wc-gateway-bitcoin' ),
+					'description' => __( 'The xpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like xbpub2394234924loadsofnumbers', 'wc-gateway-bitcoin' ),
 					'default'     => '',
 					'desc_tip'    => false,
 				),
@@ -208,13 +209,18 @@ function wc_bitcoin_gateway_init() {
 					'desc_tip'    => false,
 				),
             
-            'address-balance-source' => array(
-					'title'       => __( 'address-balance-source', 'wc-gateway-bitcoin' ),
-					'type'        => 'text',
-					'description' => __( 'The api source to get the address balance rate from', 'wc-gateway-bitcoin' ),
-					'default'     => 'https://blockchain.info/q/addressbalance/',
+            
+            'api-preference' => array(
+					'title'       => __( 'api-preference', 'wc-gateway-bitcoin' ),
+					'type'        => 'select',
+					'description' => __( 'Which public API to use for getting address balances. The other will be used as a backup in case you get rate-limited.', 'wc-gateway-bitcoin' ),
+					'default'     => 'Blockstream.info',
 					'desc_tip'    => false,
+               'options'     => array( 'Blockstream.info' => 'Blockstream.info',
+  				                        'Blockchain.info' => 'Blockchain.info'),               
 				),
+
+
             
             'fiat-currency' => array(
 					'title'       => __( 'fiat-currency', 'wc-gateway-bitcoin' ),
@@ -257,35 +263,11 @@ function wc_bitcoin_gateway_init() {
             '0-conf-threshold' => array(
 					'title'       => __( '0-conf-threshold', 'wc-gateway-bitcoin' ),
 					'type'        => 'text',
-					'description' => __( 'Price threshold up to which 0 confirmations are acceptable. This would usually be a low value, no more than $10-$20. Price in whatever you\'ve selected as priority format e.g. 0.00001 (for btc) or 15 (for fiat) would both be acceptable entries. This should process as soon as the transaction is seen on the Bitcoin network (usually within seconds) Set to 0 to disable', 'wc-gateway-bitcoin' ),
+					'description' => __( 'Price threshold up to which 0 confirmations are acceptable. This would usually be a low value, no more than $10-$20. Price in whatever you\'ve selected as priority format e.g. 0.00001 (for btc) or 15 (for fiat) would both be acceptable entries. This should process as soon as the transaction is seen on the Bitcoin network (usually within seconds) Set to 0 to disable (i.e. ALWAYS require 1+ confs)', 'wc-gateway-bitcoin' ),
                'default'     => '0.0001',
 					'desc_tip'    => false,
 				),            
-            
-            '1-conf-threshold' => array(
-					'title'       => __( '1-conf-threshold', 'wc-gateway-bitcoin' ),
-					'type'        => 'text',
-					'description' => __( 'Price threshold up to which 1 confirmations are acceptable. This would usually be a medium value, perhaps no more than $50-$100. Price in whatever you\'ve selected as priority format e.g. 0.00015 (for btc) or 59.99 (for fiat) would both be acceptable entries. This will take longer to process than 0 transactions and depends a lot on how busy the Bitcoin network is. Weigh up this waiting time vs user interface flow. Set to 0 to disable', 'wc-gateway-bitcoin' ),
-               'default'     => '0.005',
-					'desc_tip'    => false,
-				),            
-        
-            '2-conf-threshold' => array(
-					'title'       => __( '2-conf-threshold', 'wc-gateway-bitcoin' ),
-					'type'        => 'text',
-					'description' => __( 'Price threshold up to which 2 confirmations are acceptable. This could usually be a higher value, perhaps no more than $200-$300. Price in whatever you\'ve selected as priority format e.g. 0.00174 (for btc) or 259.99 (for fiat) would both be acceptable entries. This will take longer still to process than 1 transactions and also depends a lot on how busy the Bitcoin network is. Weigh up this waiting time vs user interface flow. Set to 0 to disable', 'wc-gateway-bitcoin' ),
-               'default'     => '0.02',
-					'desc_tip'    => false,
-				),            
-                                         
-        
-            '3-conf-threshold' => array(
-					'title'       => __( '3-conf-threshold', 'wc-gateway-bitcoin' ),
-					'type'        => 'text',
-					'description' => __( 'Price threshold up to which 3 confirmations are acceptable. This this would be for the highest value transactions and will take the longest to process and also depends a lot on how busy the Bitcoin network is. Weigh up this waiting time vs user interface flow.', 'wc-gateway-bitcoin' ),
-               'default'     => '0.04',
-					'desc_tip'    => false,
-				),
+                    
             
         
             'addresses-cache-max' => array(
@@ -562,6 +544,8 @@ add_action( 'woocommerce_thankyou', 'woobtc_redirect_custom');
 function woobtc_redirect_custom( $order_id )
 	{
 	global $nl;
+   global $woobtc_dbg;
+   
 	$order = wc_get_order( $order_id );
   
    $url = '?page_id=139&view-order=' . $order_id;
@@ -580,7 +564,7 @@ function woobtc_redirect_custom( $order_id )
 		echo "<center><strong>Pay now with Bitcoin</strong><a name=woobtc></a>\n" . $nl;
       echo "<img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/bitcoin.png\" style=\"width: 200px;\">" . $nl;
       echo "<div style=\"font-size: 18px; font-weight: bold; \">ORDER STATUS: " . $order->status . "</div>\n";
-		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below you will be taken to your downloads</div></center>" . $nl;
+		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below<br>you will be taken to your downloads</div></center>" . $nl;
 		
       //echo "- check exchange rate to get price in btc" . $nl;
       $payment_gateway = WC()->payment_gateways->payment_gateways()['bitcoin_gateway'];
@@ -593,11 +577,17 @@ function woobtc_redirect_custom( $order_id )
       $roundbtc = $payment_gateway->settings['btc-rounding-decimals'];
 
       $conf_threshold_0 = $payment_gateway->settings['0-conf-threshold'];
-      $conf_threshold_1 = $payment_gateway->settings['1-conf-threshold'];
-      $conf_threshold_2 = $payment_gateway->settings['2-conf-threshold'];
-      $conf_threshold_3 = $payment_gateway->settings['3-conf-threshold'];
       $pricing_priority = $payment_gateway->settings['pricing-priority'];
-
+      $api_preference = $payment_gateway->settings['api-preference'];
+      
+      $fiat_symbol = "";
+      $btc_symbol = "฿";
+      
+      if ($fiat == "USD")
+         { $fiat_symbol = "$"; }
+      elseif ($fiat == "GBP")
+         { $fiat_symbol = "&pound;"; }
+      
       
       $dowaiting = "";
       if ( isset($_POST['amount']) )
@@ -640,24 +630,13 @@ function woobtc_redirect_custom( $order_id )
          
          //echo "Pricing priority: " . $pricing_priority . $nl;
          
-         $confs_req = 3;
+         $confs_req = 1;
          
          if ( $pricing_priority == "fiat" )
             {
             //echo "in: Pricing priority fiat" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            //echo "1-conf threshold: " . $conf_threshold_1 . $nl;
-            //echo "2-conf threshold: " . $conf_threshold_2 . $nl;
-            //echo "3-conf threshold: " . $conf_threshold_3 . $nl;
-            if ($price <= $conf_threshold_3)
-               { $confs_req = 3; }
             
-            if ($price <= $conf_threshold_2)
-               { $confs_req = 2; }
-
-            if ($price <= $conf_threshold_1)
-               { $confs_req = 1; }
-   
             if ($price <= $conf_threshold_0)
                { $confs_req = 0; }                
             }
@@ -665,18 +644,7 @@ function woobtc_redirect_custom( $order_id )
             {
             //echo "in: Pricing priority: BTC" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            //echo "1-conf threshold: " . $conf_threshold_1 . $nl;
-            //echo "2-conf threshold: " . $conf_threshold_2 . $nl;
-            //echo "3-conf threshold: " . $conf_threshold_3 . $nl;
-            if ($btcprice <= $conf_threshold_3)
-               { $confs_req = 3; }
-
-            if ($btcprice <= $conf_threshold_2)
-               { $confs_req = 2; }
-
-            if ($btcprice <= $conf_threshold_1)
-               { $confs_req = 1; }
-                              
+                             
             if ($btcprice <= $conf_threshold_0)
                { $confs_req = 0; }        
             }
@@ -684,7 +652,7 @@ function woobtc_redirect_custom( $order_id )
             {
             echo "This shouldn't happen" . $nl;
             }
-         echo "<center><span title=\"0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer still. It all depends on how busy the Bitcoin network is and your fee\">Confirmations required for this transaction: " . $confs_req . "</span>" .$nl;
+         echo "<center><span title=\"0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. It all depends on how busy the Bitcoin network is and your fee\">Confirmations required for this transaction: " . $confs_req . "</span>" .$nl;
          echo "We support segwit and RBF transactions :)" . $nl;
          //echo "0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is" . $nl;
          //echo "<marquee id=waitingmessage ascrolldelay=500 scrollamount=3>0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is</marquee>";
@@ -698,11 +666,12 @@ function woobtc_redirect_custom( $order_id )
          //$exr = woobtc_get_exchange_rate();
          //echo $nl;
          
-         echo "<div style=\"display: none;\"><form name=woobtc_refreshprice action=\"" . $current_url . "\" method=post></div>\n";
+         echo "<div style=\"display: none;\"><form name=woobtc_refreshprice action=\"" . $current_url . "#woobtc\" method=post></div>\n";
          echo "<input type=hidden name=refresh value=1>\n";
          
-         echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Price in " . $fiat . ": " . $price  . ". Exchange rate: " . $fiat . " " . number_format($exr,2) . $nl;
-         echo "Price in BTC: " . round($btcprice, $roundbtc) . "</div>";
+         echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . $price .  $nl;
+         echo "Price in BTC: " . $btc_symbol . round($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
+         echo "Exchange rate: " . $fiat_symbol . number_format($exr,2) . $nl;
          echo "<a href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
          echo "<input type=submit value=\"Refresh exchange rate\" style=\"padding: 4px; display: none;\">\n";
          echo "<div style=\"display: none;\"></form></div></center>\n";
@@ -722,19 +691,34 @@ function woobtc_redirect_custom( $order_id )
          
          if ($btcaddress <> "")
             {
-            echo "<center>Found address in postmeta</center>" . $nl;
+            if ($woobtc_dbg) { echo "<center>DEBUG: Found address in postmeta</center>" . $nl; }
             //echo $btcaddress . "</center>" . $nl;
             }
          else
             {
-            echo "<center>Fetching new address & storing to the order</center>" . $nl;
+            if ($woobtc_dbg) { echo "<center>Fetching new address & storing to the order</center>" . $nl; }
             $add = woobtc_get_fresh_address($order_id);
+            $out .= "CHECK BALANCES OF NEW ADDRESS ARE 0 BEFORE SAVING TO ORDER" . $nl;
             update_post_meta( $order_id, 'woobtc_address', $add );
             $btcaddress = $add;
             }
-         echo "<center><div style=\"padding-bottom: 8px; \">Bitcoin address to send to for this order:<br><input type=text value=\"" . $btcaddress . "\" style=\"width: 440px; padding: 4px; font-size: large; text-align: center; \"></div></center>";
+         echo "
+<script language=javascript>
+function woobtc_clearfield(f)
+   {
+   //alert('clear field with name: ' + f);
+   var t = document.getElementById(f); 
+   setTimeout(\"document.getElementById('\"+f+\"').innerHTML = '&nbsp;'\",1000);
+   }
+
+</script>";
          
-         echo "<center>Amount to send:<br><input type=text value=\"" . round($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \"></center>" . $nl;
+         echo "<center><div style=\"padding-bottom: 8px; \"><span title=\"Please only send BITCOIN, which always has the ticker BTC, not any of the many clones. If you send coins other than bitcoin (e.g. Bitcoin Cash, BSV (lol) then those coins will be lost and your order will still not be paid.)\">Please send BITCOIN/BTC ONLY to this address:</span>" . $nl;
+         echo "<input type=text value=\"" . $btcaddress . "\" style=\"width: 440px; padding: 4px; font-size: large; text-align: center; \"  onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_address').innerHTML = 'Address copied'; woobtc_clearfield('woobtc_label_address'); \" onmouseover=\"document.getElementById('woobtc_label_address').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_address').innerHTML = '&nbsp;';\">" . $nl;
+         echo "<span id=woobtc_label_address style=\"font-size: 12px;\">&nbsp;</span></div></center>";
+         
+         echo "<center>BTC to send:<br><input type=text value=\"" . round($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \" onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_amount').innerHTML = 'Amount copied'; woobtc_clearfield('woobtc_label_amount'); \"  onmouseover=\"document.getElementById('woobtc_label_amount').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_amount').innerHTML = '&nbsp;';\">" . $nl;
+         echo "<span id=woobtc_label_amount style=\"font-size: 12px;\">&nbsp;</span></center>" . $nl;
          
          //echo $nl;
              
@@ -785,7 +769,7 @@ function woobtc_redirect_custom( $order_id )
          {
          //echo "DOING DOWAITING" . $nl;
          echo "<center><img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/waiting.gif\" style=\"width: 200px;\"></center>";
-         echo "- check balance of the address, refresh based on expected wait time/confs" . $nl;
+         //echo "- check balance of the address, refresh based on expected wait time/confs" . $nl;
          echo $nl;
          
          
@@ -800,30 +784,18 @@ function woobtc_redirect_custom( $order_id )
          echo "Address: " . $address . $nl;
          echo "Amount: " . $amount . $nl;
          
-         $confs_req = 3;
+         $confs_req = 1;
          
          $order = wc_get_order( $order_id );
          //echo "<pre>" . print_r($order->total, true) . "</pre>" . $nl;
          
          $price = $order->total;
-         echo "Order total:" . $price . $nl;
+         echo "Order total: " . $fiat_symbol . $price . $nl;
          
          if ( $pricing_priority == "fiat" )
             {
             //echo "in: Pricing priority fiat" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            //echo "1-conf threshold: " . $conf_threshold_1 . $nl;
-            //echo "2-conf threshold: " . $conf_threshold_2 . $nl;
-            //echo "3-conf threshold: " . $conf_threshold_3 . $nl;
-            if ($price <= $conf_threshold_3)
-               { $confs_req = 3; }
-            
-            if ($price <= $conf_threshold_2)
-               { $confs_req = 2; }
-
-            if ($price <= $conf_threshold_1)
-               { $confs_req = 1; }
-   
             if ($price <= $conf_threshold_0)
                { $confs_req = 0; }                
             }
@@ -831,18 +803,6 @@ function woobtc_redirect_custom( $order_id )
             {
             //echo "in: Pricing priority: BTC" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            //echo "1-conf threshold: " . $conf_threshold_1 . $nl;
-            //echo "2-conf threshold: " . $conf_threshold_2 . $nl;
-            //echo "3-conf threshold: " . $conf_threshold_3 . $nl;
-            if ($btcprice <= $conf_threshold_3)
-               { $confs_req = 3; }
-
-            if ($btcprice <= $conf_threshold_2)
-               { $confs_req = 2; }
-
-            if ($btcprice <= $conf_threshold_1)
-               { $confs_req = 1; }
-                              
             if ($btcprice <= $conf_threshold_0)
                { $confs_req = 0; }        
             }
@@ -850,47 +810,108 @@ function woobtc_redirect_custom( $order_id )
             {
             echo "This shouldn't happen" . $nl;
             }
-         echo "<center>Confirmations required for this transaction: " . $confs_req . "</center>" . $nl;
+         echo "Confirmations required: " . $confs_req . $nl;
          //echo "0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is" . $nl;
          //echo "<marquee id=waitingmessage ascrolldelay=500 scrollamount=3>0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is</marquee>";
-         echo $nl;
 
-
-         
-         $unconfirmed_url = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=0";
-         //echo "Unconfirmed URL: " . $unconfirmed_url . $nl;
-         
-         
-         $confs_tmp = $confs_req;
-         if ($confs_tmp == 0) { $confs_tmp = 1; }
-         $confirmed_url = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=" . $confs_tmp;
-         //echo "Confirmed URL: " . $confirmed_url . $nl;  
-         
-         $balance = file_get_contents($confirmed_url);
-         $unconfirmed = file_get_contents($unconfirmed_url);
-         //echo "Unconfirmed:" . $unconfirmed . $nl;
-         
-         if ($unconfirmed == "" || $unconfirmed == 0)
-            {
-            echo "It's possible our server might have been rate-limited from the public APIs we use to check balances. Please give it 10 or 15 mins and try again. This shouldn't really happen." . $nl;
-            }
-         
-         echo "Required confirmations: " . $confs_req . $nl;
          echo "Required amount: " . $amount . $nl;
-         echo "Unconfirmed balance: " . ($unconfirmed/100000000) . $nl;
-         echo "Confirmed balance (" . $confs_tmp . "): " . ($balance/100000000) . $nl;
+         //echo $nl;
          
+         $getinfo_failed = false;
+         echo "API-preference: " . $api_preference . $nl;
+         $confirmed = "";
+         $unconfirmed = "";
+                  
+         
+         if ($api_preference == "Blockchain.info")
+            {
+            // BLOCKCHAIN.INFO STUFF
+            if ($confs_req === 0)
+               {
+               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               }
+            else
+               {
+               $confirmed = woobtc_get_address_balance_bc($address, false);
+               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               }
+            }
+         else
+            {
+            // BLOCKSTREAM.INFO STUFF
+            if ($confs_req === 0)
+               {
+               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               }
+            else
+               {
+               $confirmed = woobtc_get_address_balance_bs($address, false);
+               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               }
+            }
+            
+
+         if ($unconfirmed == "")
+               {
+               echo "It's possible our server might have been rate-limited from the public API we use to check balances. Attempting to use the other API as a backup. This shouldn't really happen." . $nl;
+               $getinfo_failed = true;
+               }
+         
+
+// FAILOVER SECTION
+
+         if ($api_preference == "Blockchain.info")
+            {
+            // BLOCKSTREAM.INFO STUFF
+            if ($confs_req === 0)
+               {
+               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               }
+            else
+               {
+               $confirmed = woobtc_get_address_balance_bs($address, false);
+               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               }
+            }
+         else
+            {
+            // BLOCKCHAIN.INFO STUFF
+            if ($confs_req === 0)
+               {
+               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               }
+            else
+               {
+               $confirmed = woobtc_get_address_balance_bc($address, false);
+               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               }
+            }
+
+         
+         //echo "Required confirmations: " . $confs_req . $nl;
+         echo "Unconfirmed balance: " . ($unconfirmed) . $nl;
+         echo "Confirmed balance: " . number_format($confirmed,8) . $nl;
+         //echo $nl;
+         
+         if ($getinfo_failed)
+            { echo "<strong>LOOKS LIKE WE MIGHT HAVE BEEN RATE LIMITED ON YOUR CHOICE OF API (" . $api_preference . "), USE THE OTHER ONE" . $nl; }
+
+               
+
+        
          $paid = false;
          
          if ($confs_req == 0)
             {
-            if ( ($unconfirmed/100000000) >= $amount )
-               { $paid = true; }
+            if ( ($unconfirmed) >= $amount )
+               {
+               $paid = true;
+               }
             }
          
          if ($confs_req == 1)
             {
-            if ( ($balance/100000000) >= $amount )
+            if ( ($confirmed) >= $amount )
                { $paid = true; }
             }
                   
@@ -899,13 +920,13 @@ function woobtc_redirect_custom( $order_id )
             echo $nl;
             echo "<div style=\"font-size: 24px; font-weight: bold;\">PAID YO!</div>";      
             echo "<div style=\"display: none\"><audio controls autoplay><source src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/kerching.mp3\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div>";
-            
+            echo $nl;
             echo "Updating order status to PAID" . $nl;
             $order = wc_get_order( $order_id );
             
             // Mark as on-hold (we're awaiting the payment)
             $order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
-            echo "Reloading the page and taking you to your order...:D";
+            echo "Reloading the page and taking you to your order... :)";
             echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
             }
          else
@@ -931,6 +952,61 @@ function woobtc_redirect_custom( $order_id )
          }
       }
 	}
+
+
+
+
+
+
+function woobtc_get_address_balance_bc($address, $confirmed)
+   {
+   // confirmed true/false, false for unconfirmed balance
+   if ($confirmed)
+      {
+      $confirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=1";
+      $balance_bc = file_get_contents($confirmed_url_bc);
+      if ($balance_bc > 0)
+         { $balance_bc = $balance_bc / 100000000; }
+      return $balance_bc;
+      }
+   else
+      {
+      $unconfirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=0";
+      $unconfirmed_bc = file_get_contents($unconfirmed_url_bc);
+      if ($unconfirmed_bc > 0)
+         { $unconfirmed_bc = $unconfirmed_bc / 100000000; }
+      return $unconfirmed_bc;
+      }
+   }
+
+
+function woobtc_get_address_balance_bs($address, $confirmed)
+   {
+   global $nl;
+   // confirmed true/false, false for unconfirmed balance
+   $address_info_url_bs = "https://blockstream.info/api/address/" . $address;
+   //echo "URL: " . $address_info_url_bs . $nl;
+   $address_infoj = file_get_contents($address_info_url_bs);
+   $address_info = json_decode($address_infoj, true);
+         
+   //echo "<pre>" . print_r($address_info, true) . "</pre>" . $nl;
+   if ($confirmed)
+      {
+      $confirmed_balance_bs = ($address_info['chain_stats']['funded_txo_sum'] - $address_info['chain_stats']['spent_txo_sum'])/100000000;
+      //echo "Confirmed balance: " . number_format($confirmed_balance_bs,8) . $nl;
+      return number_format($confirmed_balance_bs,8);
+      }
+   else
+      {
+      $unconfirmed_balance_bs = ($address_info['mempool_stats']['funded_txo_sum'] - $address_info['mempool_stats']['spent_txo_sum'])/100000000;
+      //echo "Unconfirmed balance: " . number_format($unconfirmed_balance_bs,8) . $nl;
+      return number_format($unconfirmed_balance_bs,8);
+      }
+   }
+
+
+
+
 
 
 
