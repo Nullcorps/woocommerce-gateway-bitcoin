@@ -1,14 +1,14 @@
 # woocommerce-gateway-bitcoin
 Self-custody Bitcoin checkout for woocommerce. No middle man, privacy oriented, minimal maintenance, simple.
 
+Get paid directly into your self-custody wallet without any middleman or any KYD'd APIs.
+No signups, no Terms of Service, nobody taking a cut. Make a sale on your site and it drops straight into 
+your Electrum (or whatever) wallet. Payments are between you and the Bitcoin network (well and possibly
+the public API providers somewhat).
+
 THIS IS VERY MUCH WIP - NOT PRODUCTION READY YET
 
-
-Get paid directly into your self-custody wallet without any middleman or any KYD'd APIs.
-
-NO FULL NODE REQUIRED!
-
-Payments are between you and the Bitcoin network (well and possibly the public API providers a bit).
+NO FULL BITCOIN NODE REQUIRED \o/
 
 
 - Built with using Electrum in mind. Love it or hate it it's the on-ramp for many people. Should work with other wallets, though
@@ -73,13 +73,14 @@ Stuff to do:
 Considerations:
 
 
-- depending on how busy your shop is, and the ratio of peopel who enter the checkout vs those who complete the checkout, there will be quite a few addresses
-which remain unused. So say 1/10 people convert, you'll end up with 9 unusued addresses vs 1 used, which means electrum might start to "fall behind" with how
-far ahead it's looking for payments which would then mean you could be receiving payments but Electrum isn't checking the addresses that far ahead so you think
-you've not been paid, when actually you have. The payments are there but Electrum's just not checking that far ahead on the addresses list
+- depending on how busy your shop is, and the ratio of people who enter the checkout process vs those who complete the checkout process, there
+will be quite a few addresses which remain unused. So say 1/10 people convert, you'll end up with 9 unusued addresses vs 1 used, which means 
+electrum might start to "fall behind" with how far ahead it's looking for payments which would then mean you could be receiving payments but 
+Electrum isn't checking the addresses that far ahead so you think you've not been paid, when actually you have. The payments are there but 
+Electrum's just not checking that far ahead on the addresses list.
 
-In this case you can set the lookahead value (gap limit?) for electrum from the electrum console (tab) by typing the following and your payments will magically
-appear:
+In this case you can set the lookahead value (gap limit?) for electrum from the electrum console (tab) by typing the following and your payments
+will magically appear:
 
 wallet.change_gap_limit(200)
 wallet.synchronize()
