@@ -914,7 +914,7 @@ function woobtc_clearfield(f)
             if ( ($confirmed) >= $amount )
                { $paid = true; }
             }
-                  
+                   
          if ($paid == 1)
             {
             echo $nl;
