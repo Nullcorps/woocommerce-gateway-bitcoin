@@ -59,11 +59,17 @@ NullCorps
 
 Stuff to do:
 
-- maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1?
+IN PROG - make it also work with blockstream.info's api, allow user to set preference but keep the other as a failover in case of rate limiting
 
-- make it also work with blockstream.info's api, allow user to set preference but keep the other as a failover in case of rate limiting
+- auto refill addresses when running low, something like on payme page, self maintaining.
 
-- give the option of QR from google images or local libary depending on privacy preference
+- auto prune addresses which may have been used in the mean time (e.g. multiple instances?)
+
+- just before fresh address is linked to order in the postmeta, check past/present balances are still 0
+
+- maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1? << HA! How about no 
+
+- give the option of QR from google images or local libary depending on privacy preference << meh, why?
 
 - idk, tidy it up a bit or something, remove any inline css
 
