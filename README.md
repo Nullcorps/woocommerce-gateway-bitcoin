@@ -22,7 +22,7 @@ and you can start taking payments.
 
 - Basic principle is that you drop your xpub (master public key, you can find this in electrum/wallet/information, starts
 "xpubabunchanumbers") into the plugin settings, from that we use the bitwasp library to *locally* derive Bticoin addresses
-using m/0/1 derivation path (like electrum) which means the addresses generated will line up 100% with the addresses
+using m/0/n derivation path (like electrum) which means the addresses generated will line up 100% with the addresses
 which show up in your electrum wallet, BUT unlike the nomiddleman plugin, you don't have to "load" addresses in manually which
 minimises ongoing maintenance, whilst allowing us to only issue each address once (to one order), for maximum privacy.
 
@@ -34,16 +34,12 @@ Once issued, that address is removed from the "fresh addresses" stack and pushed
 corresponding woocommerce order number. That way hopefully even if one method fails you have two sets of options for reconciling addresses
 with orders.
 
-- Currently this plugin uses blockchain.info's public api to check address balances but will soon also be compatible with blockstream.info's
-public api which I believe can also be accessed over tor. User will be able to set a preference for which to use, but the other will be available
-as a failover in case the site gets rate-limited by either API.
+- Currently this plugin uses blockchain.info's public api to check address balances but will soon also be compatible with blockstream.info's public api which I believe can also be accessed over tor. User will be able to set a preference for which to use, but the other will be available as a failover in case the site gets rate-limited by either API.
 
 
 -----------------------------
 
-I'm not a php ninja, I'm just persistent af and am literally copy & pasting and trial & error-ing my way thru this as I learn the maths/theory
-behind it, so before you judge my spaghetti code too harshly, please ask yourself with all the amazing coders out there, why it's fallen to little
-old me to actually write this. And if you can do better, join in ;)
+I'm not a php ninja, I'm just persistent af and am copy & pasting and trial & error-ing my way thru this as I learn the maths/theory behind it, so before you judge my spaghetti code too harshly, please ask yourself with all the amazing coders out there, why it's fallen to little old me to actually write this. And if you can do better, join in ;)
 
 I hope I got the licensing bit right, I have no idea really. It should be free and open source. That's the idea anyway.
 
