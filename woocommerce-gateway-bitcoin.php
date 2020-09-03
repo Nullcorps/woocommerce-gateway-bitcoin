@@ -34,7 +34,7 @@
  * 
  *
  * DISCLAIMER:
- * PLEASE DON'T JUDGE MY SPAGHETTI CODE TOO HARSHLY. I'M A DINASAUR
+ * PLEASE DON'T JUDGE MY SPAGHETTI CODE TOO HARSHLY. I'M A DINOSAUR
  * THE INLINE CSS WILL (PROBABLY) GET MOVED OUT TOO ONCE IT WORKS
  *
  */
@@ -51,13 +51,18 @@ use BitWasp\Bitcoin\Key\Factory\HierarchicalKeyFactory;
 require_once __DIR__ . '/vendor/autoload.php';
 
 
+
 $woobtc_filespath = "woobtc"; // this could be user-settable so as more secure perhaps? might fool plugin scanners/scrapers
 $woobtc_files_full_path = "";
 $nl = "<BR>\n";
 $checksum = "";
 $woobtc_hashsecret = "fm4f90f390d8e3dusowll2uccvhjkjaslit890u"; //  << this needs to b user settable
-$woobtc_dbg = false;
+$woobtc_dbg = true;
 
+
+require_once 'i_subs.php';
+
+require_once 'i_checkout.php';
 
 session_start();
 
@@ -268,22 +273,13 @@ function wc_bitcoin_gateway_init() {
 					'desc_tip'    => false,
 				),            
                     
-            
-        
-            'addresses-cache-max' => array(
-					'title'       => __( 'address-cache-max', 'wc-gateway-bitcoin' ),
-					'type'        => 'text',
-					'description' => __( 'Ideally how many addresses to have on standby ready to use. The busier your shop is this higher this number will need to be', 'wc-gateway-bitcoin' ),
-               'default'     => '20',
-					'desc_tip'    => false,
-				),
-            
+
         
             'addresses-cache-min' => array(
 					'title'       => __( 'address-cache-min', 'wc-gateway-bitcoin' ),
 					'type'        => 'text',
-					'description' => __( 'Once we\re down to this many addresses, force generating some new ones. The busier your shop is this higher this number will probably need to be, roughly in keeping with above', 'wc-gateway-bitcoin' ),
-               'default'     => '5',
+					'description' => __( 'Once we\re down to this many addresses, force generating some new ones. The busier your shop is this higher this number will probably need to be, roughly in keeping with above. Default to 50', 'wc-gateway-bitcoin' ),
+               'default'     => '50',
 					'desc_tip'    => false,
 				),
             
@@ -390,12 +386,18 @@ function woobtc_addresses($atts,$content = null)
    $out .= '<p>Description: ' . $payment_gateway->description . '</p>';
    $out .= '<p>Instructions: ' . $payment_gateway->instructions . '</p>';
    //echo "Xpub: " . $payment_gateway->get_option( 'xpub' ) . $nl;
-   $out .= $nl . "<pre>" . print_r($payment_gateway->settings, true) . "</pre>" . $nl;
+   //$out .= $nl . "<pre>" . print_r($payment_gateway->settings, true) . "</pre>" . $nl;
    
    $xpub = $payment_gateway->settings['xpub'];
-   $out .= "xpub from woo settings: " . $xpub . $nl;
+   $out .= "xpub from woo settings ending: " . substr($xpub, -4, 4)  . $nl;
    
    
+   
+   $api_preference = $payment_gateway->settings['api-preference'];
+   $out .= "API preference: " . $api_preference . $nl;
+   
+   $address_cache_min = $payment_gateway->settings['addresses-cache-min'];
+   $out .= "Address cache min: " . $address_cache_min . $nl;
    
    $out .=  "Restoring from xpub ending " . substr($xpub, -4, 4) . $nl . $nl;
    $master = $hdFactory->fromExtended($xpub);
@@ -454,21 +456,225 @@ function woobtc_addresses($atts,$content = null)
    //
    
    
-   $addresses = "";
+   $out .= "Figure out the starting point m/0/?" . $nl;
+   $freshpath = $woobtc_files_full_path . "/addresses_fresh.txt";
+   $usedpath = $woobtc_files_full_path . "/addresses_used.txt";
+   $lastfresh = "";
+   $fresh_cleaned = "";
+   $startat = 0;
+   $rollback = 20;
    
-   for ($n=0;$n<50;$n++)
+   $out .= "- CLEAN THE FRESH ADDRESSES (i.e. make sure no used appoear in fresh)" . $nl;
+   
+   if ( file_exists($freshpath) && file_exists($usedpath) )
+      {   
+      $fresh = file_get_contents( $freshpath );
+      $arfresh = explode("\n", $fresh);
+      $out .= "Fresh addresses found: " . count($arfresh) . $nl;
+      $used = file_get_contents( $woobtc_files_full_path . "/addresses_used.txt" );
+      $arused = explode("\n", $used);
+      $out .= "Used addresses found: " . count($arused) . $nl;
+      $out .= "Comparing: " . $nl;
+      $cnt = 0;
+      
+      $out .= "- sanity check: " . strpos($used,"1FAL5UtkibjspAzj819onPvrb8xvU9Zcvr") . $nl . $nl;
+      
+      foreach($arfresh as $freshadd)
+         {
+         $out .= "checking: " . $freshadd . $nl;   
+         $tmp = strpos($used,$freshadd);
+         $out .= "- " . $tmp . $nl;
+         if ( $tmp || $tmp === 0 )
+            { $out .= "THIS IS USED, REMOVE" . $nl;}
+         else
+            {
+            if (trim($freshadd) <> "")
+               {
+               //array_push($arfresh_cleaned, trim($freshadd));
+               $out .= "UNUSED, OK TO KEEP" . $nl;
+               $fresh_cleaned .= trim($freshadd) . "\n";
+               $cnt++;
+               }
+            else
+               {
+               $out .= "it's blank" . $nl;
+               }
+            }
+         $out .= $nl;
+         }
+      $out .= $nl;
+      
+      $out .= "<pre>" . print_r($fresh_cleaned, true) . "</pre>" . $nl;
+      $out .= "Fresh addresses cleaned, saving.." . $nl;
+      file_put_contents($freshpath, $fresh_cleaned, LOCK_EX);
+      $tmp2 = explode("\n", $fresh_cleaned);
+      $out .= "Cleaned addresses: " . count($tmp2) . $nl;
+      }
+   else
       {
-      $sameKey2 = $master->derivePath("0/".$n);
-      //echo " - m/0/" . $n . ": " . $sameKey2->toExtendedPublicKey() . $nl;
-      $child3 = new PayToPubKeyHashAddress($sameKey2->getPublicKey()->getPubKeyHash());
-      $out .= "   Address m/0/" . $n . ": " . $child3->getAddress() . $nl;
-      $addresses .= $child3->getAddress() . "\n";
+      $out .= "No fresh or used addresses file, starting from scratch I guess" . $nl;
       }
    
    
-   $out .= "Saving addresses to text file.." . $nl;
+   $out .= "- Maybe dedupe the used address pile? idk, might be better raw" . $nl;
    
-   file_put_contents( $woobtc_files_full_path . "/addresses_fresh.txt", $addresses );
+   
+   
+   $out .= "- get the last address in the fresh addresses (if present)" . $nl;
+   
+   if ( file_exists($freshpath) )
+      {   
+      $fresh = file_get_contents( $freshpath );
+      $fresh = file_get_contents( $freshpath );
+      
+      $arfresh = explode("\n", $fresh);
+      $out .= "Fresh addresses found: " . count($arfresh) . $nl;
+      $lastfresh = $arfresh[(count($arfresh)-2)];
+      $out .= "Last fresh address: " . $lastfresh . $nl;
+      }
+   else
+      {
+      $out .= "No fresh addresses file, starting from scratch I guess" . $nl;
+      }
+   
+   $out .= $nl;
+   $out .= "- get an idea where to start looking for that address, and failing that, get the approx starting point from the used addresses (if it exists)" . $nl;
+   
+   if ( file_exists($usedpath) )
+      {
+      $used = file_get_contents( $woobtc_files_full_path . "/addresses_used.txt" );
+      $arused = explode("\n", $used);
+      $usedcount = count($arused);
+      $out .= "Used addresses found: " . $usedcount . $nl;
+      }
+   else
+      {
+      $out .= "No used addresses file, starting from scratch I guess" . $nl;
+      }
+   
+   $out .= "- somehow decide where to start deriving...(roll back a bit to be sure?)" . $nl;
+   
+   
+   $new_list = "";
+   
+   if ($lastfresh <> "" && $usedcount)
+      {
+      $out .= "Ok so probably wanna start looking for lastfresh about " . $usedcount . " but roll back " . $rollback . " to be safe. " . $nl;
+      $startat = $usedcount - $rollback;
+      if($startat < 0)
+         { $startat = 0; }
+      }
+   else
+      {
+      $out .= "Missing lastfresh or usedcount, likely missing files. Perhaps start over from 0." . $nl;
+      $new_list = true;
+      $startat = 0;
+      }
+   
+   $out .= $nl; 
+   
+   $out .= "Start deriving at: " . $startat . $nl;
+   $out .= "Address cache min: " . $address_cache_min . $nl;
+   
+   $addresses = "";
+   
+   if ($new_list)
+      {
+      for ($n=$startat;$n<($startat+$address_cache_min);$n++)
+         {
+         $sameKey2 = $master->derivePath("0/".$n);
+         //echo " - m/0/" . $n . ": " . $sameKey2->toExtendedPublicKey() . $nl;
+         $child3 = new PayToPubKeyHashAddress($sameKey2->getPublicKey()->getPubKeyHash());
+         $add = $child3->getAddress();
+         $out .= "   Address m/0/" . $n . ": " . $add . $nl;
+         $addresses .= $add . "\n";
+         }
+      $out .= "Check before writing:<br><pre>" . $addresses . "</pre>" . $nl;
+      $out .= "Saving addresses to text file.." . $nl;
+      
+      $out .= "- new addresses file" . $nl;
+      file_put_contents( $woobtc_files_full_path . "/addresses_fresh.txt", $addresses, LOCK_EX );
+      }
+   else
+      {
+      $out .= "Start at: " . $startat . $nl;
+      for ($n=$startat;$n<($startat+50);$n++)
+         {
+         $sameKey2 = $master->derivePath("0/".$n);
+         //echo " - m/0/" . $n . ": " . $sameKey2->toExtendedPublicKey() . $nl;
+         $child3 = new PayToPubKeyHashAddress($sameKey2->getPublicKey()->getPubKeyHash());
+         $add = $child3->getAddress();
+         $out .= "   Address m/0/" . $n . ": " . $add;
+         if ($add == $lastfresh)
+            {
+            $out .= " &lt;= THIS ONE" . $nl;
+            $startat = $n+1;
+            break;
+            }
+         else
+            {
+            $out .= $nl;
+            }
+         
+         $addresses .= $add . "\n";
+         }
+       
+      $out .= "Really start at: " . $startat . $nl;     
+      
+      $out .= "Address cache min: " . $address_cache_min . $nl;
+      
+      
+      $fresh = file_get_contents( $freshpath );
+      $arfresh = explode("\n", $fresh);
+      $freshcount = count($arfresh)-1;
+      $out .= "Freshcount: " . $freshcount . $nl;
+      
+      
+      $adds_needed = 0;
+      
+      if ($freshcount > 0 && $freshcount < $address_cache_min)
+         { $adds_needed = $address_cache_min - $freshcount; }
+      
+      
+      $out .= "Addresses to generate: " . $adds_needed . $nl;
+      
+      if ($adds_needed > 0)
+         {
+         $addresses = "";
+         for ($n=$startat; $n<($startat + $adds_needed); $n++)
+            {
+            $sameKey2 = $master->derivePath("0/".$n);
+            //echo " - m/0/" . $n . ": " . $sameKey2->toExtendedPublicKey() . $nl;
+            $child3 = new PayToPubKeyHashAddress($sameKey2->getPublicKey()->getPubKeyHash());
+            $add = $child3->getAddress();
+            $out .= "   Address m/0/" . $n . ": " . $add . $nl;
+            if ($add == $lastfresh)
+               {
+               $out .= " ====== THIS ONE =====" . $nl;
+               $startat = $n+1;
+               break;
+               }
+            $addresses .= $add . "\n";
+            }         
+         
+         $out .= "<pre>" . $addresses . "</pre>" . $nl;
+         
+         file_put_contents( $freshpath, $addresses, FILE_APPEND | LOCK_EX );
+         }
+      else
+         {
+         $out .= "<b>No more addresses needed, you're good!</b>" . $nl;
+         }
+      }
+   //$out .= "LOTS MORE CHECKING BEFORE SAVING";
+   
+   
+   
+   $out .= $nl . $nl . $nl . "<hr>" . $nl;
+   
+   $out .= "Checking fresh addresses (get next fresh): " . woobtc_get_fresh_address2("", $api_preference) . $nl;
+   
+   
    //echo "HARDENED PATH (disabled bc no privkeys)\n";
    //$hardened2 = $master->derivePath("0/999999'");
    
@@ -488,617 +694,5 @@ function woobtc_addresses($atts,$content = null)
 
 
 
-
-
-function woobtc_get_files_folder()
-   {
-   global $woobtc_filespath;
-   global $nl;
-   
-   $upload = wp_upload_dir(null, true);
-   //print_r($upload);   
-   $upload_base = $upload['basedir'];
-   $out = "";
-   if ( file_exists($upload_base . "/" . $woobtc_filespath) )
-      {
-      $out .= "Folder exists" . $nl;
-      // CHECK FOR .HTACCESS
-      }
-   else
-      {
-      mkdir ($upload_base . "/" . $woobtc_filespath);
-      $out .= "Folder " . $upload_base . "/" . $woobtc_filespath . " created" . $nl;
-      }
-
-   if ( file_exists($upload_base . "/" . $woobtc_filespath . "/.htaccess") ) // SWITCHED OFF THIS LOOP FOR NOW - TESTING DOWNLOADABLE PDFS (now that we've got longer random keys)
-      {
-      // all is fine, htaccess exists
-      $out .= "All is fine, .htaccess exists" . $nl;
-      }
-   else
-      {
-      $out .= "Need to make .htaccess" . $nl;
-      $httmp = "Order Allow,Deny
-Deny from All
-";
-      file_put_contents($upload_base . "/" . $woobtc_filespath . "/.htaccess", $httmp);
-      $out .= ".htaccess created" . $nl;
-      }    
-   
-   $out .= "Return: " . $upload_base . "/" . $woobtc_filespath . $nl;
-   //return $out;
-   return $upload_base . "/" . $woobtc_filespath;    
-   }
-
-
-
-
-
-
-
-
-
-
-add_action( 'woocommerce_thankyou', 'woobtc_redirect_custom');
-  
-function woobtc_redirect_custom( $order_id )
-	{
-	global $nl;
-   global $woobtc_dbg;
-   
-	$order = wc_get_order( $order_id );
-  
-   $url = '?page_id=139&view-order=' . $order_id;
-   
-   //if ( $order->status != 'failed' ) {
-	if ( $order->status == 'completed' )
-		{
-		wp_safe_redirect( $url );
-      exit;
-		}
-	else
-		{
-
-      $site_url = get_site_url();
-      echo "<div style=\"background-color: #ffcccc; padding: 12px; line-height: 160%; \">";
-		echo "<center><strong>Pay now with Bitcoin</strong><a name=woobtc></a>\n" . $nl;
-      echo "<img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/bitcoin.png\" style=\"width: 200px;\">" . $nl;
-      echo "<div style=\"font-size: 18px; font-weight: bold; \">ORDER STATUS: " . $order->status . "</div>\n";
-		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below<br>you will be taken to your downloads</div></center>" . $nl;
-		
-      //echo "- check exchange rate to get price in btc" . $nl;
-      $payment_gateway = WC()->payment_gateways->payment_gateways()['bitcoin_gateway'];
-      //echo '<p>Title: ' . $payment_gateway->title . '</p>';
-      //echo '<p>Description: ' . $payment_gateway->description . '</p>';
-      //echo '<p>Instructions: ' . $payment_gateway->instructions . '</p>';
-      //echo "Xpub: " . $payment_gateway->get_option( 'xpub' ) . $nl;
-      $xpub = $payment_gateway->settings['xpub'];
-      $fiat = $payment_gateway->settings['fiat-currency'];
-      $roundbtc = $payment_gateway->settings['btc-rounding-decimals'];
-
-      $conf_threshold_0 = $payment_gateway->settings['0-conf-threshold'];
-      $pricing_priority = $payment_gateway->settings['pricing-priority'];
-      $api_preference = $payment_gateway->settings['api-preference'];
-      
-      $fiat_symbol = "";
-      $btc_symbol = "฿";
-      
-      if ($fiat == "USD")
-         { $fiat_symbol = "$"; }
-      elseif ($fiat == "GBP")
-         { $fiat_symbol = "&pound;"; }
-      
-      
-      $dowaiting = "";
-      if ( isset($_POST['amount']) )
-         { $amount = $_POST['amount']; }
-      if ( isset($_POST['address']) )
-         { $address = $_POST['address']; }
-      if ( isset($_POST['checksum']) )
-         { $checksum = $_POST['checksum']; }
-
-      if ($amount <> "" && $address <> "" && $checksum <> "")
-         {
-         $dowaiting = true;
-         //echo "Dowaiting: " . $dowaiting . $nl;
-         }
-      else
-         {
-         //echo "No dowaiting" . $nl;
-         }
-         
-         
-      if(!$dowaiting)
-         {
-         if(!isset($_SESSION['exr']) || $_POST['refresh'] == "1" )
-            {
-            $exr = woobtc_get_exchange_rate();
-            }
-         else
-            {
-            $exr = $_SESSION['exr'];
-            }
-
-         $order = wc_get_order( $order_id );
-         //echo "<pre>" . print_r($order->total, true) . "</pre>" . $nl;
-         
-         $price = $order->total;
-         $btcprice = $price / $exr;
-
-         //echo "- Get Confirmations required for the price level" . $nl;
-         //echo "<pre>" . print_r($payment_gateway->settings, true) . "</pre>" . $nl;
-         
-         //echo "Pricing priority: " . $pricing_priority . $nl;
-         
-         $confs_req = 1;
-         
-         if ( $pricing_priority == "fiat" )
-            {
-            //echo "in: Pricing priority fiat" . $nl;
-            //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            
-            if ($price <= $conf_threshold_0)
-               { $confs_req = 0; }                
-            }
-         elseif ( $pricing_priority == "BTC" )
-            {
-            //echo "in: Pricing priority: BTC" . $nl;
-            //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-                             
-            if ($btcprice <= $conf_threshold_0)
-               { $confs_req = 0; }        
-            }
-         else
-            {
-            echo "This shouldn't happen" . $nl;
-            }
-         echo "<center><span title=\"0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. It all depends on how busy the Bitcoin network is and your fee\">Confirmations required for this transaction: " . $confs_req . "</span>" .$nl;
-         echo "We support segwit and RBF transactions :)" . $nl;
-         //echo "0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is" . $nl;
-         //echo "<marquee id=waitingmessage ascrolldelay=500 scrollamount=3>0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is</marquee>";
-         echo "</center>";
-         echo $nl;
-         
-         
-         $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-         $current_url = str_replace("&refresh=", "", $current_url);
-         //echo "Current url: " . $current_url . $nl;
-         //$exr = woobtc_get_exchange_rate();
-         //echo $nl;
-         
-         echo "<div style=\"display: none;\"><form name=woobtc_refreshprice action=\"" . $current_url . "#woobtc\" method=post></div>\n";
-         echo "<input type=hidden name=refresh value=1>\n";
-         
-         echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . $price .  $nl;
-         echo "Price in BTC: " . $btc_symbol . round($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
-         echo "Exchange rate: " . $fiat_symbol . number_format($exr,2) . $nl;
-         echo "<a href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
-         echo "<input type=submit value=\"Refresh exchange rate\" style=\"padding: 4px; display: none;\">\n";
-         echo "<div style=\"display: none;\"></form></div></center>\n";
-         echo $nl;
-         
-
-         //echo $nl . "<pre>" . print_r($payment_gateway->settings, true) . "</pre>" . $nl;      
-         
-         // echo "- get a fresh address" . $nl;
-         //echo "- - woo order id: " . $order_id . $nl;
-         
-         $btcaddress = get_post_meta($order_id, "woobtc_address");
-         $btcaddress = $btcaddress[0];
-         // CLEAR POST META
-         //update_post_meta( $order_id, 'woobtc_address', "" );
-         //echo "Btcaddress from post meta: " . print_r($btcaddress,true) . $nl;
-         
-         if ($btcaddress <> "")
-            {
-            if ($woobtc_dbg) { echo "<center>DEBUG: Found address in postmeta</center>" . $nl; }
-            //echo $btcaddress . "</center>" . $nl;
-            }
-         else
-            {
-            if ($woobtc_dbg) { echo "<center>Fetching new address & storing to the order</center>" . $nl; }
-            $add = woobtc_get_fresh_address($order_id);
-            $out .= "CHECK BALANCES OF NEW ADDRESS ARE 0 BEFORE SAVING TO ORDER" . $nl;
-            update_post_meta( $order_id, 'woobtc_address', $add );
-            $btcaddress = $add;
-            }
-         echo "
-<script language=javascript>
-function woobtc_clearfield(f)
-   {
-   //alert('clear field with name: ' + f);
-   var t = document.getElementById(f); 
-   setTimeout(\"document.getElementById('\"+f+\"').innerHTML = '&nbsp;'\",1000);
-   }
-
-</script>";
-         
-         echo "<center><div style=\"padding-bottom: 8px; \"><span title=\"Please only send BITCOIN, which always has the ticker BTC, not any of the many clones. If you send coins other than bitcoin (e.g. Bitcoin Cash, BSV (lol) then those coins will be lost and your order will still not be paid.)\">Please send BITCOIN/BTC ONLY to this address:</span>" . $nl;
-         echo "<input type=text value=\"" . $btcaddress . "\" style=\"width: 440px; padding: 4px; font-size: large; text-align: center; \"  onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_address').innerHTML = 'Address copied'; woobtc_clearfield('woobtc_label_address'); \" onmouseover=\"document.getElementById('woobtc_label_address').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_address').innerHTML = '&nbsp;';\">" . $nl;
-         echo "<span id=woobtc_label_address style=\"font-size: 12px;\">&nbsp;</span></div></center>";
-         
-         echo "<center>BTC to send:<br><input type=text value=\"" . round($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \" onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_amount').innerHTML = 'Amount copied'; woobtc_clearfield('woobtc_label_amount'); \"  onmouseover=\"document.getElementById('woobtc_label_amount').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_amount').innerHTML = '&nbsp;';\">" . $nl;
-         echo "<span id=woobtc_label_amount style=\"font-size: 12px;\">&nbsp;</span></center>" . $nl;
-         
-         //echo $nl;
-             
-         if ($btcaddress <> "")
-            {
-            
-            //echo "- show QR code of address, amount etc" . $nl;
-            //echo "<center><img src=\"https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=" . $btcaddress . "\"></center>" . $nl;
-            
-            echo "<script src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/kjua-0.1.1.min.js\"></script>\n";
-            echo "<center><div style=\"width: 420px; text-align: center;\"><div id=oink style=\"border: 1px solid black; background-color: #ffffff; width; 420px; height: 420px; padding-top: 0px; text-align: center;\"></div></div></center>\n";
-            echo "<script language-javascript>
-   var url = '" . $btcaddress . "';
-   //var opts = \"\";
-   //opts = opts + \"render: 'image', crisp: true, minVersion: 1, ecLevel: 'L', size: 400, ratio: null, fill: '#333', back: '#fff', text: 'Pay with Bitcoin', rounded: 0, \";
-   //opts = opts + \"quiet: 0, mode: 'plain', mSize: 30, mPosX: 50, mPosY: 50, label: 'label test', fontname: 'sans', fontcolor: '#333', image: null\";
-   
-   //var el = kjua({text: 'hello!'});
-   var el = kjua({text: url, label: 'Pay with Bitcoin', size: 400, crisp: true, back: '#fff' });
-   //document.querySelector('body').appendChild(el);
-   //document.getElementById('oink').appendChild(el);
-   document.getElementById('oink').appendChild(el);
-   </script>";
-         
-            //echo "- button to say paid" . $nl;
-            $checksum = woobtc_create_checksum($btcaddress, round($btcprice, $roundbtc) );
-            //echo "- - checksum: " . $checksum . $nl;
-            //echo "Exchange rate: " . $fiat . " " . number_format($exr,2) . $nl . $nl;
-            echo $nl;
-            echo "<center><form name=woobtc_paid action=\"" . $current_url . "\" method=post>\n";
-            echo "<input type=hidden name=amount value=\"" . round($btcprice, $roundbtc)  . "\">\n";
-            echo "<input type=hidden name=address value=\"" . $btcaddress . "\">\n";
-            echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #ccffcc; colour: white;\">\n";
-            echo "</form></center>\n";
-            echo $nl;
-            
-            //echo "- - pass amount with the 'I have paid' click, along with checksum of address+amount and attach those (btc price, checksum of add+amount) to the order id postmeta" . $nl;
-            }
-         else
-            {
-            echo "Missing payment address - this shouldn't happen - please email support with your order number and perhaps a screenshot of this page." . $nl;
-            }
-         echo "</div>";
-         echo $nl;
-         }
-      else
-         {
-         //echo "DOING DOWAITING" . $nl;
-         echo "<center><img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/waiting.gif\" style=\"width: 200px;\"></center>";
-         //echo "- check balance of the address, refresh based on expected wait time/confs" . $nl;
-         echo $nl;
-         
-         
-         echo "Check the checksum is valid: ";
-         
-         $checksum_verify = woobtc_create_checksum($address, $amount);
-         if ($checksum == $checksum_verify)
-            { echo "Checksum verified OK" . $nl; }
-         else
-            { echo "Checksum verification FAILED" . $nl; }
-
-         echo "Address: " . $address . $nl;
-         echo "Amount: " . $amount . $nl;
-         
-         $confs_req = 1;
-         
-         $order = wc_get_order( $order_id );
-         //echo "<pre>" . print_r($order->total, true) . "</pre>" . $nl;
-         
-         $price = $order->total;
-         echo "Order total: " . $fiat_symbol . $price . $nl;
-         
-         if ( $pricing_priority == "fiat" )
-            {
-            //echo "in: Pricing priority fiat" . $nl;
-            //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            if ($price <= $conf_threshold_0)
-               { $confs_req = 0; }                
-            }
-         elseif ( $pricing_priority == "BTC" )
-            {
-            //echo "in: Pricing priority: BTC" . $nl;
-            //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            if ($btcprice <= $conf_threshold_0)
-               { $confs_req = 0; }        
-            }
-         else
-            {
-            echo "This shouldn't happen" . $nl;
-            }
-         echo "Confirmations required: " . $confs_req . $nl;
-         //echo "0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is" . $nl;
-         //echo "<marquee id=waitingmessage ascrolldelay=500 scrollamount=3>0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is</marquee>";
-
-         echo "Required amount: " . $amount . $nl;
-         //echo $nl;
-         
-         $getinfo_failed = false;
-         echo "API-preference: " . $api_preference . $nl;
-         $confirmed = "";
-         $unconfirmed = "";
-                  
-         
-         if ($api_preference == "Blockchain.info")
-            {
-            // BLOCKCHAIN.INFO STUFF
-            if ($confs_req === 0)
-               {
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
-               }
-            else
-               {
-               $confirmed = woobtc_get_address_balance_bc($address, false);
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
-               }
-            }
-         else
-            {
-            // BLOCKSTREAM.INFO STUFF
-            if ($confs_req === 0)
-               {
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
-               }
-            else
-               {
-               $confirmed = woobtc_get_address_balance_bs($address, false);
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
-               }
-            }
-            
-
-         if ($unconfirmed == "")
-               {
-               echo "It's possible our server might have been rate-limited from the public API we use to check balances. Attempting to use the other API as a backup. This shouldn't really happen." . $nl;
-               $getinfo_failed = true;
-               }
-         
-
-// FAILOVER SECTION
-
-         if ($api_preference == "Blockchain.info")
-            {
-            // BLOCKSTREAM.INFO STUFF
-            if ($confs_req === 0)
-               {
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
-               }
-            else
-               {
-               $confirmed = woobtc_get_address_balance_bs($address, false);
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
-               }
-            }
-         else
-            {
-            // BLOCKCHAIN.INFO STUFF
-            if ($confs_req === 0)
-               {
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
-               }
-            else
-               {
-               $confirmed = woobtc_get_address_balance_bc($address, false);
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
-               }
-            }
-
-         
-         //echo "Required confirmations: " . $confs_req . $nl;
-         echo "Unconfirmed balance: " . ($unconfirmed) . $nl;
-         echo "Confirmed balance: " . number_format($confirmed,8) . $nl;
-         //echo $nl;
-         
-         if ($getinfo_failed)
-            { echo "<strong>LOOKS LIKE WE MIGHT HAVE BEEN RATE LIMITED ON YOUR CHOICE OF API (" . $api_preference . "), USE THE OTHER ONE" . $nl; }
-
-               
-
-        
-         $paid = false;
-         
-         if ($confs_req == 0)
-            {
-            if ( ($unconfirmed) >= $amount )
-               {
-               $paid = true;
-               }
-            }
-         
-         if ($confs_req == 1)
-            {
-            if ( ($confirmed) >= $amount )
-               { $paid = true; }
-            }
-                   
-         if ($paid == 1)
-            {
-            echo $nl;
-            echo "<div style=\"font-size: 24px; font-weight: bold;\">PAID YO!</div>";      
-            echo "<div style=\"display: none\"><audio controls autoplay><source src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/kerching.mp3\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio></div>";
-            echo $nl;
-            echo "Updating order status to PAID" . $nl;
-            $order = wc_get_order( $order_id );
-            
-            // Mark as on-hold (we're awaiting the payment)
-            $order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
-            echo "Reloading the page and taking you to your order... :)";
-            echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
-            }
-         else
-            {
-            echo "This page will auto-refresh every 2mins and should make a noise when the payment is received." . $nl;
-            //echo "<script language=javascript>setTimeout('location.reload()', 30000);</script>";
-            echo $nl;
-            $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-            $current_url = str_replace("&refresh=", "", $current_url);
-            //echo "current url: " . $current_url . $nl;
-            echo "<center><form name=woobtc_paid action=\"" . $current_url . "#woobtc\" method=post>\n";
-            echo "<input type=hidden name=amount value=\"" . $amount  . "\">\n";
-            echo "<input type=hidden name=address value=\"" . $address . "\">\n";
-            echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=button value=\"Back to payment details\" onclick=\"location.href='" . $current_url . "';\" style=\"padding: 8px;\" title=\"Dont worry, you won't break anything by going bacl. The payment address wont change and your existing payment wont get lost by going back. The payment address is now linked to this order number and each order gets issues its own address\">\n";
-            echo "<input type=submit value=\"Click to refresh\" style=\"padding: 8px; background-color: #ccffcc; colour: white;\">\n";
-            echo "</form></center>\n";
-            echo "<script language=javascript>setTimeout('document.forms.woobtc_paid.submit()',120000)</script>";
-            echo $nl;            
-            }
-         echo "</div>";
-         echo $nl;
-         }
-      }
-	}
-
-
-
-
-
-
-function woobtc_get_address_balance_bc($address, $confirmed)
-   {
-   // confirmed true/false, false for unconfirmed balance
-   if ($confirmed)
-      {
-      $confirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=1";
-      $balance_bc = file_get_contents($confirmed_url_bc);
-      if ($balance_bc > 0)
-         { $balance_bc = $balance_bc / 100000000; }
-      return $balance_bc;
-      }
-   else
-      {
-      $unconfirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=0";
-      $unconfirmed_bc = file_get_contents($unconfirmed_url_bc);
-      if ($unconfirmed_bc > 0)
-         { $unconfirmed_bc = $unconfirmed_bc / 100000000; }
-      return $unconfirmed_bc;
-      }
-   }
-
-
-function woobtc_get_address_balance_bs($address, $confirmed)
-   {
-   global $nl;
-   // confirmed true/false, false for unconfirmed balance
-   $address_info_url_bs = "https://blockstream.info/api/address/" . $address;
-   //echo "URL: " . $address_info_url_bs . $nl;
-   $address_infoj = file_get_contents($address_info_url_bs);
-   $address_info = json_decode($address_infoj, true);
-         
-   //echo "<pre>" . print_r($address_info, true) . "</pre>" . $nl;
-   if ($confirmed)
-      {
-      $confirmed_balance_bs = ($address_info['chain_stats']['funded_txo_sum'] - $address_info['chain_stats']['spent_txo_sum'])/100000000;
-      //echo "Confirmed balance: " . number_format($confirmed_balance_bs,8) . $nl;
-      return number_format($confirmed_balance_bs,8);
-      }
-   else
-      {
-      $unconfirmed_balance_bs = ($address_info['mempool_stats']['funded_txo_sum'] - $address_info['mempool_stats']['spent_txo_sum'])/100000000;
-      //echo "Unconfirmed balance: " . number_format($unconfirmed_balance_bs,8) . $nl;
-      return number_format($unconfirmed_balance_bs,8);
-      }
-   }
-
-
-
-
-
-
-
-function woobtc_get_fresh_address($order_id)
-   {
-   global $nl;
-   $folder = woobtc_get_files_folder();
-   
-   $addpath = $folder . "/addresses_fresh.txt";
-   $usedpath = $folder . "/addresses_used.txt";
-   $out .= "Get fresh address for order " . $order_id . $nl;
-   $out .= "Files path for addresses: " . $folder . $nl;
-   
-   $adds = "";
-   $aradds = [];
-   $nextadd = "";
-   
-   if(file_exists($addpath))
-      {
-      $adds = file_get_contents($addpath);
-      $aradds = explode("\n",$adds);
-      $nextadd = $aradds[0];
-      $out .= "Next address: " . $nextadd . $nl;
-      $addsleft = str_replace($aradds[0] . "\n","", $adds);
-      $out .= "Addresses left: " . $nl . $addsleft . $nl;
-      $out .= "Writing remaining fresh addresses back to file" . $nl;
-      file_put_contents($addpath, $addsleft);
-      
-      $out .= "Add the current address to the used addresses list" . $nl;
-      file_put_contents($usedpath, $nextadd . "-WOO_ORDER: " . $order_id . "\n", FILE_APPEND | LOCK_EX);
-      
-      return $nextadd;
-      }
-   else
-      {
-      return "ERROR: missing addresses file";
-      }
-   return $out;
-   }
-
-
-
-
-
-
-function woobtc_get_exchange_rate()
-   {
-   //$url = "https://www.bitstamp.net/api/ticker/";
-   //$fgc = file_get_contents($url);
-   //$json = json_decode($fgc, TRUE);
-   //$price = (int)$json["last"];
-
-   $payment_gateway = WC()->payment_gateways->payment_gateways()['bitcoin_gateway'];
-   //echo '<p>Title: ' . $payment_gateway->title . '</p>';
-   //echo '<p>Description: ' . $payment_gateway->description . '</p>';
-   //echo '<p>Instructions: ' . $payment_gateway->instructions . '</p>';
-   //echo "Xpub: " . $payment_gateway->get_option( 'xpub' ) . $nl;
-   //echo $nl . "<pre>";
-   //print_r($payment_gateway->settings);
-   //echo "</pre>" . $nl;
-   
-   $exr_src = $payment_gateway->settings['exchange-rate-source'];
-   $exr_cur = $payment_gateway->settings['fiat-currency'];
-   $url2 = $exr_src . $exr_cur;
-   //echo "URL2: " . $url2 . "<BR>";
-   //$url = "https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD";
-   $url = $url2;
-   $fgc = file_get_contents($url);
-   $json = json_decode($fgc, TRUE);
-   $xprice = $json[0][7];
-   
-   //echo $price;
-
-   $_SESSION['exr'] = $xprice; 
-   return $xprice;    
-   }
-
-   
- 
-
-	
-function woobtc_create_checksum($address, $amt)
-	{
-	global $nl;
-	global $woobtc_hashsecret;
-	$str = trim($address) . trim($amt) . trim($hashsecret);
-	//echo "#" . $address . "#" . $nl;
-	//echo "#" . $amt . "#" . $nl;
-	$out .= hash("ripemd160", $str);
-	//echo trim($out);
-	return $out;
-	}
-	 
 
 
