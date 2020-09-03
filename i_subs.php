@@ -112,7 +112,7 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
                   $tmp = woobtc_is_address_fresh_bc($nextadd, false);
                   if ($woobtc_dbg) { echo "tmp: " . $tmp . $nl; }
                   $addused = $tmp;
-                  }
+                  } 
                else
                   {
                   if ($woobtc_dbg) { echo "Doing Blockchain.info" . $nl; }

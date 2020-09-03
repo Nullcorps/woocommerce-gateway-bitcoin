@@ -419,7 +419,7 @@ function woobtc_clearfield(f)
             //echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
             echo "</div>";
             }
-         else
+         else 
             {
             echo "This page will auto-refresh every 2mins and should make a noise when the payment is received." . $nl;
             //echo "<script language=javascript>setTimeout('location.reload()', 30000);</script>";

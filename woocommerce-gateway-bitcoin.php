@@ -50,7 +50,7 @@ use BitWasp\Bitcoin\Key\Factory\HierarchicalKeyFactory;
 //require __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . '/vendor/autoload.php';
 
-
+ 
 
 $woobtc_filespath = "woobtc"; // this could be user-settable so as more secure perhaps? might fool plugin scanners/scrapers
 $woobtc_files_full_path = "";
