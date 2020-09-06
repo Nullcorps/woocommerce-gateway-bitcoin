@@ -176,9 +176,16 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
 
 function woobtc_get_address_balance_bc($address, $confirmed)
    {
+   global $nl;
+   //global $woobtc_dbg;
+   $woobtc_dbg = false;
+   
+   if ($woobtc_dbg) { echo "IN BLOCKCHAIN.INFO" . $nl; }
+   
    // confirmed true/false, false for unconfirmed balance
    if ($confirmed)
       {
+      if ($woobtc_dbg) { echo "IN CONFIRMED" . $nl; }
       $confirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=1";
       $balance_bc = file_get_contents($confirmed_url_bc);
       if ($balance_bc > 0)
@@ -187,7 +194,10 @@ function woobtc_get_address_balance_bc($address, $confirmed)
       }
    else
       {
+      if ($woobtc_dbg) { echo "IN UNCONFRIMED" . $nl; }
       $unconfirmed_url_bc = "https://blockchain.info/q/addressbalance/" . $address . "?confirmations=0";
+      //echo $unconfirmed_url_bc . $nl;
+      
       $unconfirmed_bc = file_get_contents($unconfirmed_url_bc);
       if ($unconfirmed_bc > 0)
          { $unconfirmed_bc = $unconfirmed_bc / 100000000; }
@@ -196,9 +206,14 @@ function woobtc_get_address_balance_bc($address, $confirmed)
    }
 
 
+
+
 function woobtc_get_address_balance_bs($address, $confirmed)
    {
    global $nl;
+   //global $woobtc_dbg;
+   $woobtc_dbg = false;
+   
    // confirmed true/false, false for unconfirmed balance
    $address_info_url_bs = "https://blockstream.info/api/address/" . $address;
    //echo "URL: " . $address_info_url_bs . $nl;
@@ -208,12 +223,14 @@ function woobtc_get_address_balance_bs($address, $confirmed)
    //echo "<pre>" . print_r($address_info, true) . "</pre>" . $nl;
    if ($confirmed)
       {
+      if ($woobtc_dbg) { echo "BLOCKSTREAM CONFRIMED" . $nl; }
       $confirmed_balance_bs = ($address_info['chain_stats']['funded_txo_sum'] - $address_info['chain_stats']['spent_txo_sum'])/100000000;
       //echo "Confirmed balance: " . number_format($confirmed_balance_bs,8) . $nl;
       return number_format($confirmed_balance_bs,8);
       }
    else
       {
+      if ($woobtc_dbg) { echo "BLOCKSTREAM UNCONFIRMED" . $nl; }
       $unconfirmed_balance_bs = ($address_info['mempool_stats']['funded_txo_sum'] - $address_info['mempool_stats']['spent_txo_sum'])/100000000;
       //echo "Unconfirmed balance: " . number_format($unconfirmed_balance_bs,8) . $nl;
       return number_format($unconfirmed_balance_bs,8);

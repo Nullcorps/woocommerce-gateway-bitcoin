@@ -315,31 +315,36 @@ function woobtc_clearfield(f)
          if ($api_preference == "Blockchain.info")
             {
             // BLOCKCHAIN.INFO STUFF
+            if ($woobtc_dbg) { echo "Doing blockchain.info" . $nl; }
             if ($confs_req === 0)
                {
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               $unconfirmed = woobtc_get_address_balance_bc($address, false);
                }
             else
                {
-               $confirmed = woobtc_get_address_balance_bc($address, false);
-               $unconfirmed = woobtc_get_address_balance_bc($address, true);
+               $unconfirmed = woobtc_get_address_balance_bc($address, false);
+               $confirmed = woobtc_get_address_balance_bc($address, true);
                }
             }
          else
             {
             // BLOCKSTREAM.INFO STUFF
+            if ($woobtc_dbg) { echo "Doing blockstream.info" . $nl; }
             if ($confs_req === 0)
                {
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               $unconfirmed = woobtc_get_address_balance_bs($address, false);
+               echo "ZERO BRANCH" . $nl;
                }
             else
                {
-               $confirmed = woobtc_get_address_balance_bs($address, false);
-               $unconfirmed = woobtc_get_address_balance_bs($address, true);
+               $unconfirmed = woobtc_get_address_balance_bs($address, false);
+               $confirmed = woobtc_get_address_balance_bs($address, true);
                }
             }
             
-
+         if ($woobtc_dbg) { echo "Unconfirmed balance: " . number_format($unconfirmed,8) . $nl; }
+         if ($woobtc_dbg) { echo "Confirmed balance: " . number_format($confirmed,8) . $nl; }
+         
          if ($unconfirmed == "")
                {
                echo "It's possible our server might have been rate-limited from the public API we use to check balances. Attempting to use the other API as a backup. This shouldn't really happen." . $nl;
@@ -348,39 +353,44 @@ function woobtc_clearfield(f)
          
 
 // FAILOVER SECTION
-
-         if ($api_preference == "Blockchain.info")
+         if ($unconfirmed == "" || $confirmed == "")
             {
-            // BLOCKSTREAM.INFO STUFF
-            if ($confs_req === 0)
+            if ($api_preference == "Blockchain.info")
                {
-               $unconfirmed = woobtc_get_address_balance_bs($address, false);
+               // BLOCKSTREAM.INFO STUFF
+               if ($woobtc_dbg) { echo "Doing Blockstream.info as failover" . $nl; }
+               if ($confs_req === 0)
+                  {
+                  $unconfirmed = woobtc_get_address_balance_bs($address, false);
+                  }
+               else
+                  {
+                  $confirmed = woobtc_get_address_balance_bs($address, true);
+                  $unconfirmed = woobtc_get_address_balance_bs($address, false);
+                  }
                }
             else
                {
-               $confirmed = woobtc_get_address_balance_bs($address, true);
-               $unconfirmed = woobtc_get_address_balance_bs($address, false);
+               // BLOCKCHAIN.INFO STUFF
+               if ($woobtc_dbg) { echo "Doing Blockchain.info as failover" . $nl; }
+               if ($confs_req === 0)
+                  {
+                  $unconfirmed = woobtc_get_address_balance_bc($address, false);
+                  }
+               else
+                  {
+                  $confirmed = woobtc_get_address_balance_bc($address, true);
+                  $unconfirmed = woobtc_get_address_balance_bc($address, false);
+                  }
                }
             }
-         else
-            {
-            // BLOCKCHAIN.INFO STUFF
-            if ($confs_req === 0)
-               {
-               $unconfirmed = woobtc_get_address_balance_bc($address, false);
-               }
-            else
-               {
-               $confirmed = woobtc_get_address_balance_bc($address, true);
-               $unconfirmed = woobtc_get_address_balance_bc($address, false);
-               }
-            }
-
          
          //echo "Required confirmations: " . $confs_req . $nl;
-         echo "Unconfirmed balance: " . ($unconfirmed) . $nl;
-         echo "Confirmed balance: " . number_format($confirmed,8) . $nl;
+         echo "Unconfirmed balance: " . number_format($unconfirmed,8) . $nl; 
+         echo "Confirmed balance: " . number_format($confirmed,8) . $nl; 
          //echo $nl;
+         
+         
          
          if ($getinfo_failed)
             { echo "<strong>LOOKS LIKE WE MIGHT HAVE BEEN RATE LIMITED ON YOUR CHOICE OF API (" . $api_preference . "), USE THE OTHER ONE" . $nl; }
@@ -389,9 +399,11 @@ function woobtc_clearfield(f)
 
         
          $paid = false;
+         if ($woobtc_dbg) { echo "confs req: " . $confs_req . $nl; }
          
-         if ($confs_req == 0)
+         if ($confs_req === 0)
             {
+            echo "0-conf branch" . $nl;
             if ( ($unconfirmed) >= $amount )
                {
                $paid = true;
@@ -400,6 +412,7 @@ function woobtc_clearfield(f)
          
          if ($confs_req == 1)
             {
+            echo "1+conf branch" . $nl;
             if ( ($confirmed) >= $amount )
                { $paid = true; }
             }
@@ -415,8 +428,9 @@ function woobtc_clearfield(f)
             
             // Mark as on-hold (we're awaiting the payment)
             //$order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
-            echo "Reloading the page and taking you to your order... :)";
+            echo "Reloading the page and taking you to your order... :)  [ TEMPORARILY DISABLED ]";
             //echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
+            echo $nl . $nl . "<center><a href=\"" . $url . "\">Go there manually</a></center>" . $nl;
             echo "</div>";
             }
          else 
