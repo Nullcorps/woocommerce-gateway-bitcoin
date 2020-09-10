@@ -55,21 +55,25 @@ NullCorps
 
 Stuff to do:
 
+- add a settings field to allow css hacks? or could this be done at the theme customer level. The css id's should be unique so why not?
+
+- Automate the address refill process like on btcpayme
+
+IN PROG - integrate in TG
+
 IN PROG - make it also work with blockstream.info's api, allow user to set preference but keep the other as a failover in case of rate limiting
 
-- auto refill addresses when running low, something like on payme page, self maintaining.
+IN PROG (needs automating now) - auto refill addresses when running low, something like on payme page, self maintaining.
 
-- auto prune addresses which may have been used in the mean time (e.g. multiple instances?)
-
-- just before fresh address is linked to order in the postmeta, check past/present balances are still 0
-
-- maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1? << HA! How about no 
-
-- give the option of QR from google images or local libary depending on privacy preference << meh, why?
+DITC - just before fresh address is linked to order in the postmeta, check past/present balances are still 0
 
 - idk, tidy it up a bit or something, remove any inline css
 
 - figure out wtf's needed to get this into the WP repo once it's at that point
+
+DONE - auto prune addresses which may have been used in the mean time (e.g. multiple instances?)
+NOPE - maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1? << HA! How about no(t right now anyway)
+NOPE - give the option of QR from google images or local libary depending on privacy preference << meh, why?
 
 
 Considerations:
@@ -95,4 +99,4 @@ see: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 Big thank you to @orionwl for talking things through along the way and paitently explaining the maths side of it over and over till I get it :)
 
-
+This uses the Bitwasp library for all the maths heavy lifting, address generating etc. https://github.com/Bit-Wasp/bitcoin-php
