@@ -31,7 +31,7 @@ function woobtc_get_fresh_address($order_id)
       $addsleft = str_replace($aradds[0] . "\n","", $adds);
       $out .= "Addresses left: " . $nl . $addsleft . $nl;
       $out .= "Writing remaining fresh addresses back to file" . $nl;
-      file_put_contents($addpath, $addsleft);
+      //file_put_contents($addpath, $addsleft);
       
       $out .= "Add the current address to the used addresses list" . $nl;
       if ($order_id <> "")
