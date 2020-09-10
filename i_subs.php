@@ -133,8 +133,8 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
          
                $addsleft = str_replace($nextadd . "\n","", $adds);
                //echo "Addresses left: " . $nl . $addsleft . $nl;
-               if ($woobtc_dbg) { echo "Writing remaining fresh addresses back to file" . $nl; }
-               file_put_contents($addpath, $addsleft);
+               //if ($woobtc_dbg) { echo "Writing remaining fresh addresses back to file" . $nl; }
+               //file_put_contents($addpath, $addsleft);
                
                }
                         }
@@ -308,16 +308,28 @@ function woobtc_mark_address_used($btcaddress, $order_id)
    
    //$addpath = $folder . "/addresses_fresh.txt";
    $usedpath = $folder . "/addresses_used.txt";
-   if ($woobtc_dbg) { echo "Files path for addresses: " . $folder . $nl; }
-   if ($order_id <> "")
+   if ($dbg) { echo "Files path for addresses: " . $folder . $nl; }
+   
+   $used = file_get_contents($usedpath);
+   $tmp = strpos($used, $btcaddress);
+   
+   if ($tmp || $tmp === 0)
       {
-      file_put_contents($usedpath, $btcaddress . "-WOO_ORDER: " . $order_id . "\n", FILE_APPEND | LOCK_EX);
+      if ($woobtc_dbg) { echo "Address exists in used stack already, ignore" . $nl; }
       }
    else
       {
-      file_put_contents($usedpath, $btcaddress . "\n", FILE_APPEND | LOCK_EX);
+      if ($woobtc_dbg) { echo "Files path for addresses: " . $folder . $nl; }
+      if ($order_id <> "")
+         {
+         file_put_contents($usedpath, $btcaddress . "-WOO_ORDER: " . $order_id . "\n", FILE_APPEND | LOCK_EX);
+         }
+      else
+         {
+         file_put_contents($usedpath, $btcaddress . "\n", FILE_APPEND | LOCK_EX);
+         }
       }
-   
+      
    $freshpath = $folder . "/addresses_fresh.txt";
    $fresh = "";
    if ( file_exists($freshpath) )

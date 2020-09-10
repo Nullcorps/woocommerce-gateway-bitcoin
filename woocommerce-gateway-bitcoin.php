@@ -242,7 +242,7 @@ function wc_bitcoin_gateway_init() {
 					'title'       => __( 'pricing-priority', 'wc-gateway-bitcoin' ),
 					'type'        => 'select',
 					'description' => __( 'Pricing primarily in "BTC" or "fiat" (e.g. Fiat-first would always show the BTC equivalent to $10, btc first would always show pricing as 0.0001 BTC and give the fiat equivalent price from the exchange rate.', 'wc-gateway-bitcoin' ),
-               'default'     => 'BTC',
+               'default'     => 'fiat',
 					'desc_tip'    => false,
                'options'     => array( 'BTC' => 'BTC',
   				                        'fiat' => 'fiat'),

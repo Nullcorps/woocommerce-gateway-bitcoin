@@ -26,12 +26,58 @@ function woobtc_redirect_custom( $order_id )
 		{
 
       $site_url = get_site_url();
-      echo "<div style=\"background-color: #ffcccc; padding: 12px; line-height: 160%; \">";
+      echo "<center><div style=\"background-color:rgba(255,255,255,0.8); padding: 12px; line-height: 160%; border: 2px dashed #cccccc; max-width: 600px; text-align: left;\">";
 		echo "<center><strong>Pay now with Bitcoin</strong><a name=woobtc></a>\n" . $nl;
       echo "<img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/bitcoin.png\" style=\"width: 200px;\">" . $nl;
       echo "<div style=\"font-size: 18px; font-weight: bold; \">ORDER STATUS: " . $order->status . "</div>\n";
 		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below<br>you will be taken to your downloads</div></center>" . $nl;
 		
+      
+      
+      $folder = woobtc_get_files_folder();
+   
+      $do_checkout = true;
+      $do_checkout_reason = "";
+      
+      if ($woobtc_dbg) { echo "files folder: " . $folder . $nl; }
+      $woobtc_files_full_path = $folder;
+      $freshpath = $folder . "/addresses_fresh.txt";
+      
+      if (file_exists($freshpath))
+         {
+         // all fine, crack on
+         $fresh = file_get_contents($freshpath);
+         if (trim($fresh) <> "")
+            {
+            // all good homie
+            }
+         else
+            {
+            // click clack empty chamber
+            $do_checkout = false;
+            $do_checkout_reason = "Empty fresh addresses file - admin needs to run setup/generate addresses";
+            }
+         }
+      else
+         {
+         //slow your roll Cadalack cos I only got your back in your mind
+         $do_checkout = false;
+         $do_checkout_reason = "Missing fresh addresses file - admin needs to run setup/generate addresses";
+         }
+      
+      if ($do_checkout)
+         {
+         if ($woobtc_dbg) { echo "<center>DO CHECKOUT</center>" . $nl; }
+         }
+      else
+         {
+         // DON'T DO CHECKOUT
+         echo "<center>ERROR: " . $do_checkout_reason . "</center>" . $nl . $nl;;
+         echo "</div></center>" . $nl;
+         return;
+         }
+      
+      
       //echo "- check exchange rate to get price in btc" . $nl;
       $payment_gateway = WC()->payment_gateways->payment_gateways()['bitcoin_gateway'];
       //echo '<p>Title: ' . $payment_gateway->title . '</p>';
@@ -136,7 +182,7 @@ function woobtc_redirect_custom( $order_id )
          echo "<input type=hidden name=refresh value=1>\n";
          
          echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . $price .  $nl;
-         echo "Price in BTC: " . $btc_symbol . round($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
+         echo "Price in BTC: " . $btc_symbol . number_format($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
          echo "Exchange rate: " . $fiat_symbol . number_format($exr,2) . $nl;
          echo "<a href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
          echo "<input type=submit value=\"Refresh exchange rate\" style=\"padding: 4px; display: none;\">\n";
@@ -206,7 +252,7 @@ function woobtc_clearfield(f)
          echo "<input type=text value=\"" . $btcaddress . "\" style=\"width: 440px; padding: 4px; font-size: large; text-align: center; \"  onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_address').innerHTML = 'Address copied'; woobtc_clearfield('woobtc_label_address'); \" onmouseover=\"document.getElementById('woobtc_label_address').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_address').innerHTML = '&nbsp;';\">" . $nl;
          echo "<span id=woobtc_label_address style=\"font-size: 12px;\">&nbsp;</span></div></center>";
          
-         echo "<center>BTC to send:<br><input type=text value=\"" . round($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \" onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_amount').innerHTML = 'Amount copied'; woobtc_clearfield('woobtc_label_amount'); \"  onmouseover=\"document.getElementById('woobtc_label_amount').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_amount').innerHTML = '&nbsp;';\">" . $nl;
+         echo "<center>BTC to send:<br><input type=text value=\"" . number_format($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \" onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_amount').innerHTML = 'Amount copied'; woobtc_clearfield('woobtc_label_amount'); \"  onmouseover=\"document.getElementById('woobtc_label_amount').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_amount').innerHTML = '&nbsp;';\">" . $nl;
          echo "<span id=woobtc_label_amount style=\"font-size: 12px;\">&nbsp;</span></center>" . $nl;
          
          //echo $nl;
@@ -241,7 +287,7 @@ function woobtc_clearfield(f)
             echo "<input type=hidden name=amount value=\"" . round($btcprice, $roundbtc)  . "\">\n";
             echo "<input type=hidden name=address value=\"" . $btcaddress . "\">\n";
             echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #ccffcc; colour: white;\">\n";
+            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #88cc88; colour: white;\">\n";
             echo "</form></center>\n";
             echo $nl;
             
@@ -261,7 +307,8 @@ function woobtc_clearfield(f)
          //echo "- check balance of the address, refresh based on expected wait time/confs" . $nl;
          echo $nl;
          
-         echo "<div style=\"border: 1px dotted #cccccc; padding: 12px; font-size: 12px;\">";
+         echo "<div style=\"border: 1px dotted #cccccc; padding: 12px; font-size: 14px; line-height: 150%;\">";
+         echo "Order id: " . $order_id . $nl;
          echo "Check the checksum is valid: ";
          
          $checksum_verify = woobtc_create_checksum($address, $amount);
@@ -271,7 +318,7 @@ function woobtc_clearfield(f)
             { echo "Checksum verification FAILED" . $nl; }
 
          echo "Address: " . $address . $nl;
-         echo "Amount: " . $amount . $nl;
+         echo "Amount: " . number_format($amount,$roundbtc) . $nl;
          
          $confs_req = 1;
          
@@ -283,16 +330,16 @@ function woobtc_clearfield(f)
          
          if ( $pricing_priority == "fiat" )
             {
-            //echo "in: Pricing priority fiat" . $nl;
+            echo "in: Pricing priority fiat" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            if ($price <= $conf_threshold_0)
+            if ((float)$price <= (float)$conf_threshold_0)
                { $confs_req = 0; }                
             }
          elseif ( $pricing_priority == "BTC" )
             {
-            //echo "in: Pricing priority: BTC" . $nl;
+            echo "in: Pricing priority: BTC" . $nl;
             //echo "0-conf threshold: " . $conf_threshold_0 . $nl;
-            if ($btcprice <= $conf_threshold_0)
+            if ((float)$amount <= (float)$conf_threshold_0)
                { $confs_req = 0; }        
             }
          else
@@ -303,7 +350,7 @@ function woobtc_clearfield(f)
          //echo "0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is" . $nl;
          //echo "<marquee id=waitingmessage ascrolldelay=500 scrollamount=3>0 confirmations should normally process almost instantly, 1 confirmation could take 10-20 mins. 2 and above can take longer depending on how busy the Bitcoin network is</marquee>";
 
-         echo "Required amount: " . $amount . $nl;
+         echo "Required amount: " . number_format($amount, $roundbtc) . $nl;
          //echo $nl;
          
          $getinfo_failed = false;
@@ -404,7 +451,7 @@ function woobtc_clearfield(f)
          if ($confs_req === 0)
             {
             echo "0-conf branch" . $nl;
-            if ( ($unconfirmed) >= $amount )
+            if ( (float)$unconfirmed >= (float)$amount )
                {
                $paid = true;
                }
@@ -413,10 +460,12 @@ function woobtc_clearfield(f)
          if ($confs_req == 1)
             {
             echo "1+conf branch" . $nl;
-            if ( ($confirmed) >= $amount )
+            if ( (float)$confirmed >= (float)$amount )
                { $paid = true; }
             }
-                   
+           
+         //echo "PAID: " . $paid . $nl;
+         
          if ($paid == 1)
             {
             echo $nl;
@@ -435,7 +484,7 @@ function woobtc_clearfield(f)
             }
          else 
             {
-            echo "This page will auto-refresh every 2mins and should make a noise when the payment is received." . $nl;
+            echo "This page will auto-refresh every 2 mins and should make a noise when the payment is received." . $nl;
             //echo "<script language=javascript>setTimeout('location.reload()', 30000);</script>";
             echo "</div>";
             echo $nl;
@@ -448,12 +497,12 @@ function woobtc_clearfield(f)
             echo "<input type=hidden name=address value=\"" . $address . "\">\n";
             echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
             echo "<input type=button value=\"Back to payment details\" onclick=\"location.href='" . $current_url . "';\" style=\"padding: 8px;\" title=\"Dont worry, you won't break anything by going bacl. The payment address wont change and your existing payment wont get lost by going back. The payment address is now linked to this order number and each order gets issues its own address\">\n";
-            echo "<input type=submit value=\"Click to refresh\" style=\"padding: 8px; background-color: #ccffcc; colour: white;\">\n";
+            echo "<input type=submit value=\"Click to refresh\" style=\"padding: 8px; background-color: #88cc88; colour: white;\">\n";
             echo "</form></center>\n";
             echo "<script language=javascript>setTimeout('document.forms.woobtc_paid.submit()',120000)</script>";
             echo $nl;            
             }
-         echo "</div>";
+         echo "</div></center>";
          echo $nl;
          }
       }
