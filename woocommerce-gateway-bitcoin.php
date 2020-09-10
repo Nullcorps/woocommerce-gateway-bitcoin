@@ -170,7 +170,7 @@ function wc_bitcoin_gateway_init() {
 					'title'       => __( 'Title', 'wc-gateway-bitcoin' ),
 					'type'        => 'text',
 					'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'wc-gateway-bitcoin' ),
-					'default'     => __( 'Offline Payment', 'wc-gateway-bitcoin' ),
+					'default'     => __( 'Bitcoin Payment', 'wc-gateway-bitcoin' ),
 					'desc_tip'    => false,
 				),
 				
