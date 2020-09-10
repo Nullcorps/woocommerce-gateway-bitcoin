@@ -14,7 +14,8 @@ function woobtc_redirect_custom( $order_id )
    
 	$order = wc_get_order( $order_id );
   
-   $url = '?page_id=139&view-order=' . $order_id;
+   //$url = '?page_id=139&view-order=' . $order_id;
+   $url = '/my-account/view-order/' . $order_id;
    
    //if ( $order->status != 'failed' ) {
 	if ( $order->status == 'completed' )
@@ -476,9 +477,9 @@ function woobtc_clearfield(f)
             $order = wc_get_order( $order_id );
             
             // Mark as on-hold (we're awaiting the payment)
-            //$order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
+            $order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
             echo "Reloading the page and taking you to your order... :)  [ TEMPORARILY DISABLED ]";
-            //echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
+            echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
             echo $nl . $nl . "<center><a href=\"" . $url . "\">Go there manually</a></center>" . $nl;
             echo "</div>";
             }
