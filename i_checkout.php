@@ -484,7 +484,7 @@ function woobtc_clearfield(f)
             echo "</div>";
             }
          else 
-            {
+            { 
             echo "This page will auto-refresh every 2 mins and should make a noise when the payment is received." . $nl;
             //echo "<script language=javascript>setTimeout('location.reload()', 30000);</script>";
             echo "</div>";
