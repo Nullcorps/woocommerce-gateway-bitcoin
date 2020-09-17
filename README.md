@@ -55,6 +55,8 @@ NullCorps
 
 Stuff to do:
 
+- add mbtc as well as sats etc for ppl on default electrum settings (came up in testing)
+
 - add a settings field to allow css hacks? or could this be done at the theme customer level. The css id's should be unique so why not?
 
 - Automate the address refill process like on btcpayme
