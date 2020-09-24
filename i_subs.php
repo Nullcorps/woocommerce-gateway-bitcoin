@@ -64,7 +64,9 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
    global $woobtc_dbg;
    //$woobtc_dbg = true;
    $folder = woobtc_get_files_folder();
-   echo "IN WOOBTC FRESH ADDRESS 2" . $nl;
+   
+   
+   if ($woobtc_dbg) { echo "IN WOOBTC FRESH ADDRESS 2" . $nl; }
    
    $addpath = $folder . "/addresses_fresh.txt";
    $usedpath = $folder . "/addresses_used.txt";
@@ -296,7 +298,7 @@ function woobtc_mark_address_used($btcaddress, $order_id)
    {
    global $nl;
    global $woobtc_dbg;
-   $woobtc_dbg = true;
+   //$woobtc_dbg = true;
    if ($btcaddress)
       {}
    else
@@ -336,10 +338,10 @@ function woobtc_mark_address_used($btcaddress, $order_id)
       { $fresh = file_get_contents($freshpath); }
    
    $s = strpos($fresh, $btcaddress);
-   echo "DOES ADDRESS STILL EXIST IN FRESH LIST?: " . $s .  $nl;
+   if ($woobtc_dbg) { echo "DOES ADDRESS STILL EXIST IN FRESH LIST?: " . $s .  $nl; }
    if (!$s)
       {
-      echo "YES IT DOES - FIXING!" . $nl;
+      if ($woobtc_dbg) { echo "YES IT DOES - FIXING!" . $nl; }
       $fresh_updated = str_replace($btcaddress . "\n", "", $fresh);
       $fresh_updated = str_replace($btcaddress, "", $fresh);
       $fresh_updated = str_replace("\n\n", "\n", $fresh_updated);

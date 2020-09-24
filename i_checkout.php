@@ -249,12 +249,12 @@ function woobtc_clearfield(f)
 
 </script>";
          
-         echo "<center><div style=\"padding-bottom: 8px; \"><span title=\"Please only send BITCOIN, which always has the ticker BTC, not any of the many clones. If you send coins other than bitcoin (e.g. Bitcoin Cash, BSV (lol) then those coins will be lost and your order will still not be paid.)\">Please send BITCOIN/BTC ONLY to this address:</span>" . $nl;
+         echo "<center><div style=\"padding-bottom: 8px; \"><span title=\"Please only send BITCOIN, which always has the ticker BTC, not any of the many clones. If you send coins other than bitcoin (e.g. Bitcoin Cash, BSV (lol) then those coins will be lost and your order will still not be paid.)\">Please send only BITCOIN/BTC to this address:</span>" . $nl;
          echo "<input type=text value=\"" . $btcaddress . "\" style=\"width: 440px; padding: 4px; font-size: large; text-align: center; \"  onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_address').innerHTML = 'Address copied'; woobtc_clearfield('woobtc_label_address'); \" onmouseover=\"document.getElementById('woobtc_label_address').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_address').innerHTML = '&nbsp;';\">" . $nl;
          echo "<span id=woobtc_label_address style=\"font-size: 12px;\">&nbsp;</span></div></center>";
          
          echo "<center>BTC to send:<br><input type=text value=\"" . number_format($btcprice, $roundbtc) . "\" style=\"width: 300px; padding: 4px; font-size: large; text-align: center; \" onclick=\"this.setSelectionRange(0, 99999); document.execCommand('copy'); document.getElementById('woobtc_label_amount').innerHTML = 'Amount copied'; woobtc_clearfield('woobtc_label_amount'); \"  onmouseover=\"document.getElementById('woobtc_label_amount').innerHTML = 'Click to copy';\"  onmouseout=\"document.getElementById('woobtc_label_amount').innerHTML = '&nbsp;';\">" . $nl;
-         echo "<span id=woobtc_label_amount style=\"font-size: 12px;\">&nbsp;</span></center>" . $nl;
+         echo "<span id=woobtc_label_amount style=\"font-size: 12px;\">&nbsp;</span></center>\n";
          
          //echo $nl;
              
@@ -288,7 +288,7 @@ function woobtc_clearfield(f)
             echo "<input type=hidden name=amount value=\"" . round($btcprice, $roundbtc)  . "\">\n";
             echo "<input type=hidden name=address value=\"" . $btcaddress . "\">\n";
             echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #88cc88; colour: white;\">\n";
+            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #55cc55; color: white; font-weight: bold; padding-left: 20px; padding-right: 20px; border: 2px solid green;\">\n";
             echo "</form></center>\n";
             echo $nl;
             
@@ -460,7 +460,7 @@ function woobtc_clearfield(f)
          
          if ($confs_req == 1)
             {
-            echo "1+conf branch" . $nl;
+            echo "Using confirmations logic branch" . $nl;
             if ( (float)$confirmed >= (float)$amount )
                { $paid = true; }
             }
@@ -480,7 +480,7 @@ function woobtc_clearfield(f)
             $order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
             echo "Reloading the page and taking you to your order... :)  [ TEMPORARILY DISABLED ]";
             echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
-            echo $nl . $nl . "<center><a href=\"" . $url . "\">Go there manually</a></center>" . $nl;
+            echo $nl . $nl . "<center><a href=\"" . $url . "\"><strong>Go there manually</strong></a></center>" . $nl;
             echo "</div>";
             }
          else 

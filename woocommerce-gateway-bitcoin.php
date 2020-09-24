@@ -57,7 +57,7 @@ $woobtc_files_full_path = "";
 $nl = "<BR>\n";
 $checksum = "";
 $woobtc_hashsecret = "fm4f90f390d8e3dusowll2uccvhjkjaslit890u"; //  << this needs to b user settable
-$woobtc_dbg = true;
+$woobtc_dbg = false;
 
 
 require_once 'i_subs.php';
@@ -292,7 +292,8 @@ function wc_bitcoin_gateway_init() {
 		 */
 		public function thankyou_page() {
 			if ( $this->instructions ) {
-				echo wpautop( wptexturize( $this->instructions ) );
+				//echo wpautop( wptexturize( $this->instructions ) );
+            echo "<center><div id=\"woobtc_instructions\">" . wpautop( wptexturize( $this->instructions ) ) . "</div></center><br>";
 			}
 		}
 	
