@@ -151,7 +151,7 @@ function woobtc_redirect_custom( $order_id )
 					echo "do this thing";
 					$exr = woobtc_get_exchange_rate();
 					echo "exr: " . $exr . $nl;
-					set_transient( 'woobtc_exr', $xprice, 86400 );
+					set_transient( 'woobtc_exr', $xprice, 3600 );
 
 					}
 				}
