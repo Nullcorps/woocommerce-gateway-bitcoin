@@ -145,12 +145,12 @@ function woobtc_redirect_custom( $order_id )
             {
             //$exr = $_SESSION['exr'];
             $exr = get_transient( 'woobtc_exr');
-				echo "GOT TRANSIENT WOOBTC_EXR: " . $exr . $nl;
+				//echo "GOT TRANSIENT WOOBTC_EXR: " . $exr . $nl;
 				if ( strval($exr) == "")
 					{
-					echo "do this thing";
+					//echo "do this thing" . $nl;
 					$exr = woobtc_get_exchange_rate();
-					echo "exr: " . $exr . $nl;
+					//echo "exr: " . $exr . $nl;
 					set_transient( 'woobtc_exr', $xprice, 3600 );
 
 					}
