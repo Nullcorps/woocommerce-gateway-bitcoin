@@ -146,6 +146,14 @@ function woobtc_redirect_custom( $order_id )
             //$exr = $_SESSION['exr'];
             $exr = get_transient( 'woobtc_exr');
 				echo "GOT TRANSIENT WOOBTC_EXR: " . $exr . $nl;
+				if ( strval($exr) == "")
+					{
+					echo "do this thing";
+					$exr = woobtc_get_exchange_rate();
+					echo "exr: " . $exr . $nl;
+					set_transient( 'woobtc_exr', $xprice, 86400 );
+
+					}
 				}
 
          $order = wc_get_order( $order_id );
@@ -201,7 +209,7 @@ function woobtc_redirect_custom( $order_id )
          echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . $price .  $nl;
          echo "Price in BTC: " . $btc_symbol . number_format($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
          echo "Exchange rate: " . $fiat_symbol . number_format($exr,2) . $nl;
-         echo "<a href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
+         echo "<a id=woobtc_link_refresh_exchange_rate href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
          echo "<input type=submit value=\"Refresh exchange rate\" style=\"padding: 4px; display: none;\">\n";
          echo "<div style=\"display: none;\"></form></div></center>\n";
          echo $nl;
