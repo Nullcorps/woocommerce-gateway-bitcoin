@@ -451,7 +451,8 @@ function woobtc_get_exchange_rate()
    
    //echo $price;
 
-   $_SESSION['exr'] = $xprice; 
+   //$_SESSION['exr'] = $xprice; 
+   set_transient( 'woobtc_exr', $xprice, 86400 );
    return $xprice;    
    }
 

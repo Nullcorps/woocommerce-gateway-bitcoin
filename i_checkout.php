@@ -4,7 +4,7 @@
 
 
 
-add_action( 'woocommerce_thankyou', 'woobtc_redirect_custom');
+add_action( 'woocommerce_thankyou', 'woobtc_redirect_custom', 5);
   
 function woobtc_redirect_custom( $order_id )
 	{
@@ -25,12 +25,23 @@ function woobtc_redirect_custom( $order_id )
 		}
 	else
 		{
-
+		
+		if ($order->payment_method == "bitcoin_gateway")
+			{
+			// all fine, do nothing
+			}
+		else
+			{
+			// exit, this isn't for us.
+			return;
+			}
+		
       $site_url = get_site_url();
-      echo "<center><div style=\"background-color:rgba(255,255,255,0.8); padding: 12px; line-height: 160%; border: 2px dashed #cccccc; max-width: 600px; text-align: left;\">";
+      echo "<center><div style=\"abackground-color:rgba(255,255,255,0.8); padding: 12px; line-height: 160%; border: 2px dashed #cccccc; max-width: 600px; text-align: left; border-radius: 16px; \">";
 		echo "<center><strong>Pay now with Bitcoin</strong><a name=woobtc></a>\n" . $nl;
       echo "<img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/bitcoin.png\" style=\"width: 200px;\">" . $nl;
       echo "<div style=\"font-size: 18px; font-weight: bold; \">ORDER STATUS: " . $order->status . "</div>\n";
+		echo "Payment method: " . $order->payment_method . $nl;
 		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below<br>you will be taken to your downloads</div></center>" . $nl;
 		
       
@@ -88,7 +99,9 @@ function woobtc_redirect_custom( $order_id )
       $xpub = $payment_gateway->settings['xpub'];
       $fiat = $payment_gateway->settings['fiat-currency'];
       $roundbtc = $payment_gateway->settings['btc-rounding-decimals'];
-
+		$margin = $payment_gateway->settings['price-margin'];
+		$no_redirect = $payment_gateway->settings['no-redirect'];
+		$always_paid = $payment_gateway->settings['always-paid'];
       $conf_threshold_0 = $payment_gateway->settings['0-conf-threshold'];
       $pricing_priority = $payment_gateway->settings['pricing-priority'];
       $api_preference = $payment_gateway->settings['api-preference'];
@@ -123,14 +136,17 @@ function woobtc_redirect_custom( $order_id )
          
       if(!$dowaiting)
          {
-         if(!isset($_SESSION['exr']) || $_POST['refresh'] == "1" )
+			$exr = get_transient( 'woobtc_exr');
+         if(!isset($exr) || $_POST['refresh'] == "1" )
             {
             $exr = woobtc_get_exchange_rate();
             }
          else
             {
-            $exr = $_SESSION['exr'];
-            }
+            //$exr = $_SESSION['exr'];
+            $exr = get_transient( 'woobtc_exr');
+				echo "GOT TRANSIENT WOOBTC_EXR: " . $exr . $nl;
+				}
 
          $order = wc_get_order( $order_id );
          //echo "<pre>" . print_r($order->total, true) . "</pre>" . $nl;
@@ -288,7 +304,7 @@ function woobtc_clearfield(f)
             echo "<input type=hidden name=amount value=\"" . round($btcprice, $roundbtc)  . "\">\n";
             echo "<input type=hidden name=address value=\"" . $btcaddress . "\">\n";
             echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=submit value=\"Click here once paid\" style=\"padding: 8px; background-color: #55cc55; color: white; font-weight: bold; padding-left: 20px; padding-right: 20px; border: 2px solid green;\">\n";
+            echo "<input id=woobtc_button_clickoncepaid type=submit value=\"Click here once paid\">\n";
             echo "</form></center>\n";
             echo $nl;
             
@@ -463,10 +479,52 @@ function woobtc_clearfield(f)
             echo "Using confirmations logic branch" . $nl;
             if ( (float)$confirmed >= (float)$amount )
                { $paid = true; }
+				else
+					{
+					
+					if ( (float)$confirmed > 0)
+						{
+						echo "<div style=\"padding: 8px; border: 1px solid red;\">";
+						echo "WARNING:" . $nl;
+						echo "OK, Whilst there is a confirmed balance it seems to be just short of the required threshold." . $nl;
+						echo "amount requested: " . (float)$amount . $nl;
+						echo "amount confirmed: " . (float)$confirmed . $nl;
+						echo "Margin: " . $margin . "%" . $nl;
+						if ( (float)$margin > 0 && (float)$amount > 0 )
+							{
+							echo "DO THE MARGIN THING" . $nl;
+							$margin_btc = ($amount / 100) * 2;
+							echo "Allowed margin: " . number_format($margin_btc, 12) . $nl;
+							$allowed_amount_btc = $amount - $margin_btc;
+							echo "Min allowed amount: " . number_format($allowed_amount_btc,10) . $nl;
+							
+							if ($confirmed >= $allowed_amount_btc)
+								{
+								echo "<b>The transaction is within the allocated margin, you're good to go</b>" . $nl;
+								$paid = true;
+								}
+							else
+								{
+								echo "<b>Sorry but the transaction is short of the allowed margin (" . $margin . ")% for rounding errors.</b>" . $nl;
+								}
+							}
+						echo "You can either send more BTC to the same address balance and let this page refresh, or contact the site operator and they will able to approve your order manually." . $nl;
+						echo "</div>\n";
+						}
+					}
             }
            
          //echo "PAID: " . $paid . $nl;
          
+			//echo "TESTING IS THIS THING ON" . $nl;
+			
+			echo "ALWAYS PAID: " . $always_paid . $nl;
+			if ($always_paid == "yes")
+				{
+				$paid = 1;
+				}
+				
+			
          if ($paid == 1)
             {
             echo $nl;
@@ -478,9 +536,19 @@ function woobtc_clearfield(f)
             
             // Mark as on-hold (we're awaiting the payment)
             $order->update_status( 'completed', __( 'Awaiting Bitcoin payment', 'wc-gateway-bitcoin' ) );
-            echo "Reloading the page and taking you to your order... :)  [ TEMPORARILY DISABLED ]";
-            echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
-            echo $nl . $nl . "<center><a href=\"" . $url . "\"><strong>Go there manually</strong></a></center>" . $nl;
+            
+				
+				
+				//echo "NO_REDIRECT: " . $no_redirect . $nl;
+				if ($no_redirect == "yes")
+					{}
+				else
+					{
+					echo "Reloading the page and taking you to your order... :) " . $nl;
+					echo "<script language=javascript>setTimeout('location.href=\"" . $url . "\"',1000);</script>";
+					//echo "DO THE REDIRECT" . $nl;
+					}
+				echo $nl . $nl . "<center><a href=\"" . $url . "\"><strong>Go there manually</strong></a></center>" . $nl;
             echo "</div>";
             }
          else 
@@ -497,8 +565,8 @@ function woobtc_clearfield(f)
             echo "<input type=hidden name=amount value=\"" . $amount  . "\">\n";
             echo "<input type=hidden name=address value=\"" . $address . "\">\n";
             echo "<input type=hidden name=checksum value=\"" . $checksum . "\">\n";
-            echo "<input type=button value=\"Back to payment details\" onclick=\"location.href='" . $current_url . "';\" style=\"padding: 8px;\" title=\"Dont worry, you won't break anything by going bacl. The payment address wont change and your existing payment wont get lost by going back. The payment address is now linked to this order number and each order gets issues its own address\">\n";
-            echo "<input type=submit value=\"Click to refresh\" style=\"padding: 8px; background-color: #88cc88; colour: white;\">\n";
+            echo "<input id=woobtc_button_backtodetails type=button value=\"Back to payment details\" onclick=\"location.href='" . $current_url . "';\" style=\"padding: 8px;\" title=\"Dont worry, you won't break anything by going bacl. The payment address wont change and your existing payment wont get lost by going back. The payment address is now linked to this order number and each order gets issues its own address\">\n";
+            echo "<input id=woobtc_button_clicktorefresh type=submit value=\"Click to refresh\" style=\"padding: 8px; background-color: #88cc88; colour: white;\">\n";
             echo "</form></center>\n";
             echo "<script language=javascript>setTimeout('document.forms.woobtc_paid.submit()',120000)</script>";
             echo $nl;            

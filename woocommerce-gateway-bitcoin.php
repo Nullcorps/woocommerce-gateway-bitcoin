@@ -64,7 +64,17 @@ require_once 'i_subs.php';
 
 require_once 'i_checkout.php';
 
-session_start();
+//function woobtc_register_my_session()
+//{
+//  if( !session_id() )
+//  {
+//    session_start();
+//  }
+//}
+//
+//add_action('init', 'woobtc_register_my_session');
+
+
 
 // Make sure WooCommerce is active
 if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
@@ -283,6 +293,21 @@ function wc_bitcoin_gateway_init() {
 					'desc_tip'    => false,
 				),
             
+		  
+			'no-redirect' => array(
+				'title'   => __( 'No redirect after payment', 'wc-gateway-bitcoin' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Allows other woocommerce-postpay processes to run (like my membership plugin)', 'wc-gateway-bitcoin' ),
+				'default' => 'no'
+				),			
+
+			'always-paid' => array(
+				'title'   => __( 'Orders marked paid automatically', 'wc-gateway-bitcoin' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'FOR TESTING ONLY - Useful for debugging your payment process without having to do a transaction each time', 'wc-gateway-bitcoin' ),
+				'default' => 'no'
+				),		
+			
 			) );
 		}
 	
