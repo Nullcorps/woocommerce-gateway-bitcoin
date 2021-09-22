@@ -380,6 +380,12 @@ function wc_bitcoin_gateway_init() {
 add_shortcode('woobtc_addresses','woobtc_addresses');
 function woobtc_addresses($atts,$content = null)
    {
+
+   if ( is_admin() )
+      {
+	  return false;
+      }
+	
    global $nl;
    global $woobtc_files_full_path;
    $out = "
