@@ -380,7 +380,7 @@ function wc_bitcoin_gateway_init() {
 add_shortcode('woobtc_addresses','woobtc_addresses');
 function woobtc_addresses($atts,$content = null)
    {
-
+   
    if ( is_admin() )
       {
 	  return false;
@@ -388,6 +388,7 @@ function woobtc_addresses($atts,$content = null)
 	
    global $nl;
    global $woobtc_files_full_path;
+   
    $out = "
 <style>
 
@@ -413,6 +414,7 @@ function woobtc_addresses($atts,$content = null)
    //$master = $hdFactory->fromExtended("yourxpuborxprivhere");
    $xpub = "";
    
+
    $payment_gateway = WC()->payment_gateways->payment_gateways()['bitcoin_gateway'];
    $out .= '<p>Title: ' . $payment_gateway->title . '</p>';
    $out .= '<p>Description: ' . $payment_gateway->description . '</p>';
@@ -422,7 +424,6 @@ function woobtc_addresses($atts,$content = null)
    
    $xpub = $payment_gateway->settings['xpub'];
    $out .= "xpub from woo settings ending: " . substr($xpub, -4, 4)  . $nl;
-   
    
    
    $api_preference = $payment_gateway->settings['api-preference'];
@@ -463,7 +464,8 @@ function woobtc_addresses($atts,$content = null)
    //$child2 = new PayToPubKeyHashAddress($key2->getPublicKey()->getPubKeyHash());
    //echo "   Address: " . $child2->getAddress() . $nl . $nl;
    
-   
+
+     
    
    $out .= "Directly derive path m/0/n stylee:" . $nl;
    // maybe make the address derivation path user configurable? would perhaps improve
@@ -498,6 +500,8 @@ function woobtc_addresses($atts,$content = null)
    
    $out .= "- CLEAN THE FRESH ADDRESSES (i.e. make sure no used appoear in fresh)" . $nl;
    
+
+   
    if ( file_exists($freshpath) && file_exists($usedpath) )
       {   
       $fresh = file_get_contents( $freshpath );
@@ -514,8 +518,15 @@ function woobtc_addresses($atts,$content = null)
       foreach($arfresh as $freshadd)
          {
          $out .= "checking: " . $freshadd . $nl;   
-         $tmp = strpos($used,$freshadd);
-         $out .= "- " . $tmp . $nl;
+         $tmp = false;
+		 
+		 //$out .= "USED: " . $used . $nl;
+		 
+		 if ( strval($used) <> "" && strval($freshadd) <> "" )
+			{
+			$tmp = strpos($used,$freshadd);
+			}
+		 $out .= "- " . $tmp . $nl;
          if ( $tmp || $tmp === 0 )
             { $out .= "THIS IS USED, REMOVE" . $nl;}
          else
@@ -550,8 +561,8 @@ function woobtc_addresses($atts,$content = null)
    
    $out .= "- Maybe dedupe the used address pile? idk, might be better raw" . $nl;
    
-   
-   
+             
+
    $out .= "- get the last address in the fresh addresses (if present)" . $nl;
    
    if ( file_exists($freshpath) )
@@ -715,7 +726,8 @@ function woobtc_addresses($atts,$content = null)
    //echo "   Address: " . $child4->getAddress() . $nl . $nl;
    
 
-   return do_shortcode($out);
+   //return do_shortcode($out);
+   return $out;
    }
 
 

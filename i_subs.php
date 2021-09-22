@@ -77,7 +77,7 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
    $aradds = [];
    $nextadd = "";
    
-   if(file_exists($addpath))
+   if( file_exists($addpath) && file_exists($usedpath) )
       {
       $adds = file_get_contents($addpath);
       $aradds = explode("\n",$adds);
@@ -92,7 +92,6 @@ function woobtc_get_fresh_address2($order_id, $api_preference)
          if ($nextadd <> "")
             {
             $isfresh = "";
-            
             
             $tmpused = file_get_contents($usedpath);
             $artmpused = explode("\n",$tmpused);
@@ -515,6 +514,15 @@ Deny from All
       file_put_contents($upload_base . "/" . $woobtc_filespath . "/.htaccess", $httmp);
       $out .= ".htaccess created" . $nl;
       }    
+   
+   $addpath = $upload_base . "/" . $woobtc_filespath . "/addresses_used.txt";
+   $usedpath = $upload_base . "/" . $woobtc_filespath . "/addresses_fresh.txt";
+   
+   if ( !file_exists($addpath) )
+      { file_put_contents($addpath, ""); }
+   
+   if ( !file_exists($usedpath) )
+      { file_put_contents($usedpath, ""); }   
    
    $out .= "Return: " . $upload_base . "/" . $woobtc_filespath . $nl;
    //return $out;
