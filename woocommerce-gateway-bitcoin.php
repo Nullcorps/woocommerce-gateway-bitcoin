@@ -275,6 +275,14 @@ function wc_bitcoin_gateway_init() {
 					'desc_tip'    => false,
 				),            
 
+            'btc-discount-percent' => array(
+					'title'       => __( 'btc-discount-percent', 'wc-gateway-bitcoin' ),
+					'type'        => 'text',
+					'description' => __( 'Percentage discount to offer for paying with BTC', 'wc-gateway-bitcoin' ),
+               'default'     => '0',
+					'desc_tip'    => false,
+				),				
+				
             '0-conf-threshold' => array(
 					'title'       => __( '0-conf-threshold', 'wc-gateway-bitcoin' ),
 					'type'        => 'text',

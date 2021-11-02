@@ -52,6 +52,7 @@ NullCorps
 Stuff to do:
 ------------------------------------------------
 
+
 MOSTLY DONE? - make it also work with blockstream.info's api, allow user to set preference but keep the other as a failover in case of rate limiting
    - does the failover work? 
  
@@ -85,6 +86,7 @@ DITC - just before fresh address is linked to order in the postmeta, check past/
 
 - figure out wtf's needed to get this into the WP repo once it's at that point
 
+DONE - added "percentage discount for BTC payment" option (2021-11-02)
 DONE - integrate in SS (test)
 DONE - integrate in FDV
 DONE - integrate in MSL

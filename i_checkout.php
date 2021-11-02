@@ -40,7 +40,7 @@ function woobtc_redirect_custom( $order_id )
       echo "<center><div style=\"abackground-color:rgba(255,255,255,0.8); padding: 12px; line-height: 160%; border: 2px dashed #cccccc; max-width: 600px; text-align: left; border-radius: 16px; \">";
 		echo "<center><strong>Pay now with Bitcoin</strong><a name=woobtc></a>\n" . $nl;
       echo "<img src=\"" . $site_url . "/wp-content/plugins/woocommerce-gateway-bitcoin/bitcoin.png\" style=\"width: 200px;\">" . $nl;
-      echo "<div style=\"font-size: 18px; font-weight: bold; \">ORDER STATUS: " . $order->status . "</div>\n";
+      echo "<div style=\"font-size: 18px; font-weight: bold; margin-top: 12px; \">ORDER STATUS: " . $order->status . "</div>\n";
 		echo "Payment method: " . $order->payment_method . $nl;
 		echo "<div style=\"font-size: 18px; font-weight: normal; \">Once payment is completed below<br>you will be taken to your downloads</div></center>" . $nl;
 		
@@ -105,7 +105,8 @@ function woobtc_redirect_custom( $order_id )
       $conf_threshold_0 = $payment_gateway->settings['0-conf-threshold'];
       $pricing_priority = $payment_gateway->settings['pricing-priority'];
       $api_preference = $payment_gateway->settings['api-preference'];
-      
+      $discount_percent = $payment_gateway->settings['btc-discount-percent'];
+		
       $fiat_symbol = "";
       $btc_symbol = "฿";
       
@@ -160,7 +161,17 @@ function woobtc_redirect_custom( $order_id )
          //echo "<pre>" . print_r($order->total, true) . "</pre>" . $nl;
          
          $price = $order->total;
-         $btcprice = $price / $exr;
+         
+			if ( is_numeric($discount_percent) && $discount_percent > 0 )
+				{
+				echo "<center>";
+				echo "Discount for paying with BTC: " . $discount_percent . "%" . $nl;
+				$price = $price / 100 * (100 - $discount_percent );
+				echo "New price: " . $fiat_symbol . round($price, 2) . $nl . $nl;
+				echo "</center>";
+				}
+				
+			$btcprice = $price / $exr;
 
          //echo "- Get Confirmations required for the price level" . $nl;
          //echo "<pre>" . print_r($payment_gateway->settings, true) . "</pre>" . $nl;
@@ -206,7 +217,7 @@ function woobtc_redirect_custom( $order_id )
          echo "<div style=\"display: none;\"><form name=woobtc_refreshprice action=\"" . $current_url . "#woobtc\" method=post></div>\n";
          echo "<input type=hidden name=refresh value=1>\n";
          
-         echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . $price .  $nl;
+         echo "<center><div style=\"font-size: 16px; font-weight: normal; padding-bottom: 0px;\">Order total: " . $fiat_symbol . round($price,2) .  $nl;
          echo "Price in BTC: " . $btc_symbol . number_format($btcprice, $roundbtc) . " (" . number_format(round($btcprice, $roundbtc) * 100000000) . " sats)</div>";
          echo "Exchange rate: " . $fiat_symbol . number_format($exr,2) . $nl;
          echo "<a id=woobtc_link_refresh_exchange_rate href=\"#\" onclick=\"document.forms.woobtc_refreshprice.submit(); return false;\">Refresh exchange rate</a>" . $nl;
