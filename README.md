@@ -45,6 +45,8 @@ Want it to work better in a particular way? congrats you just joined the team. T
 NullCorps
 
 
+
+
 Installation instructions:
 ------------------------------------------------
 either:
@@ -80,6 +82,8 @@ That would mean you as admin can see the addresses apge and generate/refresh the
 Alternatively you could wrap the [woobtc_addresses] in some php and have it pass in a password via a url some sort of scheduled thing like cron hit that page to keep your addresses topped up automatically. So then you'd set your cron to hit /addresses?p=somelongpassword2340903852924 and only show the [woobtc_addresses] shortcode if said password is present. 
 
 PLEASE NOTE: segwit wallets doesn't seem to be supported by bitwasp, there's nothing i can really do about that currently.
+
+
 
 
 Installation requirements:
