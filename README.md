@@ -45,6 +45,51 @@ Want it to work better in a particular way? congrats you just joined the team. T
 NullCorps
 
 
+Installation instructions:
+------------------------------------------------
+either:
+
+- ssh into your server
+- cd to your wordpress plugins folder ( /wp-content/plugins/ )
+- git clone https://github.com/Nullcorps/woocommerce-gateway-bitcoin.git
+
+or:
+
+- download the plugin from the link at the top, unzip it and FTP/SFTP it into your plugins folder ( /wp-content/plugins/ ) 
+
+then:
+- log into your wordpress and enable the plugin
+- in the admin dashboard under woocommerce/settings/payments you should now see the payment option listed
+- copy and paste in the xpub from your wallet. In electrum it's under menu:wallet/infromation. It should start with xpub and then a bunch of numbers 
+- save the settings. You may also want to set the 0-conf limit to 0 if you don't want to allow zer-confirmation transactions (probably a good idea)
+- then make a new page, add a "Custom HTML" block, and paste in [woobtc_addresses]. Give it a nice easy permalink like /addresses
+   - IF SAVING THE PAGE FAILS, THE CHANCES ARE YOU'RE MISSING ONE OF THE REQUIRED PHP MODULES
+- once saved, visit the page and it should splurge a bunch of data. Basically it's calculating the next 50 or so addresses so that they're on hand, since the maths to calculate them on the fly is pretty heavy and would slow the page down. This way it has a list of addresses to hand which is much faster.
+- reload that page 2/3 times till it's showing a full stack of (e.g. 50) addresses in the last box
+- that's it
+
+You should now be able to add an item to your cart, head to the checkout and with a bit of luck you'll see the bitcoin payment option. If you proceed with that it should then show you an address, QR-code etc which is now tied to this order and will not be reused. It's ok though, you can generate as many addresses as you like, all you need to do is re-visit that addresses page periodically to top up your stash of addresses. On a super busy site you might want to adjust the settings to pre-generate a larger number of addresses e.g. 200.
+
+Since the /addresses page exposes all your addresses, you may wish to limit access to that page using something like my guestshortcode plugin, in which case your custom HTML block would look a bit like this:
+
+[admin][woobtc_addresses][/admin]
+[guest] Sorry, access denied [/guest]
+
+That would mean you as admin can see the addresses apge and generate/refresh them, but nobody else can.
+
+Alternatively you could wrap the [woobtc_addresses] in some php and have it pass in a password via a url some sort of scheduled thing like cron hit that page to keep your addresses topped up automatically. So then you'd set your cron to hit /addresses?p=somelongpassword2340903852924 and only show the [woobtc_addresses] shortcode if said password is present. 
+
+PLEASE NOTE: segwit wallets doesn't seem to be supported by bitwasp, there's nothing i can really do about that currently.
+
+
+Installation requirements:
+------------------------------------------------
+
+This plugin requires the following php modules to work. Please note Mcrypt is no longer included as part of the standard php modules so needs a little extra work to install, I've included a link to a set of instructions which worked. Replace "7.4" with whatever version of php you're using. I've only tested up to 7.4 currently:
+
+bcmath   :     sudo apt install php7.4-bcmath
+gmp      :     sudo apt install php7.4-gmp
+mcrypt   :     https://computingforgeeks.com/install-php-mcrypt-extension-on-ubuntu/
 
 
 
