@@ -91,9 +91,9 @@ Installation requirements:
 
 This plugin requires the following php modules to work. Please note Mcrypt is no longer included as part of the standard php modules so needs a little extra work to install, I've included a link to a set of instructions which worked. Replace "7.4" with whatever version of php you're using. I've only tested up to 7.4 currently:
 
-bcmath   :     sudo apt install php7.4-bcmath
-gmp      :     sudo apt install php7.4-gmp
-mcrypt   :     https://computingforgeeks.com/install-php-mcrypt-extension-on-ubuntu/
+- bcmath   :     sudo apt install php7.4-bcmath
+- gmp      :     sudo apt install php7.4-gmp
+- mcrypt   :     https://computingforgeeks.com/install-php-mcrypt-extension-on-ubuntu/
 
 
 
