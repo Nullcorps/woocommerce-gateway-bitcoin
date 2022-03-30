@@ -325,19 +325,19 @@ abstract class ASNObject implements Parsable
         if (($contentLength & 0x80) != 0) {
             // bit 8 is set -> this is the long form
             $nrOfLengthOctets = $contentLength & 0x7F;
-            $contentLength = BigInteger::create(0x00);
+            $contentLength = gmp_init(0x00);
             for ($i = 0; $i < $nrOfLengthOctets; $i++) {
                 if (strlen($binaryData) <= $offsetIndex) {
                     throw new ParserException('Can not parse content length (long form) from data: Offset index larger than input size', $offsetIndex);
                 }
-                $contentLength = $contentLength->shiftLeft(8)->add(ord($binaryData[$offsetIndex++]));
+                $contentLength = gmp_add(gmp_mul($contentLength, gmp_pow(2, 8)), ord($binaryData[$offsetIndex++]));
             }
 
-            if ($contentLength->compare(PHP_INT_MAX) > 0) {
+            if (gmp_cmp($contentLength, PHP_INT_MAX) > 0) {
                 throw new ParserException("Can not parse content length from data: length > maximum integer", $offsetIndex);
             }
 
-            $contentLength = $contentLength->toInteger();
+            $contentLength = (int) gmp_strval($contentLength);
         }
 
         if ($contentLength < $minimumLength) {

@@ -27,7 +27,6 @@ namespace Mdanter\Ecc\Crypto\Key;
  * ***********************************************************************
  */
 
-use Mdanter\Ecc\Exception\PublicKeyException;
 use Mdanter\Ecc\Math\GmpMathInterface;
 use Mdanter\Ecc\Primitives\CurveFpInterface;
 use Mdanter\Ecc\Primitives\GeneratorPoint;
@@ -68,6 +67,8 @@ class PublicKey implements PublicKeyInterface
      * @param  GmpMathInterface  $adapter
      * @param  GeneratorPoint    $generator
      * @param  PointInterface    $point
+     * @throws \LogicException
+     * @throws \RuntimeException
      */
     public function __construct(GmpMathInterface $adapter, GeneratorPoint $generator, PointInterface $point)
     {
@@ -76,23 +77,19 @@ class PublicKey implements PublicKeyInterface
         $this->point = $point;
         $this->adapter = $adapter;
 
-        // step 1: not point at infinity.
-        if ($point->isInfinity()) {
-            throw new PublicKeyException($generator, $point, "Cannot use point at infinity for public key");
-        }
+        $n = $generator->getOrder();
 
-        // step 2 full & partial public key validation routine
-        if ($adapter->cmp($point->getX(), gmp_init(0, 10)) < 0 || $adapter->cmp($this->curve->getPrime(), $point->getX()) < 0
-            || $adapter->cmp($point->getY(), gmp_init(0, 10)) < 0 || $adapter->cmp($this->curve->getPrime(), $point->getY()) < 0
+        if ($adapter->cmp($point->getX(), gmp_init(0, 10)) < 0 || $adapter->cmp($n, $point->getX()) <= 0
+            || $adapter->cmp($point->getY(), gmp_init(0, 10)) < 0 || $adapter->cmp($n, $point->getY()) <= 0
         ) {
-            throw new PublicKeyException($generator, $point, "Point has x and y out of range.");
+            throw new \RuntimeException("Generator point has x and y out of range.");
         }
 
         // Sanity check. Point (x,y) values are qualified against it's
         // generator and curve. Here we ensure the Point and Generator
         // are the same.
         if (!$generator->getCurve()->equals($point->getCurve())) {
-            throw new PublicKeyException($generator, $point, "Curve for given point not in common with GeneratorPoint");
+            throw new \RuntimeException("Curve for given point not in common with GeneratorPoint");
         }
     }
 

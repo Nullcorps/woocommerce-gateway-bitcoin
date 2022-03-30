@@ -6,15 +6,12 @@ namespace Mdanter\Ecc\Serializer\PublicKey;
 use Mdanter\Ecc\Crypto\Key\PublicKeyInterface;
 use Mdanter\Ecc\Math\GmpMathInterface;
 use Mdanter\Ecc\Math\MathAdapterFactory;
-use Mdanter\Ecc\Serializer\Point\PointSerializerInterface;
-use Mdanter\Ecc\Serializer\Point\UncompressedPointSerializer;
 use Mdanter\Ecc\Serializer\PublicKey\Der\Formatter;
 use Mdanter\Ecc\Serializer\PublicKey\Der\Parser;
 
 /**
  *
  * @link https://tools.ietf.org/html/rfc5480#page-3
- * @todo: review for full spec, should we support all prefixes here?
  */
 class DerPublicKeySerializer implements PublicKeySerializerInterface
 {
@@ -40,15 +37,15 @@ class DerPublicKeySerializer implements PublicKeySerializerInterface
     private $parser;
 
     /**
-     * @param GmpMathInterface|null $adapter
-     * @param PointSerializerInterface|null $pointSerializer
+     *
+     * @param GmpMathInterface $adapter
      */
-    public function __construct(GmpMathInterface $adapter = null, PointSerializerInterface $pointSerializer = null)
+    public function __construct(GmpMathInterface $adapter = null)
     {
         $this->adapter = $adapter ?: MathAdapterFactory::getAdapter();
 
         $this->formatter = new Formatter();
-        $this->parser = new Parser($this->adapter, $pointSerializer ?: new UncompressedPointSerializer());
+        $this->parser = new Parser($this->adapter);
     }
 
     /**

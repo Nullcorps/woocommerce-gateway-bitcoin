@@ -8,7 +8,6 @@ use Mdanter\Ecc\Curves\NamedCurveFp;
 use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\Curves\SecgCurve;
-use Mdanter\Ecc\Exception\UnsupportedCurveException;
 use Mdanter\Ecc\Primitives\CurveFpInterface;
 use Mdanter\Ecc\Primitives\GeneratorPoint;
 
@@ -85,7 +84,7 @@ class CurveOidMapper
             return self::$sizeMap[$curve->getName()];
         }
 
-        throw new UnsupportedCurveException('Unsupported curve type');
+        throw new \RuntimeException('Unsupported curve type.');
     }
 
     /**
@@ -100,7 +99,7 @@ class CurveOidMapper
             return new ObjectIdentifier($oidString);
         }
 
-        throw new UnsupportedCurveException('Unsupported curve type');
+        throw new \RuntimeException('Unsupported curve type.');
     }
 
     /**
@@ -116,9 +115,7 @@ class CurveOidMapper
             return CurveFactory::getCurveByName($invertedMap[$oidString]);
         }
 
-        $error = new UnsupportedCurveException('Invalid data: unsupported curve.');
-        $error->setOid($oidString);
-        throw $error;
+        throw new \RuntimeException('Invalid data: unsupported curve.');
     }
 
     /**
@@ -134,8 +131,6 @@ class CurveOidMapper
             return CurveFactory::getGeneratorByName($invertedMap[$oidString]);
         }
 
-        $error = new UnsupportedCurveException('Invalid data: unsupported generator.');
-        $error->setOid($oidString);
-        throw $error;
+        throw new \RuntimeException('Invalid data: unsupported generator.');
     }
 }

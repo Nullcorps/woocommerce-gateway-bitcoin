@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Mdanter\Ecc\Primitives;
 
-use Mdanter\Ecc\Exception\PointException;
-use Mdanter\Ecc\Exception\PointNotOnCurveException;
 use Mdanter\Ecc\Math\GmpMathInterface;
 use Mdanter\Ecc\Math\ModularArithmetic;
 
@@ -99,13 +97,13 @@ class Point implements PointInterface
         $this->order      = $order !== null ? $order : gmp_init(0, 10);
         $this->infinity   = (bool) $infinity;
         if (! $infinity && ! $curve->contains($x, $y)) {
-            throw new PointNotOnCurveException($x, $y, $curve);
+            throw new \RuntimeException("Curve " . $curve . " does not contain point (" . $adapter->toString($x) . ", " . $adapter->toString($y) . ")");
         }
 
         if (!is_null($order)) {
             $mul = $this->mul($order);
             if (!$mul->isInfinity()) {
-                throw new PointException("SELF * ORDER MUST EQUAL INFINITY. (" . (string)$mul . " found instead)");
+                throw new \RuntimeException("SELF * ORDER MUST EQUAL INFINITY. (" . (string)$mul . " found instead)");
             }
         }
     }

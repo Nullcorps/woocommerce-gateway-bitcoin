@@ -30,9 +30,6 @@ namespace Mdanter\Ecc\Math;
  * @author Matyas Danter
  */
 
-use Mdanter\Ecc\Exception\NumberTheoryException;
-use Mdanter\Ecc\Exception\SquareRootException;
-
 /**
  * Rewritten to take a MathAdaptor to handle different environments. Has
  * some desireable functions for public key compression/recovery.
@@ -91,7 +88,7 @@ class NumberTheory
             return $poly;
         }
 
-        throw new NumberTheoryException('Unable to calculate polynomialReduceMod');
+        throw new \InvalidArgumentException('Unable to calculate polynomialReduceMod');
     }
 
     /**
@@ -167,7 +164,7 @@ class NumberTheory
             return $s;
         }
 
-        throw new NumberTheoryException('Unable to calculate polynomialPowMod');
+        throw new \InvalidArgumentException('Unable to calculate polynomialPowMod');
     }
 
     /**
@@ -193,7 +190,7 @@ class NumberTheory
 
             $jac = $math->jacobi($a, $p);
             if ($jac === -1) {
-                throw new SquareRootException("{$math->toString($a)} has no square root modulo {$math->toString($p)}");
+                throw new \LogicException($math->toString($a)." has no square root modulo ".$math->toString($p));
             }
 
             if ($math->equals($math->mod($p, $four), gmp_init(3, 10))) {
@@ -262,6 +259,6 @@ class NumberTheory
             }
         }
 
-        throw new SquareRootException('Unable to calculate square root mod p!');
+        throw new \InvalidArgumentException('Unable to calculate square root mod p!');
     }
 }
