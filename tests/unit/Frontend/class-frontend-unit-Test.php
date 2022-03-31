@@ -36,7 +36,16 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 		$plugin_root_url = 'http://localhost:8080/woocommerce-gateway-bitcoin/wp-content/plugins/woocommerce-gateway-bitcoin';
 
 		$logger   = new ColorLogger();
-		$api      = $this->makeEmpty( API_Interface::class );
+		$api      = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_order_has_bitcoin_gateway' => Expected::once(
+					function( $order_id ) {
+						return true;
+					}
+				),
+			)
+		);
 		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(

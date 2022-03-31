@@ -42,7 +42,7 @@ class Frontend {
 
 		$order_id = isset( $GLOBALS['order-received'] ) ? $GLOBALS['order-received'] : ( isset( $GLOBALS['view-order'] ) ? $GLOBALS['view-order'] : null );
 
-		if ( empty( $order_id ) ) {
+		if ( empty( $order_id ) || ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
 			return;
 		}
 
@@ -63,13 +63,13 @@ class Frontend {
 
 		$order_id = isset( $GLOBALS['order-received'] ) ? $GLOBALS['order-received'] : ( isset( $GLOBALS['view-order'] ) ? $GLOBALS['view-order'] : null );
 
-		if ( empty( $order_id ) ) {
+		if ( empty( $order_id ) || ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
 			return;
 		}
 
+		/** @var \WC_Order $order */
 		$order = wc_get_order( $order_id );
 
-		if ( ! ( $order instanceof \WC_Order ) ) {
 			return;
 		}
 

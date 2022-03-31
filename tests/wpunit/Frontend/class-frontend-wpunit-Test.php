@@ -31,9 +31,15 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$api      = $this->makeEmpty(
 			API_Interface::class,
 			array(
-				'get_order_details' => Expected::once(
+				'is_order_has_bitcoin_gateway' => Expected::once(
+					function( $order_id ) {
+						return true;
+					}
+				),
+				'get_order_details'            => Expected::once(
 					function( $order ) {
-						return array( 'test' => 'testdata' ); }
+						return array( 'test' => 'testdata' );
+					}
 				),
 			)
 		);
@@ -64,7 +70,10 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'get_plugin_version' => Expected::never(),
 			)
 		);
-		$api      = $this->makeEmpty( API_Interface::class );
+		$api      = $this->makeEmpty(
+			API_Interface::class,
+			array( 'is_order_has_bitcoin_gateway' => Expected::never() )
+		);
 
 		unset( $GLOBALS['order-received'] );
 		unset( $GLOBALS['view-order'] );
