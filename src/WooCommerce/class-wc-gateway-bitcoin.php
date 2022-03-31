@@ -44,6 +44,28 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 	}
 
+	/**
+	 * When saving the options, if the xpub is changed, initiate a background job to generate addresses.
+	 *
+	 * @return bool
+	 */
+	public function process_admin_options() {
+
+		$xpub_before = $this->get_xpub();
+
+		/** @var bool $processed */
+		$processed  = parent::process_admin_options();
+		$xpub_after = $this->get_xpub();
+
+		if ( $xpub_before !== $xpub_after ) {
+			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+			if ( ! as_has_scheduled_action( $hook ) ) {
+				as_schedule_single_action( time(), $hook );
+			}
+		}
+
+		return $processed;
+	}
 
 	/**
 	 * Initialize Gateway Settings Form Fields
