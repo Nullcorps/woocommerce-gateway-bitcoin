@@ -59,10 +59,10 @@ class Payment_Gateways {
 		$bitcoin_gateways = array();
 		foreach ( $gateways as $gateway ) {
 
-			// Only handling one level of subclass.
+			// Only handling one level of superclass.
 			if ( WC_Gateway_Bitcoin::class === $gateway
 				|| ( $gateway instanceof WC_Gateway_Bitcoin )
-				|| ( ( is_object( $gateway ) || ( is_string( $gateway ) && class_exists( $gateway ) ) ) && get_parent_class( $gateway ) === WC_Gateway_Bitcoin::class ) ) {
+				|| ( is_string( $gateway ) && class_exists( $gateway ) && get_parent_class( $gateway ) === WC_Gateway_Bitcoin::class ) ) {
 				$bitcoin_gateways[] = $gateway;
 			}
 		}
