@@ -42,12 +42,17 @@ class Email {
 		}
 
 		if ( ! $this->api->is_bitcoin_gateway( $order->get_payment_method() ) ) {
-			// Not a Bitcoin gateway.
 			return;
 		}
 
-		$order_details = $this->api->get_order_details( $order, false );
+		try {
+			$order_details = $this->api->get_order_details( $order, false );
+		} catch ( \Exception $exception ) {
+			$this->logger->error( 'Failed to get order details for email templates: ' . $exception->getMessage(), array( 'exception' => $exception ) );
+			return;
+		}
 
+		// TODO: Create a plain text template.
 		wc_get_template( 'emails/email-bitcoin-instructions-status.php', $order_details );
 
 	}

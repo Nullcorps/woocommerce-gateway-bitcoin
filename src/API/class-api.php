@@ -236,7 +236,7 @@ class API implements API_Interface {
 		$btc_address = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 
 		if ( empty( $btc_address ) ) {
-			throw new \Exception();
+			throw new \Exception( 'Order has no Bitcoin address.' );
 		}
 
 		$result['order_id']               = $order->get_id();

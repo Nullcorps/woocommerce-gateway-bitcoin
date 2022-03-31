@@ -70,14 +70,16 @@ class Frontend {
 		/** @var \WC_Order $order */
 		$order = wc_get_order( $order_id );
 
+		try {
+			$order_details = $this->api->get_order_details( $order );
+		} catch ( \Exception $exception ) {
+			$this->logger->error( 'Failed to get order details when enqueuing scripts: ' . $exception->getMessage(), array( 'exception' => $exception ) );
 			return;
 		}
 
 		$version = $this->settings->get_plugin_version();
 
 		wp_enqueue_script( 'nullcorps-wc-gateway-bitcoin', plugin_dir_url( __FILE__ ) . 'js/woocommerce-gateway-bitcoin.js', array( 'jquery' ), $version, true );
-
-		$order_details = $this->api->get_order_details( $order );
 
 		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
 
