@@ -57,7 +57,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_basename(): string {
-		return defined( 'WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME' ) ? WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME : 'nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php';
+		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME : 'nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php';
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.0.0';
+		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.0.0';
 	}
 
 	/**
