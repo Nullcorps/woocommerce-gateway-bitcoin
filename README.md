@@ -6,6 +6,12 @@ No signups, no Terms of Service, nobody taking a cut. Make a sale on your site a
 your Electrum (or whatever) wallet. Payments are between you and the Bitcoin network (well and possibly
 the public API providers somewhat but you have a choice which to use).
 
+**************************************************************************************************
+PLEASE NOTE: 
+Brian has created a much improved fork of this project which you should probably use instead:
+https://github.com/BrianHenryIE/woocommerce-gateway-bitcoin
+**************************************************************************************************
+
 NO FULL BITCOIN NODE REQUIRED \o/
 
 THIS IS VERY MUCH WIP - MAKE OF IT WHAT YOU WILL. IF YOU MANAGE TO BREAK IT SOMEHOW PLEASE DO LET ME KNOW OR BETTER STILL FIX IT AND THEN LET ME KNOW :)
