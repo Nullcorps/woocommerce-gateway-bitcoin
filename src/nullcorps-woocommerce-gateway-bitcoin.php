@@ -54,7 +54,7 @@ define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION', '1.0.1' );
 define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME', plugin_basename( __FILE__ ) );
 
 define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH', dirname( __FILE__ ) );
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL', plugins_url( dirname( __FILE__ ) ) );
+define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL', plugins_url( basename( dirname( __FILE__ ) ) ) );
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
