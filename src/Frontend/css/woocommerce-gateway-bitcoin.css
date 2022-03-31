@@ -7,8 +7,8 @@
     width: 200px;
 }
 
-.woobtc_status {
-
+.btc_logo_qr img {
+    display: block;
 }
 
 .woobtc_total:after, .woobtc_address:after {
