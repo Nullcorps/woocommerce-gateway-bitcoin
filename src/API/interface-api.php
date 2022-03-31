@@ -72,4 +72,16 @@ interface API_Interface {
 	 * @return array<string, array{gateway_id:string, xpub:string, new_addresses_count:int, new_addresses:array<string>, address_index:int}>
 	 */
 	public function generate_new_addresses(): array;
+
+	/**
+	 * Determine do we have any fresh address available for this gateway.
+	 * Used so the gateway is not displayed at checkout if there are no addresses ready.
+	 *
+	 * @used-by WC_Gateway_Bitcoin::is_available()
+	 *
+	 * @param string $gateway_id
+	 *
+	 * @return bool
+	 */
+	public function is_fresh_address_available_for_gateway( string $gateway_id ): bool;
 }

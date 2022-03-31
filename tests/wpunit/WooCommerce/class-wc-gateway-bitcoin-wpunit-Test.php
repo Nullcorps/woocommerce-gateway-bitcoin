@@ -88,4 +88,50 @@ class WC_Gateway_Bitcoin_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( as_next_scheduled_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK ) );
 	}
 
+	/**
+	 * @covers ::is_available
+	 */
+	public function test_checks_for_available_address_for_availability_true(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_fresh_address_available_for_gateway' => Expected::once(
+					function( $gateway_id ) {
+						return true;
+					}
+				),
+			)
+		);
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$result = $sut->is_available();
+
+		$this->assertTrue( $result );
+	}
+
+
+	/**
+	 * @covers ::is_available
+	 */
+	public function test_checks_for_available_address_for_availability_false(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_fresh_address_available_for_gateway' => Expected::once(
+					function( $gateway_id ) {
+						return false;
+					}
+				),
+			)
+		);
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$result = $sut->is_available();
+
+		$this->assertFalse( $result );
+	}
 }

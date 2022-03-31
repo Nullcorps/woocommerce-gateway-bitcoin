@@ -197,6 +197,16 @@ class API implements API_Interface {
 		return $address;
 	}
 
+	/**
+	 * Check do we have at least one address already generated and ready to use.
+	 *
+	 * @param string $gateway_id The gateway id the address is for.
+	 *
+	 * @return bool
+	 */
+	public function is_fresh_address_available_for_gateway( string $gateway_id ): bool {
+		return count( $this->address_storage->get_fresh_address_list( $gateway_id ) ) > 0;
+	}
 
 	/**
 	 *

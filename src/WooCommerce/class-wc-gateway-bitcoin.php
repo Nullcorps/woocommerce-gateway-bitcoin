@@ -166,14 +166,15 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 
 	/**
-	 * TODO: Return false when the gateway is not configured / has no addresses to use.
+	 * Returns false when the gateway is not configured / has no addresses to use.
 	 *
 	 * @see WC_Payment_Gateways::get_available_payment_gateways()
 	 *
 	 * @return bool
 	 */
 	public function is_available() {
-		return parent::is_available() && true;
+
+		return parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this->id );
 	}
 
 	/**
