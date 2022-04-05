@@ -31,7 +31,8 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut = new Email( $api, $logger );
 
-		$order         = new WC_Order();
+		$order = new WC_Order();
+		$order->save();
 		$sent_to_admin = false;
 		$plain_text    = false;
 
@@ -118,4 +119,41 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertNull( $e );
 
 	}
+
+	/**
+	 * @covers ::print_instructions
+	 */
+	public function test_print_instructions_exception_in_api(): void {
+
+		$logger = new ColorLogger();
+		$api    = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_bitcoin_gateway' => Expected::once(
+					function( $gateway_id ) {
+						return true;
+					}
+				),
+				'get_order_details' => Expected::once(
+					function( $order ) {
+						throw new \Exception( 'no address exception' );
+					}
+				),
+			)
+		);
+
+		$sut = new Email( $api, $logger );
+
+		$order = new WC_Order();
+		$order->save();
+		$sent_to_admin = false;
+		$plain_text    = false;
+
+		$sut->print_instructions( $order, $sent_to_admin, $plain_text );
+
+		// Is there a better way to say wc_get_template was called?
+		$this->assertTrue( $logger->hasErrorThatContains('no address exception') );
+
+	}
+
 }

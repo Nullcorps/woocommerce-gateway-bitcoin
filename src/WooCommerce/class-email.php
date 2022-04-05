@@ -45,6 +45,14 @@ class Email {
 			return;
 		}
 
+		/**
+		 * There was an error where seemingly the order object being passed to this function is older than the
+		 * one saved in `WC_Gateway_Bitcoin::process_payment()` and the meta was not present, so let's refresh.
+		 *
+		 * @var WC_Order $order
+		 */
+		$order = wc_get_order( $order->get_id() );
+
 		try {
 			$order_details = $this->api->get_order_details( $order, false );
 		} catch ( \Exception $exception ) {
