@@ -8,6 +8,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
+use Nullcorps\WC_Gateway_Bitcoin\API\API;
 use Nullcorps\WC_Gateway_Bitcoin\Includes\Nullcorps_WC_Gateway_Bitcoin;
 
 /**
@@ -22,7 +23,7 @@ class Plugin_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertArrayHasKey( 'nullcorps_wc_gateway_bitcoin', $GLOBALS );
 
-		$this->assertInstanceOf( Nullcorps_WC_Gateway_Bitcoin::class, $GLOBALS['nullcorps_wc_gateway_bitcoin'] );
+		$this->assertInstanceOf( API::class, $GLOBALS['nullcorps_wc_gateway_bitcoin'] );
 	}
 
 }

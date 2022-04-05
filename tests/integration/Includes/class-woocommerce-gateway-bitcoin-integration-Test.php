@@ -19,9 +19,9 @@ class Nullcorps_WC_Gateway_Bitcoin_Integration_Test extends \Codeception\TestCas
 	public function hooks(): array {
 		$hooks = array(
 			array( 'init', I18n::class, 'load_plugin_textdomain' ),
-			array( 'admin_enqueue_scripts', Admin::class, 'enqueue_styles' ),
-			array( 'admin_enqueue_scripts', Admin::class, 'enqueue_scripts' ),
-			array( 'wp_enqueue_scripts', Frontend::class, 'enqueue_styles' ),
+			// array( 'admin_enqueue_scripts', Admin::class, 'enqueue_styles' ),
+			// array( 'admin_enqueue_scripts', Admin::class, 'enqueue_scripts' ),
+				array( 'wp_enqueue_scripts', Frontend::class, 'enqueue_styles' ),
 			array( 'wp_enqueue_scripts', Frontend::class, 'enqueue_scripts' ),
 		);
 		return $hooks;
