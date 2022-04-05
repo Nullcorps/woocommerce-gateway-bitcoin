@@ -8,20 +8,32 @@ namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use WC_Order;
 use WC_Payment_Gateway;
 
 class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
+	use LoggerAwareTrait;
 
+	/**
+	 * @override WC_Settings_API::$id
+	 *
+	 * @var string
+	 */
 	public $id = 'bitcoin_gateway';
 
 	protected API_Interface $api;
+
+	protected string $instructions;
 
 	/**
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
+		// TODO: Set the logger externally.
+		$this->setLogger( new NullLogger() );
 
 		// TODO: Is there a better way to do this?
 		$this->api = $GLOBALS['nullcorps_wc_gateway_bitcoin'];
@@ -181,24 +193,27 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 * Process the payment and return the result.
 	 *
 	 * @param int $order_id
+	 *
 	 * @return array{result:string, redirect:string}
+	 * @throws \Exception
 	 */
 	public function process_payment( $order_id ) {
 
 		$order = wc_get_order( $order_id );
 
 		if ( ! ( $order instanceof WC_Order ) ) {
+			// This should never happen.
 			throw new \Exception( 'Error creating order.' );
 		}
-
-		// Mark as on-hold (we're awaiting the payment).
-		$order->update_status( 'on-hold', __( 'Awaiting Bitcoin payment', 'nullcorps-wc-gateway-bitcoin' ) );
 
 		$btc_address = $this->api->get_fresh_address_for_order( $order );
 
 		if ( empty( $btc_address ) ) {
 			throw new \Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
+
+		// Mark as on-hold (we're awaiting the payment).
+		$order->update_status( 'on-hold', __( 'Awaiting Bitcoin payment to address: ', 'nullcorps-wc-gateway-bitcoin' ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address . "\">{$btc_address}</a>." );
 
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address );
 

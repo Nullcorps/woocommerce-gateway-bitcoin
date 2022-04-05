@@ -6,6 +6,8 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitfinex_API;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\BitWasp_API;
@@ -239,7 +241,9 @@ class API implements API_Interface {
 			throw new \Exception( 'Order has no Bitcoin address.' );
 		}
 
-		$result['order_id']               = $order->get_id();
+		$order_id = $order->get_id();
+
+		$result['order_id']               = $order_id;
 		$result['order_status']           = $order->get_status();
 		$result['order_status_formatted'] = wc_get_order_statuses()[ 'wc-' . $order->get_status() ];
 		$result['order']                  = $order;
@@ -257,7 +261,26 @@ class API implements API_Interface {
 		$amount_received               = is_numeric( $amount_received ) ? $amount_received : 0.0;
 		$result['btc_amount_received'] = $amount_received;
 
+		/** @var array<array{txid:string, time:string, value:float}> $previous_transactions */
+		$previous_transactions  = $order->get_meta( Order::TRANSACTIONS_META_KEY );
+		$result['transactions'] = array();
+		foreach ( $previous_transactions as $transaction ) {
+			$result['transactions'][ $transaction['txid'] ] = $transaction;
+		}
+
+		// TOOD: This is basically what the saved order data is before refreshing.
+		$this->logger->debug(
+			count( $previous_transactions ) . ' previously saved transactions for order ' . $order_id,
+			array(
+				'previous_transactions' => $previous_transactions,
+				'order_id'              => $order_id,
+				'result'                => $result,
+			)
+		);
+
 		if ( $refresh ) {
+
+			$time_now = new DateTimeImmutable( 'now', new \DateTimeZone( 'UTC' ) );
 
 			// Check has it been paid.
 			$address_balance = $this->bitcoin_api->get_address_balance( $btc_address, true );
@@ -267,7 +290,28 @@ class API implements API_Interface {
 
 				$result['btc_amount_received'] = $address_balance;
 
-				$transactions = $this->bitcoin_api->get_transactions( $btc_address );
+				$refreshed_transactions = $this->bitcoin_api->get_transactions( $btc_address );
+
+				foreach ( $refreshed_transactions as $transaction ) {
+					if ( ! isset( $result['transactions'][ $transaction['txid'] ] ) ) {
+						$transaction['datetime_first_seen']             = $time_now;
+						$result['transactions'][ $transaction['txid'] ] = $transaction;
+						$order->add_meta_data( Order::TRANSACTIONS_META_KEY, $result['transactions'], true );
+
+						$log_message = "New payment of {$transaction['value']} seen in transaction {$transaction['txid']}.";
+						$note        = "New payment of {$transaction['value']} seen in transaction <a target=\"_blank\" href=\"https://blockchain.info/rawaddr/{$transaction['txid']}\">{$transaction['txid']}</a>.";
+
+						$this->logger->info(
+							$log_message,
+							array(
+								'transaction' => $transaction,
+								'order_id'    => $order_id,
+							)
+						);
+
+						$order->add_order_note( $note );
+					}
+				}
 
 				$expected = $result['btc_total'];
 
@@ -281,20 +325,13 @@ class API implements API_Interface {
 				$minimum_payment = $expected * ( 100 - $price_margin ) / 100;
 
 				if ( $address_balance > $minimum_payment && ! $order->is_paid() ) {
-
 					$order->payment_complete( $btc_address );
-
+					$this->logger->info( "Order {$order_id} has been marked paid.", array( 'order_id' => $order_id ) );
 				}
 			}
 
-			$time_now = new \DateTimeImmutable( 'now', new \DateTimeZone( 'UTC' ) );
 			$order->add_meta_data( Order::LAST_CHECKED_META_KEY, $time_now, true );
 			$order->save();
-
-		} else {
-
-			$transactions           = $order->get_meta( Order::TRANSACTIONS_META_KEY );
-			$result['transactions'] = ! empty( $transactions ) ? $transactions : array();
 
 		}
 
@@ -304,10 +341,14 @@ class API implements API_Interface {
 		$last_checked_time           = empty( $last_checked_time ) ? null : $last_checked_time;
 		$result['last_checked_time'] = $last_checked_time;
 
-		if ( ! is_null( $last_checked_time ) ) {
+		if ( $last_checked_time instanceof DateTimeInterface ) {
 			$date_format = get_option( 'date_format' );
 			$time_format = get_option( 'time_format' );
 			$timezone    = wp_timezone_string();
+
+			// $last_checked_time is in UTC... change it to local time.?
+			// The server time is not local time... maybe use their address?
+			// @see https://stackoverflow.com/tags/timezone/info
 
 			$result['last_checked_time_formatted'] = $last_checked_time->format( $date_format . ', ' . $time_format ) . ' ' . $timezone;
 		} else {
@@ -319,7 +360,7 @@ class API implements API_Interface {
 			case $order->is_paid():
 				$result['status'] = __( 'Paid', 'nullcorps-wc-gateway-bitcoin' );
 				break;
-			case ! empty( $transactions ):
+			case ! empty( $refreshed_transactions ):
 				$result['status'] = __( 'Partly Paid', 'nullcorps-wc-gateway-bitcoin' );
 				break;
 			default:
