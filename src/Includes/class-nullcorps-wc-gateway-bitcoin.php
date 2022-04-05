@@ -143,13 +143,15 @@ class Nullcorps_WC_Gateway_Bitcoin {
 	 */
 	protected function define_payment_gateway_hooks(): void {
 
-		$payment_gateways = new Payment_Gateways();
+		$payment_gateways = new Payment_Gateways( $this->logger );
 
 		// Register the payment gateway with WooCommerce.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'add_to_woocommerce' ) );
 
 		// When clicking the link from plugins.php filter to only Bitcoin gateways.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'filter_to_only_bitcoin_gateways' ), 100 );
+
+		add_filter( 'woocommerce_available_payment_gateways', array( $payment_gateways, 'add_logger_to_gateways' ) );
 
 	}
 

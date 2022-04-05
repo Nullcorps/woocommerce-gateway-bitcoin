@@ -18,6 +18,6 @@ modules:
             domain: "%TEST_SITE_WP_DOMAIN%"
             adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
             title: "woocommerce-gateway-bitcoin"
-            plugins: ['woocommerce-gateway-bitcoin/woocommerce-gateway-bitcoin.php']
-            activatePlugins: ['woocommerce-gateway-bitcoin/woocommerce-gateway-bitcoin.php']
+            plugins: ['woocommerce-gateway-bitcoin/nullcorps-woocommerce-gateway-bitcoin.php', 'woocommerce/woocommerce.php']
+            activatePlugins: ['woocommerce-gateway-bitcoin/nullcorps-woocommerce-gateway-bitcoin.php', 'woocommerce/woocommerce.php']
 bootstrap: _bootstrap.php

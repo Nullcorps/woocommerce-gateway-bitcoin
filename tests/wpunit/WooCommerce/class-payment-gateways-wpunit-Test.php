@@ -2,6 +2,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use WC_Gateway_BACS;
 
@@ -15,7 +16,9 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_filter_to_only_bitcoin_gateways(): void {
 
-		$sut = new Payment_Gateways();
+		$logger = new ColorLogger();
+
+		$sut = new Payment_Gateways( $logger );
 
 		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty( API_Interface::class );
 
@@ -42,7 +45,9 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_filter_to_only_bitcoin_gateways_wrong_page(): void {
 
-		$sut = new Payment_Gateways();
+		$logger = new ColorLogger();
+
+		$sut = new Payment_Gateways( $logger );
 
 		$gateways = array(
 			new WC_Gateway_BACS(),

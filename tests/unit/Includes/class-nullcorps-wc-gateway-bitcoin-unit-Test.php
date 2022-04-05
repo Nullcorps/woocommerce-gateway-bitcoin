@@ -160,6 +160,11 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 			100
 		);
 
+		\WP_Mock::expectFilterAdded(
+			'woocommerce_available_payment_gateways',
+			array( new AnyInstance( Payment_Gateways::class ), 'add_logger_to_gateways' ),
+		);
+
 		$api      = $this->makeEmpty( API_Interface::class );
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
