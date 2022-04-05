@@ -134,7 +134,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 						return true;
 					}
 				),
-				'get_order_details' => Expected::once(
+				'get_order_details'  => Expected::once(
 					function( $order ) {
 						throw new \Exception( 'no address exception' );
 					}
@@ -152,7 +152,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$sut->print_instructions( $order, $sent_to_admin, $plain_text );
 
 		// Is there a better way to say wc_get_template was called?
-		$this->assertTrue( $logger->hasErrorThatContains('no address exception') );
+		$this->assertTrue( $logger->hasErrorThatContains( 'no address exception' ) );
 
 	}
 
