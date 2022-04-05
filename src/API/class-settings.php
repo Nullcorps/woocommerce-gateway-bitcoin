@@ -25,7 +25,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_log_level(): string {
-		return LogLevel::INFO;
+		return LogLevel::DEBUG;
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.0.1';
+		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.1.0';
 	}
 
 	/**
