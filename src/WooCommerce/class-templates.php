@@ -2,11 +2,18 @@
 /**
  * Register the `bitcoin-paid.php` and `bitcoin-unpaid.php` templates so they can be found with `wc_get_template()`.
  *
+ * These templates are used on the Thank You page, Emails, and the My Account page to display payment instructions
+ * and details.
+ *
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
+/**
+ * Hooks into the wc_get_template filter called inside `wc_get_template()` to return templates inside this plugin
+ * if they have not already been provided by the theme or another plugin.
+ */
 class Templates {
 
 	const BITCOIN_UNPAID_TEMPLATE_NAME = 'bitcoin-unpaid.php';
@@ -28,7 +35,7 @@ class Templates {
 	 * @param string       $template_name The template name, i.e. the relative filename from the theme or theme/woocommerce directory.
 	 * @param array<mixed> $args Array of values to be exploded and made available to the included template.
 	 * @param string       $template_path I'm not sure is there a difference between `$template` and `$template_path`.
-	 * @param string       $default_path
+	 * @param string       $default_path Optional default path, which seems to be empty in WooCommerce core.
 	 *
 	 * @return string
 	 */
