@@ -263,6 +263,7 @@ class API implements API_Interface {
 
 		/** @var array<array{txid:string, time:string, value:float}> $previous_transactions */
 		$previous_transactions  = $order->get_meta( Order::TRANSACTIONS_META_KEY );
+		$previous_transactions  = is_array( $previous_transactions ) ? $previous_transactions : array();
 		$result['transactions'] = array();
 		foreach ( $previous_transactions as $transaction ) {
 			$result['transactions'][ $transaction['txid'] ] = $transaction;
@@ -426,13 +427,13 @@ class API implements API_Interface {
 	 * @param WC_Gateway_Bitcoin $gateway
 	 * @param int                $generate_count
 	 *
-	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Exceptions\Base58ChecksumFailure
+	 * @return array{gateway_id:string, xpub:string, new_addresses_count:int, new_addresses:array<string>, address_index:int}
 	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Exceptions\DisallowedScriptDataFactoryException
 	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Exceptions\InvalidNetworkParameter
 	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Exceptions\RandomBytesFailure
 	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Buffertools\Exceptions\ParserOutOfRange
-	 *
-	 * @return array{gateway_id:string, xpub:string, new_addresses_count:int, new_addresses:array<string>, address_index:int}
+	 * @throws \Exception
+	 * @throws \Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Exceptions\Base58ChecksumFailure
 	 */
 	protected function generate_new_addresses_for_gateway( WC_Gateway_Bitcoin $gateway, int $generate_count = 50 ): array {
 
