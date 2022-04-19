@@ -37,7 +37,7 @@ class My_Account_View_Order {
 
 		$order_details = $this->api->get_order_details( $order, false );
 
-		wc_get_template( 'myaccount/view-order-bitcoin-instructions-status.php', $order_details );
+		wc_get_template( self::TEMPLATE_NAME, $order_details );
 
 	}
 

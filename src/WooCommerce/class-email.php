@@ -61,7 +61,7 @@ class Email {
 		}
 
 		// TODO: Create a plain text template.
-		wc_get_template( 'emails/email-bitcoin-instructions-status.php', $order_details );
+		wc_get_template( self::TEMPLATE_NAME, $order_details );
 
 	}
 

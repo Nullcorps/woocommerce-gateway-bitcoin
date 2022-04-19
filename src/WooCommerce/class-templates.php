@@ -13,6 +13,9 @@ class Templates {
 	const BITCOIN_PAID_TEMPLATE_NAME   = 'bitcoin-paid.php';
 
 	/**
+	 * Returns the full template path for templates defined within this plugin.
+	 * If a template has already been specified on this filter, that is returned.
+	 * If the template exists within the current theme, that is returned.
 	 *
 	 * `wc_get_template( 'bitcoin-paid.php', $formatted_order_details_array );`.
 	 *
@@ -21,10 +24,10 @@ class Templates {
 	 *
 	 * @hooked wc_get_template
 	 *
-	 * @param string       $template
-	 * @param string       $template_name
+	 * @param string       $template The full path to the template. Usually an incorrect (!file_exists()) path before this function runs.
+	 * @param string       $template_name The template name, i.e. the relative filename from the theme or theme/woocommerce directory.
 	 * @param array<mixed> $args Array of values to be exploded and made available to the included template.
-	 * @param string       $template_path
+	 * @param string       $template_path I'm not sure is there a difference between `$template` and `$template_path`.
 	 * @param string       $default_path
 	 *
 	 * @return string
