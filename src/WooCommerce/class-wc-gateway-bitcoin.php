@@ -164,13 +164,13 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		}
 
 		$settings_fields['log_level'] = array(
-			'title'    => __( 'Log Level', 'text-domain' ),
-			'label'    => __( 'Enable Logging', 'text-domain' ),
-			'type'     => 'select',
-			'options'  => $log_levels_option,
-			'desc'     => __( 'Increasingly detailed levels of logs. ', 'nullcorps-wc-gateway-bitcoin' ) . '<a href="' . admin_url( 'admin.php?page=nullcorps-woocommerce-gateway-bitcoin-logs' ) . '">View Logs</a>',
-			'desc_tip' => false,
-			'default'  => 'info',
+			'title'       => __( 'Log Level', 'text-domain' ),
+			'label'       => __( 'Enable Logging', 'text-domain' ),
+			'type'        => 'select',
+			'options'     => $log_levels_option,
+			'description' => __( 'Increasingly detailed levels of logs. ', 'nullcorps-wc-gateway-bitcoin' ) . '<a href="' . admin_url( 'admin.php?page=nullcorps-wc-gateway-bitcoin-logs' ) . '">View Logs</a>',
+			'desc_tip'    => false,
+			'default'     => 'info',
 		);
 
 		$this->form_fields = apply_filters( 'wc_gateway_bitcoin_form_fields', $settings_fields, $this->id );
@@ -212,9 +212,6 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			throw new \Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
 
-		// Mark as on-hold (we're awaiting the payment).
-		$order->update_status( 'on-hold', __( 'Awaiting Bitcoin payment to address: ', 'nullcorps-wc-gateway-bitcoin' ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address . "\">{$btc_address}</a>." );
-
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address );
 
 		// Record the exchange rate at the time the order was placed.
@@ -223,6 +220,10 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$btc_total = $this->api->convert_fiat_to_btc( $order->get_currency(), $order->get_total() );
 
 		$order->add_meta_data( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, $btc_total );
+
+		// Mark as on-hold (we're awaiting the payment).
+		/* translators: %F: The order total in BTC */
+		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'nullcorps-wc-gateway-bitcoin' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address . "\">{$btc_address}</a>." );
 
 		$order->save();
 
@@ -251,11 +252,25 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		return $this->settings['instructions'] ?? '';
 	}
 
+	/**
+	 * Returns the configured xpub for the gateway, so new addresses can be generated.
+	 *
+	 * @used-by API::generate_new_addresses_for_gateway()
+	 *
+	 * @return string
+	 */
 	public function get_xpub(): string {
 		return $this->settings['xpub'];
 	}
 
-	public function get_price_margin(): int {
-		return $this->settings['price_margin'] ?? 2;
+	/**
+	 * Price margin is the allowable difference between the amount received and the amount expected.
+	 *
+	 * @used-by API::get_order_details()
+	 *
+	 * @return float
+	 */
+	public function get_price_margin(): float {
+		return floatval( $this->settings['price_margin'] ) ?? 2.0;
 	}
 }
