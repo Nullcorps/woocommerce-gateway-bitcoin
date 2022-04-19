@@ -3,6 +3,8 @@
  * Define constants that PhpStan cannot find.
  *
  * @see https://phpstan.org/user-guide/discovering-symbols#global-constants
+ *
+ * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
 define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );
