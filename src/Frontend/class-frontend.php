@@ -50,6 +50,7 @@ class Frontend {
 
 		wp_enqueue_style( 'nullcorps-wc-gateway-bitcoin', plugin_dir_url( __FILE__ ) . 'css/woocommerce-gateway-bitcoin.css', array(), $version, 'all' );
 
+		wp_enqueue_style( 'dashicons' );
 	}
 
 	/**

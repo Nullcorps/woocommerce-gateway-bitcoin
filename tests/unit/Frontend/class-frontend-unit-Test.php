@@ -76,6 +76,14 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
+		\WP_Mock::userFunction(
+			'wp_enqueue_style',
+			array(
+				'times' => 1,
+				'args'  => array( 'dashicons' ),
+			)
+		);
+
 		$GLOBALS['order-received'] = 123;
 
 		$sut = new Frontend( $api, $settings, $logger );
