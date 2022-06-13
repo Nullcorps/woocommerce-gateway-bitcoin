@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Gateway Bitcoin
  * Plugin URI:        http://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/
  * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
- * Version:           1.1.1
+ * Version:           1.2.0
  * Requires PHP:      7.4
  * Author:            Nullcorps, BrianHenryIE
  * Author URI:        https://github.com/Nullcorps/
@@ -50,7 +50,7 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION', '1.1.1' );
+define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION', '1.2.0' );
 
 define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH', trailingslashit( __DIR__ ) );
