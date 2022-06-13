@@ -29,6 +29,7 @@ use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Templates;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
 use Psr\Log\LoggerInterface;
+use WP_CLI;
 
 /**
  * The core plugin class.
@@ -86,6 +87,8 @@ class Nullcorps_WC_Gateway_Bitcoin {
 		$this->define_addresses_list_page_ui_hooks();
 
 		$this->define_action_scheduler_hooks();
+
+		$this->define_cli_commands();
 	}
 
 	/**
@@ -262,4 +265,26 @@ class Nullcorps_WC_Gateway_Bitcoin {
 			}
 		);
 	}
+
+	/**
+	 * Register WP CLI commands.
+	 *
+	 * `wp bh-crypto generate-new-addresses`
+	 */
+	protected function define_cli_commands(): void {
+
+		if ( ! class_exists( WP_CLI::class ) ) {
+			return;
+		}
+
+		$cli = new CLI( $this->api, $this->settings, $this->logger );
+
+		try {
+			WP_CLI::add_command( 'bh-crypto generate-new-addresses', array( $cli, 'generate_new_addresses' ) );
+			WP_CLI::add_command( 'bh-crypto update-address', array( $cli, 'update_address' ) );
+		} catch ( Exception $e ) {
+			$this->logger->error( 'Failed to register WP CLI commands: ' . $e->getMessage(), array( 'exception' => $e ) );
+		}
+	}
+
 }
