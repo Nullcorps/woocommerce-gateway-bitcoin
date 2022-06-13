@@ -55,9 +55,9 @@ class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
 
-		$result = $sut->get_address_balance( $address, true );
+		$result = $sut->get_address_balance( $address, 1 );
 
-		$this->assertEquals( 0.00018142, $result );
+		$this->assertEquals( 0.00018142, $result['confirmed_balance'] );
 	}
 
 	/**
@@ -111,7 +111,9 @@ class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers ::get_transactions
+	 * @covers ::get_transactions_received
+	 *
+	 * @see https://esplora.blockstream.com/tx/8e5e6b898750a7afbe683a953fbf30bd990bb57ccd2d904c76df29f61054e743
 	 */
 	public function test_get_transactions(): void {
 		$logger = new ColorLogger();
@@ -353,10 +355,10 @@ class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$address = '1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F';
 
-		$result = $sut->get_transactions( $address );
+		$result = $sut->get_transactions_received( $address );
+		$first  = array_shift( $result );
 
-		// https://esplora.blockstream.com/tx/8e5e6b898750a7afbe683a953fbf30bd990bb57ccd2d904c76df29f61054e743
-		$this->assertEquals( 0.02415465, $result[0]['value'] );
+		$this->assertEquals( 0.02415465, $first['value'] );
 
 	}
 }

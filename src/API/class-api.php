@@ -481,4 +481,54 @@ class API implements API_Interface {
 		return $result;
 	}
 
+	/**
+	 * Remotely check/fetch the latest data for an address.
+	 *
+	 * @param Crypto_Address $address
+	 *
+	 * @return array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @throws Exception
+	 */
+	public function update_address( Crypto_Address $address ): array {
+
+		$btc_xpub_address_string = $address->get_raw_address();
+
+		// Null when never checked before.
+		$previous_transactions = $address->get_transactions();
+
+		$refreshed_transactions = $this->bitcoin_api->get_transactions_received( $btc_xpub_address_string );
+
+		$updates                      = array();
+		$updates['new_transactions']  = array();
+		$updates['new_confirmations'] = array();
+
+		if ( is_null( $previous_transactions ) ) {
+			$updates['new_transactions'] = $refreshed_transactions;
+
+		} else {
+			foreach ( $refreshed_transactions as $txid => $refreshed_transaction ) {
+				if ( ! isset( $previous_transactions[ $txid ] ) ) {
+					$updates['new_transactions'][ $txid ] = $refreshed_transaction;
+				} elseif ( $previous_transactions[ $txid ]['confirmations'] !== $refreshed_transaction['confirmations'] ) {
+					$updates['new_confirmations'][ $txid ] = $refreshed_transaction;
+				}
+			}
+		}
+
+		$updated = is_null( $previous_transactions ) || ! empty( $updates['new_transactions'] ) || ! empty( $updates['new_confirmations'] );
+
+		if ( $updated ) {
+			$address->set_transactions( $refreshed_transactions );
+		}
+
+		return array(
+			'address'               => $address,
+			'transactions'          => $refreshed_transactions,
+			'updated'               => $updated,
+			'updates'               => $updates,
+			'previous_transactions' => $previous_transactions,
+		);
+
+	}
+
 }

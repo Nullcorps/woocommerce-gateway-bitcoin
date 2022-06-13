@@ -1,7 +1,4 @@
 <?php
-/**
- * Integration test to capture data for wpunit test.
- */
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
 

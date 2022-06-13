@@ -1,6 +1,8 @@
 <?php
 /**
- * Integration test to capture data for wpunit test.
+ * Test get exchange rate.
+ *
+ * @package           nullcorps/woocommerce-gateway-bitcoin
  */
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
@@ -16,7 +18,7 @@ class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 	 * @covers ::get_exchange_rate
 	 * @covers ::__construct
 	 */
-	public function test_query_api():void {
+	public function test_query_api(): void {
 
 		$logger = new ColorLogger();
 

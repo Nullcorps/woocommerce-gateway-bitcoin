@@ -73,6 +73,8 @@ interface API_Interface {
 	 */
 	public function generate_new_addresses(): array;
 
+	public function update_address( Crypto_Address $address ): array;
+
 	/**
 	 * Determine do we have any fresh address available for this gateway.
 	 * Used so the gateway is not displayed at checkout if there are no addresses ready.
