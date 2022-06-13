@@ -95,6 +95,8 @@ interface API_Interface {
 	 */
 	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array;
 
+	public function generate_new_wallet( string $xpub_after, string $gateway_id = null ): array;
+
 	/**
 	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Crypto_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
 	 */
@@ -113,4 +115,6 @@ interface API_Interface {
 	 * @return bool
 	 */
 	public function is_fresh_address_available_for_gateway( string $gateway_id ): bool;
+
+	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
 }
