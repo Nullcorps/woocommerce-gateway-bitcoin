@@ -40,7 +40,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( $order_id ) {
+					function( int $order_id ) {
 						return true;
 					}
 				),
@@ -51,7 +51,8 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'get_plugin_version' => Expected::once(
 					function() {
-						return '1.0.0'; }
+						return '1.0.0';
+					}
 				),
 			)
 		);
@@ -98,9 +99,6 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_enqueue_styles_not_on_other_pages(): void {
 
-		global $plugin_root_dir;
-		$plugin_root_url = 'http://localhost:8080/woocommerce-gateway-bitcoin/wp-content/plugins/woocommerce-gateway-bitcoin';
-
 		$logger   = new ColorLogger();
 		$api      = $this->makeEmpty( API_Interface::class );
 		$settings = $this->makeEmpty(
@@ -118,9 +116,6 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$css_file = $plugin_root_dir . '/Frontend/css/woocommerce-gateway-bitcoin.css';
-		$css_url  = $plugin_root_url . '/Frontend/css/woocommerce-gateway-bitcoin.css';
-
 		\WP_Mock::userFunction(
 			'wp_enqueue_style',
 			array(
@@ -128,14 +123,10 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		// Omitted for test.
-		// $GLOBALS['order-received'] = 123;
-
 		$sut = new Frontend( $api, $settings, $logger );
 
 		$sut->enqueue_styles();
 
-		$this->assertFileExists( $css_file );
 	}
 
 }
