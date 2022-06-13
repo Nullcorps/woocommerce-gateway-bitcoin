@@ -46,7 +46,7 @@ class AJAX {
 			wp_send_json_error( 'Invalid order id', 400 );
 		}
 
-		$result = $this->api->get_order_details( $order, true );
+		$result = $this->api->get_formatted_order_details( $order, true );
 
 		wp_send_json_success( $result );
 

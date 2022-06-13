@@ -54,7 +54,7 @@ class Email {
 		$order = wc_get_order( $order->get_id() );
 
 		try {
-			$order_details = $this->api->get_order_details( $order, false );
+			$order_details = $this->api->get_formatted_order_details( $order, false );
 		} catch ( \Exception $exception ) {
 			$this->logger->error( 'Failed to get order details for email templates: ' . $exception->getMessage(), array( 'exception' => $exception ) );
 			return;

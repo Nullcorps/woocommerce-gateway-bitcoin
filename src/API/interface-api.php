@@ -47,22 +47,23 @@ interface API_Interface {
 	 *
 	 * @used-by WC_Gateway_Bitcoin::process_payment()
 	 *
-	 * @param string $currency
+	 * @param string $currency USD|EUR|GBP.
 	 *
-	 * @return float
+	 * @return string
 	 */
-	public function get_exchange_rate( string $currency ): float;
+	public function get_exchange_rate( string $currency ): string;
 
 	/**
+	 * Get the Bitcoin value of a local currency amount.
+	 *
 	 * @used-by WC_Gateway_Bitcoin::process_payment()
 	 *
-	 * @param string $currency
-	 * @param float  $fiat_amount
+	 * @param string $currency From which currency (USD|EUR|GBP).
+	 * @param string $fiat_amount The amount to convert.
 	 *
-	 * @return float
+	 * @return string
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): float;
-
+	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): string;
 
 	/**
 	 * Return an unused address for use in an order.
@@ -76,15 +77,26 @@ interface API_Interface {
 	public function get_fresh_address_for_order( WC_Order $order ): Crypto_Address;
 
 	/**
-	 * @param WC_Order $order
+	 * Return the current Bitcoin details for an order, optionally refresh.
+	 *
+	 * @param WC_Order $order   WooCommerce order object.
 	 * @param bool     $refresh Query remote APIs to refresh the details, or just return cached data.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string}
+	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array, btc_exchange_rate:string}
 	 */
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array;
 
 	/**
-	 * @return array<string, array{gateway_id:string, xpub:string, new_addresses_count:int, new_addresses:array<string>, address_index:int}>
+	 * @param WC_Order $order
+	 * @param bool     $refresh
+	 *
+	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
+	 * @throws Exception
+	 */
+	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array;
+
+	/**
+	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Crypto_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
 	 */
 	public function generate_new_addresses(): array;
 

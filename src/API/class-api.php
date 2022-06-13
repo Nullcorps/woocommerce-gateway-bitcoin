@@ -26,9 +26,11 @@ use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
-use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 
+/**
+ * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
+ */
 class API implements API_Interface {
 	use LoggerAwareTrait;
 
@@ -256,17 +258,18 @@ class API implements API_Interface {
 	}
 
 	/**
+	 * Get the current status of the order's payment.
 	 *
-	 * TODO
+	 * As a really detailed array for printing.
 	 *
 	 * @param WC_Order $order
 	 * @param bool     $refresh
 	 *
-	 * @return array
+	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string}
+	 * @throws Exception
 	 */
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array {
 
-		//
 		// $currency    = $order_details['currency'];
 		// $fiat_symbol = get_woocommerce_currency_symbol( $currency );
 		//
@@ -280,126 +283,157 @@ class API implements API_Interface {
 
 		$result = array();
 
-		$btc_address = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
+		$btc_xpub_address_string = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 
-		if ( empty( $btc_address ) ) {
-			throw new \Exception( 'Order has no Bitcoin address.' );
+		if ( empty( $btc_xpub_address_string ) ) {
+			throw new Exception( 'Order has no Bitcoin address.' );
 		}
 
 		$order_id = $order->get_id();
 
-		$result['order_id']               = $order_id;
-		$result['order_status']           = $order->get_status();
-		$result['order_status_formatted'] = wc_get_order_statuses()[ 'wc-' . $order->get_status() ];
-		$result['order']                  = $order;
-		$result['btc_address']            = $btc_address;
+		$result['order_id']            = $order_id;
+		$result['order_status_before'] = $order->get_status();
+		$result['btc_address']         = $btc_xpub_address_string;
 
 		$result['btc_total'] = $order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, true );
-		// ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
-		$btc_symbol                    = '฿';
-		$result['btc_total_formatted'] = $btc_symbol . ' ' . $result['btc_total'];
 
-		$result['btc_exchange_rate']           = $order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, true );
-		$result['btc_exchange_rate_formatted'] = get_woocommerce_currency_symbol( $order->get_currency() ) . $result['btc_exchange_rate'];
+		$result['btc_exchange_rate'] = $order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, true );
 
-		$amount_received               = $order->get_meta( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, true );
-		$amount_received               = is_numeric( $amount_received ) ? $amount_received : 0.0;
-		$result['btc_amount_received'] = $amount_received;
+		$amount_received                      = $order->get_meta( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, true );
+		$amount_received                      = is_numeric( $amount_received ) ? $amount_received : 0.0;
+		$result['btc_amount_received_before'] = $amount_received;
 
-		/** @var array<array{txid:string, time:string, value:float}> $previous_transactions */
-		$previous_transactions  = $order->get_meta( Order::TRANSACTIONS_META_KEY );
-		$previous_transactions  = is_array( $previous_transactions ) ? $previous_transactions : array();
-		$result['transactions'] = array();
-		foreach ( $previous_transactions as $transaction ) {
-			$result['transactions'][ $transaction['txid'] ] = $transaction;
+		$address_post_id = $this->crypto_address_factory->get_post_id_for_address( $btc_xpub_address_string );
+		$address         = $this->crypto_address_factory->get_by_post_id( $address_post_id );
+
+		$order_date_created = $order->get_date_created();
+
+		// Null if never checked before.
+		$address_transactions = $address->get_transactions();
+
+		// Filter transactions to this bitcoin address to only transactions that happened after the order was placed.
+		$order_transactions_before = array_filter(
+			$address_transactions ?? array(),
+			function( array $transaction ) use ( $order_date_created ) {
+				return $transaction['time'] > $order_date_created;
+			}
+		);
+
+		if ( ! $refresh ) {
+			$result['transactions'] = $order_transactions_before;
 		}
 
-		// TOOD: This is basically what the saved order data is before refreshing.
-		$this->logger->debug(
-			count( $previous_transactions ) . ' previously saved transactions for order ' . $order_id,
-			array(
-				'previous_transactions' => $previous_transactions,
-				'order_id'              => $order_id,
-				'result'                => $result,
-			)
-		);
+		$bitcoin_gateways = $this->get_bitcoin_gateways();
+
+		/** @var WC_Gateway_Bitcoin $gateway */
+		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
+
+		// TODO: get from gateway.
+		$gateway_num_required_confirmations = 3;
 
 		if ( $refresh ) {
 
 			$time_now = new DateTimeImmutable( 'now', new \DateTimeZone( 'UTC' ) );
 
-			// Check has it been paid.
-			$address_balance = $this->bitcoin_api->get_address_balance( $btc_address, true );
+			$updated_address = $this->update_address( $address );
 
-			// There must be a new transaction...
-			if ( $address_balance !== $amount_received ) {
+			if ( $updated_address['updated'] ) {
 
-				$result['btc_amount_received'] = $address_balance;
+				$refreshed_transactions = $updated_address['transactions'];
 
-				$refreshed_transactions = $this->bitcoin_api->get_transactions( $btc_address );
+				// We're only concerned with transactions that happened after the order was placed.
+				// TODO: Careful with timezones here.
+				$order_transactions = array_filter(
+					$refreshed_transactions,
+					function( array $transaction ) use ( $order_date_created ) {
+						return $transaction['time'] > $order_date_created;
+					}
+				);
 
-				foreach ( $refreshed_transactions as $transaction ) {
-					if ( ! isset( $result['transactions'][ $transaction['txid'] ] ) ) {
-						$transaction['datetime_first_seen']             = $time_now;
-						$result['transactions'][ $transaction['txid'] ] = $transaction;
-						$order->add_meta_data( Order::TRANSACTIONS_META_KEY, $result['transactions'], true );
+				// Sum the transactions with the required number of confirmations.
+				$result['btc_amount_received'] = array_reduce(
+					$order_transactions,
+					function( float $carry, array $transaction ) use ( $gateway_num_required_confirmations ): float {
+						if ( $gateway_num_required_confirmations <= $transaction['confirmations'] ) {
+							$carry += floatval( $transaction['value'] );
+						}
+						return $carry;
+					},
+					0.0
+				);
 
-						$log_message = "New payment of {$transaction['value']} seen in transaction {$transaction['txid']}.";
-						$note        = "New payment of {$transaction['value']} seen in transaction <a target=\"_blank\" href=\"https://blockchain.info/rawaddr/{$transaction['txid']}\">{$transaction['txid']}</a>.";
+				// Add a note saying "one new transactions seen, unconfirmed total =, confirmed total = ...".
 
-						$this->logger->info(
-							$log_message,
-							array(
-								'transaction' => $transaction,
-								'order_id'    => $order_id,
-							)
-						);
+				$note = '';
+				if ( ! empty( $updated_address['updates']['new_transactions'] ) ) {
+					// TODO: plural
+					$note                  .= 'New transactions seen: ';
+					$new_transactions_notes = array();
+					foreach ( $updated_address['updates']['new_transactions'] as $new_transaction ) {
+						$new_transactions_note    = '';
+						$new_transactions_note   .= $new_transaction['txid']; // TODO: add href.
+						$new_transactions_note   .= ', ' . $new_transaction['confirmations'] . ' confirmations';
+						$new_transactions_notes[] = $new_transactions_note;
+					}
+					$note .= implode( ',', $new_transactions_notes ) . ".\n\n";
+				}
 
-						$order->add_order_note( $note );
+				if ( ! empty( $updated_address['updates']['new_confirmations'] ) ) {
+					$above_required_confirmations = array_reduce(
+						$updated_address['updates']['new_confirmations'],
+						function( bool $carry, array $transaction ) use ( $gateway_num_required_confirmations ) {
+							return $carry && $transaction['confirmations'] >= $gateway_num_required_confirmations;
+						},
+						true
+					);
+					foreach ( $updated_address['updates']['new_confirmations'] as $transaction ) {
+						if ( $above_required_confirmations ) {
+							$note .= 'Transaction ';
+							$note .= $transaction['txid']; // TODO: add href.
+							$note .= ' now has ' . $transaction['confirmations'] . ".\n\n";
+						}
 					}
 				}
 
-				$expected = $result['btc_total'];
+				$this->logger->info(
+					$note,
+					array(
+						'order_id' => $order_id,
+						'updates'  => $updated_address['updates'],
+					)
+				);
 
-				$bitcoin_gateways = $this->get_bitcoin_gateways();
+				$order->add_order_note( $note );
+			}
 
-				/** @var WC_Gateway_Bitcoin $gateway */
-				$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
-
-				$price_margin = $gateway->get_price_margin();
+			// Maybe mark the order as paid.
+			if ( ! $order->is_paid() ) {
+				$expected     = $result['btc_total'];
+				$price_margin = $gateway->get_price_margin_percent();
 
 				$minimum_payment = $expected * ( 100 - $price_margin ) / 100;
 
-				if ( $address_balance > $minimum_payment && ! $order->is_paid() ) {
-					$order->payment_complete( $btc_address );
+				if ( $result['btc_amount_received'] > $minimum_payment ) {
+					$order->payment_complete( $btc_xpub_address_string );
 					$this->logger->info( "Order {$order_id} has been marked paid.", array( 'order_id' => $order_id ) );
 				}
 			}
 
+			// @phpstan-ignore-next-line This works fine.
 			$order->add_meta_data( Order::LAST_CHECKED_META_KEY, $time_now, true );
 			$order->save();
 
+			$last_checked_time = $time_now;
+		} else {
+			$last_checked_time           = $order->get_meta( Order::LAST_CHECKED_META_KEY );
+			$last_checked_time           = empty( $last_checked_time ) ? null : $last_checked_time;
 		}
 
-		$result['btc_amount_received_formatted'] = $btc_symbol . ' ' . $result['btc_amount_received'];
-
-		$last_checked_time           = $order->get_meta( Order::LAST_CHECKED_META_KEY );
-		$last_checked_time           = empty( $last_checked_time ) ? null : $last_checked_time;
 		$result['last_checked_time'] = $last_checked_time;
 
-		if ( $last_checked_time instanceof DateTimeInterface ) {
-			$date_format = get_option( 'date_format' );
-			$time_format = get_option( 'time_format' );
-			$timezone    = wp_timezone_string();
+		$result['order_status'] = $order->get_status();
 
-			// $last_checked_time is in UTC... change it to local time.?
-			// The server time is not local time... maybe use their address?
-			// @see https://stackoverflow.com/tags/timezone/info
-
-			$result['last_checked_time_formatted'] = $last_checked_time->format( $date_format . ', ' . $time_format ) . ' ' . $timezone;
-		} else {
-			$result['last_checked_time_formatted'] = 'Never';
-		}
+		$result['order'] = $order;
 
 		// If the order is not marked paid, but has transactions, it is partly-paid.
 		switch ( true ) {
@@ -416,6 +450,53 @@ class API implements API_Interface {
 		return $result;
 	}
 
+	/**
+	 * @param WC_Order $order
+	 * @param bool     $refresh
+	 *
+	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
+	 * @throws Exception
+	 */
+	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array {
+
+		$result = array();
+
+		$order_details = $this->get_order_details( $order, $refresh );
+
+		// ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
+		$btc_symbol                    = '฿';
+		$result['btc_total_formatted'] = $btc_symbol . ' ' . wc_trim_zeros( $order_details['btc_total'] );
+
+		$result['btc_exchange_rate_formatted'] = wc_price( $order_details['btc_exchange_rate'], array( 'currency' => $order->get_currency() ) );
+
+		$result['order_status_before_formatted'] = wc_get_order_statuses()[ 'wc-' . $order_details['order_status_before'] ];
+
+		$result['order_status_formatted'] = wc_get_order_statuses()[ 'wc-' . $order_details['order_status'] ];
+
+		$result['btc_amount_received_formatted'] = $btc_symbol . ' ' . $order_details['btc_amount_received'];
+
+		if ( isset( $order_details['last_checked_time'] ) && ( $order_details['last_checked_time'] instanceof DateTimeInterface ) ) {
+			$last_checked_time = $order_details['last_checked_time'];
+			$date_format       = get_option( 'date_format' );
+			$time_format       = get_option( 'time_format' );
+			$timezone          = wp_timezone_string();
+
+			// $last_checked_time is in UTC... change it to local time.?
+			// The server time is not local time... maybe use their address?
+			// @see https://stackoverflow.com/tags/timezone/info
+
+			$result['last_checked_time_formatted'] = $last_checked_time->format( $date_format . ', ' . $time_format ) . ' ' . $timezone;
+		} else {
+			$result['last_checked_time_formatted'] = 'Never';
+		}
+
+		// Unchanged data.
+		foreach ( array( 'order', 'btc_exchange_rate', 'btc_address', 'transactions', 'status' ) as $key ) {
+			$result[ $key ] = $order_details[ $key ];
+		}
+
+		return $result;
+	}
 
 	/**
 	 * Return the cached exchange rate, or fetch it.
@@ -423,9 +504,9 @@ class API implements API_Interface {
 	 *
 	 * Value of 1 BTC.
 	 *
-	 * @return float
+	 * @return string
 	 */
-	public function get_exchange_rate( string $currency ): float {
+	public function get_exchange_rate( string $currency ): string {
 		$transient_name = 'woobtc_exchange_rate_' . $currency;
 
 		$exchange_rate = get_transient( $transient_name );
@@ -435,16 +516,16 @@ class API implements API_Interface {
 			set_transient( $transient_name, $exchange_rate, HOUR_IN_SECONDS );
 		}
 
-		return floatval( $exchange_rate );
+		return $exchange_rate;
 	}
 
 	/**
 	 * @param string $currency 'USD'|'EUR'|'GBP'.
-	 * @param float  $fiat_amount
+	 * @param float  $fiat_amount This is stored in the WC_Order object as a float.
 	 *
-	 * @return float Bitcoin amount.
+	 * @return string Bitcoin amount.
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): float {
+	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): string {
 
 		// 1 BTC = xx USD
 		$exchange_rate = $this->get_exchange_rate( $currency );
