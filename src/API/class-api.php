@@ -15,11 +15,10 @@ use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitfinex_API;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\BitWasp_API;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Blockchain_Info_API;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Blockstream_Info_API;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Blockchain_API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Exchange_Rate_API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Generate_Address_API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\SoChain_API;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
@@ -50,13 +49,10 @@ class API implements API_Interface {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
 
-		if ( 'Blockchain.info' === $settings->get_api_preference() ) {
-			$this->bitcoin_api = new Blockchain_Info_API( $logger );
-		} else {
-			$this->bitcoin_api = new Blockstream_Info_API( $logger );
-		}
 		$this->crypto_wallet_factory  = $crypto_wallet_factory;
 		$this->crypto_address_factory = $crypto_address_factory;
+
+		$this->bitcoin_api = new SoChain_API();
 
 		$this->generate_address_api = new BitWasp_API( $logger );
 
