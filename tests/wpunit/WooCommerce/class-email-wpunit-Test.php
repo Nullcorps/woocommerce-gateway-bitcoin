@@ -129,12 +129,12 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$api    = $this->makeEmpty(
 			API_Interface::class,
 			array(
-				'is_bitcoin_gateway' => Expected::once(
+				'is_bitcoin_gateway'          => Expected::once(
 					function( $gateway_id ) {
 						return true;
 					}
 				),
-				'get_order_details'  => Expected::once(
+				'get_formatted_order_details' => Expected::once(
 					function( $order ) {
 						throw new \Exception( 'no address exception' );
 					}

@@ -421,8 +421,8 @@ class API implements API_Interface {
 
 			$last_checked_time = $time_now;
 		} else {
-			$last_checked_time           = $order->get_meta( Order::LAST_CHECKED_META_KEY );
-			$last_checked_time           = empty( $last_checked_time ) ? null : $last_checked_time;
+			$last_checked_time = $order->get_meta( Order::LAST_CHECKED_META_KEY );
+			$last_checked_time = empty( $last_checked_time ) ? null : $last_checked_time;
 		}
 
 		$result['last_checked_time'] = $last_checked_time;

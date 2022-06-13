@@ -26,7 +26,7 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 						return true;
 					}
 				),
-				'get_order_details'            => Expected::once(
+				'get_formatted_order_details'  => Expected::once(
 					function( $order ) {
 						return array();
 					}

@@ -33,7 +33,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once( true ),
-				'get_order_details'            => $order_details_array,
+				'get_formatted_order_details'  => $order_details_array,
 			)
 		);
 
