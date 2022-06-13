@@ -72,6 +72,14 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::userFunction(
+			'trailingslashit',
+			array(
+				'args'    => array( \WP_Mock\Functions::type( 'string' ) ),
+				'ret_arg' => true,
+			)
+		);
+
+		\WP_Mock::userFunction(
 			'register_activation_hook'
 		);
 
