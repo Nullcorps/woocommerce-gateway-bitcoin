@@ -84,6 +84,14 @@ After checkout, this is what the customer will see:
 * A background check runs every five minutes as long as the order remains on-hold.
 * The customer can view the same payment instructions under `my-account/orders/123`.
 
+On the admin order UI, the Bitcoin details are visible in a metabox:
+
+![Order metabox](./assets/screenshot-6.png "Bitcoin address, amount paid, etc. visible on order UI")
+
+Addresses are saved as a custom post type and their status can be seen in a standard WordPress list table:
+
+![Addresses List Table](./assets/screenshot-7.png "Standard WordPress list table show addresses and their status and properties: related order, number of transactions, balance, derivation path, last modified date.")
+
 
 ## TODO (nullcorps)
 
@@ -116,18 +124,18 @@ MOSTLY DONE? - make it also work with blockstream.info's api, allow user to set 
 ~~- Automate the address refill process like on btcpayme~~
     - add a "non-verbose" option to the [woobtc_addresses] thing which can be called from montastic or cron+wget
 
-- add mbtc as well as sats etc for ppl on default electrum settings (came up in testing)
+* add mbtc as well as sats etc for ppl on default electrum settings (came up in testing)
 
-- figure out wtf's needed to get this into the WP repo once it's at that point
+* figure out wtf's needed to get this into the WP repo once it's at that point
 
-DONE - ~~added "percentage discount for BTC payment" option (2021-11-02)~~ Removed by @BrianHenryIE, can be achieved with [Payment Gateway Based Fees and Discounts for WooCommerce plugin](https://wordpress.org/plugins/checkout-fees-for-woocommerce/)
-DONE - integrate in SS (test)
-DONE - integrate in FDV
-DONE - integrate in MSL
-DONE - integrate in TG
-DONE - auto prune addresses which may have been used in the mean time (e.g. multiple instances?)
-NOPE - maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1? << HA! How about no(t right now anyway)
-NOPE - give the option of QR from google images or local libary depending on privacy preference << meh, why?
+* DONE - ~~added "percentage discount for BTC payment" option (2021-11-02)~~ Removed by @BrianHenryIE, can be achieved with [Payment Gateway Based Fees and Discounts for WooCommerce plugin](https://wordpress.org/plugins/checkout-fees-for-woocommerce/)
+* DONE - integrate in SS (test)
+* DONE - integrate in FDV
+* DONE - integrate in MSL
+* DONE - integrate in TG
+* DONE - auto prune addresses which may have been used in the mean time (e.g. multiple instances?)
+* NOPE - maybe allow user-definable derivation paths? Do other wallets use something other than m/0/1? << HA! How about no(t right now anyway)
+* NOPE - give the option of QR from google images or local libary depending on privacy preference << meh, why?
 
 # Considerations:
 
@@ -140,8 +148,10 @@ NOPE - give the option of QR from google images or local libary depending on pri
 In this case you can set the lookahead value (gap limit?) for electrum from the electrum console (tab) by typing the following and your payments
 will magically appear:
 
+```
 wallet.change_gap_limit(200)
 wallet.synchronize()
+```
 
 see: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-address-in-electrum
 
@@ -152,6 +162,8 @@ see: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 * When the master key changes... generate addresses
 * Verify instructions are being sent in emails
 * Dependency injection container
+* Automatically cancel orders over one day -- with order note "no transactions at address..."
+* Show transactions in meta box on order page?
 
 ## Contributing
 
