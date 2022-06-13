@@ -20,5 +20,5 @@ parameters:
     ignoreErrors:
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
-        # PHPStan show errors when filters have more than two parameters.
+        # PHPStan shows errors when filters have more than two parameters.
         - '#^Function apply_filters(_ref_array)? invoked with \d parameters, 2 required\.$#'
