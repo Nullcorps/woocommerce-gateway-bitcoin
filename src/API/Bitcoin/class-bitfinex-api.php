@@ -23,9 +23,9 @@ class Bitfinex_API implements Exchange_Rate_API_Interface {
 	/**
 	 * Fetch the current exchange from a remote API.
 	 *
-	 * @return float
+	 * @return string
 	 */
-	public function get_exchange_rate( string $currency ): float {
+	public function get_exchange_rate( string $currency ): string {
 
 		$trading_pair = 'tBTC' . strtoupper( $currency );
 
