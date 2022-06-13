@@ -35,4 +35,31 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 
 	}
 
+	/**
+	 * @covers ::check_new_addresses_for_transactions
+	 */
+	public function test_check_new_addresses_for_transactions(): void {
+
+		$logger = new ColorLogger();
+		$api    = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'check_new_addresses_for_transactions' => Expected::once(
+					function() {
+						return array();
+					}
+				),
+			)
+		);
+
+		$sut = new Background_Jobs( $api, $logger );
+
+		$sut->check_new_addresses_for_transactions();
+
+		$this->assertTrue( $logger->hasDebugRecords() );
+
+		// TODO:
+		// $this->assertTrue( $logger->hasInfoThatContains( '' ) );
+	}
+
 }

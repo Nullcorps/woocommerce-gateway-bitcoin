@@ -24,7 +24,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 */
 	public $id = 'bitcoin_gateway';
 
-	protected API_Interface $api;
+	protected ?API_Interface $api = null;
 
 	protected string $instructions;
 
@@ -69,11 +69,28 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$processed  = parent::process_admin_options();
 		$xpub_after = $this->get_xpub();
 
-		if ( $xpub_before !== $xpub_after ) {
-			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
-			if ( ! as_has_scheduled_action( $hook ) ) {
-				as_schedule_single_action( time(), $hook );
+		if ( $xpub_before !== $xpub_after && ! empty( $xpub_after ) ) {
+			$gateway_name = $this->get_method_title() === $this->get_method_description() ? $this->get_method_title() : $this->get_method_title() . ' (' . $this->get_method_description() . ')';
+			$this->logger->info(
+				"New xpub key set for gateway $gateway_name: $xpub_after",
+				array(
+					'gateway_id'  => $this->id,
+					'xpub_before' => $xpub_before,
+					'xpub_after'  => $xpub_after,
+				)
+			);
+
+			if ( ! is_null( $this->api ) ) {
+				$this->api->generate_new_wallet( $xpub_after, $this->id );
 			}
+
+			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+			if ( ! as_has_scheduled_action( $hook, array( $xpub_after, $this->id ) ) ) {
+				as_schedule_single_action( time(), $hook, array( $xpub_after, $this->id ) );
+				$this->logger->debug( 'New generate new addresses job scheduled for new xpub.' );
+			}
+
+			// TODO: maybe mark the previous xpub's wallet as "inactive". (although it could be in use in another instance of the gateway).
 		}
 
 		return $processed;
@@ -81,6 +98,10 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 	/**
 	 * Initialize Gateway Settings Form Fields
+	 *
+	 * @see WC_Settings_API::init_form_fields()
+	 *
+	 * @return void
 	 */
 	public function init_form_fields() {
 
@@ -186,7 +207,13 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 */
 	public function is_available() {
 
-		return parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this->id );
+		static $result;
+
+		if ( empty( $result ) ) {
+			$result = parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this->id );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -206,24 +233,32 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			throw new \Exception( 'Error creating order.' );
 		}
 
-		$btc_address = $this->api->get_fresh_address_for_order( $order );
+		if ( ! isset( $this->api ) ) {
+			throw new \Exception( 'API unavailable for new Bitcoin gateway order.' );
+		}
 
-		if ( empty( $btc_address ) ) {
+		$api = $this->api;
+
+		// @throws
+		try {
+			// This sets the order meta value inside the function.
+			// $order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address->get_raw_address() );
+			$btc_address = $api->get_fresh_address_for_order( $order );
+		} catch ( \Exception $e ) {
+			// TODO: Log.
 			throw new \Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
 
-		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address );
-
 		// Record the exchange rate at the time the order was placed.
-		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, $this->api->get_exchange_rate( $order->get_currency() ) );
+		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, $api->get_exchange_rate( $order->get_currency() ) );
 
-		$btc_total = $this->api->convert_fiat_to_btc( $order->get_currency(), $order->get_total() );
+		$btc_total = $api->convert_fiat_to_btc( $order->get_currency(), $order->get_total() );
 
 		$order->add_meta_data( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, $btc_total );
 
 		// Mark as on-hold (we're awaiting the payment).
 		/* translators: %F: The order total in BTC */
-		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'nullcorps-wc-gateway-bitcoin' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address . "\">{$btc_address}</a>." );
+		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'nullcorps-wc-gateway-bitcoin' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
 
 		$order->save();
 
@@ -232,6 +267,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$args = array( 'order_id' => $order_id );
 		if ( ! as_has_scheduled_action( $hook, $args ) ) {
 			$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
+			$this->logger->debug( 'New order created, scheduling background job to check for payments' );
 			as_schedule_single_action( $timestamp, $hook, $args );
 		}
 
@@ -255,7 +291,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	/**
 	 * Returns the configured xpub for the gateway, so new addresses can be generated.
 	 *
-	 * @used-by API::generate_new_addresses_for_gateway()
+	 * @used-by API::generate_new_addresses_for_wallet()
 	 *
 	 * @return string
 	 */
@@ -270,7 +306,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 *
 	 * @return float
 	 */
-	public function get_price_margin(): float {
-		return floatval( $this->settings['price_margin'] ) ?? 2.0;
+	public function get_price_margin_percent(): float {
+		return floatval( $this->settings['price_margin'] ?? 2.0 );
 	}
 }
