@@ -28,10 +28,11 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\API;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Settings;
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Private_Uploads\Private_Uploads;
 use Nullcorps\WC_Gateway_Bitcoin\Includes\Activator;
 use Nullcorps\WC_Gateway_Bitcoin\Includes\Deactivator;
 use Nullcorps\WC_Gateway_Bitcoin\Includes\Nullcorps_WC_Gateway_Bitcoin;
@@ -72,9 +73,11 @@ function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
 
 	$settings = new Settings();
 	$logger   = Logger::instance( $settings );
-	$api      = new API( $settings, $logger );
 
-	Private_Uploads::instance( $settings );
+	$crypto_wallet_factory  = new Crypto_Wallet_Factory();
+	$crypto_address_factory = new Crypto_Address_Factory();
+
+	$api = new API( $settings, $logger, $crypto_wallet_factory, $crypto_address_factory );
 
 	$plugin = new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
 

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Object containing the plugin settings.
+ *
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
@@ -11,9 +13,11 @@ use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Private_Uploads\Private_Uploads
 use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Private_Uploads\Private_Uploads_Settings_Trait;
 use Psr\Log\LogLevel;
 
-class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interface, Private_Uploads_Settings_Interface {
+/**
+ * Plain object pulling setting from wp_options.
+ */
+class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interface {
 	use Logger_Settings_Trait;
-	use Private_Uploads_Settings_Trait;
 
 	/**
 	 * The minimum severity of logs to record.
@@ -66,17 +70,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.1.1';
-	}
-
-	/**
-	 * The directory under `wp-content/uploads/` that the generated fresh and used addresses will be stored.
-	 * TODO: cpt with address as guid?
-	 *
-	 * @return string
-	 */
-	public function get_uploads_subdirectory_name(): string {
-		return 'woobtc';
+		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.2.0';
 	}
 
 	/**

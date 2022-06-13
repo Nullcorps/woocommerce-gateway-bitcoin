@@ -13,9 +13,11 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
 
+use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Admin;
+use Nullcorps\WC_Gateway_Bitcoin\Admin\Addresses_List_Table;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
+use Nullcorps\WC_Gateway_Bitcoin\Admin\Wallets_List_Table;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\AJAX;
@@ -67,6 +69,8 @@ class Nullcorps_WC_Gateway_Bitcoin {
 
 		$this->define_plugins_page_hooks();
 
+		$this->define_custom_post_type_hooks();
+
 		$this->define_frontend_hooks();
 		$this->define_template_hooks();
 
@@ -75,6 +79,9 @@ class Nullcorps_WC_Gateway_Bitcoin {
 		$this->define_thank_you_hooks();
 		$this->define_email_hooks();
 		$this->define_my_account_hooks();
+
+		$this->define_wallets_list_page_ui_hooks();
+		$this->define_addresses_list_page_ui_hooks();
 
 		$this->define_action_scheduler_hooks();
 	}
@@ -107,6 +114,13 @@ class Nullcorps_WC_Gateway_Bitcoin {
 
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_settings_action_link' ) );
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_orders_action_link' ) );
+	}
+
+	protected function define_custom_post_type_hooks():void {
+
+		$post = new Post();
+		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
+		add_action( 'init', array( $post, 'register_address_post_type' ) );
 	}
 
 	/**
@@ -195,5 +209,55 @@ class Nullcorps_WC_Gateway_Bitcoin {
 
 		add_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK, array( $background_jobs, 'generate_new_addresses' ) );
 		add_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK, array( $background_jobs, 'check_unpaid_order' ) );
+		add_action( Background_Jobs::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_new_addresses_for_transactions' ) );
+	}
+
+	/**
+	 * Add a meta box to the admin order view showing the Bitcoin total, address and transactions.
+	 */
+	protected function define_admin_order_ui_hooks(): void {
+
+		$admin_order_ui = new Admin_Order_UI( $this->api, $this->logger );
+
+		add_action( 'add_meta_boxes', array( $admin_order_ui, 'register_address_transactions_meta_box' ) );
+	}
+
+
+	/**
+	 * Customize the columns and data shown in the WP_List_Table for crypto wallets.
+	 */
+	protected function define_wallets_list_page_ui_hooks(): void {
+
+		$wallets_list_page = new Wallets_List_Table();
+
+		add_filter( 'manage_edit-bh-crypto-wallet_columns', array( $wallets_list_page, 'define_columns' ) );
+
+		add_action( 'manage_bh-crypto-wallet_posts_custom_column', array( $wallets_list_page, 'print_columns' ), 10, 2 );
+
+		add_action(
+			'admin_menu',
+			function() use ( $wallets_list_page ) {
+				add_filter( 'post_row_actions', array( $wallets_list_page, 'edit_row_actions' ), 10, 2 );
+			}
+		);
+	}
+
+	/**
+	 * Customize the columns and data shown in the WP_List_Table for crypto addresses.
+	 */
+	protected function define_addresses_list_page_ui_hooks(): void {
+
+		$addresses_list_page = new Addresses_List_Table();
+
+		add_filter( 'manage_edit-bh-crypto-address_columns', array( $addresses_list_page, 'define_columns' ) );
+
+		add_action( 'manage_bh-crypto-address_posts_custom_column', array( $addresses_list_page, 'print_columns' ), 10, 2 );
+
+		add_action(
+			'admin_menu',
+			function() use ( $addresses_list_page ) {
+				add_filter( 'post_row_actions', array( $addresses_list_page, 'edit_row_actions' ), 10, 2 );
+			}
+		);
 	}
 }

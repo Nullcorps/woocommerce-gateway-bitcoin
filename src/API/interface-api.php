@@ -5,9 +5,15 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API;
 
+use Exception;
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
 use WC_Order;
 
+
+/**
+ * @phpstan-type TransactionArray array{txid:string, time:\DateTimeInterface, value:string, confirmations:int}
+ */
 interface API_Interface {
 
 	/**
@@ -58,7 +64,16 @@ interface API_Interface {
 	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): float;
 
 
-	public function get_fresh_address_for_order( WC_Order $order ): string;
+	/**
+	 * Return an unused address for use in an order.
+	 * Adds the address as metadata to the order.
+	 *
+	 * @param WC_Order $order The (newly placed) WooCommerce order.
+	 *
+	 * @return Crypto_Address
+	 * @throws Exception When no address is available.
+	 */
+	public function get_fresh_address_for_order( WC_Order $order ): Crypto_Address;
 
 	/**
 	 * @param WC_Order $order
