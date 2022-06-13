@@ -13,6 +13,7 @@ use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
+use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
 use WP_Mock\Matcher\AnyInstance;
@@ -185,6 +186,23 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::expectActionAdded(
 			Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK,
 			array( new AnyInstance( Background_Jobs::class ), 'generate_new_addresses' )
+		);
+
+		$api      = $this->makeEmpty( API_Interface::class );
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+	}
+
+	/**
+	 * @covers ::define_admin_order_ui_hooks
+	 */
+	public function test_define_admin_order_ui_hooks(): void {
+
+		\WP_Mock::expectActionAdded(
+			'add_meta_boxes',
+			array( new AnyInstance( Admin_Order_UI::class ), 'register_address_transactions_meta_box' )
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );

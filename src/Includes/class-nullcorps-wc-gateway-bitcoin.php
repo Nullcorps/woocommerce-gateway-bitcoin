@@ -22,6 +22,7 @@ use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\AJAX;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
+use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\My_Account_View_Order;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
@@ -80,6 +81,7 @@ class Nullcorps_WC_Gateway_Bitcoin {
 		$this->define_email_hooks();
 		$this->define_my_account_hooks();
 
+		$this->define_admin_order_ui_hooks();
 		$this->define_wallets_list_page_ui_hooks();
 		$this->define_addresses_list_page_ui_hooks();
 
