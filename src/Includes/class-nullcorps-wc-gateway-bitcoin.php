@@ -113,7 +113,7 @@ class Nullcorps_WC_Gateway_Bitcoin {
 	 */
 	protected function define_plugins_page_hooks(): void {
 
-		$plugins_page = new Plugins_Page( $this->api );
+		$plugins_page = new Plugins_Page();
 
 		$plugin_basename = $this->settings->get_plugin_basename();
 
