@@ -579,6 +579,7 @@ class API implements API_Interface {
 
 
 	/**
+	 * If a wallet has fewer than 50 fresh addresses available, generate some more.
 	 *
 	 * @see API_Interface::generate_new_addresses()
 	 * @used-by CLI::generate_new_addresses()
@@ -608,6 +609,14 @@ class API implements API_Interface {
 				}
 			} else {
 				$result[ $gateway->id ]['wallet_post_id'] = $wallet_post_id;
+			}
+
+			$wallet = $this->crypto_wallet_factory->get_by_post_id( $wallet_post_id );
+
+			$fresh_addresses = $wallet->get_fresh_addresses();
+
+			if ( count( $fresh_addresses ) > 50 ) {
+				continue;
 			}
 
 			$generated_addresses_result = $this->generate_new_addresses_for_wallet( $gateway->get_xpub() );
