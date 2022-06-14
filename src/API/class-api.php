@@ -498,7 +498,7 @@ class API implements API_Interface {
 		$wallet                = $this->crypto_wallet_factory->get_by_post_id( $address->get_wallet_parent_post_id() );
 		$xpub                  = $wallet->get_xpub();
 		$xpub_friendly_display = substr( $xpub, 0, 7 ) . ' ... ' . substr( $xpub, -3, 3 );
-		$xpub_js_span          = "<span style=\"border-bottom: 1px dashed #999;\" onclick=\"this.innerText='{$xpub}';\" title=\"{$xpub}\"'>{$xpub_friendly_display}</span>";
+		$xpub_js_span          = "<span style=\"border-bottom: 1px dashed #999;\" onclick=\"this.innerText = this.innerText === '{$xpub}' ? '{$xpub_friendly_display}' : '{$xpub}';\" title=\"{$xpub}\"'>{$xpub_friendly_display}</span>";
 
 		$result['parent_wallet_xpub_html'] = $xpub_js_span;
 
