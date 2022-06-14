@@ -90,7 +90,10 @@ class Admin_Order_UI {
 		 */
 		$order = wc_get_order( $order_id );
 
-		$order_details = $this->api->get_formatted_order_details( $order );
+		// Once the order has been paid, no longer look for new transactions, unless manually pressing refresh.
+		$refresh = ! $order->is_paid();
+
+		$order_details = $this->api->get_formatted_order_details( $order, $refresh );
 
 		echo '<table>';
 
