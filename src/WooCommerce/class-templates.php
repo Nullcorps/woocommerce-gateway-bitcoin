@@ -47,6 +47,7 @@ class Templates {
 			Email::TEMPLATE_NAME,
 			My_Account_View_Order::TEMPLATE_NAME,
 			Thank_You::TEMPLATE_NAME,
+			Admin_Order_UI::TEMPLATE_NAME,
 		);
 
 		// Unrelated to us, leave early.

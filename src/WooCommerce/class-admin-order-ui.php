@@ -20,6 +20,8 @@ use WP_Post;
 class Admin_Order_UI {
 	use LoggerAwareTrait;
 
+	const TEMPLATE_NAME = 'admin/single-order-ui-bitcoin-details-metabox.php';
+
 	/**
 	 * Instance of the mail plugin class.
 	 *
@@ -90,14 +92,15 @@ class Admin_Order_UI {
 		 */
 		$order = wc_get_order( $order_id );
 
-		// Once the order has been paid, no longer look for new transactions, unless manually pressing refresh.
+		// Once the order has been paid, no longer poll for new transactions, unless manually pressing refresh.
 		$refresh = ! $order->is_paid();
 
-		$order_details = $this->api->get_formatted_order_details( $order, $refresh );
-
-		echo '<table>';
-
-		echo '<tr><td>Order Total:</td><td>' . esc_html( $order_details['btc_total_formatted'] ) . '</td></tr>';
+		try {
+			$order_details = $this->api->get_formatted_order_details( $order, $refresh );
+		} catch ( \Exception $exception ) {
+			$this->logger->error( 'Failed to get order details for email templates: ' . $exception->getMessage(), array( 'exception' => $exception ) );
+			return;
+		}
 
 		// Add a link to showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
 
@@ -114,34 +117,11 @@ class Admin_Order_UI {
 		} else {
 			$to = $from + DAY_IN_SECONDS;
 		}
-		echo '<tr>';
-		echo '<td>Exchange Rate:</td>';
-		echo '<td><a target="_blank" href="' . esc_url( "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line" ) . '">' . esc_html( $order_details['btc_exchange_rate'] ) . '</a></td>';
-		echo '</tr>';
+		$exchange_rate_url                  = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
+		$order_details['exchange_rate_url'] = $exchange_rate_url;
 
-		$btc_address = $order_details['btc_address'];
-		echo '<tr>';
-		echo '<td>Payment Address:</td>';
-		echo '<td><a target="_blank" href="' . esc_url( "https://www.blockchain.com/btc/address/{$btc_address}" ) . '">' . esc_html( $btc_address ) . '</a></td>';
-		echo '</tr>';
+		wc_get_template( self::TEMPLATE_NAME, $order_details );
 
-		$transactions = $order_details['transactions'];
-		echo '<tr>';
-		echo '<td>Transactions:</td>';
-		echo '<td>';
-		if ( empty( $transactions ) ) {
-			echo esc_html__( 'No transactions yet', 'nullcorps-wc-gateway-bitcoin' );
-		} else {
-			echo 'todo';
-		}
-		echo '</td>';
-		echo '</tr>';
-
-		echo '<tr><td>Amount received:</td><td>' . esc_html( $order_details['btc_amount_received_formatted'] ) . '</td></tr>';
-
-		echo '<tr><td>Last Checked:</td><td>' . esc_html( $order_details['last_checked_time_formatted'] ) . '</td></tr>';
-
-		echo '</table>';
 	}
 
 }
