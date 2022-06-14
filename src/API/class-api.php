@@ -391,15 +391,17 @@ class API implements API_Interface {
 					}
 				}
 
-				$this->logger->info(
-					$note,
-					array(
-						'order_id' => $order_id,
-						'updates'  => $updated_address['updates'],
-					)
-				);
+				if ( ! empty( $note ) ) {
+					$this->logger->info(
+						$note,
+						array(
+							'order_id' => $order_id,
+							'updates'  => $updated_address['updates'],
+						)
+					);
 
-				$order->add_order_note( $note );
+					$order->add_order_note( $note );
+				}
 			}
 
 			// Maybe mark the order as paid.
