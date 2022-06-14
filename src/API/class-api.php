@@ -6,6 +6,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API;
 
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
@@ -299,8 +300,9 @@ class API implements API_Interface {
 		$amount_received                      = is_numeric( $amount_received ) ? $amount_received : 0.0;
 		$result['btc_amount_received_before'] = $amount_received;
 
-		$address_post_id = $this->crypto_address_factory->get_post_id_for_address( $btc_xpub_address_string );
-		$address         = $this->crypto_address_factory->get_by_post_id( $address_post_id );
+		$address_post_id                 = $this->crypto_address_factory->get_post_id_for_address( $btc_xpub_address_string );
+		$address                         = $this->crypto_address_factory->get_by_post_id( $address_post_id );
+		$result['crypto_address_object'] = $address;
 
 		$order_date_created = $order->get_date_created();
 
@@ -487,6 +489,39 @@ class API implements API_Interface {
 		} else {
 			$result['last_checked_time_formatted'] = 'Never';
 		}
+
+		/** @var Crypto_Address $address */
+		$address = $order_details['crypto_address_object'];
+
+		$result['btc_address_derivation_path_sequence_number'] = $address->get_derivation_path_sequence_number();
+
+		$wallet                = $this->crypto_wallet_factory->get_by_post_id( $address->get_wallet_parent_post_id() );
+		$xpub                  = $wallet->get_xpub();
+		$xpub_friendly_display = substr( $xpub, 0, 7 ) . ' ... ' . substr( $xpub, -3, 3 );
+		$xpub_js_span          = "<span style=\"border-bottom: 1px dashed #999;\" onclick=\"this.innerText='{$xpub}';\" title=\"{$xpub}\"'>{$xpub_friendly_display}</span>";
+
+		$result['parent_wallet_xpub_html'] = $xpub_js_span;
+
+		// TODO: Link to the CPT list table.
+		// $result['parent_wallet_url'] =
+
+		// Add a link to showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
+
+		/**
+		 * This supposedly could be null, but I can't imagine a scenario where WooCommerce returns an order object
+		 * that doesn't have a DateTime for created.
+		 *
+		 * @var DateTime $date_created
+		 */
+		$date_created = $order->get_date_created();
+		$from         = $date_created->getTimestamp() - ( DAY_IN_SECONDS / 2 );
+		if ( ! is_null( $order->get_date_paid() ) ) {
+			$to = $order->get_date_paid()->getTimestamp() + ( DAY_IN_SECONDS / 2 );
+		} else {
+			$to = $from + DAY_IN_SECONDS;
+		}
+		$exchange_rate_url                  = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
+		$order_details['exchange_rate_url'] = $exchange_rate_url;
 
 		// Unchanged data.
 		foreach ( array( 'order', 'btc_total', 'btc_exchange_rate', 'btc_address', 'transactions', 'status' ) as $key ) {

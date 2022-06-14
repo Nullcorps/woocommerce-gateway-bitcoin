@@ -102,24 +102,6 @@ class Admin_Order_UI {
 			return;
 		}
 
-		// Add a link to showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
-
-		/**
-		 * This supposedly could be null, but I can't imagine a scenario where WooCommerce returns an order object
-		 * that doesn't have a DateTime for created.
-		 *
-		 * @var DateTime $date_created
-		 */
-		$date_created = $order->get_date_created();
-		$from         = $date_created->getTimestamp() - ( DAY_IN_SECONDS / 2 );
-		if ( ! is_null( $order->get_date_paid() ) ) {
-			$to = $order->get_date_paid()->getTimestamp() + ( DAY_IN_SECONDS / 2 );
-		} else {
-			$to = $from + DAY_IN_SECONDS;
-		}
-		$exchange_rate_url                  = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
-		$order_details['exchange_rate_url'] = $exchange_rate_url;
-
 		wc_get_template( self::TEMPLATE_NAME, $order_details );
 
 	}

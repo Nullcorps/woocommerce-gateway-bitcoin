@@ -71,7 +71,7 @@ class Crypto_Wallet {
 	 * @return string
 	 */
 	public function get_xpub(): string {
-		return $this->post->post_content;
+		return $this->post->post_excerpt;
 	}
 
 	/**
