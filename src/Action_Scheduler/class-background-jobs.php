@@ -80,6 +80,7 @@ class Background_Jobs {
 			$order = wc_get_order( $order_id );
 
 			if ( ! in_array( $order->get_status(), array( 'pending', 'on-hold' ), true ) ) {
+				$this->logger->debug( "Order {$order_id} status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
 				return;
 			}
 
