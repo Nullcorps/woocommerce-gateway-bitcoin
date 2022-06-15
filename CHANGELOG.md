@@ -1,5 +1,14 @@
 # Changelog
 
+### 1.3.0
+
+* UI: add xpub and derivation path to admin order metabox
+* Don't continue checking for address transactions after order is marked paid
+* More logging of update order background job
+* Refactor: move admin order metabox to template
+* Fix: add btc_total to formatted order details
+* Fix: don't add empty notes to orders when there are not transaction updates
+
 ### 1.2.0
 
 * Store wallets & addresses as custom post type
