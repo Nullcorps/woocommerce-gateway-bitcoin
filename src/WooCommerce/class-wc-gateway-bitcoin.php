@@ -79,9 +79,8 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 		$xpub_before = $this->get_xpub();
 
-		/** @var bool $processed */
-		$processed  = parent::process_admin_options();
-		$xpub_after = $this->get_xpub();
+		$is_processed = parent::process_admin_options();
+		$xpub_after   = $this->get_xpub();
 
 		if ( $xpub_before !== $xpub_after && ! empty( $xpub_after ) ) {
 			$gateway_name = $this->get_method_title() === $this->get_method_description() ? $this->get_method_title() : $this->get_method_title() . ' (' . $this->get_method_description() . ')';
@@ -107,7 +106,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			// TODO: maybe mark the previous xpub's wallet as "inactive". (although it could be in use in another instance of the gateway).
 		}
 
-		return $processed;
+		return $is_processed;
 	}
 
 	/**
