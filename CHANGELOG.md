@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.3.1
+
+* Fix: continue checking for address transactions after order is marked paid
+* Fix: Bitcoin logo was not displaying on checkout
+
 ### 1.3.0
 
 * UI: add xpub and derivation path to admin order metabox
