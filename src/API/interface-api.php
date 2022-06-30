@@ -110,11 +110,11 @@ interface API_Interface {
 	 *
 	 * @used-by WC_Gateway_Bitcoin::is_available()
 	 *
-	 * @param string $gateway_id
+	 * @param WC_Gateway_Bitcoin $gateway
 	 *
 	 * @return bool
 	 */
-	public function is_fresh_address_available_for_gateway( string $gateway_id ): bool;
+	public function is_fresh_address_available_for_gateway( WC_Gateway_Bitcoin $gateway ): bool;
 
 	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
 }

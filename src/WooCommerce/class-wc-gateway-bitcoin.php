@@ -29,6 +29,18 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	protected string $instructions;
 
 	/**
+	 * Is this gateway enabled and has a payment address available.
+	 *
+	 * Previously we were using a static value in a method to store this, but that caused problems with tests, and
+	 * would be an issue with Duplicate Payment Gateways.
+	 *
+	 * @used-by WC_Gateway_Bitcoin::is_available()
+	 *
+	 * @var ?bool
+	 */
+	protected ?bool $is_available = null;
+
+	/**
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
@@ -207,10 +219,15 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 */
 	public function is_available() {
 
-		static $result;
+		if ( is_null( $this->api ) ) {
+			return false;
+		}
 
-		if ( empty( $result ) ) {
-			$result = parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this->id );
+		if ( is_null( $this->is_available ) ) {
+			$result             = parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this );
+			$this->is_available = $result;
+		} else {
+			$result = $this->is_available;
 		}
 
 		return $result;

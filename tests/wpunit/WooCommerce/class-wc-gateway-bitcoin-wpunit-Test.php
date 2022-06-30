@@ -108,7 +108,7 @@ class WC_Gateway_Bitcoin_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
-					function( $gateway_id ) {
+					function( WC_Gateway_Bitcoin $gateway ) {
 						return true;
 					}
 				),
@@ -122,24 +122,54 @@ class WC_Gateway_Bitcoin_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $result );
 	}
 
-
 	/**
 	 * @covers ::is_available
 	 */
 	public function test_checks_for_available_address_for_availability_false(): void {
 
-		$this->markTestSkipped( 'Passes when run alone' );
-
 		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
-					function( string $gateway_id ) {
+					function( WC_Gateway_Bitcoin $gateway ) {
 						return false;
 					}
 				),
 			)
 		);
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$result = $sut->is_available();
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers ::is_available
+	 */
+	public function test_checks_for_available_address_for_availability_uses_cache(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty( API_Interface::class );
+
+		$sut = new class() extends WC_Gateway_Bitcoin {
+			public function __construct() {
+				parent::__construct();
+				$this->is_available = false;
+			}
+		};
+
+		$result = $sut->is_available();
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers ::is_available
+	 */
+	public function test_checks_for_available_address_for_availability_false_when_no_api_class(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = null;
 
 		$sut = new WC_Gateway_Bitcoin();
 
