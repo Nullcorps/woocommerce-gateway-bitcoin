@@ -1,5 +1,6 @@
 <?php
 /**
+ * The main payment gateway class for the plugin.
  *
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
@@ -16,18 +17,35 @@ use Psr\Log\NullLogger;
 use WC_Order;
 use WC_Payment_Gateway;
 
+/**
+ * Simple instance of WC_Payment Gateway. Defines the admin settings and processes the payment.
+ *
+ * @see WC_Settings_API
+ */
 class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	use LoggerAwareTrait;
 
 	/**
+	 * The default id for an instance of this gateway (typically there will only be one).
+	 *
 	 * @override WC_Settings_API::$id
 	 *
 	 * @var string
 	 */
 	public $id = 'bitcoin_gateway';
 
+	/**
+	 * Used to generate new wallets when the xpub is entered, and to fetch addresses when orders are placed.
+	 *
+	 * @var ?API_Interface
+	 */
 	protected ?API_Interface $api = null;
 
+	/**
+	 * A customisable message to show alongside the payment instructions.
+	 *
+	 * @var string
+	 */
 	protected string $instructions;
 
 	/**
