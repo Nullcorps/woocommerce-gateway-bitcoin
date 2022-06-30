@@ -70,35 +70,34 @@ class Background_Jobs {
 			// 403.
 			// TODO: Log better.
 			$this->logger->error( 'Error getting order details for order ' . $order_id, array( 'order_id' => $order_id ) );
-		} finally {
+		}
 
-			/**
-			 * We've already verified in this function that $order_id is for a valid WC_Order object.
-			 *
-			 * @var WC_Order $order
-			 */
-			$order = wc_get_order( $order_id );
+		/**
+		 * We've already verified in this function that $order_id is for a valid WC_Order object.
+		 *
+		 * @var WC_Order $order
+		 */
+		$order = wc_get_order( $order_id );
 
-			if ( ! in_array( $order->get_status(), array( 'pending', 'on-hold' ), true ) ) {
-				$this->logger->debug( "Order {$order_id} status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
-				return;
-			}
+		if ( ! in_array( $order->get_status(), array( 'pending', 'on-hold' ), true ) ) {
+			$this->logger->debug( "Order {$order_id} status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
+			return;
+		}
 
-			// While there are still unpaid Bitcoin orders, keep checking for payments.
-			$hook = self::CHECK_UNPAID_ORDER_HOOK;
-			$args = array( 'order_id' => $order_id );
-			if ( ! as_has_scheduled_action( $hook, $args ) ) {
-				$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
-				$this->logger->debug(
-					"{$order_id} still unpaid, scheduling new check_unpaid_order() background job.",
-					array(
-						'timestamp' => $timestamp,
-						'hook'      => $hook,
-						'args'      => $args,
-					)
-				);
-				as_schedule_single_action( $timestamp, $hook, $args );
-			}
+		// While there are still unpaid Bitcoin orders, keep checking for payments.
+		$hook = self::CHECK_UNPAID_ORDER_HOOK;
+		$args = array( 'order_id' => $order_id );
+		if ( ! as_has_scheduled_action( $hook, $args ) ) {
+			$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
+			$this->logger->debug(
+				"{$order_id} still unpaid, scheduling new check_unpaid_order() background job.",
+				array(
+					'timestamp' => $timestamp,
+					'hook'      => $hook,
+					'args'      => $args,
+				)
+			);
+			as_schedule_single_action( $timestamp, $hook, $args );
 		}
 
 	}
