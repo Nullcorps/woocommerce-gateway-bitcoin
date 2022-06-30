@@ -6,7 +6,9 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
+use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -236,10 +238,10 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	/**
 	 * Process the payment and return the result.
 	 *
-	 * @param int $order_id
+	 * @param int $order_id The id of the order being paid.
 	 *
 	 * @return array{result:string, redirect:string}
-	 * @throws \Exception
+	 * @throws Exception Throws an exception when no address is available (which is caught by WooCommerce and displayed at checkout).
 	 */
 	public function process_payment( $order_id ) {
 
@@ -247,23 +249,32 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 		if ( ! ( $order instanceof WC_Order ) ) {
 			// This should never happen.
-			throw new \Exception( 'Error creating order.' );
+			throw new Exception( __( 'Error creating order.', 'nullcorps-wc-gateway-bitcoin' ) );
 		}
 
-		if ( ! isset( $this->api ) ) {
-			throw new \Exception( 'API unavailable for new Bitcoin gateway order.' );
+		if ( is_null( $this->api ) ) {
+			throw new Exception( __( 'API unavailable for new Bitcoin gateway order.', 'nullcorps-wc-gateway-bitcoin' ) );
 		}
 
 		$api = $this->api;
 
-		// @throws
+		/**
+		 * There should never really be an exception here, since the availability of a fresh address was checked before
+		 * offering the option to pay by Bitcoin.
+		 *
+		 * @see WC_Gateway_Bitcoin::is_available()
+		 */
 		try {
-			// This sets the order meta value inside the function.
-			// $order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address->get_raw_address() );
+			/**
+			 * This sets the order meta value inside the function.
+			 *
+			 * @see Order::BITCOIN_ADDRESS_META_KEY
+			 * @see Crypto_Address::get_raw_address()
+			 */
 			$btc_address = $api->get_fresh_address_for_order( $order );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			// TODO: Log.
-			throw new \Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
+			throw new Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
 
 		// Record the exchange rate at the time the order was placed.

@@ -3,9 +3,11 @@
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
 use Codeception\Stub\Expected;
+use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use WC_Order;
 
 /**
  * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin
@@ -28,7 +30,7 @@ class WC_Gateway_Bitcoin_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut = new WC_Gateway_Bitcoin();
 
-		$order = new \WC_Order();
+		$order = new WC_Order();
 		$order->set_total( '1000' );
 		$order_id = $order->save();
 
@@ -200,4 +202,81 @@ class WC_Gateway_Bitcoin_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 'Expected', $result );
 
 	}
+
+	/**
+	 * @covers ::process_payment
+	 */
+	public function test_process_payment_returns_exception_on_bad_order_id(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty( API_Interface::class );
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$exception = null;
+		try {
+			$sut->process_payment( 123 );
+		} catch ( Exception $e ) {
+			$exception = $e;
+		}
+
+		$this->assertNotNull( $exception );
+		$this->assertEquals( 'Error creating order.', $exception->getMessage() );
+	}
+
+	/**
+	 * @covers ::process_payment
+	 */
+	public function test_process_payment_returns_exception_on_missing_api_instance(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = null;
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$order    = new WC_Order();
+		$order_id = $order->save();
+
+		$exception = null;
+		try {
+			$sut->process_payment( $order_id );
+		} catch ( Exception $e ) {
+			$exception = $e;
+		}
+
+		$this->assertNotNull( $exception );
+		$this->assertEquals( 'API unavailable for new Bitcoin gateway order.', $exception->getMessage() );
+	}
+
+
+	/**
+	 * @covers ::process_payment
+	 */
+	public function test_process_payment_returns_exception_when_no_address_available(): void {
+
+		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'get_fresh_address_for_order' => Expected::once(
+					function( WC_Order $order ) {
+						throw new Exception( 'This message will not be shown!' );
+					}
+				),
+			)
+		);
+
+		$sut = new WC_Gateway_Bitcoin();
+
+		$order    = new WC_Order();
+		$order_id = $order->save();
+
+		$exception = null;
+		try {
+			$sut->process_payment( $order_id );
+		} catch ( Exception $e ) {
+			$exception = $e;
+		}
+
+		$this->assertNotNull( $exception );
+		$this->assertEquals( 'Unable to find Bitcoin address to send to. Please choose another payment method.', $exception->getMessage() );
+	}
+
 }
