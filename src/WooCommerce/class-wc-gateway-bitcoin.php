@@ -38,7 +38,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		// TODO: Is there a better way to do this?
 		$this->api = $GLOBALS['nullcorps_wc_gateway_bitcoin'];
 
-		$this->icon               = apply_filters( 'woocommerce_offline_icon', '' );
+		$this->icon               = plugins_url( 'assets/bitcoin.png', 'woocommerce-gateway-bitcoin/nullcorps-woocommerce-gateway-bitcoin.php' );
 		$this->has_fields         = false;
 		$this->method_title       = __( 'Bitcoin', 'nullcorps-wc-gateway-bitcoin' );
 		$this->method_description = __( 'Allows Bitcoin payments. Orders are marked as "on-hold" when received, and marked paid once the specified number of confirmations are met', 'nullcorps-wc-gateway-bitcoin' );
@@ -118,7 +118,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 				'title'       => __( 'Title', 'nullcorps-wc-gateway-bitcoin' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'nullcorps-wc-gateway-bitcoin' ),
-				'default'     => __( 'Bitcoin Payment', 'nullcorps-wc-gateway-bitcoin' ),
+				'default'     => __( 'Bitcoin', 'nullcorps-wc-gateway-bitcoin' ),
 				'desc_tip'    => false,
 			),
 
