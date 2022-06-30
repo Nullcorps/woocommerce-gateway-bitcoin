@@ -133,7 +133,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			'instructions'          => array(
 				'title'       => __( 'Instructions', 'nullcorps-wc-gateway-bitcoin' ),
 				'type'        => 'textarea',
-				'description' => __( 'Additional instructions to appear alongside the payment address and amount, before payment has been made.', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made.', 'nullcorps-wc-gateway-bitcoin' ),
 				'default'     => 'NB: Please only send Bitcoin, which always has the ticker BTC, not any of the many clones. If you send coins other than Bitcoin (e.g. Bitcoin Cash) then those coins will be lost and your order will still not be paid.',
 				'desc_tip'    => false,
 			),
@@ -284,6 +284,13 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		);
 	}
 
+	/**
+	 * Get the instructions configured by the admin to display on the Thank You page.
+	 *
+	 * "Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made."
+	 *
+	 * @return string
+	 */
 	public function get_instructions(): string {
 		return $this->settings['instructions'] ?? '';
 	}
