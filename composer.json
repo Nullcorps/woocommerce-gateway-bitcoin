@@ -59,7 +59,7 @@
         "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
         "brianhenryie/bh-wp-logger": "dev-master",
         "chillerlan/php-qrcode": "^4.3",
-        "pablo-sg-pacheco/wp-namespace-autoloader": "*"
+        "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master#015c9654459fd267cf12fa7846d3bf36b11c3bd7"
     },
     "require-dev": {
         "10up/wp_mock": "0.4.2",
