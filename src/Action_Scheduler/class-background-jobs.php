@@ -98,6 +98,14 @@ class Background_Jobs {
 				)
 			);
 			as_schedule_single_action( $timestamp, $hook, $args );
+		} else {
+			$this->logger->debug(
+				"{$order_id} still unpaid, but check_unpaid_order() background job already scheduled.",
+				array(
+					'hook' => $hook,
+					'args' => $args,
+				)
+			);
 		}
 
 	}
