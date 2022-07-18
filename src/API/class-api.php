@@ -222,14 +222,13 @@ class API implements API_Interface {
 	/**
 	 * Check do we have at least one address already generated and ready to use.
 	 *
-	 * @param string $gateway_id The gateway id the address is for.
+	 * @param WC_Gateway_Bitcoin $gateway The gateway id the address is for.
 	 *
 	 * @return bool
 	 */
-	public function is_fresh_address_available_for_gateway( string $gateway_id ): bool {
+	public function is_fresh_address_available_for_gateway( WC_Gateway_Bitcoin $gateway ): bool {
 
-		$gateway = $this->get_bitcoin_gateways()[ $gateway_id ];
-		$xpub    = $gateway->get_xpub();
+		$xpub = $gateway->get_xpub();
 
 		if ( empty( $xpub ) ) {
 			return false;
