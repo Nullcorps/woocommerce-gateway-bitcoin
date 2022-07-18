@@ -523,7 +523,7 @@ class API implements API_Interface {
 		$order_details['exchange_rate_url'] = $exchange_rate_url;
 
 		// Unchanged data.
-		foreach ( array( 'order', 'btc_total', 'btc_exchange_rate', 'btc_address', 'transactions', 'status' ) as $key ) {
+		foreach ( array( 'order', 'btc_total', 'btc_exchange_rate', 'btc_address', 'transactions', 'btc_amount_received', 'status' ) as $key ) {
 			$result[ $key ] = $order_details[ $key ];
 		}
 
