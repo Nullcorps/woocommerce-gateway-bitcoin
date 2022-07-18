@@ -12,6 +12,7 @@ use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use WC_Order;
 use WP_CLI;
 use WP_CLI_Command;
 
@@ -34,6 +35,7 @@ class CLI extends WP_CLI_Command {
 	/**
 	 * @param API_Interface      $api The main plugin functions.
 	 * @param Settings_Interface $settings The plugin's settings.
+	 * @param LoggerInterface    $logger A PSR logger.
 	 */
 	public function __construct( API_Interface $api, Settings_Interface $settings, LoggerInterface $logger ) {
 		parent::__construct();
@@ -85,7 +87,7 @@ class CLI extends WP_CLI_Command {
 					$input = intval( $input );
 					$this->logger->debug( 'CLI input was a WooCommerce shop_order post_id: ' . $input );
 					$order = wc_get_order( $input );
-					if ( ( $order instanceof \WC_Order ) && $this->api->is_order_has_bitcoin_gateway( $input ) ) {
+					if ( ( $order instanceof WC_Order ) && $this->api->is_order_has_bitcoin_gateway( $input ) ) {
 						$input                  = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 						$crypto_address_post_id = $address_factory->get_post_id_for_address( $input );
 						$crypto_address         = $address_factory->get_by_post_id( $crypto_address_post_id );
