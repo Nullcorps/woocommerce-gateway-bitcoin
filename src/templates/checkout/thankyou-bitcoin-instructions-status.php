@@ -1,5 +1,7 @@
 <?php
 /**
+ * Template to display either unpaid instructions or paid summary on the Thank You order confirmation page.
+ *
  * @see \Nullcorps\WC_Gateway_Bitcoin\API\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args The full array of data passed to the template function.

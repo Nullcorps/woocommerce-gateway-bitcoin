@@ -1,5 +1,8 @@
 <?php
 /**
+ * Template for the customer my-account single-order view which loads another template depending on whether the
+ * order has been paid or is still awaiting payment.
+ *
  * @package    nullcorps/woocommerce-gateway-bitcoin
  *
  * @var array<string, mixed> $args The full array of data passed to the template function.

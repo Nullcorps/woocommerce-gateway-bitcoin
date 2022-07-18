@@ -505,7 +505,7 @@ class API implements API_Interface {
 		// TODO: Link to the CPT list table.
 		// $result['parent_wallet_url'] =
 
-		// Add a link to showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
+		// Add a link showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
 
 		/**
 		 * This supposedly could be null, but I can't imagine a scenario where WooCommerce returns an order object

@@ -83,6 +83,10 @@ class Payment_Gateways {
 	 * Set the PSR logger on each gateway instance.
 	 *
 	 * @hooked woocommerce_available_payment_gateways
+	 *
+	 * @param array<string, WC_Payment_Gateway> $available_gateways The gateways to be displayed on the checkout.
+	 *
+	 * @return array<string, WC_Payment_Gateway>
 	 */
 	public function add_logger_to_gateways( array $available_gateways ): array {
 
