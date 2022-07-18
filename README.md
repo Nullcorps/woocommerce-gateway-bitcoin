@@ -43,9 +43,9 @@ THIS IS VERY MUCH WIP - MAKE OF IT WHAT YOU WILL. IF YOU MANAGE TO BREAK IT SOME
 
 This plugin requires the following PHP modules to work. Please note Mcrypt is no longer included as part of the standard PHP modules so needs a little extra work to install, I've included a link to a set of instructions which worked. Replace "7.4" with whatever version of php you're using. I've only tested up to 7.4 currently:
 
-- bcmath   :     sudo apt install php7.4-bcmath
-- gmp      :     sudo apt install php7.4-gmp
-- mcrypt   :     https://computingforgeeks.com/install-php-mcrypt-extension-on-ubuntu/
+- bcmath   :   `php -m | grep bcmath`   :   sudo apt install php7.4-bcmath
+- gmp      :   `php -m | grep gmp`      :  sudo apt install php7.4-gmp
+- mcrypt   :   `php -r 'echo function_exists("mcrypt_encrypt") ? "yes" : "no";'`  https://computingforgeeks.com/install-php-mcrypt-extension-on-ubuntu/
 
 ### Instructions:
 
