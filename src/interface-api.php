@@ -3,7 +3,7 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;

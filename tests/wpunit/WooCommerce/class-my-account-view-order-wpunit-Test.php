@@ -4,8 +4,8 @@ namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 
 /**
  * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\My_Account_View_Order

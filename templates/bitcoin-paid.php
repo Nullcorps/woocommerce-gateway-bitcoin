@@ -2,7 +2,7 @@
 /**
  * Friendly info table to display after the order is considered paid.
  *
- * @see \Nullcorps\WC_Gateway_Bitcoin\API\API_Interface::get_order_details()
+ * @see \Nullcorps\WC_Gateway_Bitcoin\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *

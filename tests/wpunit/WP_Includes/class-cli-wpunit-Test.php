@@ -1,17 +1,17 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Includes\CLI
+ * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WP_Includes\CLI
  */
 class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

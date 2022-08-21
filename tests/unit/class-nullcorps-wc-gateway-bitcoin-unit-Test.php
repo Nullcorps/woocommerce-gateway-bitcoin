@@ -4,24 +4,22 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Admin;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
+use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
  * Class Nullcorps_WC_Gateway_Bitcoin_Unit_Test
  *
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Includes\Nullcorps_WC_Gateway_Bitcoin
+ * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Nullcorps_WC_Gateway_Bitcoin
  */
 class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 

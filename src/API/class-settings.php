@@ -9,8 +9,7 @@ namespace Nullcorps\WC_Gateway_Bitcoin\API;
 
 use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\Logger_Settings_Trait;
 use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\WooCommerce_Logger_Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Private_Uploads\Private_Uploads_Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Private_Uploads\Private_Uploads_Settings_Trait;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Psr\Log\LogLevel;
 
 /**
@@ -70,7 +69,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.3.2';
+		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.3.3';
 	}
 
 	/**
@@ -80,5 +79,9 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 */
 	public function get_api_preference(): string {
 		return 'Blockchain.info'; // | 'Blockstream.info'
+	}
+
+	public function get_plugin_url(): string {
+		return NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL;
 	}
 }

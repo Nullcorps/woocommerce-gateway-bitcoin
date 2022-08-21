@@ -3,7 +3,7 @@
  * Template displaying a table with the Bitcoin address, QR code, amount required, amount received, status, and the time
  * last checked. CSS classes on each allow for JS to target the data for copying to the clipboard.
  *
- * @see \Nullcorps\WC_Gateway_Bitcoin\API\API_Interface::get_order_details()
+ * @see \Nullcorps\WC_Gateway_Bitcoin\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *

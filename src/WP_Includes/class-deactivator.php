@@ -8,7 +8,7 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 /**
  * Fired during plugin deactivation.

@@ -10,7 +10,7 @@ namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;

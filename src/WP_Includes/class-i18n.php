@@ -11,7 +11,7 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 /**
  * Define the internationalization functionality.
@@ -33,7 +33,7 @@ class I18n {
 		load_plugin_textdomain(
 			'nullcorps-wc-gateway-bitcoin',
 			false,
-			plugin_basename( dirname( __FILE__, 2 ) ) . '/languages/'
+			plugin_basename( dirname( __FILE__, 3 ) ) . '/languages/'
 		);
 
 	}

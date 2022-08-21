@@ -11,15 +11,13 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Addresses_List_Table;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Wallets_List_Table;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\AJAX;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
@@ -28,6 +26,9 @@ use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\My_Account_View_Order;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Templates;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
+use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\CLI;
+use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
+use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Post;
 use Psr\Log\LoggerInterface;
 use WP_CLI;
 
@@ -104,7 +105,6 @@ class Nullcorps_WC_Gateway_Bitcoin {
 		$plugin_i18n = new I18n();
 
 		add_action( 'init', array( $plugin_i18n, 'load_plugin_textdomain' ) );
-
 	}
 
 	/**
@@ -171,7 +171,6 @@ class Nullcorps_WC_Gateway_Bitcoin {
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'filter_to_only_bitcoin_gateways' ), 100 );
 
 		add_filter( 'woocommerce_available_payment_gateways', array( $payment_gateways, 'add_logger_to_gateways' ) );
-
 	}
 
 	/**

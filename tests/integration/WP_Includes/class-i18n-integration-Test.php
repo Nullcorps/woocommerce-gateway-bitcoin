@@ -6,7 +6,7 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 /**
  *

@@ -14,7 +14,7 @@
 
 // get_defined_vars()
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;

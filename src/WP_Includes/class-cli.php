@@ -3,12 +3,12 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;

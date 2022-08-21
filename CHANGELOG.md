@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.3.3
+
+* Major file/folder moves
+
+
 ### 1.3.1
 
 * Fix: continue checking for address transactions after order is marked paid

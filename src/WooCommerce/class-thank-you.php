@@ -8,7 +8,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use WC_Order;
 
 class Thank_You {

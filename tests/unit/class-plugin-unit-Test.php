@@ -8,9 +8,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\Logger;
-use Nullcorps\WC_Gateway_Bitcoin\Includes\Nullcorps_WC_Gateway_Bitcoin;
 
 /**
  * Class Plugin_WP_Mock_Test
@@ -43,7 +41,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			function() {}
 		);
 
-		$plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
+		global $plugin_root_dir;
 
 		\WP_Mock::userFunction(
 			'plugin_dir_path',

@@ -4,8 +4,8 @@ namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 
 /**
  * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend
@@ -33,7 +33,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 	public function test_enqueue_styles(): void {
 
 		global $plugin_root_dir;
-		$plugin_root_url = 'http://localhost:8080/woocommerce-gateway-bitcoin/wp-content/plugins/woocommerce-gateway-bitcoin';
+		$plugin_root_url = 'http://localhost:8080/woocommerce-gateway-bitcoin/wp-content/plugins/woocommerce-gateway-bitcoin/';
 
 		$logger   = new ColorLogger();
 		$api      = $this->makeEmpty(
@@ -54,20 +54,12 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 						return '1.0.0';
 					}
 				),
+				'get_plugin_url' => $plugin_root_url,
 			)
 		);
 
-		// Return any old url.
-		\WP_Mock::userFunction(
-			'plugin_dir_url',
-			array(
-				'return' => $plugin_root_url . '/Frontend/',
-				'times'  => 1,
-			)
-		);
-
-		$css_file = $plugin_root_dir . '/Frontend/css/woocommerce-gateway-bitcoin.css';
-		$css_url  = $plugin_root_url . '/Frontend/css/woocommerce-gateway-bitcoin.css';
+		$css_file = $plugin_root_dir . '/assets/css/woocommerce-gateway-bitcoin.css';
+		$css_url  = $plugin_root_url . 'assets/css/woocommerce-gateway-bitcoin.css';
 
 		\WP_Mock::userFunction(
 			'wp_enqueue_style',

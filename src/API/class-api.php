@@ -20,6 +20,8 @@ use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Blockchain_API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Exchange_Rate_API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Generate_Address_API_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\SoChain_API;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;

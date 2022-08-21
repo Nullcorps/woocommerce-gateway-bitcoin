@@ -37,8 +37,8 @@ foreach ( $class_map_files as $class_map_file ) {
 }
 
 // Load strauss classes after autoload-classmap.php so classes can be substituted.
-require_once __DIR__ . '/strauss/autoload.php';
+require_once __DIR__ . '/vendor-prefixed/autoload.php';
 
-$wpcs_autoloader = new WP_Namespace_Autoloader();
+$wpcs_autoloader = new WP_Namespace_Autoloader( array( 'classes_dir' => array( 'src' ) ) );
 $wpcs_autoloader->init();
 

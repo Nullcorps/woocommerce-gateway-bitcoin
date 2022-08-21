@@ -3,7 +3,7 @@
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use WC_Gateway_BACS;
 
 /**

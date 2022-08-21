@@ -55,19 +55,19 @@ This plugin requires the following PHP modules to work. Please note Mcrypt is no
 then:
 - in the admin dashboard under WooCommerce/Settings/Payments you should now see the payment option listed
 
-![WooCommerce Payment Gateways list](./assets/screenshot-1.png "Once the plugin is active, the gateway will be visible in the WooCommerce Payment Gateways list")
+![WooCommerce Payment Gateways list](./.wordpress-org/screenshot-1.png "Once the plugin is active, the gateway will be visible in the WooCommerce Payment Gateways list")
 
 - copy and paste in the xpub from your wallet. In electrum it's under menu:wallet/infromation. It should start with xpub and then a bunch of numbers
 
-![Electrum Wallet Information Screen](./assets/screenshot-2.png "Copy xpub or zpub etc from here")
+![Electrum Wallet Information Screen](./.wordpress-org/screenshot-2.png "Copy xpub or zpub etc from here")
 
-![WooCommerce Bitcoin Gateway settings screen](./assets/screenshot-3.png "Paste your xpub into the WooCommerce settings")
+![WooCommerce Bitcoin Gateway settings screen](./.wordpress-org/screenshot-3.png "Paste your xpub into the WooCommerce settings")
 
 - save the settings. ~~You may also want to set the 0-conf limit to 0 if you don't want to allow zer-confirmation transactions (probably a good idea)~~ (now the default)
 
 You should now be able to add an item to your cart, head to the checkout and with a bit of luck you'll see the bitcoin payment option. If you proceed with that it should then show you an address, QR-code etc which is now tied to this order and will not be reused. ~~It's ok though, you can generate as many addresses as you like, all you need to do is re-visit that addresses page periodically to top up your stash of addresses. On a super busy site you might want to adjust the settings to pre-generate a larger number of addresses e.g. 200.~~
 
-![Gateway visible on checkout](./assets/screenshot-4.png "The gateway will be available at customer checkout")
+![Gateway visible on checkout](./.wordpress-org/screenshot-4.png "The gateway will be available at customer checkout")
 
 
 PLEASE NOTE: segwit wallets doesn't seem to be supported by bitwasp, there's nothing I can really do about that currently. (TODO: double-check this, [it may be possible](https://github.com/Bit-Wasp/bitcoin-php/issues/863) )
@@ -76,7 +76,7 @@ PLEASE NOTE: segwit wallets doesn't seem to be supported by bitwasp, there's not
 
 After checkout, this is what the customer will see:
 
-![WooCommerce order thank you page](./assets/screenshot-5.png "The thank you page shows the payment instructions")
+![WooCommerce order thank you page](./.wordpress-org/screenshot-5.png "The thank you page shows the payment instructions")
 
 * The QR code can be scanned or clicked, and contains the address and amount.
 * "Payment Address" and "Payment Total" are both links which copy the value to the clipboard.
@@ -86,11 +86,11 @@ After checkout, this is what the customer will see:
 
 On the admin order UI, the Bitcoin details are visible in a metabox:
 
-![Order metabox](./assets/screenshot-6.png "Bitcoin address, amount paid, etc. visible on order UI")
+![Order metabox](./.wordpress-org/screenshot-6.png "Bitcoin address, amount paid, etc. visible on order UI")
 
 Addresses are saved as a custom post type and their status can be seen in a standard WordPress list table:
 
-![Addresses List Table](./assets/screenshot-7.png "Standard WordPress list table show addresses and their status and properties: related order, number of transactions, balance, derivation path, last modified date.")
+![Addresses List Table](./.wordpress-org/screenshot-7.png "Standard WordPress list table show addresses and their status and properties: related order, number of transactions, balance, derivation path, last modified date.")
 
 
 ## TODO (nullcorps)

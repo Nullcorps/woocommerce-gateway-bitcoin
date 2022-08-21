@@ -8,6 +8,7 @@ use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
 
 /**

@@ -9,7 +9,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use WC_Order;
 
 class My_Account_View_Order {

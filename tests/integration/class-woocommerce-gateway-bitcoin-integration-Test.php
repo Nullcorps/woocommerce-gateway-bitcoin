@@ -9,7 +9,6 @@
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use Nullcorps\WC_Gateway_Bitcoin\API\API;
-use Nullcorps\WC_Gateway_Bitcoin\Includes\Nullcorps_WC_Gateway_Bitcoin;
 
 /**
  * Verifies the plugin has been instantiated and added to PHP's $GLOBALS variable.

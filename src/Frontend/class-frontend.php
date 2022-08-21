@@ -10,8 +10,8 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -48,7 +48,7 @@ class Frontend {
 
 		$version = $this->settings->get_plugin_version();
 
-		wp_enqueue_style( 'nullcorps-wc-gateway-bitcoin', plugin_dir_url( __FILE__ ) . 'css/woocommerce-gateway-bitcoin.css', array(), $version, 'all' );
+		wp_enqueue_style( 'nullcorps-wc-gateway-bitcoin', $this->settings->get_plugin_url() . 'assets/css/woocommerce-gateway-bitcoin.css', array(), $version, 'all' );
 
 		wp_enqueue_style( 'dashicons' );
 	}
@@ -80,7 +80,7 @@ class Frontend {
 
 		$version = $this->settings->get_plugin_version();
 
-		wp_enqueue_script( 'nullcorps-wc-gateway-bitcoin', plugin_dir_url( __FILE__ ) . 'js/woocommerce-gateway-bitcoin.js', array( 'jquery' ), $version, true );
+		wp_enqueue_script( 'nullcorps-wc-gateway-bitcoin', $this->settings->get_plugin_url() . 'assets/js/woocommerce-gateway-bitcoin.js', array( 'jquery' ), $version, true );
 
 		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
 

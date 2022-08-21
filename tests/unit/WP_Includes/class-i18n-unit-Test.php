@@ -6,12 +6,12 @@
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Includes;
+namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
 
 /**
  * Class Plugin_WP_Mock_Test
  *
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Includes\I18n
+ * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n
  */
 class I18n_Unit_Test extends \Codeception\Test\Unit {
 

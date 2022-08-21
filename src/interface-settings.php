@@ -3,7 +3,7 @@
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace Nullcorps\WC_Gateway_Bitcoin;
 
 interface Settings_Interface {
 
@@ -22,4 +22,6 @@ interface Settings_Interface {
 	 * @return string
 	 */
 	public function get_plugin_version(): string;
+
+	public function get_plugin_url(): string;
 }

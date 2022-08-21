@@ -16,7 +16,7 @@ namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
-use Nullcorps\WC_Gateway_Bitcoin\API\API_Interface;
+use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 
 /**
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
