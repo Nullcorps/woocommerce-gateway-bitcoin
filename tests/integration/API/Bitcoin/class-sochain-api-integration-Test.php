@@ -30,7 +30,7 @@ class SoChain_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		// 0.5 BTC from CoinJar to Jaxx
 		$sent_to = '1BnyWeeS93w8UAgVdeyvk1TddJDWNmDhcp';
 
-		// From UB to CoinJar
+		// From UB to CoinJar.
 		$sent_to = '3PAGXbstegwh6wtGnYLnn2UULK5KCVuK4P';
 
 		$sent_to = '3KKUGZk4yU9QfZZA9y9K5MkwBX7Rozaaum';

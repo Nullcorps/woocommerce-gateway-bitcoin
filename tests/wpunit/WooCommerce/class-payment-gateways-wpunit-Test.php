@@ -26,6 +26,11 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			new WC_Gateway_BACS(),
 			new WC_Gateway_Bitcoin(),
 			new class() extends WC_Gateway_Bitcoin {
+				/**
+				 * Unique id for second instance.
+				 *
+				 * @var string
+				 */
 				public $id = 'bitcoin_gateway_2';
 			},
 			'nothing',

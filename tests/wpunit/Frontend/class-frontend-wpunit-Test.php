@@ -55,7 +55,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( wp_script_is( 'nullcorps-wc-gateway-bitcoin' ) );
 
-		// TODO: check the inline script is enqueued
+		// TODO: check the inline script is enqueued.
 	}
 
 	/**
