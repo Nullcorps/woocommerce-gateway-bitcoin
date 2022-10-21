@@ -103,13 +103,6 @@
             },
             "10up/wp_mock": {
                 "Add AnyObject matcher": "https://github.com/10up/wp_mock/pull/161.patch"
-            },
-            "wp-cli/dist-archive-command": {
-                "Copy non-ignored files to temp": "https://github.com/wp-cli/dist-archive-command/pull/61.patch"
-            },
-            "brianhenryie/strauss": {
-                "Fix blocked by your allow-plugins config": "https://github.com/BrianHenryIE/strauss/pull/45.patch",
-                "Static in array and ternary": "https://github.com/BrianHenryIE/strauss/pull/46.patch"
             }
         },
         "strauss": {
