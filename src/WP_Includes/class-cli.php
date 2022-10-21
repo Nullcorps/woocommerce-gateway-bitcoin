@@ -85,7 +85,7 @@ class CLI extends WP_CLI_Command {
 					break;
 				case 'shop_order':
 					$input = intval( $input );
-					$this->logger->debug( 'CLI input was a WooCommerce shop_order post_id: ' . $input );
+					$this->logger->debug( 'CLI input was WooCommerce shop_order:' . $input );
 					$order = wc_get_order( $input );
 					if ( ( $order instanceof WC_Order ) && $this->api->is_order_has_bitcoin_gateway( $input ) ) {
 						$input                  = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
