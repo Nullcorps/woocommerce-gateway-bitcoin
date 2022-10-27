@@ -2,6 +2,9 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\Admin;
 
+use Codeception\Stub\Expected;
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+
 /**
  * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page
  */
@@ -22,7 +25,8 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_add_settings_action_link(): void {
 
-		$sut = new Plugins_Page();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$sut      = new Plugins_Page( $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -62,7 +66,8 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_add_settings_action_link_woocommerce_inactive(): void {
 
-		$sut = new Plugins_Page();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$sut      = new Plugins_Page( $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -92,4 +97,30 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 		$result = $sut->add_settings_action_link( array() );
 	}
 
+	/**
+	 * @covers ::split_author_link_into_two_links
+	 */
+	public function test_split_author_link_into_two_links(): void {
+
+		$settings = $this->makeEmpty(
+			Settings_Interface::class,
+			array(
+				'get_plugin_basename' => Expected::once( 'woocommerce-gateway-bitcoin/woocommerce-gateway-bitcoin.php' ),
+			)
+		);
+		$sut      = new Plugins_Page( $settings );
+
+		$plugin_meta     = array(
+			0 => 'Version 1.3.3',
+			1 => 'By <a href="https://github.com/Nullcorps/">Nullcorps, BrianHenryIE</a>',
+			2 => '<a href="http://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/" aria-label="Visit plugin site for WooCommerce Gateway Bitcoin">Visit plugin site</a>',
+		);
+		$plugin_filename = 'woocommerce-gateway-bitcoin/woocommerce-gateway-bitcoin.php';
+
+		$result = $sut->split_author_link_into_two_links( $plugin_meta, $plugin_filename );
+
+		$updated = 'By <a href="https://github.com/Nullcorps/">Nullcorps</a>, <a href="https://brianhenry.ie/">BrianHenryIE</a>';
+
+		$this->assertEquals( $updated, $result[1] );
+	}
 }

@@ -19,7 +19,7 @@ use WP_Mock\Matcher\AnyInstance;
 /**
  * Class Nullcorps_WC_Gateway_Bitcoin_Unit_Test
  *
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Nullcorps_WC_Gateway_Bitcoin
+ * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Nullcorps_WC_Gateway_Bitcoin
  */
 class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 
@@ -78,7 +78,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 	/**
 	 * @covers ::define_plugins_page_hooks
 	 */
-	public function test_plugins_page_hooks() {
+	public function test_plugins_page_hooks(): void {
 
 		\WP_Mock::expectFilterAdded(
 			'plugin_action_links_nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
@@ -88,6 +88,13 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::expectFilterAdded(
 			'plugin_action_links_nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
 			array( new AnyInstance( Plugins_Page::class ), 'add_orders_action_link' )
+		);
+
+		\WP_Mock::expectFilterAdded(
+			'plugin_row_meta',
+			array( new AnyInstance( Plugins_Page::class ), 'split_author_link_into_two_links' ),
+			10,
+			2
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );

@@ -113,14 +113,19 @@ class Nullcorps_WC_Gateway_Bitcoin {
 	 */
 	protected function define_plugins_page_hooks(): void {
 
-		$plugins_page = new Plugins_Page();
+		$plugins_page = new Plugins_Page( $this->settings );
 
 		$plugin_basename = $this->settings->get_plugin_basename();
 
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_settings_action_link' ) );
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_orders_action_link' ) );
+
+		add_filter( 'plugin_row_meta', array( $plugins_page, 'split_author_link_into_two_links' ), 10, 2 );
 	}
 
+	/**
+	 * Add hooks for defining post types for the wallets and destination addresses.
+	 */
 	protected function define_custom_post_type_hooks():void {
 
 		$post = new Post();

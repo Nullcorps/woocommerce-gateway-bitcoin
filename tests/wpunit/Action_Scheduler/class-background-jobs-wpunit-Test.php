@@ -54,7 +54,7 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut->check_unpaid_order( $order_id );
 
-		$this->assertTrue( $logger->hasErrorThatContains( 'Invalid order id passed to check_unpaid_order()' ) );
+		$this->assertTrue( $logger->hasErrorThatContains( 'Invalid order id 99 passed to check_unpaid_order()' ) );
 	}
 
 

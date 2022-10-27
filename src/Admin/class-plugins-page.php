@@ -9,13 +9,32 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\Admin;
 
+use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
 use WC_Payment_Gateway;
 
 /**
+ * Adds items to the plugin's row on plugins.php.
  *
+ * @see \WP_Plugins_List_Table
  */
 class Plugins_Page {
+
+	/**
+	 * The plugin basename is needed when checking with plugin's row meta is being filtered.
+	 *
+	 * @var Settings_Interface
+	 */
+	protected Settings_Interface $settings;
+
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface $settings The plugin's settings.
+	 */
+	public function __construct( Settings_Interface $settings ) {
+		$this->settings = $settings;
+	}
 
 	/**
 	 * Adds 'Settings' link to the configuration under WooCommerce's payment gateway settings page.
@@ -80,4 +99,33 @@ class Plugins_Page {
 		return array_merge( $plugin_links, $links_array );
 	}
 
+	/**
+	 * There are two authors in the plugin header but WordPress only allows one author link.
+	 * This function just replaces the generated HTML with two links.
+	 *
+	 * @param array<int|string, string> $plugin_meta The meta information/links displayed by the plugin description.
+	 * @param string                    $plugin_file_name The plugin filename to match when filtering.
+	 *
+	 * @return array<int|string, string>
+	 */
+	public function split_author_link_into_two_links( array $plugin_meta, string $plugin_file_name ): array {
+
+		if ( $this->settings->get_plugin_basename() !== $plugin_file_name ) {
+
+			return $plugin_meta;
+		}
+
+		$updated_plugin_meta = array();
+		foreach ( $plugin_meta as $key => $entry ) {
+
+			if ( 0 === strpos( $entry, 'By' ) ) {
+				$entry = 'By <a href="https://github.com/Nullcorps/">Nullcorps</a>, <a href="https://brianhenry.ie/">BrianHenryIE</a>';
+			}
+
+			$updated_plugin_meta[ $key ] = $entry;
+
+		}
+
+		return $updated_plugin_meta;
+	}
 }
