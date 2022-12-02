@@ -300,7 +300,7 @@ class API implements API_Interface {
 
 		$amount_received                      = $order->get_meta( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, true );
 		$amount_received                      = is_numeric( $amount_received ) ? $amount_received : 0.0;
-		$result['btc_amount_received'] = $amount_received;
+		$result['btc_amount_received']        = $amount_received;
 		$result['btc_amount_received_before'] = $amount_received;
 
 		$address_post_id                 = $this->crypto_address_factory->get_post_id_for_address( $btc_xpub_address_string );

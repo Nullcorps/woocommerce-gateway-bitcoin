@@ -54,7 +54,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 						return '1.0.0';
 					}
 				),
-				'get_plugin_url' => $plugin_root_url,
+				'get_plugin_url'     => $plugin_root_url,
 			)
 		);
 
