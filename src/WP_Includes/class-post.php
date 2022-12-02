@@ -43,6 +43,7 @@ class Post {
 			'menu_position' => 8,
 			'supports'      => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
 			'has_archive'   => false,
+			'show_in_menu'  => false,
 		);
 
 		register_post_type( CRYPTO_WALLET::POST_TYPE, $args );
@@ -76,6 +77,7 @@ class Post {
 			'menu_position' => 8,
 			'supports'      => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
 			'has_archive'   => false,
+			'show_in_menu'  => false,
 		);
 		register_post_type( CRYPTO_ADDRESS::POST_TYPE, $args );
 
