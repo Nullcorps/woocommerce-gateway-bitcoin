@@ -312,7 +312,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$args = array( 'order_id' => $order_id );
 		if ( ! as_has_scheduled_action( $hook, $args ) ) {
 			$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
-			$this->logger->debug( 'New order created, shop_order:' . $order_id . ', scheduling background job to check for payments' );
+			$this->logger->debug( "New order created, `shop_order:{$order_id}`, scheduling background job to check for payments" );
 			as_schedule_single_action( $timestamp, $hook, $args );
 		}
 
