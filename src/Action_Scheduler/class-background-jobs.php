@@ -54,7 +54,7 @@ class Background_Jobs {
 	 */
 	public function check_unpaid_order( int $order_id ): void {
 
-		$this->logger->debug( 'Starting check_unpaid_order() background job for shop_order:' . $order_id );
+		$this->logger->debug( 'Starting check_unpaid_order() background job for `shop_order:' . $order_id . '`' );
 
 		$order = wc_get_order( $order_id );
 
@@ -69,7 +69,7 @@ class Background_Jobs {
 
 			// 403.
 			// TODO: Log better.
-			$this->logger->error( 'Error getting details for shop_order:' . $order_id, array( 'order_id' => $order_id ) );
+			$this->logger->error( 'Error getting details for `shop_order:' . $order_id . '`', array( 'order_id' => $order_id ) );
 		}
 
 		/**
@@ -80,7 +80,7 @@ class Background_Jobs {
 		$order = wc_get_order( $order_id );
 
 		if ( ! in_array( $order->get_status(), array( 'pending', 'on-hold' ), true ) ) {
-			$this->logger->debug( "shop_order:{$order_id} status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
+			$this->logger->debug( "`shop_order:{$order_id}` status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
 			return;
 		}
 

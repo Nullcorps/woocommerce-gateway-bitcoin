@@ -147,7 +147,7 @@ class API implements API_Interface {
 	 */
 	public function get_fresh_address_for_order( WC_Order $order ): Crypto_Address {
 
-		$this->logger->debug( 'Get fresh address for shop_order:' . $order->get_id() );
+		$this->logger->debug( 'Get fresh address for `shop_order:' . $order->get_id() . '`' );
 
 		$gateway_id = $order->get_payment_method();
 
@@ -284,7 +284,7 @@ class API implements API_Interface {
 		$btc_xpub_address_string = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 
 		if ( empty( $btc_xpub_address_string ) ) {
-			$this->logger->error( 'shop_order:' . $order->get_id() . ' has no Bitcoin address.', array( 'order_id' => $order->get_id() ) );
+			$this->logger->error( "`shop_order:{$order->get_id()} has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new Exception( 'Order has no Bitcoin address.' );
 		}
 
@@ -417,7 +417,7 @@ class API implements API_Interface {
 
 				if ( $result['btc_amount_received'] > $minimum_payment ) {
 					$order->payment_complete( $btc_xpub_address_string );
-					$this->logger->info( "shop_order:{$order_id} has been marked paid.", array( 'order_id' => $order_id ) );
+					$this->logger->info( "`shop_order:{$order_id}` has been marked paid.", array( 'order_id' => $order_id ) );
 				}
 			}
 
