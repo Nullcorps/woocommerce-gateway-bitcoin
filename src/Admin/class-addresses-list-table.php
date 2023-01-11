@@ -105,7 +105,7 @@ class Addresses_List_Table {
 				break;
 			case 'balance':
 				// TODO: Show current balance or show in + out?
-				echo esc_html( $crypto_address->get_balance() );
+				echo esc_html( $crypto_address->get_balance() ?? 'unknown' );
 
 				break;
 			case 'transactions_count':
