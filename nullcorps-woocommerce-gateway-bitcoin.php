@@ -1,9 +1,5 @@
 <?php
 /**
- * I think this stuff below is correct, but idk.
- * It's free, go nuts. I'm just sticking things together to make stuff.
- * - Nullcorps
- *
  * This Bitcoin gateway relies on the BitWasp bitwasp/bitcoin PHP library for the maths/heavy lifting.
  *
  * @see https://github.com/Bit-Wasp/bitcoin-php
