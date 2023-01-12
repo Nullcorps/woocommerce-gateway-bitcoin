@@ -1,5 +1,12 @@
 <?php
 /**
+ * Main plugin functions for:
+ * * checking is a gateway a Bitcoin gateway
+ * * generating new wallets
+ * * converting fiat<->BTC
+ * * generating/getting new addresses for orders
+ * * checking addresses for transactions
+ * * getting order details for display
  *
  * @package    nullcorps/woocommerce-gateway-bitcoin
  */
@@ -13,6 +20,7 @@ use Exception;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitfinex_API;
 use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\BitWasp_API;
@@ -175,19 +183,19 @@ class API implements API_Interface {
 		}
 
 		foreach ( $fresh_addresses as $address ) {
-			$address_transactions = $this->update_address( $address );
+			$address_transactions = $this->query_api_for_address_transactions( $address );
 			if ( ! empty( $address_transactions['transactions'] ) ) {
 				if ( 'assigned' !== $address->get_status() ) {
 					$address->set_status( 'used' );
 				}
 			} else {
-				// We have found an unused address.
+				// Success, we have found an unused address.
 				break;
 			}
 		}
 
-		// But we maybe just got to the end of the array, so check again:
-		if ( ! empty( $address_transactions['transactions'] ) ) {
+		// But we maybe just got to the end of the array, so check again.
+		if ( ! isset( $address ) || ! empty( $address_transactions['transactions'] ) ) {
 			throw new Exception( 'No Bitcoin address available.' );
 		}
 
@@ -242,7 +250,7 @@ class API implements API_Interface {
 			$this->logger->error(
 				'No post id for xpub: ' . $xpub,
 				array(
-					'gateway_id' => $gateway_id,
+					'gateway_id' => $gateway->id,
 					'xpub'       => $xpub,
 				)
 			);
@@ -263,7 +271,7 @@ class API implements API_Interface {
 	 * @param WC_Order $order
 	 * @param bool     $refresh
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string}
+	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface}
 	 * @throws Exception
 	 */
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array {
@@ -336,7 +344,7 @@ class API implements API_Interface {
 
 			$time_now = new DateTimeImmutable( 'now', new \DateTimeZone( 'UTC' ) );
 
-			$updated_address = $this->update_address( $address );
+			$updated_address = $this->query_api_for_address_transactions( $address );
 
 			if ( $updated_address['updated'] ) {
 
@@ -478,7 +486,7 @@ class API implements API_Interface {
 
 		$result['btc_amount_received_formatted'] = $btc_symbol . ' ' . $order_details['btc_amount_received'];
 
-		if ( isset( $order_details['last_checked_time'] ) && ( $order_details['last_checked_time'] instanceof DateTimeInterface ) ) {
+		if ( isset( $order_details['last_checked_time'] ) ) {
 			$last_checked_time = $order_details['last_checked_time'];
 			$date_format       = get_option( 'date_format' );
 			$time_format       = get_option( 'time_format' );
@@ -580,7 +588,7 @@ class API implements API_Interface {
 	 * @param string  $xpub
 	 * @param ?string $gateway_id
 	 *
-	 * @return array{wallet_post_id: int}
+	 * @return array{wallet: Crypto_Wallet, wallet_post_id: int, existing_fresh_addresses:array, generated_addresses:array}
 	 * @throws Exception
 	 */
 	public function generate_new_wallet( string $xpub, string $gateway_id = null ): array {
@@ -591,6 +599,8 @@ class API implements API_Interface {
 			?? $this->crypto_wallet_factory->save_new( $xpub, $gateway_id );
 
 		$wallet = $this->crypto_wallet_factory->get_by_post_id( $post_id );
+
+		$result['wallet'] = $wallet;
 
 		$existing_fresh_addresses = $wallet->get_fresh_addresses();
 
@@ -608,7 +618,9 @@ class API implements API_Interface {
 		}
 
 		$result['existing_fresh_addresses'] = $existing_fresh_addresses;
-		$result['generated_addresses']      = $generated_addresses;
+
+		// TODO: Only return / distinguish which generated addresses are fresh.
+		$result['generated_addresses'] = $generated_addresses;
 
 		$result['wallet_post_id'] = $post_id;
 
@@ -719,7 +731,7 @@ class API implements API_Interface {
 		$result['generated_addresses_count']    = $generated_addresses_count;
 		$result['generated_addresses_post_ids'] = $generated_addresses_post_ids;
 		$result['generated_addresses']          = array_map(
-			function( int $post_id ) {
+			function( int $post_id ): Crypto_Address {
 				return $this->crypto_address_factory->get_by_post_id( $post_id );
 			},
 			$generated_addresses_post_ids
@@ -739,6 +751,8 @@ class API implements API_Interface {
 
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
+	 *
+	 * @param Crypto_Address[] $addresses
 	 *
 	 * @return array<string, array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
@@ -779,7 +793,7 @@ class API implements API_Interface {
 			foreach ( $addresses as $crypto_address ) {
 
 				// Check for updates.
-				$result[ $crypto_address->get_raw_address() ] = $this->update_address( $crypto_address );
+				$result[ $crypto_address->get_raw_address() ] = $this->query_api_for_address_transactions( $crypto_address );
 			}
 		} catch ( \Exception $exception ) {
 			// Reschedule if we hit 429 (there will always be at least one address to check if it 429s.).
@@ -809,7 +823,7 @@ class API implements API_Interface {
 	 * @return array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
 	 * @throws Exception
 	 */
-	public function update_address( Crypto_Address $address ): array {
+	public function query_api_for_address_transactions( Crypto_Address $address ): array {
 
 		$btc_xpub_address_string = $address->get_raw_address();
 

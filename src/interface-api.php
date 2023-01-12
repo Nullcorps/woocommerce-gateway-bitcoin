@@ -6,7 +6,9 @@
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use Exception;
+use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
+use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
 use WC_Order;
 
@@ -58,8 +60,8 @@ interface API_Interface {
 	 *
 	 * @used-by WC_Gateway_Bitcoin::process_payment()
 	 *
-	 * @param string $currency From which currency (USD|EUR|GBP).
-	 * @param string $fiat_amount The amount to convert.
+	 * @param string $currency From which currency.
+	 * @param float  $fiat_amount The amount to convert.
 	 *
 	 * @return string
 	 */
@@ -82,7 +84,7 @@ interface API_Interface {
 	 * @param WC_Order $order   WooCommerce order object.
 	 * @param bool     $refresh Query remote APIs to refresh the details, or just return cached data.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array, btc_exchange_rate:string}
+	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string}
 	 */
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array;
 
@@ -95,6 +97,17 @@ interface API_Interface {
 	 */
 	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array;
 
+	/**
+	 * When a new wallet address is saved in the gateway settings, generate a Wallet custom post for it, and prepare
+	 * fresh addresses for use.
+	 *
+	 * @used-by WC_Gateway_Bitcoin::process_admin_options()
+	 *
+	 * @param string  $xpub_after
+	 * @param ?string $gateway_id
+	 *
+	 * @return array{wallet:Crypto_Wallet, wallet_post_id:int, existing_fresh_addresses:array<Crypto_Address>, generated_addresses:array<Crypto_Address>}
+	 */
 	public function generate_new_wallet( string $xpub_after, string $gateway_id = null ): array;
 
 	/**
@@ -102,7 +115,14 @@ interface API_Interface {
 	 */
 	public function generate_new_addresses(): array;
 
-	public function update_address( Crypto_Address $address ): array;
+	/**
+	 * @used-by CLI::update_address()
+	 *
+	 * @param Crypto_Address $address
+	 *
+	 * @return array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 */
+	public function query_api_for_address_transactions( Crypto_Address $address ): array;
 
 	/**
 	 * Determine do we have any fresh address available for this gateway.
@@ -116,5 +136,18 @@ interface API_Interface {
 	 */
 	public function is_fresh_address_available_for_gateway( WC_Gateway_Bitcoin $gateway ): bool;
 
+	/**
+	 *
+	 *
+	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
+	 * @used-by API::generate_new_addresses()
+	 * @used-by API::generate_new_addresses_for_wallet()
+	 * @used-by API::generate_new_wallet()
+	 * @used-by CLI::generate_new_addresses()
+	 *
+	 * @param ?Crypto_Address[] $addresses
+	 *
+	 * @return array<string, array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
+	 */
 	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
 }

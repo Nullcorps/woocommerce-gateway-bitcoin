@@ -7,7 +7,9 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
 
+use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -90,10 +92,11 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 		$address_info = $this->get_address_data( $btc_address );
 
 		if ( $confirmed ) {
-			return $address_info['chain_stats']['funded_txo_sum'] / 100000000;
+			$calc = $address_info['chain_stats']['funded_txo_sum'] / 100000000;
 		} else {
-			return ( $address_info['chain_stats']['funded_txo_sum'] + $address_info['mempool_stats']['funded_txo_sum'] ) / 100000000;
+			$calc = ( $address_info['chain_stats']['funded_txo_sum'] + $address_info['mempool_stats']['funded_txo_sum'] ) / 100000000;
 		}
+		return "{$calc}";
 
 	}
 
@@ -117,20 +120,25 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 
 		$request_response = wp_remote_get( $address_info_url_bs );
 
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
+		if ( is_wp_error( $request_response ) ) {
+			throw new \Exception( $request_response->get_error_message() );
+		}
+		if ( 200 !== $request_response['response']['code'] ) {
+			throw new \Exception( 'Unexpected response received.' );
 		}
 
 		$blockstream_transactions = json_decode( $request_response['body'], true, 512, JSON_THROW_ON_ERROR );
 
 		/**
+		 * block_time is in unixtime.
+		 *
 		 * @param array{txid:string, version:int, locktime:int, vin:array, vout:array, size:int, weight:int, fee:int, status:array{confirmed:bool, block_height:int, block_hash:string, block_time:int}} $blockstream_transaction
 		 *
-		 * @return array{txid:string, time:DateTimeInterface, value:string, confirmations:int}
+		 * @return array{txid:string, time:DateTimeInterface, value:numeric-string, confirmations:int}
 		 */
 		$blockstream_mapper = function( array $blockstream_transaction ) use ( $blockchain_height ) : array {
 
-			$txid = $blockstream_transaction['txid'];
+			$txid = (string) $blockstream_transaction['txid'];
 
 			$value_including_fee = array_reduce(
 				$blockstream_transaction['vin'],
@@ -140,14 +148,16 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 				0
 			);
 
-			$value = ( $value_including_fee - $blockstream_transaction['fee'] ) / 100000000;
+			$value = (string) ( ( $value_including_fee - $blockstream_transaction['fee'] ) / 100000000 );
 
-			$confirmations = $blockchain_height - $blockstream_transaction['status']['block_height'];
+			$confirmations = (int) ( $blockchain_height - $blockstream_transaction['status']['block_height'] );
+
+			$block_time = (int) $blockstream_transaction['status']['block_time'];
 
 			return array(
 				'txid'          => $txid,
-				'time'          => \DateTime::createFromFormat( 'U', $blockstream_transaction['status']['block_time'], new \DateTimeZone( 'UTC' ) ),
-				'value'         => "{$value}",
+				'time'          => new DateTimeImmutable( '@' . $block_time, new DateTimeZone( 'UTC' ) ),
+				'value'         => $value,
 				'confirmations' => $confirmations,
 			);
 		};
@@ -155,7 +165,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 		$transactions_received = array_filter(
 			$blockstream_transactions,
 			function( array $transaction ) use ( $btc_address ): bool {
-				// Did this transaction pay TO our Bitcoin address?
+				// Determine did this transaction pay TO our Bitcoin address?
 				return array_reduce(
 					$transaction['vout'],
 					function( bool $carry, array $vout ) use ( $btc_address ): bool {

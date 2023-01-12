@@ -101,7 +101,7 @@ class CLI extends WP_CLI_Command {
 					$crypto_address         = $address_factory->get_by_post_id( $crypto_address_post_id );
 			}
 
-			$result = $this->api->update_address( $crypto_address );
+			$result = $this->api->query_api_for_address_transactions( $crypto_address );
 
 			WP_CLI::log( wp_json_encode( $result ) );
 

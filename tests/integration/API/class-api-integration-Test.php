@@ -30,7 +30,7 @@ class API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$post_id        = $factory->save_new( $test_wallet_address, $address_index, $wallet );
 		$crypto_address = new Crypto_Address( $post_id );
 
-		$result = $sut->update_address( $crypto_address );
+		$result = $sut->query_api_for_address_transactions( $crypto_address );
 
 	}
 

@@ -6,6 +6,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage;
 
+use Exception;
 use wpdb;
 
 
@@ -63,6 +64,14 @@ class Crypto_Wallet_Factory {
 		return $post_id;
 	}
 
+	/**
+	 * Given the id of the wp_posts row storing the crypto wallet, return the typed Crypto_Wallet object.
+	 *
+	 * @param int $post_id WordPress wp_posts ID.
+	 *
+	 * @return Crypto_Wallet
+	 * @throws Exception When the post_type of the post returned for the given post_id is not a Crypto_Address.
+	 */
 	public function get_by_post_id( int $post_id ): Crypto_Wallet {
 		return new Crypto_Wallet( $post_id );
 	}
