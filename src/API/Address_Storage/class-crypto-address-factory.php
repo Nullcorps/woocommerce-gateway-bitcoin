@@ -22,7 +22,7 @@ class Crypto_Address_Factory {
 
 		$post_id = wp_cache_get( $address, Crypto_Address::POST_TYPE );
 
-		if ( false !== $post_id ) {
+		if ( is_numeric( $post_id ) ) {
 			return (int) $post_id;
 		}
 
@@ -67,7 +67,7 @@ class Crypto_Address_Factory {
 			),
 		);
 
-		$post_id = wp_insert_post( $args );
+		$post_id = wp_insert_post( $args, true );
 
 		if ( is_wp_error( $post_id ) ) {
 			// TODO Log.

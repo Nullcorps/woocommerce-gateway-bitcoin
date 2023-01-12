@@ -55,7 +55,7 @@ class Crypto_Wallet_Factory {
 		$args['post_name']    = sanitize_title( $xpub ); // An indexed column.
 		$args['post_type']    = Crypto_Wallet::POST_TYPE;
 
-		$post_id = wp_insert_post( $args );
+		$post_id = wp_insert_post( $args, true );
 
 		if ( is_wp_error( $post_id ) ) {
 			throw new \Exception( 'Failed to save new wallet as wp_post' );
