@@ -10,6 +10,7 @@
 
 namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
 use Psr\Log\LoggerAwareTrait;
@@ -63,35 +64,32 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 
 		$result                            = array();
 		$result['number_of_confirmations'] = $number_of_confirmations;
-
-		$query = array(
-			'unconfirmed_balance' => 0,
-			'confirmed_balance'   => $number_of_confirmations,
-		);
-
-		foreach ( $query as $key => $number_of_confirmations ) {
-
-			$url = "https://blockchain.info/q/addressbalance/{$btc_address}?confirmations={$number_of_confirmations}";
-
-			$request_response = wp_remote_get( $url );
-
-			// TODO: Does "Item not found" mean address-unused?
-			if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-				// {"message":"Item not found or argument invalid","error":"not-found-or-invalid-arg"}
-				// 429
-				throw new \Exception();
-			}
-
-			$balance = $request_response['body'];
-
-			if ( is_numeric( $balance ) && $balance > 0 ) {
-				$balance = floatval( $balance ) / 100000000;
-			}
-
-			$result[ $key ] = "{$balance}";
-		}
+		$result['unconfirmed_balance']     = $this->query_address_balance( $btc_address, 0 );
+		$result['confirmed_balance']       = $this->query_address_balance( $btc_address, $number_of_confirmations );
 
 		return $result;
+	}
+
+	protected function query_address_balance( string $btc_address, int $number_of_confirmations ): string {
+
+		$url = "https://blockchain.info/q/addressbalance/{$btc_address}?confirmations={$number_of_confirmations}";
+
+		$request_response = wp_remote_get( $url );
+
+		// TODO: Does "Item not found" mean address-unused?
+		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
+			// {"message":"Item not found or argument invalid","error":"not-found-or-invalid-arg"}
+			// 429
+			throw new \Exception();
+		}
+
+		$balance = $request_response['body'];
+
+		if ( is_numeric( $balance ) && $balance > 0 ) {
+			$balance = floatval( $balance ) / 100000000;
+		}
+
+		return (string) $balance;
 	}
 
 	/**
@@ -130,7 +128,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 		 */
 		$blockchain_mapper = function( array $blockchain_transaction ) use ( $blockchain_height ): array {
 
-			$txid = $blockchain_transaction['hash'];
+			$txid = (string) $blockchain_transaction['hash'];
 
 			$value_including_fee = array_reduce(
 				$blockchain_transaction['inputs'],
@@ -146,7 +144,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 
 			return array(
 				'txid'          => $txid,
-				'time'          => \DateTime::createFromFormat( 'U', $blockchain_transaction['time'], new \DateTimeZone( 'UTC' ) ),
+				'time'          => new DateTimeImmutable( '@' . $blockchain_transaction['time'], new \DateTimeZone( 'UTC' ) ),
 				'value'         => "{$value}",
 				'confirmations' => $confirmations,
 			);
@@ -163,26 +161,11 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 
 		$keyed_transactions = array();
 		foreach ( $transactions as $transaction ) {
-			$keyed_transactions[ $transaction['txid'] ] = $transaction;
+			$txid                        = (string) $transaction['txid'];
+			$keyed_transactions[ $txid ] = $transaction;
 		}
 
 		return $keyed_transactions;
-	}
-
-	public function get_transaction( string $tx_hash ): array {
-
-		$url = "https://blockchain.info/rawtx/$tx_hash";
-
-		$request_response = wp_remote_get( $url );
-
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
-
-		$transaction_data = json_decode( $request_response['body'], true );
-
-		return $transaction_data;
-
 	}
 
 }
