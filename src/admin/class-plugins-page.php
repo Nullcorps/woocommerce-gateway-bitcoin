@@ -55,7 +55,7 @@ class Plugins_Page {
 		/**
 		 * Default gateway id.
 		 *
-		 * @see WC_Bitcoin_Gateway::$id
+		 * @see Bitcoin_Gateway::$id
 		 */
 		$gateway_id = 'bitcoin_gateway';
 

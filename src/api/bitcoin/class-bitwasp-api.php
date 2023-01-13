@@ -10,6 +10,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Generate_Address_API_Interface;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Address\AddressCreator;
 use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Bitcoin;

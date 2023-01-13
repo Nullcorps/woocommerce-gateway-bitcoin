@@ -47,7 +47,7 @@ class Email {
 
 		/**
 		 * There was an error where seemingly the order object being passed to this function is older than the
-		 * one saved in `WC_Bitcoin_Gateway::process_payment()` and the meta was not present, so let's refresh.
+		 * one saved in `Bitcoin_Gateway::process_payment()` and the meta was not present, so let's refresh.
 		 *
 		 * @var WC_Order $order
 		 */

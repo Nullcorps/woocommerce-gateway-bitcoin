@@ -54,7 +54,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	 * Previously we were using a static value in a method to store this, but that caused problems with tests, and
 	 * would be an issue with Duplicate Payment Gateways.
 	 *
-	 * @used-by WC_Bitcoin_Gateway::is_available()
+	 * @used-by Bitcoin_Gateway::is_available()
 	 *
 	 * @var ?bool
 	 */
@@ -279,7 +279,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		 * There should never really be an exception here, since the availability of a fresh address was checked before
 		 * offering the option to pay by Bitcoin.
 		 *
-		 * @see WC_Bitcoin_Gateway::is_available()
+		 * @see Bitcoin_Gateway::is_available()
 		 */
 		try {
 			/**

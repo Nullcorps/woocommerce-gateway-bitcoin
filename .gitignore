@@ -61,3 +61,4 @@ docker_tag
 
 vendor-prefixed
 dist-archive
+.env.wordpress.secret

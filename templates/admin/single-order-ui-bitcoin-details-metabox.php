@@ -2,7 +2,7 @@
 /**
  * Friendly info table to display on the admin order ui.
  *
- * @see \Nullcorps\WC_Gateway_Bitcoin\API_Interface::get_order_details()
+ * @see \BrianHenryIE\WC_Bitcoin_Gateway\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_formatted_order_details()`, extracted into these variables:
  *
@@ -20,7 +20,7 @@
  * @var string $exchange_rate_url
  * @var string $btc_exchange_rate
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
 ?>
@@ -53,7 +53,7 @@
 		<td>
 			<?php
 			if ( empty( $transactions ) ) {
-				echo esc_html__( 'No transactions yet', 'nullcorps-wc-gateway-bitcoin' );
+				echo esc_html__( 'No transactions yet', 'bh-wc-bitcoin-gateway' );
 			} else {
 				// TODO.
 			}

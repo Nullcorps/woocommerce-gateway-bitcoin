@@ -12,7 +12,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway
  */
-class WC_Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::process_payment
@@ -117,7 +117,8 @@ class WC_Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$sut = new Bitcoin_Gateway();
+		$sut          = new Bitcoin_Gateway();
+		$sut->enabled = 'yes';
 
 		$result = $sut->is_available();
 
@@ -140,7 +141,8 @@ class WC_Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$sut = new Bitcoin_Gateway();
+		$sut          = new Bitcoin_Gateway();
+		$sut->enabled = 'yes';
 
 		$result = $sut->is_available();
 

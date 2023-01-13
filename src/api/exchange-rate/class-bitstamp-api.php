@@ -7,8 +7,9 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 

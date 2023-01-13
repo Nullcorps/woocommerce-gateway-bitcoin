@@ -75,7 +75,7 @@ class Crypto_Address {
 	 *
 	 * @used-by API::check_new_addresses_for_transactions() When verifying newly generated addresses have no existing transactions.
 	 * @used-by API::get_fresh_address_for_order() When adding the payment address to the order meta.
-	 * @used-by WC_Bitcoin_Gateway::process_payment() When adding a link in the order notes to view transactions on a 3rd party website.
+	 * @used-by Bitcoin_Gateway::process_payment() When adding a link in the order notes to view transactions on a 3rd party website.
 	 * @used-by API::query_api_for_address_transactions() When checking has an order been paid.
 	 */
 	public function get_raw_address(): string {

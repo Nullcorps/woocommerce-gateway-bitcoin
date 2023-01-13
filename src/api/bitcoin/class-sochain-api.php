@@ -13,6 +13,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;

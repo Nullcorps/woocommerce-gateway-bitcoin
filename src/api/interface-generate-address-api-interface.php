@@ -3,7 +3,7 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
 interface Generate_Address_API_Interface {
 

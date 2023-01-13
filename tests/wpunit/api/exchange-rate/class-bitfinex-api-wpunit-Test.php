@@ -5,12 +5,12 @@
  * @package           brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Bitfinex_API
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API
  */
 class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 

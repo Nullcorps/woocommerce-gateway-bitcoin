@@ -22,11 +22,8 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Bitfinex_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\BitWasp_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Blockchain_API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Exchange_Rate_API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Generate_Address_API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\SoChain_API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
@@ -93,13 +90,13 @@ class API implements API_Interface {
 	 * Get all instances of the Bitcoin gateway.
 	 * (typically there is only one).
 	 *
-	 * @return array<string, WC_Bitcoin_Gateway>
+	 * @return array<string, Bitcoin_Gateway>
 	 */
 	public function get_bitcoin_gateways(): array {
 		$payment_gateways = WC_Payment_Gateways::instance()->payment_gateways();
 		$bitcoin_gateways = array();
 		foreach ( $payment_gateways as $gateway ) {
-			if ( $gateway instanceof WC_Bitcoin_Gateway ) {
+			if ( $gateway instanceof Bitcoin_Gateway ) {
 				$bitcoin_gateways[ $gateway->id ] = $gateway;
 			}
 		}
@@ -147,7 +144,7 @@ class API implements API_Interface {
 	 * Maybe schedule more address generation.
 	 * Return it to be used in an order.
 	 *
-	 * @used-by WC_Bitcoin_Gateway::process_payment()
+	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
 	 * @param WC_Order $order The order that will use the address.
 	 *
@@ -334,7 +331,7 @@ class API implements API_Interface {
 
 		$bitcoin_gateways = $this->get_bitcoin_gateways();
 
-		/** @var WC_Bitcoin_Gateway $gateway */
+		/** @var Bitcoin_Gateway $gateway */
 		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
 
 		// TODO: get from gateway.

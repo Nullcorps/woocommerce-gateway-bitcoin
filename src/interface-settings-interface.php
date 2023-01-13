@@ -18,6 +18,7 @@ interface Settings_Interface {
 
 	/**
 	 * Semver plugin version for caching of js + css.
+	 * Version compare during upgrade.
 	 *
 	 * @return string
 	 */

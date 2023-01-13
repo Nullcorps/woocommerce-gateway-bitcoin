@@ -41,13 +41,13 @@ interface API_Interface {
 	public function is_bitcoin_gateway( string $gateway_id ): bool;
 
 	/**
-	 * @return WC_Bitcoin_Gateway[]
+	 * @return Bitcoin_Gateway[]
 	 */
 	public function get_bitcoin_gateways(): array;
 
 	/**
 	 *
-	 * @used-by WC_Bitcoin_Gateway::process_payment()
+	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
 	 * @param string $currency USD|EUR|GBP.
 	 *
@@ -58,7 +58,7 @@ interface API_Interface {
 	/**
 	 * Get the Bitcoin value of a local currency amount.
 	 *
-	 * @used-by WC_Bitcoin_Gateway::process_payment()
+	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
 	 * @param string $currency From which currency.
 	 * @param float  $fiat_amount The amount to convert.
@@ -101,7 +101,7 @@ interface API_Interface {
 	 * When a new wallet address is saved in the gateway settings, generate a Wallet custom post for it, and prepare
 	 * fresh addresses for use.
 	 *
-	 * @used-by WC_Bitcoin_Gateway::process_admin_options()
+	 * @used-by Bitcoin_Gateway::process_admin_options()
 	 *
 	 * @param string  $xpub_after
 	 * @param ?string $gateway_id
@@ -128,7 +128,7 @@ interface API_Interface {
 	 * Determine do we have any fresh address available for this gateway.
 	 * Used so the gateway is not displayed at checkout if there are no addresses ready.
 	 *
-	 * @used-by WC_Bitcoin_Gateway::is_available()
+	 * @used-by Bitcoin_Gateway::is_available()
 	 *
 	 * @param Bitcoin_Gateway $gateway
 	 *
