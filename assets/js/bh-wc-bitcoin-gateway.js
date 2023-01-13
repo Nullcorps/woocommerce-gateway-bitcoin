@@ -6,9 +6,9 @@
 
 	$(function() {
 
-		$('.woobtc_address').click(function(){
+		$('.bh_wc_bitcoin_gateway_address').click(function(){
 
-			var address = nullcorps_bitcoin_order_details.btc_address;
+			var address = bh_wc_bitcoin_gateway_order_details.btc_address;
 
 			// Copy it to the clipboard.
 			navigator.clipboard.writeText(address);
@@ -19,9 +19,9 @@
 		});
 
 
-		$('.woobtc_total').click(function(){
+		$('.bh_wc_bitcoin_gateway_total').click(function(){
 
-			var amount = nullcorps_bitcoin_order_details.btc_total;
+			var amount = bh_wc_bitcoin_gateway_order_details.btc_total;
 
 			// Copy it to the clipboard.
 			navigator.clipboard.writeText(amount);
@@ -31,7 +31,7 @@
 			$(this).fadeIn('slow');
 		});
 
-		$('.woobtc_last_checked_time').click(function(){
+		$('.bh_wc_bitcoin_gateway_last_checked_time').click(function(){
 
 			check_now();
 
@@ -41,16 +41,16 @@
 
 	function check_now() {
 
-		var ajax_url = nullcorps_ajax_data.ajax_url;
-		var nonce = nullcorps_ajax_data.nonce;
+		var ajax_url = bh_wc_bitcoin_gateway_ajax_data.ajax_url;
+		var nonce = bh_wc_bitcoin_gateway_ajax_data.nonce;
 
-		var order_id = nullcorps_bitcoin_order_details.order_id;
+		var order_id = bh_wc_bitcoin_gateway_order_details.order_id;
 
 		// Let's fade out the numbers to indicate they are maybe about to be updated.
-		$('.woobtc_updatable').animate({ opacity: 0.4 });
+		$('.bh_wc_bitcoin_gateway_updatable').animate({ opacity: 0.4 });
 
 		var data = {
-			'action': 'nullcorps_bitcoin_refresh_order_details',
+			'action': 'bh_wc_bitcoin_gateway_refresh_order_details',
 			'_ajax_nonce': nonce,
 			'order_id': order_id
 		};
@@ -61,28 +61,28 @@
 			// If they are the same, just reset opacity,
 			// If they are different, display:none the slow fade in.
 
-			var new_nullcorps_bitcoin_order_details = response.data;
+			var new_bh_wc_bitcoin_gateway_order_details = response.data;
 
-			if( nullcorps_bitcoin_order_details.btc_amount_received !== new_nullcorps_bitcoin_order_details.btc_amount_received ) {
+			if( bh_wc_bitcoin_gateway_order_details.btc_amount_received !== new_bh_wc_bitcoin_gateway_order_details.btc_amount_received ) {
 				// We have a new payment!
-				$('.woobtc_updatable').css('display', 'none');
+				$('.bh_wc_bitcoin_gateway_updatable').css('display', 'none');
 
-				$('.woobtc_status').text( new_nullcorps_bitcoin_order_details.status );
-				$('.woobtc_amount_received').text( new_nullcorps_bitcoin_order_details.amount_received );
-				$('.order-status').text( new_nullcorps_bitcoin_order_details.order_status_formatted );
+				$('.bh_wc_bitcoin_gateway_status').text( new_bh_wc_bitcoin_gateway_order_details.status );
+				$('.bh_wc_bitcoin_gateway_amount_received').text( new_bh_wc_bitcoin_gateway_order_details.amount_received );
+				$('.order-status').text( new_bh_wc_bitcoin_gateway_order_details.order_status_formatted );
 
 				// TODO: Transactions.
 
-				$('.woobtc_updatable').fadeIn('slow');
+				$('.bh_wc_bitcoin_gateway_updatable').fadeIn('slow');
 
 			} else {
 				// Return to regular opacity
-				$('.woobtc_updatable').animate({ opacity: 1.0 });
+				$('.bh_wc_bitcoin_gateway_updatable').animate({ opacity: 1.0 });
 			}
 
-			$('.woobtc_last_checked_time').text( new_nullcorps_bitcoin_order_details.last_checked_time_formatted );
-			
-			nullcorps_bitcoin_order_details = response.data;
+			$('.bh_wc_bitcoin_gateway_last_checked_time').text( new_bh_wc_bitcoin_gateway_order_details.last_checked_time_formatted );
+
+			bh_wc_bitcoin_gateway_order_details = response.data;
 		});
 
 

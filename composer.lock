@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e2d0b5f41d9409d338007c3b94987c4",
+    "content-hash": "53406d0e1fdeea812c4b6e8fd4ceb804",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -1005,68 +1005,6 @@
                 "source": "https://github.com/phpecc/phpecc/tree/master"
             },
             "time": "2017-10-09T16:05:37+00:00"
-        },
-        {
-            "name": "pablo-sg-pacheco/wp-namespace-autoloader",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pablo-sg-pacheco/wp-namespace-autoloader.git",
-                "reference": "015c9654459fd267cf12fa7846d3bf36b11c3bd7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pablo-sg-pacheco/wp-namespace-autoloader/zipball/015c9654459fd267cf12fa7846d3bf36b11c3bd7",
-                "reference": "015c9654459fd267cf12fa7846d3bf36b11c3bd7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "cweagans/composer-patches": "^1.0",
-                "dealerdirect/phpcodesniffer-composer-installer": "0.7.0",
-                "phpunit/phpunit": "^7",
-                "squizlabs/php_codesniffer": "dev-master",
-                "wp-coding-standards/wpcs": "^2.3"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "patches": {
-                    "squizlabs/php_codesniffer": {
-                        "Add GitHub Actions Annotations report type": "https://github.com/squizlabs/PHP_CodeSniffer/pull/2918.patch"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Pablo_Pacheco\\WP_Namespace_Autoloader\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPLv2"
-            ],
-            "authors": [
-                {
-                    "name": "Pablo dos S G Pacheco",
-                    "email": "pablo.sg.pacheco@gmail.com"
-                }
-            ],
-            "description": "A PHP autoloader class that follows the WordPress coding standards 2.0 and proposed 3.0 for class/interface/trait names and filenames",
-            "homepage": "https://github.com/pablo-pacheco/wp-namespace-autoloader",
-            "keywords": [
-                "autoload",
-                "namespace",
-                "wordpress",
-                "wp"
-            ],
-            "support": {
-                "issues": "https://github.com/pablo-sg-pacheco/wp-namespace-autoloader/issues",
-                "source": "https://github.com/pablo-sg-pacheco/wp-namespace-autoloader/tree/master"
-            },
-            "time": "2022-12-02T14:49:51+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -5422,16 +5360,16 @@
         },
         {
             "name": "php-stubs/woocommerce-stubs",
-            "version": "v7.2.3",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "444016da999879edeaf80b7c224d5ca4453e3f09"
+                "reference": "446c335118632e00854b9ada74319b200e5c78a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/444016da999879edeaf80b7c224d5ca4453e3f09",
-                "reference": "444016da999879edeaf80b7c224d5ca4453e3f09",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/446c335118632e00854b9ada74319b200e5c78a2",
+                "reference": "446c335118632e00854b9ada74319b200e5c78a2",
                 "shasum": ""
             },
             "require": {
@@ -5460,9 +5398,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.2.3"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.3.0"
             },
-            "time": "2023-01-11T08:32:45+00:00"
+            "time": "2023-01-13T00:24:42+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -5796,16 +5734,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.9.9",
+            "version": "1.9.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "f68d7cc3d0638a01bc6321cb826e4cae7fa6884d"
+                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f68d7cc3d0638a01bc6321cb826e4cae7fa6884d",
-                "reference": "f68d7cc3d0638a01bc6321cb826e4cae7fa6884d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60f3d68481eef216199eae7a2603cd5fe124d464",
+                "reference": "60f3d68481eef216199eae7a2603cd5fe124d464",
                 "shasum": ""
             },
             "require": {
@@ -5835,7 +5773,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.9"
+                "source": "https://github.com/phpstan/phpstan/tree/1.9.11"
             },
             "funding": [
                 {
@@ -5851,7 +5789,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-11T14:39:22+00:00"
+            "time": "2023-01-12T14:04:13+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -12116,7 +12054,6 @@
     "stability-flags": {
         "bitwasp/bitcoin": 20,
         "brianhenryie/bh-wp-logger": 20,
-        "pablo-sg-pacheco/wp-namespace-autoloader": 20,
         "brianhenryie/composer-phpstorm": 20,
         "kporras07/composer-symlinks": 20,
         "voku/portable-ascii": 20,

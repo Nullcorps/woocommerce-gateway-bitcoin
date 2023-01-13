@@ -3,7 +3,7 @@
  * Template displaying a table with the Bitcoin address, QR code, amount required, amount received, status, and the time
  * last checked. CSS classes on each allow for JS to target the data for copying to the clipboard.
  *
- * @see \Nullcorps\WC_Gateway_Bitcoin\API_Interface::get_order_details()
+ * @see \BrianHenryIE\WC_Bitcoin_Gateway\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *
@@ -17,53 +17,53 @@
  * @var string $btc_amount_received_formatted Amount received prefixed with "฿".
  * @var string $last_checked_time_formatted The last time a blockchain service was queried for updates to the payment address.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-use Nullcorps\WC_Gateway_Bitcoin\chillerlan\QRCode\QRCode;
+use BrianHenryIE\WC_Bitcoin_Gateway\chillerlan\QRCode\QRCode;
 
 $qr_address = 'bitcoin:' . $btc_address . '?amount=' . $btc_total;
 
-$btc_logo_url = NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL . '/assets/bitcoin.png';
+$btc_logo_url = BH_WC_BITCOIN_GATEWAY_URL . '/assets/bitcoin.png';
 ?>
 
-<div class="woobtc-details">
+<div class="bh-wc-bitcoin-gateway-details">
 
 	<?php // For scrolling to? ?>
-	<a id="woobtc"></a>
+	<a id="bh_wc_bitcoin_gateway"></a>
 
-	<div class="btc_logo_qr">
-	<img alt="Bitcoin logo" class="woobtc_bitcoin_logo" src="<?php echo esc_attr( $btc_logo_url ); ?>">
+	<div class="bh_wc_bitcoin_gateway_logo_qr">
+	<img alt="Bitcoin logo" class="bh_wc_bitcoin_gateway_logo" src="<?php echo esc_attr( $btc_logo_url ); ?>">
 
 	<a href="<?php echo esc_attr( $qr_address ); ?>">
-		<img src="<?php echo esc_attr( ( new QRCode() )->render( $qr_address ) ); ?>" alt="<?php esc_attr_e( 'Payment QR Code', 'nullcorps-wc-gateway-bitcoin' ); ?>" />
+		<img src="<?php echo esc_attr( ( new QRCode() )->render( $qr_address ) ); ?>" alt="<?php esc_attr_e( 'Payment QR Code', 'bh-wc-bitcoin-gateway' ); ?>" />
 	</a>
 	</div>
 
 	<table>
 		<tr>
-			<td><span class=""><?php esc_html_e( 'Payment Address:', 'nullcorps-wc-gateway-bitcoin' ); ?></span></td>
-			<td><span class="woobtc_address"><?php echo esc_html( $btc_address ); ?></span></td>
+			<td><span class=""><?php esc_html_e( 'Payment Address:', 'bh-wc-bitcoin-gateway' ); ?></span></td>
+			<td><span class="bh_wc_bitcoin_gateway_address"><?php echo esc_html( $btc_address ); ?></span></td>
 		</tr>
 		<tr>
-			<td><span class=""><?php esc_html_e( 'Payment Total:', 'nullcorps-wc-gateway-bitcoin' ); ?></span></td>
-			<td><span class="woobtc_total"><?php echo esc_html( $btc_total_formatted ); ?></span></td>
+			<td><span class=""><?php esc_html_e( 'Payment Total:', 'bh-wc-bitcoin-gateway' ); ?></span></td>
+			<td><span class="bh_wc_bitcoin_gateway_total"><?php echo esc_html( $btc_total_formatted ); ?></span></td>
 		</tr>
 		<tr>
-			<td><span class=""><?php esc_html_e( 'Amount Received:', 'nullcorps-wc-gateway-bitcoin' ); ?></span></td>
-			<td><span class="woobtc_amount_received woobtc_updatable"><?php echo esc_html( $btc_amount_received_formatted ); ?></span></td>
+			<td><span class=""><?php esc_html_e( 'Amount Received:', 'bh-wc-bitcoin-gateway' ); ?></span></td>
+			<td><span class="bh_wc_bitcoin_gateway_amount_received bh_wc_bitcoin_gateway_updatable"><?php echo esc_html( $btc_amount_received_formatted ); ?></span></td>
 		</tr>
 		<tr>
-			<td><span class=""><?php esc_html_e( 'Status:', 'nullcorps-wc-gateway-bitcoin' ); ?></span></td>
-			<td><span class="woobtc_status woobtc_updatable">
+			<td><span class=""><?php esc_html_e( 'Status:', 'bh-wc-bitcoin-gateway' ); ?></span></td>
+			<td><span class="bh_wc_bitcoin_gateway_status bh_wc_bitcoin_gateway_updatable">
 			<?php
 			echo esc_html( $status );
 			?>
 			</span></td>
 		</tr>
 		<tr>
-			<td><span class=""><?php esc_html_e( 'Last Checked:', 'nullcorps-wc-gateway-bitcoin' ); ?></span></td>
-			<td><span class="woobtc_last_checked_time woobtc_updatable">
+			<td><span class=""><?php esc_html_e( 'Last Checked:', 'bh-wc-bitcoin-gateway' ); ?></span></td>
+			<td><span class="bh_wc_bitcoin_gateway_last_checked_time bh_wc_bitcoin_gateway_updatable">
 				<?php echo esc_html( $last_checked_time_formatted ); ?></span>
 			</td>
 		</tr>

@@ -30,7 +30,7 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Activator;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Deactivator;
-use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {

@@ -12,6 +12,20 @@ use WC_Gateway_BACS;
 class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
+	 * @covers ::add_to_woocommerce
+	 */
+	public function test_add_to_woocommerce(): void {
+
+		$logger = new ColorLogger();
+
+		$sut = new Payment_Gateways( $logger );
+
+		$result = $sut->add_to_woocommerce( array() );
+
+		$this->assertEquals( Bitcoin_Gateway::class, $result[0] );
+	}
+
+	/**
 	 * @covers ::filter_to_only_bitcoin_gateways
 	 */
 	public function test_filter_to_only_bitcoin_gateways(): void {

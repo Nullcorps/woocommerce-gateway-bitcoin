@@ -29,7 +29,7 @@ class Payment_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase 
 		}
 
 		if ( is_null( $sut_gateway ) ) {
-			$this->fail( 'Gateway probably unavailable because it has not been configured/generated addresses.' );
+			$this->markTestIncomplete( 'Gateway probably unavailable because it has not been configured/generated addresses.' );
 		}
 
 		$reflection = new ReflectionClass( $sut_gateway );

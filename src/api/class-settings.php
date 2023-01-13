@@ -7,8 +7,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger_Settings_Trait;
-use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\WooCommerce_Logger_Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LogLevel;
 

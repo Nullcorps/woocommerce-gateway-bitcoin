@@ -35,7 +35,7 @@ class Payment_Gateways {
 	 */
 	public function add_to_woocommerce( array $gateways ): array {
 
-		$gateways[] = WC_Bitcoin_Gateway::class;
+		$gateways[] = Bitcoin_Gateway::class;
 
 		return $gateways;
 	}

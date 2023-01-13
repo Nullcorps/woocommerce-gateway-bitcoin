@@ -22,7 +22,7 @@ class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->add_to_woocommerce( array() );
 
-		$this->assertContains( WC_Bitcoin_Gateway::class, $result );
+		$this->assertContains( Bitcoin_Gateway::class, $result );
 	}
 
 	/**

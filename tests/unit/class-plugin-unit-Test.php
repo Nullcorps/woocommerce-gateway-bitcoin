@@ -8,7 +8,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger;
 
 /**
  * Class Plugin_WP_Mock_Test

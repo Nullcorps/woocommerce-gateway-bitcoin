@@ -29,6 +29,7 @@ dwsync.xml
 # Komodo
 *.komodoproject
 .komodotools
+
 # Folders to ignore
 .hg
 .svn
@@ -39,10 +40,10 @@ cache
 
 node_modules
 scratch
-src/strauss/
+src/vendor-prefixed/
 wp-content/
 wordpress
-vendor/*
+/vendor/
 
 *.zip
 *.phar
@@ -60,4 +61,3 @@ docker_tag
 
 vendor-prefixed
 dist-archive
-

@@ -23,9 +23,11 @@ class Settings_Unit_Test extends \Codeception\Test\Unit {
 	public function test_get_plugin_version(): void {
 		global $plugin_root_dir, $plugin_name_php;
 
-		$plugin_file = file_get_contents( $plugin_root_dir . DIRECTORY_SEPARATOR . $plugin_name_php );
+		$plugin_file = $plugin_root_dir . DIRECTORY_SEPARATOR . 'bh-wc-bitcoin-gateway.php';
 
-		preg_match( '/\s+\*\s+Version:\s+(\d+\.\d+\.\d+)/', $plugin_file, $output_array );
+		$plugin_file_contents = file_get_contents( $plugin_file );
+
+		preg_match( '/\s+\*\s+Version:\s+(\d+\.\d+\.\d+)/', $plugin_file_contents, $output_array );
 
 		$sut = new Settings();
 
