@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 /**
  *
  */
-class Frontend {
+class Frontend_Assets {
 	use LoggerAwareTrait;
 
 	protected Settings_Interface $settings;

@@ -9,7 +9,7 @@
 namespace Nullcorps\WC_Gateway_Bitcoin;
 
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Admin;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
+use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
 use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
 
 /**
@@ -20,8 +20,8 @@ class Nullcorps_WC_Gateway_Bitcoin_Integration_Test extends \Codeception\TestCas
 	public function hooks(): array {
 		$hooks = array(
 			array( 'init', I18n::class, 'load_plugin_textdomain' ),
-			array( 'wp_enqueue_scripts', Frontend::class, 'enqueue_styles' ),
-			array( 'wp_enqueue_scripts', Frontend::class, 'enqueue_scripts' ),
+			array( 'wp_enqueue_scripts', Frontend_Assets::class, 'enqueue_styles' ),
+			array( 'wp_enqueue_scripts', Frontend_Assets::class, 'enqueue_scripts' ),
 		);
 		return $hooks;
 	}

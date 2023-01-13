@@ -79,7 +79,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 
 		$GLOBALS['order-received'] = 123;
 
-		$sut = new Frontend( $api, $settings, $logger );
+		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$sut->enqueue_styles();
 
@@ -115,7 +115,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$sut = new Frontend( $api, $settings, $logger );
+		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$sut->enqueue_styles();
 

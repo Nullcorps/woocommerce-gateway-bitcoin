@@ -19,7 +19,7 @@ use Nullcorps\WC_Gateway_Bitcoin\Admin\Addresses_List_Table;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Wallets_List_Table;
 use Nullcorps\WC_Gateway_Bitcoin\Frontend\AJAX;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
+use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\My_Account_View_Order;
@@ -140,7 +140,7 @@ class Nullcorps_WC_Gateway_Bitcoin {
 	 */
 	protected function define_frontend_hooks(): void {
 
-		$plugin_frontend = new Frontend( $this->api, $this->settings, $this->logger );
+		$plugin_frontend = new Frontend_Assets( $this->api, $this->settings, $this->logger );
 
 		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_scripts' ) );

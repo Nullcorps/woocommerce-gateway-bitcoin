@@ -44,7 +44,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$sut = new Frontend( $api, $settings, $logger );
+		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$order    = new \WC_Order();
 		$order_id = $order->save();
@@ -78,7 +78,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		unset( $GLOBALS['order-received'] );
 		unset( $GLOBALS['view-order'] );
 
-		$sut = new Frontend( $api, $settings, $logger );
+		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$sut->enqueue_scripts();
 	}
@@ -100,7 +100,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$GLOBALS['order-received'] = 123;
 
-		$sut = new Frontend( $api, $settings, $logger );
+		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$sut->enqueue_scripts();
 	}

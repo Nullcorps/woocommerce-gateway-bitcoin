@@ -9,7 +9,7 @@ namespace Nullcorps\WC_Gateway_Bitcoin;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
 use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend;
+use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
 use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
@@ -116,12 +116,12 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::expectActionAdded(
 			'wp_enqueue_scripts',
-			array( new AnyInstance( Frontend::class ), 'enqueue_styles' )
+			array( new AnyInstance( Frontend_Assets::class ), 'enqueue_styles' )
 		);
 
 		\WP_Mock::expectActionAdded(
 			'wp_enqueue_scripts',
-			array( new AnyInstance( Frontend::class ), 'enqueue_scripts' )
+			array( new AnyInstance( Frontend_Assets::class ), 'enqueue_scripts' )
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );
