@@ -1,21 +1,20 @@
 <?php
 /**
- * Tests for Nullcorps_WC_Gateway_Bitcoin main setup class. Tests the actions are correctly added.
+ * Tests for BH_WC_Bitcoin_Gateway main setup class. Tests the actions are correctly added.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Admin;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
+use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
 
 /**
  * Class Develop_Test
  */
-class Nullcorps_WC_Gateway_Bitcoin_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class BH_WC_Bitcoin_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 	public function hooks(): array {
 		$hooks = array(

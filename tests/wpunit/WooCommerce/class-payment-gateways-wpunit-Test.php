@@ -1,13 +1,13 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use WC_Gateway_BACS;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways
  */
 class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -20,12 +20,12 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut = new Payment_Gateways( $logger );
 
-		$GLOBALS['nullcorps_wc_gateway_bitcoin'] = $this->makeEmpty( API_Interface::class );
+		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
 
 		$gateways = array(
 			new WC_Gateway_BACS(),
-			new WC_Gateway_Bitcoin(),
-			new class() extends WC_Gateway_Bitcoin {
+			new Bitcoin_Gateway(),
+			new class() extends Bitcoin_Gateway {
 				/**
 				 * Unique id for second instance.
 				 *
@@ -36,9 +36,9 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			'nothing',
 		);
 
-		// Pretend we're on the gateways list page, with parameter `class=nullcorps-wc-gateway-bitcoin`.
+		// Pretend we're on the gateways list page, with parameter `class=bh-wc-bitcoin-gateway`.
 		$GLOBALS['current_tab'] = 'checkout';
-		$_GET['class']          = 'nullcorps-wc-gateway-bitcoin';
+		$_GET['class']          = 'bh-wc-bitcoin-gateway';
 
 		$result = $sut->filter_to_only_bitcoin_gateways( $gateways );
 
@@ -56,7 +56,7 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$gateways = array(
 			new WC_Gateway_BACS(),
-			new WC_Gateway_Bitcoin(),
+			new Bitcoin_Gateway(),
 		);
 
 		$result = $sut->filter_to_only_bitcoin_gateways( $gateways );

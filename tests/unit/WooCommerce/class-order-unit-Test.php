@@ -1,9 +1,9 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order
  */
 class Order_Unit_Test extends \Codeception\Test\Unit {
 
@@ -11,6 +11,6 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 	 * TODO: Find a better meta key.
 	 */
 	public function test_verify_const(): void {
-		$this->assertEquals( 'woobtc_address', Order::BITCOIN_ADDRESS_META_KEY );
+		$this->assertEquals( 'bh_wc_bitcoin_gateway_address', Order::BITCOIN_ADDRESS_META_KEY );
 	}
 }

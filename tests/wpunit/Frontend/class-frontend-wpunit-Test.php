@@ -1,14 +1,14 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets
  */
 class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -53,7 +53,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut->enqueue_scripts();
 
-		$this->assertTrue( wp_script_is( 'nullcorps-wc-gateway-bitcoin' ) );
+		$this->assertTrue( wp_script_is( 'bh-wc-bitcoin-gateway' ) );
 
 		// TODO: check the inline script is enqueued.
 	}

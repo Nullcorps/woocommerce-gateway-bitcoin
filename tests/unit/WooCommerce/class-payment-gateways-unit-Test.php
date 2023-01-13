@@ -1,13 +1,13 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
 use WC_Payment_Gateway;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways
  */
 class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
@@ -22,7 +22,7 @@ class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->add_to_woocommerce( array() );
 
-		$this->assertContains( WC_Gateway_Bitcoin::class, $result );
+		$this->assertContains( WC_Bitcoin_Gateway::class, $result );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
 		$gateways = array(
 			$this->makeEmpty(
-				WC_Gateway_Bitcoin::class,
+				Bitcoin_Gateway::class,
 				array(
 					'set_logger' => Expected::once(
 						function ( $the_logger ) use ( $logger ) {

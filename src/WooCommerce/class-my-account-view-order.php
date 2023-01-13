@@ -4,12 +4,12 @@
  *
  * @see woocommerce/templates/myaccount/view-order.php
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 
 class My_Account_View_Order {

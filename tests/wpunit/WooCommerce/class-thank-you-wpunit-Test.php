@@ -1,14 +1,14 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Thank_You
  */
 class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

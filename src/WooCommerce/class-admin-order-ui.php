@@ -2,13 +2,13 @@
 /**
  * Add a metabox with the payment details on the admin order page.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use DateTime;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -58,7 +58,7 @@ class Admin_Order_UI {
 		}
 
 		add_meta_box(
-			'nullcorps-wc-gateway-bitcoin',
+			'bh-wc-bitcoin-gateway',
 			'Bitcoin',
 			array( $this, 'print_address_transactions_metabox' ),
 			'shop_order',

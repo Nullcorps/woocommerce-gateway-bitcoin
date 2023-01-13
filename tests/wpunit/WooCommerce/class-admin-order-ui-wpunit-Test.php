@@ -1,15 +1,15 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 use WP_Post;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI
  */
 class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

@@ -2,11 +2,11 @@
 /**
  * Tests for I18n. Tests load_plugin_textdomain.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
 /**
  *
@@ -29,7 +29,7 @@ class I18n_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( file_exists( $plugin_root_dir . '/Languages/' ), '/Languages/ folder does not exist.' );
 
 		// Seems to fail because there are no translations to load.
-		$this->assertTrue( is_textdomain_loaded( 'woocommerce-gateway-bitcoin' ), 'i18n text domain not loaded.' );
+		$this->assertTrue( is_textdomain_loaded( 'bh-wc-bitcoin-gateway' ), 'i18n text domain not loaded.' );
 
 	}
 

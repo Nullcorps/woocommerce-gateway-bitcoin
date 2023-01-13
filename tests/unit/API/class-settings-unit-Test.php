@@ -1,9 +1,9 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\API\Settings
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Settings
  */
 class Settings_Unit_Test extends \Codeception\Test\Unit {
 

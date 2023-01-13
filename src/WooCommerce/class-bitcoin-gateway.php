@@ -2,15 +2,15 @@
 /**
  * The main payment gateway class for the plugin.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
@@ -22,7 +22,7 @@ use WC_Payment_Gateway;
  *
  * @see WC_Settings_API
  */
-class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
+class Bitcoin_Gateway extends WC_Payment_Gateway {
 	use LoggerAwareTrait;
 
 	/**
@@ -54,7 +54,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 	 * Previously we were using a static value in a method to store this, but that caused problems with tests, and
 	 * would be an issue with Duplicate Payment Gateways.
 	 *
-	 * @used-by WC_Gateway_Bitcoin::is_available()
+	 * @used-by WC_Bitcoin_Gateway::is_available()
 	 *
 	 * @var ?bool
 	 */
@@ -68,12 +68,12 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$this->setLogger( new NullLogger() );
 
 		// TODO: Is there a better way to do this?
-		$this->api = $GLOBALS['nullcorps_wc_gateway_bitcoin'];
+		$this->api = $GLOBALS['bh_wc_bitcoin_gateway'];
 
-		$this->icon               = plugins_url( 'assets/bitcoin.png', 'woocommerce-gateway-bitcoin/nullcorps-woocommerce-gateway-bitcoin.php' );
+		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' );
 		$this->has_fields         = false;
-		$this->method_title       = __( 'Bitcoin', 'nullcorps-wc-gateway-bitcoin' );
-		$this->method_description = __( 'Allows Bitcoin payments. Orders are marked as "on-hold" when received, and marked paid once the specified number of confirmations are met', 'nullcorps-wc-gateway-bitcoin' );
+		$this->method_title       = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
+		$this->method_description = __( 'Allows Bitcoin payments. Orders are marked as "on-hold" when received, and marked paid once the specified number of confirmations are met', 'bh-wc-bitcoin-gateway' );
 
 		// Load the settings.
 		$this->init_form_fields();
@@ -139,49 +139,49 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		$settings_fields = array(
 
 			'enabled'               => array(
-				'title'   => __( 'Enable/Disable', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'   => __( 'Enable/Disable', 'bh-wc-bitcoin-gateway' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable Bitcoin Payment', 'nullcorps-wc-gateway-bitcoin' ),
+				'label'   => __( 'Enable Bitcoin Payment', 'bh-wc-bitcoin-gateway' ),
 				'default' => 'yes',
 			),
 
 			'title'                 => array(
-				'title'       => __( 'Title', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'Title', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'nullcorps-wc-gateway-bitcoin' ),
-				'default'     => __( 'Bitcoin', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'bh-wc-bitcoin-gateway' ),
+				'default'     => __( 'Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
 
 			'description'           => array(
-				'title'       => __( 'Description', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'Description', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'Payment method description that the customer will see on your checkout.', 'nullcorps-wc-gateway-bitcoin' ),
-				'default'     => __( 'Pay quickly and easily with Bitcoin', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'Payment method description that the customer will see on your checkout.', 'bh-wc-bitcoin-gateway' ),
+				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
 
 			'instructions'          => array(
-				'title'       => __( 'Instructions', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'Instructions', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made.', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => 'NB: Please only send Bitcoin, which always has the ticker BTC, not any of the many clones. If you send coins other than Bitcoin (e.g. Bitcoin Cash) then those coins will be lost and your order will still not be paid.',
 				'desc_tip'    => false,
 			),
 
 			'xpub'                  => array(
-				'title'       => __( 'xpub', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'xpub', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like xbpub2394234924loadsofnumbers', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like xbpub2394234924loadsofnumbers', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '',
 				'desc_tip'    => false,
 			),
 			// TODO: Show balance here.
 
 			'fiat_currency'         => array(
-				'title'       => __( 'fiat-currency', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'fiat-currency', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'select',
-				'description' => __( 'The fiat equivalent currency to use - USD, EUR or GBP', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'The fiat equivalent currency to use - USD, EUR or GBP', 'bh-wc-bitcoin-gateway' ),
 				'default'     => in_array( get_option( 'woocommerce_currency' ), array( 'USD', 'EUR', 'GBP' ), true ) ? get_option( 'woocommerce_currency' ) : 'USD',
 				'desc_tip'    => false,
 				'options'     => array(
@@ -192,17 +192,17 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			),
 
 			'btc_rounding_decimals' => array(
-				'title'       => __( 'btc-rounding-decimals', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'btc-rounding-decimals', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Integer, somewhere around 6 or 7 is probably ideal currently.', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'Integer, somewhere around 6 or 7 is probably ideal currently.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '7',
 				'desc_tip'    => false,
 			),
 
 			'price_margin'          => array(
-				'title'       => __( 'price-margin', 'nullcorps-wc-gateway-bitcoin' ),
+				'title'       => __( 'price-margin', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'A percentage amount of shortfall from the shown price which will be accepted to allow for rounding errors. Recommend value between 0 and 3', 'nullcorps-wc-gateway-bitcoin' ),
+				'description' => __( 'A percentage amount of shortfall from the shown price which will be accepted to allow for rounding errors. Recommend value between 0 and 3', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '2',
 				'desc_tip'    => false,
 			),
@@ -220,7 +220,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 			'label'       => __( 'Enable Logging', 'text-domain' ),
 			'type'        => 'select',
 			'options'     => $log_levels_option,
-			'description' => __( 'Increasingly detailed levels of logs. ', 'nullcorps-wc-gateway-bitcoin' ) . '<a href="' . admin_url( 'admin.php?page=nullcorps-wc-gateway-bitcoin-logs' ) . '">View Logs</a>',
+			'description' => __( 'Increasingly detailed levels of logs. ', 'bh-wc-bitcoin-gateway' ) . '<a href="' . admin_url( 'admin.php?page=bh-wc-bitcoin-gateway-logs' ) . '">View Logs</a>',
 			'desc_tip'    => false,
 			'default'     => 'info',
 		);
@@ -266,11 +266,11 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 		if ( ! ( $order instanceof WC_Order ) ) {
 			// This should never happen.
-			throw new Exception( __( 'Error creating order.', 'nullcorps-wc-gateway-bitcoin' ) );
+			throw new Exception( __( 'Error creating order.', 'bh-wc-bitcoin-gateway' ) );
 		}
 
 		if ( is_null( $this->api ) ) {
-			throw new Exception( __( 'API unavailable for new Bitcoin gateway order.', 'nullcorps-wc-gateway-bitcoin' ) );
+			throw new Exception( __( 'API unavailable for new Bitcoin gateway order.', 'bh-wc-bitcoin-gateway' ) );
 		}
 
 		$api = $this->api;
@@ -279,7 +279,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 		 * There should never really be an exception here, since the availability of a fresh address was checked before
 		 * offering the option to pay by Bitcoin.
 		 *
-		 * @see WC_Gateway_Bitcoin::is_available()
+		 * @see WC_Bitcoin_Gateway::is_available()
 		 */
 		try {
 			/**
@@ -303,7 +303,7 @@ class WC_Gateway_Bitcoin extends WC_Payment_Gateway {
 
 		// Mark as on-hold (we're awaiting the payment).
 		/* translators: %F: The order total in BTC */
-		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'nullcorps-wc-gateway-bitcoin' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
+		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wc-bitcoin-gateway' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
 
 		$order->save();
 

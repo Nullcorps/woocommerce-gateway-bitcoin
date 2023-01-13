@@ -1,15 +1,15 @@
 <?php
 /**
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -47,7 +47,7 @@ class CLI extends WP_CLI_Command {
 	/**
 	 * Generate new addresses for all gateways.
 	 *
-	 * `wp bh-crypto generate-new-addresses --debug=nullcorps-wc-gateway-bitcoin`
+	 * `wp bh-crypto generate-new-addresses --debug=bh-wc-bitcoin-gateway`
 	 *
 	 * @param array<int|string, string> $args Takes no arguments.
 	 */
@@ -65,7 +65,7 @@ class CLI extends WP_CLI_Command {
 	/**
 	 * Query the blockchain for updates for a specific address (xpub or post_id) or order id.
 	 *
-	 * `wp bh-crypto update-address a1b2c3e4 --debug=nullcorps-wc-gateway-bitcoin`
+	 * `wp bh-crypto update-address a1b2c3e4 --debug=bh-wc-bitcoin-gateway`
 	 *
 	 * @param array<int|string, string> $args The address.
 	 *

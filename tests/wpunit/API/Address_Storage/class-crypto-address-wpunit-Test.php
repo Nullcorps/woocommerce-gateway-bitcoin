@@ -1,9 +1,9 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address
  */
 class Crypto_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

@@ -1,6 +1,6 @@
 # Serve the contents of /wordpress/ from the root URL for the project.
 RewriteEngine on
-RewriteCond %{HTTP_HOST} ^.*woocommerce-gateway-bitcoin$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^.*bh-wc-bitcoin-gateway$ [NC,OR]
 RewriteCond %{REQUEST_URI} !wordpress/
 RewriteRule (.*) wordpress/$1 [L]
 

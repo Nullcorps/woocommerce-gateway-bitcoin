@@ -2,7 +2,7 @@
 
 
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 

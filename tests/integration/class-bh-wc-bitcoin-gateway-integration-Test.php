@@ -2,13 +2,13 @@
 /**
  * Class Plugin_Test. Tests the root plugin setup.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author     BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\API;
 
 /**
  * Verifies the plugin has been instantiated and added to PHP's $GLOBALS variable.
@@ -20,9 +20,9 @@ class Plugin_Integration_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_plugin_instantiated(): void {
 
-		$this->assertArrayHasKey( 'nullcorps_wc_gateway_bitcoin', $GLOBALS );
+		$this->assertArrayHasKey( 'bh_wc_bitcoin_gateway', $GLOBALS );
 
-		$this->assertInstanceOf( API::class, $GLOBALS['nullcorps_wc_gateway_bitcoin'] );
+		$this->assertInstanceOf( API::class, $GLOBALS['bh_wc_bitcoin_gateway'] );
 	}
 
 }

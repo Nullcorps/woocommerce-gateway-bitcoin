@@ -1,15 +1,15 @@
 <?php
 /**
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
+use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use WC_Order;
 
 
@@ -41,13 +41,13 @@ interface API_Interface {
 	public function is_bitcoin_gateway( string $gateway_id ): bool;
 
 	/**
-	 * @return WC_Gateway_Bitcoin[]
+	 * @return WC_Bitcoin_Gateway[]
 	 */
 	public function get_bitcoin_gateways(): array;
 
 	/**
 	 *
-	 * @used-by WC_Gateway_Bitcoin::process_payment()
+	 * @used-by WC_Bitcoin_Gateway::process_payment()
 	 *
 	 * @param string $currency USD|EUR|GBP.
 	 *
@@ -58,7 +58,7 @@ interface API_Interface {
 	/**
 	 * Get the Bitcoin value of a local currency amount.
 	 *
-	 * @used-by WC_Gateway_Bitcoin::process_payment()
+	 * @used-by WC_Bitcoin_Gateway::process_payment()
 	 *
 	 * @param string $currency From which currency.
 	 * @param float  $fiat_amount The amount to convert.
@@ -101,7 +101,7 @@ interface API_Interface {
 	 * When a new wallet address is saved in the gateway settings, generate a Wallet custom post for it, and prepare
 	 * fresh addresses for use.
 	 *
-	 * @used-by WC_Gateway_Bitcoin::process_admin_options()
+	 * @used-by WC_Bitcoin_Gateway::process_admin_options()
 	 *
 	 * @param string  $xpub_after
 	 * @param ?string $gateway_id
@@ -128,13 +128,13 @@ interface API_Interface {
 	 * Determine do we have any fresh address available for this gateway.
 	 * Used so the gateway is not displayed at checkout if there are no addresses ready.
 	 *
-	 * @used-by WC_Gateway_Bitcoin::is_available()
+	 * @used-by WC_Bitcoin_Gateway::is_available()
 	 *
-	 * @param WC_Gateway_Bitcoin $gateway
+	 * @param Bitcoin_Gateway $gateway
 	 *
 	 * @return bool
 	 */
-	public function is_fresh_address_available_for_gateway( WC_Gateway_Bitcoin $gateway ): bool;
+	public function is_fresh_address_available_for_gateway( Bitcoin_Gateway $gateway ): bool;
 
 	/**
 	 *

@@ -5,10 +5,10 @@
  * These templates are used on the Thank You page, Emails, and the My Account page to display payment instructions
  * and details.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 /**
  * Hooks into the wc_get_template filter called inside `wc_get_template()` to return templates inside this plugin
@@ -68,7 +68,7 @@ class Templates {
 			return $theme_template;
 		}
 
-		return NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH . '/templates/' . $template_name;
+		return BH_WC_BITCOIN_GATEWAY_PATH . '/templates/' . $template_name;
 
 	}
 

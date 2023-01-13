@@ -4,13 +4,13 @@
  * Adds a "Settings" link
  * Adds an "Orders" link when Filter WooCommerce Orders by Payment Method plugin is installed.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Admin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use WC_Payment_Gateway;
 
 /**
@@ -55,13 +55,13 @@ class Plugins_Page {
 		/**
 		 * Default gateway id.
 		 *
-		 * @see WC_Gateway_Bitcoin::$id
+		 * @see WC_Bitcoin_Gateway::$id
 		 */
 		$gateway_id = 'bitcoin_gateway';
 
 		$setting_link   = admin_url( "admin.php?page=wc-settings&tab=checkout&section={$gateway_id}" );
 		$plugin_links   = array();
-		$plugin_links[] = '<a href="' . $setting_link . '">' . __( 'Settings', 'nullcorps-wc-gateway-bitcoin' ) . '</a>';
+		$plugin_links[] = '<a href="' . $setting_link . '">' . __( 'Settings', 'bh-wc-bitcoin-gateway' ) . '</a>';
 
 		return array_merge( $plugin_links, $links_array );
 	}
@@ -93,7 +93,7 @@ class Plugins_Page {
 			);
 
 			$orders_link    = add_query_arg( $params, admin_url( 'edit.php' ) );
-			$plugin_links[] = '<a href="' . $orders_link . '">' . __( 'Orders', 'nullcorps-wc-gateway-bitcoin' ) . '</a>';
+			$plugin_links[] = '<a href="' . $orders_link . '">' . __( 'Orders', 'bh-wc-bitcoin-gateway' ) . '</a>';
 		}
 
 		return array_merge( $plugin_links, $links_array );

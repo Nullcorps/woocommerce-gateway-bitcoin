@@ -1,11 +1,11 @@
 <?php
 /**
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
 
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -24,13 +24,13 @@ class AJAX {
 	 * is the order paid.
 	 * does more need to be sent
 	 *
-	 * @hooked wp_ajax_nullcorps_bitcoin_refresh_order_details
+	 * @hooked wp_ajax_bh_wc_bitcoin_gateway_refresh_order_details
 	 *
 	 * @return void
 	 */
 	public function get_order_details() {
 
-		if ( ! check_ajax_referer( Frontend::class, false, false ) ) {
+		if ( ! check_ajax_referer( Frontend_Assets::class, false, false ) ) {
 			wp_send_json_error( array( 'message' => 'Bad/no nonce.' ), 400 );
 		}
 
@@ -45,6 +45,11 @@ class AJAX {
 		if ( ! ( $order instanceof \WC_Order ) ) {
 			wp_send_json_error( 'Invalid order id', 400 );
 		}
+
+		// TODO: Include the order key in the AJAX request
+		// if( $order->get_customer_id() !== get_current_user_id() && ! $order->key_is_valid( $key ) ) {
+		// wp_send_json_error( 'Not permitted', 401 );
+		// }
 
 		$result = $this->api->get_formatted_order_details( $order, true );
 

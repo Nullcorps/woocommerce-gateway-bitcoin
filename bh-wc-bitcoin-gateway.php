@@ -6,11 +6,11 @@
  *
  * @link              http://example.com
  * @since             1.0.0
- * @package           nullcorps/woocommerce-gateway-bitcoin
+ * @package           brianhenryie/bh-wc-bitcoin-gateway
  *
  * @wordpress-plugin
- * Plugin Name:       WooCommerce Gateway Bitcoin
- * Plugin URI:        http://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/
+ * Plugin Name:       Bitcoin Gateway
+ * Plugin URI:        http://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/
  * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
  * Version:           1.3.3
  * Requires PHP:      7.4
@@ -18,19 +18,19 @@
  * Author URI:        https://github.com/Nullcorps/
  * License:           GNU General Public License v3.0
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       nullcorps-wc-gateway-bitcoin
+ * Text Domain:       bh-wc-bitcoin-gateway
  * Domain Path:       /languages
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\API;
-use Nullcorps\WC_Gateway_Bitcoin\API\Settings;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Activator;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Deactivator;
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Settings;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Activator;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Deactivator;
+use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -44,11 +44,11 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION', '1.3.3' );
+define( 'BH_WC_BITCOIN_GATEWAY_VERSION', '1.3.3' );
 
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME', plugin_basename( __FILE__ ) );
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH', trailingslashit( __DIR__ ) );
-define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL', trailingslashit( plugins_url( __DIR__ ) ) );
+define( 'BH_WC_BITCOIN_GATEWAY_BASENAME', plugin_basename( __FILE__ ) );
+define( 'BH_WC_BITCOIN_GATEWAY_PATH', trailingslashit( __DIR__ ) );
+define( 'BH_WC_BITCOIN_GATEWAY_URL', trailingslashit( plugins_url( __DIR__ ) ) );
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
@@ -72,7 +72,7 @@ function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
 
 	$api = new API( $settings, $logger, $crypto_wallet_factory, $crypto_address_factory );
 
-	$plugin = new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+	$plugin = new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 
 	return $api;
 }
@@ -81,4 +81,4 @@ function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and frontend-facing site hooks.
  */
-$GLOBALS['nullcorps_wc_gateway_bitcoin'] = instantiate_woocommerce_gateway_bitcoin();
+$GLOBALS['bh_wc_bitcoin_gateway'] = instantiate_woocommerce_gateway_bitcoin();

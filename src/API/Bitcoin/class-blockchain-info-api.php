@@ -5,14 +5,14 @@
  * @see https://www.blockchain.com/api/blockchain_api
  * @see https://www.blockchain.com/api/q
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 

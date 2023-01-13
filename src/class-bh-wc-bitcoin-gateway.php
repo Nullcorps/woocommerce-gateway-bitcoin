@@ -8,27 +8,27 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Addresses_List_Table;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Wallets_List_Table;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\AJAX;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\My_Account_View_Order;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Templates;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\CLI;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\Post;
+use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Wallets_List_Table;
+use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\AJAX;
+use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\My_Account_View_Order;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Templates;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Thank_You;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\CLI;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Post;
 use Psr\Log\LoggerInterface;
 use WP_CLI;
 
@@ -41,7 +41,7 @@ use WP_CLI;
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  */
-class Nullcorps_WC_Gateway_Bitcoin {
+class BH_WC_Bitcoin_Gateway {
 
 	protected LoggerInterface $logger;
 
@@ -147,7 +147,7 @@ class Nullcorps_WC_Gateway_Bitcoin {
 
 		$ajax = new AJAX( $this->api, $this->logger );
 
-		add_action( 'wp_ajax_nullcorps_bitcoin_refresh_order_details', array( $ajax, 'get_order_details' ) );
+		add_action( 'wp_ajax_bh_wc_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 	}
 
 	/**

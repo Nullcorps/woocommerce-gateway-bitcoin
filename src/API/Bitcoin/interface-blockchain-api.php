@@ -1,12 +1,12 @@
 <?php
 /**
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use DateTimeInterface;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 
 /**
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray

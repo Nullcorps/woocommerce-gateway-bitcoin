@@ -5,13 +5,13 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
 
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -49,7 +49,7 @@ class Frontend_Assets {
 
 		$version = $this->settings->get_plugin_version();
 
-		wp_enqueue_style( 'nullcorps-wc-gateway-bitcoin', $this->settings->get_plugin_url() . 'assets/css/woocommerce-gateway-bitcoin.css', array(), $version, 'all' );
+		wp_enqueue_style( 'bh-wc-bitcoin-gateway', $this->settings->get_plugin_url() . 'assets/css/bh-wc-bitcoin-gateway.css', array(), $version, 'all' );
 
 		wp_enqueue_style( 'dashicons' );
 	}
@@ -82,7 +82,7 @@ class Frontend_Assets {
 
 		$version = $this->settings->get_plugin_version();
 
-		wp_enqueue_script( 'nullcorps-wc-gateway-bitcoin', $this->settings->get_plugin_url() . 'assets/js/woocommerce-gateway-bitcoin.js', array( 'jquery' ), $version, true );
+		wp_enqueue_script( 'bh-wc-bitcoin-gateway', $this->settings->get_plugin_url() . 'assets/js/bh-wc-bitcoin-gateway.js', array( 'jquery' ), $version, true );
 
 		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
 
@@ -93,12 +93,12 @@ class Frontend_Assets {
 		$ajax_data_json = wp_json_encode( $ajax_data, JSON_PRETTY_PRINT );
 
 		$script = <<<EOD
-var nullcorps_ajax_data = $ajax_data_json;
-var nullcorps_bitcoin_order_details = $order_details_json;
+var bh_wc_bitcoin_gateway_ajax_data = $ajax_data_json;
+var bh_wc_bitcoin_gateway_order_details = $order_details_json;
 EOD;
 
 		wp_add_inline_script(
-			'nullcorps-wc-gateway-bitcoin',
+			'bh-wc-bitcoin-gateway',
 			$script,
 			'before'
 		);

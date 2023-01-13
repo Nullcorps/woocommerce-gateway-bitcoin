@@ -2,13 +2,13 @@
 /**
  * Display wallets in use/formerly in use, their status, balance
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Admin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
 use WP_Post;
 
 /**

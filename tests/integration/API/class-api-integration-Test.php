@@ -1,11 +1,12 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
 /**
  * @coversNothing

@@ -2,15 +2,15 @@
 /**
  * @see https://github.com/Blockstream/esplora/blob/master/API.md
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 

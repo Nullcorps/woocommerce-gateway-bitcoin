@@ -2,13 +2,13 @@
 /**
  * Tests for the root plugin file.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger;
 
 /**
  * Class Plugin_WP_Mock_Test
@@ -33,7 +33,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
-			array( Nullcorps_WC_Gateway_Bitcoin::class, '__construct' ),
+			array( BH_WC_Bitcoin_Gateway::class, '__construct' ),
 			function() {}
 		);
 		\Patchwork\redefine(
@@ -65,7 +65,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			'plugins_url',
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
-				'return' => 'http://localhost:8080/nullcorps-woocommerce-gateway-bitcoin/',
+				'return' => 'http://localhost:8080/bh-wc-bitcoin-gateway/',
 			)
 		);
 
@@ -87,7 +87,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		ob_start();
 
-		include $plugin_root_dir . '/nullcorps-woocommerce-gateway-bitcoin.php';
+		include $plugin_root_dir . '/bh-wc-bitcoin-gateway.php';
 
 		$printed_output = ob_get_contents();
 
@@ -95,9 +95,9 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertEmpty( $printed_output );
 
-		$this->assertArrayHasKey( 'nullcorps_wc_gateway_bitcoin', $GLOBALS );
+		$this->assertArrayHasKey( 'bh_wc_bitcoin_gateway', $GLOBALS );
 
-		$this->assertInstanceOf( API_Interface::class, $GLOBALS['nullcorps_wc_gateway_bitcoin'] );
+		$this->assertInstanceOf( API_Interface::class, $GLOBALS['bh_wc_bitcoin_gateway'] );
 
 	}
 

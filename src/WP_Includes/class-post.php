@@ -14,10 +14,10 @@
 
 // get_defined_vars()
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
 
 /**
  * @see wp-admin/edit.php?post_type=bh-crypto-wallet
@@ -31,8 +31,8 @@ class Post {
 	public function register_wallet_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Crypto Wallets', 'post type general name', 'nullcorps-wc-gateway-bitcoin' ),
-			'singular_name' => _x( 'Crypto Wallet', 'post type singular name', 'nullcorps-wc-gateway-bitcoin' ),
+			'name'          => _x( 'Crypto Wallets', 'post type general name', 'bh-wc-bitcoin-gateway' ),
+			'singular_name' => _x( 'Crypto Wallet', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
 			'menu_name'     => 'Crypto Wallets',
 		);
 
@@ -66,8 +66,8 @@ class Post {
 	public function register_address_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Crypto Addresses', 'post type general name', 'nullcorps-wc-gateway-bitcoin' ),
-			'singular_name' => _x( 'Crypto Address', 'post type singular name', 'nullcorps-wc-gateway-bitcoin' ),
+			'name'          => _x( 'Crypto Addresses', 'post type general name', 'bh-wc-bitcoin-gateway' ),
+			'singular_name' => _x( 'Crypto Address', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
 			'menu_name'     => 'Crypto Addresses',
 		);
 		$args   = array(

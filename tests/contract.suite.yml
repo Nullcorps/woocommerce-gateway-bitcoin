@@ -1,0 +1,11 @@
+# Codeception Test Suite Configuration
+#
+# Contract tests to verify live APIs
+
+actor: UnitTester
+modules:
+    enabled:
+        - Asserts
+        - \Helper\Unit
+    step_decorators: ~        
+#bootstrap: _bootstrap.php

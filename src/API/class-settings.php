@@ -2,14 +2,14 @@
 /**
  * Object containing the plugin settings.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\Logger_Settings_Trait;
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\WooCommerce_Logger_Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\Logger_Settings_Trait;
+use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\WooCommerce_Logger_Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LogLevel;
 
 /**
@@ -48,7 +48,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_slug(): string {
-		return 'nullcorps-wc-gateway-bitcoin';
+		return 'bh-wc-bitcoin-gateway';
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_basename(): string {
-		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_BASENAME : 'nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php';
+		return defined( 'BH_WC_BITCOIN_GATEWAY_BASENAME' ) ? BH_WC_BITCOIN_GATEWAY_BASENAME : 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php';
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION' ) ? NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_VERSION : '1.3.3';
+		return defined( 'BH_WC_BITCOIN_GATEWAY_VERSION' ) ? BH_WC_BITCOIN_GATEWAY_VERSION : '1.3.3';
 	}
 
 	/**
@@ -82,6 +82,6 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	}
 
 	public function get_plugin_url(): string {
-		return NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_URL;
+		return BH_WC_BITCOIN_GATEWAY_URL;
 	}
 }

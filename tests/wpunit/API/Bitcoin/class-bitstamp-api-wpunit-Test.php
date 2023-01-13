@@ -1,11 +1,11 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitstamp_API
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Bitstamp_API
  */
 class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 

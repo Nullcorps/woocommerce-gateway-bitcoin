@@ -2,5 +2,5 @@
 /**
  * TODO: Removed *required on billing fields.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */

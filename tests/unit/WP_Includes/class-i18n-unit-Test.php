@@ -2,16 +2,16 @@
 /**
  *
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WP_Includes;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
 /**
  * Class Plugin_WP_Mock_Test
  *
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n
  */
 class I18n_Unit_Test extends \Codeception\Test\Unit {
 
@@ -42,7 +42,7 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 				'args'   => array(
 					\WP_Mock\Functions::type( 'string' ),
 				),
-				'return' => 'nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
+				'return' => 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php',
 				'times'  => 1,
 			)
 		);
@@ -52,9 +52,9 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'times' => 1,
 				'args'  => array(
-					'nullcorps-wc-gateway-bitcoin',
+					'bh-wc-bitcoin-gateway',
 					false,
-					'nullcorps-wc-gateway-bitcoin/languages/',
+					'bh-wc-bitcoin-gateway/languages/',
 				),
 			)
 		);

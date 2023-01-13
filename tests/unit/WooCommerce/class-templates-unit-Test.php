@@ -1,9 +1,9 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Templates
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Templates
  */
 class Templates_Unit_Test extends \Codeception\Test\Unit {
 
@@ -111,8 +111,8 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		if ( ! defined( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH' ) ) {
-			define( 'NULLCORPS_WOOCOMMERCE_GATEWAY_BITCOIN_PATH', '/path/to/plugin' );
+		if ( ! defined( 'BH_WC_BITCOIN_GATEWAY_PATH' ) ) {
+			define( 'BH_WC_BITCOIN_GATEWAY_PATH', '/path/to/plugin' );
 		}
 
 		$result = $sut->load_bitcoin_templates( $template, $template_name, $args, $template_path, $default_path );

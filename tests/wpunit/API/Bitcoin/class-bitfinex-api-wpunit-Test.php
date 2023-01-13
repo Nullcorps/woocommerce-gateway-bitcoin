@@ -2,15 +2,15 @@
 /**
  * Test get exchange rate.
  *
- * @package           nullcorps/woocommerce-gateway-bitcoin
+ * @package           brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitfinex_API
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Bitfinex_API
  */
 class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 

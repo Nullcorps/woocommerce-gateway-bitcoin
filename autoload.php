@@ -11,9 +11,9 @@
  * @see https://github.com/pablo-sg-pacheco/wp-namespace-autoloader/
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use Nullcorps\WC_Gateway_Bitcoin\Pablo_Pacheco\WP_Namespace_Autoloader\WP_Namespace_Autoloader;
+use BrianHenryIE\WC_Bitcoin_Gateway\Pablo_Pacheco\WP_Namespace_Autoloader\WP_Namespace_Autoloader;
 
 $class_map_files = array(
 	__DIR__ . '/autoload-classmap.php',

@@ -1,14 +1,14 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Frontend;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
 /**
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets
  */
 class Frontend_Unit_Test extends \Codeception\Test\Unit {
 
@@ -33,7 +33,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 	public function test_enqueue_styles(): void {
 
 		global $plugin_root_dir;
-		$plugin_root_url = 'http://localhost:8080/woocommerce-gateway-bitcoin/wp-content/plugins/woocommerce-gateway-bitcoin/';
+		$plugin_root_url = 'http://localhost:8080/bh-wc-bitcoin-gateway/wp-content/plugins/bh-wc-bitcoin-gateway/';
 
 		$logger   = new ColorLogger();
 		$api      = $this->makeEmpty(
@@ -58,14 +58,14 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$css_file = $plugin_root_dir . '/assets/css/woocommerce-gateway-bitcoin.css';
-		$css_url  = $plugin_root_url . 'assets/css/woocommerce-gateway-bitcoin.css';
+		$css_file = $plugin_root_dir . '/assets/css/bh-wc-bitcoin-gateway.css';
+		$css_url  = $plugin_root_url . 'assets/css/bh-wc-bitcoin-gateway.css';
 
 		\WP_Mock::userFunction(
 			'wp_enqueue_style',
 			array(
 				'times' => 1,
-				'args'  => array( 'nullcorps-wc-gateway-bitcoin', $css_url, array(), '1.0.0', 'all' ),
+				'args'  => array( 'bh-wc-bitcoin-gateway', $css_url, array(), '1.0.0', 'all' ),
 			)
 		);
 

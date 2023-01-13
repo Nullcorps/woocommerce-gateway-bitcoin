@@ -1,8 +1,8 @@
 <?php
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
-use Nullcorps\WC_Gateway_Bitcoin\BrianHenryIE\WP_Logger\API\BH_WP_PSR_Logger;
+use BrianHenryIE\WC_Bitcoin_Gateway\BrianHenryIE\WP_Logger\API\BH_WP_PSR_Logger;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 
@@ -23,7 +23,7 @@ class Payment_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase 
 		$sut_gateway = null;
 
 		foreach ( $gateways as $gateway ) {
-			if ( $gateway instanceof WC_Gateway_Bitcoin ) {
+			if ( $gateway instanceof Bitcoin_Gateway ) {
 				$sut_gateway = $gateway;
 			}
 		}

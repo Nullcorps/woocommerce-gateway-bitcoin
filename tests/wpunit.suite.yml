@@ -17,7 +17,7 @@ modules:
             tablePrefix: "%TEST_TABLE_PREFIX%"
             domain: "%TEST_SITE_WP_DOMAIN%"
             adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
-            title: "nullcorps-wc-gateway-bitcoin"
+            title: "bh-wc-bitcoin-gateway"
             plugins: ["woocommerce/woocommerce.php"]
             activatePlugins: ["woocommerce/woocommerce.php"]
 bootstrap: _bootstrap.php

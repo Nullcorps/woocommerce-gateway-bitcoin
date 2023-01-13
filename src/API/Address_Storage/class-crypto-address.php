@@ -4,15 +4,15 @@
  *
  * TODO: Update the wp_post last modified time when updating metadata.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
 
 use DateTimeInterface;
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Addresses_List_Table;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use tad\WPBrowser\Generators\Date;
 use WP_Post;
 
@@ -75,7 +75,7 @@ class Crypto_Address {
 	 *
 	 * @used-by API::check_new_addresses_for_transactions() When verifying newly generated addresses have no existing transactions.
 	 * @used-by API::get_fresh_address_for_order() When adding the payment address to the order meta.
-	 * @used-by WC_Gateway_Bitcoin::process_payment() When adding a link in the order notes to view transactions on a 3rd party website.
+	 * @used-by WC_Bitcoin_Gateway::process_payment() When adding a link in the order notes to view transactions on a 3rd party website.
 	 * @used-by API::query_api_for_address_transactions() When checking has an order been paid.
 	 */
 	public function get_raw_address(): string {

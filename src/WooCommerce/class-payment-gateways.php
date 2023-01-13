@@ -2,10 +2,10 @@
 /**
  * Add the payment gateway to WooCommerce's list of gateways.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -35,7 +35,7 @@ class Payment_Gateways {
 	 */
 	public function add_to_woocommerce( array $gateways ): array {
 
-		$gateways[] = WC_Gateway_Bitcoin::class;
+		$gateways[] = WC_Bitcoin_Gateway::class;
 
 		return $gateways;
 	}
@@ -43,10 +43,10 @@ class Payment_Gateways {
 	/**
 	 * When linking to WooCommerce/Settings/Payments from plugins.php, filter to only instances of this gateway.
 	 *
-	 * The plugins.php code checks for multiple instances of the gateway, then uses the `class=nullcorps-wc-gateway-bitcoin`
+	 * The plugins.php code checks for multiple instances of the gateway, then uses the `class=bh-wc-bitcoin-gateway`
 	 * parameter on the Settings link to invoke this function.
 	 *
-	 * i.e. `wp-admin/admin.php?page=wc-settings&tab=checkout&class=nullcorps-wc-gateway-bitcoin`.
+	 * i.e. `wp-admin/admin.php?page=wc-settings&tab=checkout&class=bh-wc-bitcoin-gateway`.
 	 *
 	 * TODO: Is this hook right?
 	 *
@@ -61,7 +61,7 @@ class Payment_Gateways {
 
 		global $current_tab;
 
-		if ( 'checkout' !== $current_tab || ! isset( $_GET['class'] ) || 'nullcorps-wc-gateway-bitcoin' !== wp_unslash( $_GET['class'] ) ) {
+		if ( 'checkout' !== $current_tab || ! isset( $_GET['class'] ) || 'bh-wc-bitcoin-gateway' !== wp_unslash( $_GET['class'] ) ) {
 			return $gateways;
 		}
 
@@ -69,9 +69,9 @@ class Payment_Gateways {
 		foreach ( $gateways as $gateway ) {
 
 			// Only handling one level of superclass. TODO: `class_parents()`.
-			if ( WC_Gateway_Bitcoin::class === $gateway
-				|| ( $gateway instanceof WC_Gateway_Bitcoin )
-				|| ( is_string( $gateway ) && class_exists( $gateway ) && get_parent_class( $gateway ) === WC_Gateway_Bitcoin::class ) ) {
+			if ( Bitcoin_Gateway::class === $gateway
+				|| ( $gateway instanceof Bitcoin_Gateway )
+				|| ( is_string( $gateway ) && class_exists( $gateway ) && get_parent_class( $gateway ) === Bitcoin_Gateway::class ) ) {
 				$bitcoin_gateways[] = $gateway;
 			}
 		}
@@ -91,7 +91,7 @@ class Payment_Gateways {
 	public function add_logger_to_gateways( array $available_gateways ): array {
 
 		foreach ( $available_gateways as $gateway ) {
-			if ( $gateway instanceof WC_Gateway_Bitcoin ) {
+			if ( $gateway instanceof Bitcoin_Gateway ) {
 				$gateway->setLogger( $this->logger );
 			}
 		}

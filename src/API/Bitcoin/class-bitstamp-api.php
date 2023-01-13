@@ -4,10 +4,10 @@
  *
  * Rate limit is "8000 requests per 10 minutes".
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;

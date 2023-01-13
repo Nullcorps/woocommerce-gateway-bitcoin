@@ -8,15 +8,15 @@
  * Is this a bad API to use?
  * @see https://twitter.com/c_otto83/status/1372988100629106688
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 
 /**
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray

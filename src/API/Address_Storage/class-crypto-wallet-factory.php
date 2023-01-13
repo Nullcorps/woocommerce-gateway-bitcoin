@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
 
 use Exception;
 use wpdb;

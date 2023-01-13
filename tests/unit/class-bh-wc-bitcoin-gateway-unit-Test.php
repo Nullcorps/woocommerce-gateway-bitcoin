@@ -1,27 +1,27 @@
 <?php
 /**
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\Admin\Plugins_Page;
-use Nullcorps\WC_Gateway_Bitcoin\Frontend\Frontend_Assets;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Admin_Order_UI;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Email;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Payment_Gateways;
-use Nullcorps\WC_Gateway_Bitcoin\WP_Includes\I18n;
+use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
+use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
- * Class Nullcorps_WC_Gateway_Bitcoin_Unit_Test
+ * Class BH_WC_Bitcoin_Gateway_Unit_Test
  *
- * @coversDefaultClass \Nullcorps\WC_Gateway_Bitcoin\Nullcorps_WC_Gateway_Bitcoin
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\BH_WC_Bitcoin_Gateway
  */
-class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
+class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -47,7 +47,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -71,7 +71,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 
@@ -81,12 +81,12 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 	public function test_plugins_page_hooks(): void {
 
 		\WP_Mock::expectFilterAdded(
-			'plugin_action_links_nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
+			'plugin_action_links_bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php',
 			array( new AnyInstance( Plugins_Page::class ), 'add_settings_action_link' )
 		);
 
 		\WP_Mock::expectFilterAdded(
-			'plugin_action_links_nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
+			'plugin_action_links_bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php',
 			array( new AnyInstance( Plugins_Page::class ), 'add_orders_action_link' )
 		);
 
@@ -101,12 +101,12 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
-				'get_plugin_basename' => 'nullcorps-wc-gateway-bitcoin/nullcorps-wc-gateway-bitcoin.php',
+				'get_plugin_basename' => 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php',
 			)
 		);
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -147,7 +147,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 	/**
@@ -214,7 +214,7 @@ class Nullcorps_WC_Gateway_Bitcoin_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$logger   = new ColorLogger();
 
-		new Nullcorps_WC_Gateway_Bitcoin( $api, $settings, $logger );
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
 }

@@ -1,5 +1,5 @@
 {
-    "name": "your-domain/woocommerce-gateway-bitcoin",
+    "name": "brianhenryie/bh-wc-bitcoin-gateway",
     "description": "This is a short description of what plugin_title does.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0+-or-later",
@@ -64,7 +64,7 @@
         "phpseclib/mcrypt_compat": "^2.0"
     },
     "require-dev": {
-        "10up/wp_mock": "0.4.2",
+        "10up/wp_mock": "*",
         "antecedent/patchwork": "^2.1",
         "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-phpstorm": "dev-master",
@@ -81,9 +81,9 @@
         "jaschilz/php-coverage-badger": "^2.0",
         "kporras07/composer-symlinks": "dev-master",
         "lucatume/wp-browser": "*",
-        "php-stubs/woocommerce-stubs": "^6.0",
+        "php-stubs/woocommerce-stubs": "*",
         "phpcompatibility/phpcompatibility-wp": "*",
-        "phpstan/extension-installer": "^1.1",
+        "phpstan/extension-installer": "*",
         "phpunit/phpcov": "*",
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
@@ -102,19 +102,22 @@
         "patches": {
             "jaschilz/php-coverage-badger": {
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
-            },
-            "10up/wp_mock": {
-                "Add AnyObject matcher": "https://github.com/10up/wp_mock/pull/161.patch"
             }
         },
         "strauss": {
-            "namespace_prefix": "Nullcorps\\WC_Gateway_Bitcoin\\",
+            "namespace_prefix": "BrianHenryIE\\WC_Bitcoin_Gateway\\",
             "target_directory": "/vendor-prefixed/",
-            "classmap_prefix": "Nullcorps_WC_Gateway_Bitcoin_"
+            "classmap_prefix": "BrianHenryIE_WC_Bitcoin_Gateway_",
+            "exclude_from_prefix": {
+                "packages": [
+                    "phpseclib/bcmath_compat",
+                    "phpseclib/mcrypt_compat"
+                ]
+            }
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
-            ".": "wp-content/plugins/woocommerce-gateway-bitcoin"
+            ".": "wp-content/plugins/bh-wc-bitcoin-gateway"
         },
         "phpstorm": {
             "exclude_folders": {

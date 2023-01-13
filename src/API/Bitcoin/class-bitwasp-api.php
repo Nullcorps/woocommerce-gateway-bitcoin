@@ -5,22 +5,22 @@
  * @see https://github.com/Bit-Wasp/bitcoin-php
  * @see https://gist.github.com/mariodian/5b67a1f315a74a7753a6f23d0198ec48
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
 
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Address\AddressCreator;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Bitcoin;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Key\Deterministic\HdPrefix\GlobalPrefixConfig;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Key\Deterministic\HdPrefix\NetworkConfig;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Key\Deterministic\Slip132\Slip132;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Key\KeyToScript\KeyToScriptHelper;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Network\NetworkFactory;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Network\Slip132\BitcoinRegistry;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\Base58ExtendedKeySerializer;
-use Nullcorps\WC_Gateway_Bitcoin\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\ExtendedKeySerializer;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Address\AddressCreator;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Bitcoin;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Key\Deterministic\HdPrefix\GlobalPrefixConfig;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Key\Deterministic\HdPrefix\NetworkConfig;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Key\Deterministic\Slip132\Slip132;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Key\KeyToScript\KeyToScriptHelper;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Network\NetworkFactory;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Network\Slip132\BitcoinRegistry;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\Base58ExtendedKeySerializer;
+use BrianHenryIE\WC_Bitcoin_Gateway\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\ExtendedKeySerializer;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 

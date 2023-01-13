@@ -8,31 +8,31 @@
  * * checking addresses for transactions
  * * getting order details for display
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\API;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
-use Nullcorps\WC_Gateway_Bitcoin\Action_Scheduler\Background_Jobs;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet;
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Wallet_Factory;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Bitfinex_API;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\BitWasp_API;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Blockchain_API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Exchange_Rate_API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\Generate_Address_API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\API\Bitcoin\SoChain_API;
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\Settings_Interface;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Order;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\Thank_You;
-use Nullcorps\WC_Gateway_Bitcoin\WooCommerce\WC_Gateway_Bitcoin;
+use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Bitfinex_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\BitWasp_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Blockchain_API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Exchange_Rate_API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\Generate_Address_API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\SoChain_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Thank_You;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -85,7 +85,7 @@ class API implements API_Interface {
 
 		$all_gateways = WC()->payment_gateways()->payment_gateways();
 
-		return isset( $all_gateways[ $gateway_id ] ) && $all_gateways[ $gateway_id ] instanceof WC_Gateway_Bitcoin;
+		return isset( $all_gateways[ $gateway_id ] ) && $all_gateways[ $gateway_id ] instanceof Bitcoin_Gateway;
 	}
 
 
@@ -93,13 +93,13 @@ class API implements API_Interface {
 	 * Get all instances of the Bitcoin gateway.
 	 * (typically there is only one).
 	 *
-	 * @return array<string, WC_Gateway_Bitcoin>
+	 * @return array<string, WC_Bitcoin_Gateway>
 	 */
 	public function get_bitcoin_gateways(): array {
 		$payment_gateways = WC_Payment_Gateways::instance()->payment_gateways();
 		$bitcoin_gateways = array();
 		foreach ( $payment_gateways as $gateway ) {
-			if ( $gateway instanceof WC_Gateway_Bitcoin ) {
+			if ( $gateway instanceof WC_Bitcoin_Gateway ) {
 				$bitcoin_gateways[ $gateway->id ] = $gateway;
 			}
 		}
@@ -147,7 +147,7 @@ class API implements API_Interface {
 	 * Maybe schedule more address generation.
 	 * Return it to be used in an order.
 	 *
-	 * @used-by WC_Gateway_Bitcoin::process_payment()
+	 * @used-by WC_Bitcoin_Gateway::process_payment()
 	 *
 	 * @param WC_Order $order The order that will use the address.
 	 *
@@ -232,11 +232,11 @@ class API implements API_Interface {
 	/**
 	 * Check do we have at least one address already generated and ready to use.
 	 *
-	 * @param WC_Gateway_Bitcoin $gateway The gateway id the address is for.
+	 * @param Bitcoin_Gateway $gateway The gateway id the address is for.
 	 *
 	 * @return bool
 	 */
-	public function is_fresh_address_available_for_gateway( WC_Gateway_Bitcoin $gateway ): bool {
+	public function is_fresh_address_available_for_gateway( Bitcoin_Gateway $gateway ): bool {
 
 		$xpub = $gateway->get_xpub();
 
@@ -285,7 +285,7 @@ class API implements API_Interface {
 		// $btc_price                  = $order_details['btc_price'];
 		// $bitcoin_formatted_price    = $btc_symbol . wc_format_decimal( $btc_price, $round_btc );
 		//
-		// $btc_logo_url = $site_url . '/wp-content/plugins/nullcorps-woocommerce-gateway-bitcoin/assets/bitcoin.png';
+		// $btc_logo_url = $site_url . '/wp-content/plugins/bh-wc-bitcoin-gateway/assets/bitcoin.png';
 
 		$result = array();
 
@@ -334,7 +334,7 @@ class API implements API_Interface {
 
 		$bitcoin_gateways = $this->get_bitcoin_gateways();
 
-		/** @var WC_Gateway_Bitcoin $gateway */
+		/** @var WC_Bitcoin_Gateway $gateway */
 		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
 
 		// TODO: get from gateway.
@@ -449,13 +449,13 @@ class API implements API_Interface {
 		// If the order is not marked paid, but has transactions, it is partly-paid.
 		switch ( true ) {
 			case $order->is_paid():
-				$result['status'] = __( 'Paid', 'nullcorps-wc-gateway-bitcoin' );
+				$result['status'] = __( 'Paid', 'bh-wc-bitcoin-gateway' );
 				break;
 			case ! empty( $refreshed_transactions ):
-				$result['status'] = __( 'Partly Paid', 'nullcorps-wc-gateway-bitcoin' );
+				$result['status'] = __( 'Partly Paid', 'bh-wc-bitcoin-gateway' );
 				break;
 			default:
-				$result['status'] = __( 'Awaiting Payment', 'nullcorps-wc-gateway-bitcoin' );
+				$result['status'] = __( 'Awaiting Payment', 'bh-wc-bitcoin-gateway' );
 		}
 
 		return $result;
@@ -551,7 +551,7 @@ class API implements API_Interface {
 	 * @return string
 	 */
 	public function get_exchange_rate( string $currency ): string {
-		$transient_name = 'woobtc_exchange_rate_' . $currency;
+		$transient_name = 'bh_wc_bitcoin_gateway_exchange_rate_' . $currency;
 
 		$exchange_rate = get_transient( $transient_name );
 

@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file for wpunit tests. Since the plugin will not be otherwise autoloaded.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
 global $plugin_root_dir;

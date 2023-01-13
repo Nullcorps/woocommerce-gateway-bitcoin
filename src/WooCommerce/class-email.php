@@ -3,12 +3,12 @@
  *
  * TODO: Prevent sending the on-hold email immediately, reschedule it for one hour later.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\WooCommerce;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
-use Nullcorps\WC_Gateway_Bitcoin\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -47,7 +47,7 @@ class Email {
 
 		/**
 		 * There was an error where seemingly the order object being passed to this function is older than the
-		 * one saved in `WC_Gateway_Bitcoin::process_payment()` and the meta was not present, so let's refresh.
+		 * one saved in `WC_Bitcoin_Gateway::process_payment()` and the meta was not present, so let's refresh.
 		 *
 		 * @var WC_Order $order
 		 */

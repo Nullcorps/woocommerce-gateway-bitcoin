@@ -2,12 +2,12 @@
 /**
  * Display generated addresses, their status and related orders.
  *
- * @package    nullcorps/woocommerce-gateway-bitcoin
+ * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace Nullcorps\WC_Gateway_Bitcoin\Admin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
-use Nullcorps\WC_Gateway_Bitcoin\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
 use WP_Post;
 
 /**
