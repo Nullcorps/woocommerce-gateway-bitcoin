@@ -14,7 +14,7 @@ class Settings_Unit_Test extends \Codeception\Test\Unit {
 
 		$sut = new Settings();
 
-		$this->assertEquals( 'Bitcoin Gateway for WooCommerce', $sut->get_plugin_name() );
+		$this->assertEquals( 'Bitcoin Gateway', $sut->get_plugin_name() );
 	}
 
 	/**
