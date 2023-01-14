@@ -7,7 +7,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 /**
  * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API
  */
-class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_address_balance
@@ -105,7 +105,7 @@ class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
 
-		$result = $sut->get_received_by_address( $address, 1 );
+		$result = $sut->get_received_by_address( $address, true );
 
 		$this->assertEquals( 81432.09124126, $result );
 	}
@@ -356,7 +356,8 @@ class Blockstream_Info_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$address = '1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F';
 
 		$result = $sut->get_transactions_received( $address );
-		$first  = array_shift( $result );
+		assert( 1 === count( $result ) );
+		$first = array_shift( $result );
 
 		$this->assertEquals( 0.02415465, $first['value'] );
 
