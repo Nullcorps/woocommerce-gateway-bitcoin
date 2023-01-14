@@ -80,7 +80,7 @@ Transactions:
 
 ### Syncing received payments with wallets
 
-Wallets only check a set number of addresses for payments and orders may be assigned an address outside the list your wallet is checking. If your store reports a payment has been received, you may need to configure your wallet to look at more addresses.
+Wallets only check a set number of derived addresses for payments and orders may be assigned an address outside the list your wallet is checking. If your store reports a payment has been received, you may need to configure your wallet to look at more addresses.
 
 <details>
 <summary>E.g. Electrum Bitcoin Wallet</summary>
@@ -100,13 +100,14 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 * Unpaid order expiry
 * Partial payment email
 * Show transactions in meta box on order page
-* API failover
+* API round-robin and failover
 * Tor
 * Units: Add mbtc as well as sats etc. (to match default Electrum display settings)
 * Zero-conf: to avoid the threat of fraud where the fee is low-balled, only accept zero-conf transactions whose fees are above recent expected range
 * Run contract tests to find what currencies are supported by the Exchange_Rate APIs
 * 100% WPCS and PhpStan
 * WooCommerce Blocks checkout
+* Update screenshots + use mobile view for customer screenshots
 
 ## How You Can Help
 
@@ -114,12 +115,25 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 See [BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/BrianHenryIE/WordPress-Plugin-Boilerplate) for project setup rationale. 
 
-## Alternatives 
+## Motivation and Alternatives 
 
-Similar plugins:
+Most existing solutions (see [WordPress.org plugin repo](https://wordpress.org/plugins/search/Bitcoin/)) suffer from one of the following:
+
+* **Non-custodial wallet**. Funds are sent to a wallet managed by another company, which carries the risk of you losing funds due to their security incidents (unfortunately not uncommon), and gives them full view of your financial transactions.
+* **Sign-up required**. Many plugins are written to encourage the use of a particular API and this often requires signing up for an account with a third party who should be unconnected to your financial transactions.
+* **Profit motivated**. The purpose is often to upsell merchants to currency exchange services, or to charge a transaction fee for the use of the "free" plugin. 
+
+I would like to acknowledge plugins similar to this one, who do not have any of those flaws:
 
 * Sovereign Crypto Payments by OnionBazaar – [wordpress.org](https://wordpress.org/plugins/sovereign-crypto-payments/) | [github](https://github.com/onionbazaar/sovereign-crypto-payments)
-* Nomiddleman Bitcoin and Crypto Payments for WooCommerce by nomiddleman – [wordpress.org](https://wordpress.org/plugins/nomiddleman-crypto-payments-for-woocommerce/) | [github](https://github.com/nomiddleman/nomiddleman-woocommerce/)
+* Nomiddleman Bitcoin and Crypto Payments for WooCommerce – [wordpress.org](https://wordpress.org/plugins/nomiddleman-crypto-payments-for-woocommerce/) | [github](https://github.com/nomiddleman/nomiddleman-woocommerce/)
+* Accept Bitcoin by Bitonymous – [wordpress.org](https://wordpress.org/plugins/accept-bitcoin)
+
+WooCommerce are themselves (officially) encouraging the use of crypto (see [It’s Time to Start Accepting Cryptocurrency](https://woocommerce.com/posts/start-accepting-cryptocurrency/), woocommerce.com, 2022-11-02) but the [plugins listed on their site](https://woocommerce.com/cryptocurrency/) are all by venture-capital backed companies.
+
+To use one of those plugins is to eschew Bitcoin's fundamental quality of being a peer-to-peer network.
+
+They are also contrary to WordPress's "open" philisophy. Using this plugin does not preclude you from using the services of any company, and it does not restrict or commit you to any company.
 
 # Acknowledgements
 
