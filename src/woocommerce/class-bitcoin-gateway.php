@@ -63,12 +63,11 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Constructor for the gateway.
 	 */
-	public function __construct() {
+	public function __construct( ?API_Interface $api = null ) {
 		// TODO: Set the logger externally.
 		$this->setLogger( new NullLogger() );
 
-		// TODO: Is there a better way to do this?
-		$this->api = $GLOBALS['bh_wc_bitcoin_gateway'];
+		$this->api = $api ?? $GLOBALS['bh_wc_bitcoin_gateway'];
 
 		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' );
 		$this->has_fields         = false;

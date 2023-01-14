@@ -33,6 +33,7 @@ use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
+use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 
 /**
@@ -74,15 +75,22 @@ class API implements API_Interface {
 	 *
 	 * @used-by Thank_You::print_instructions()
 	 *
-	 * @param string $gateway_id
+	 * @param string $gateway_id The id of the gateway to check.
 	 *
 	 * @return bool
 	 */
 	public function is_bitcoin_gateway( string $gateway_id ): bool {
 
-		$all_gateways = WC()->payment_gateways()->payment_gateways();
+		$bitcoin_gateways = $this->get_bitcoin_gateways();
 
-		return isset( $all_gateways[ $gateway_id ] ) && $all_gateways[ $gateway_id ] instanceof Bitcoin_Gateway;
+		$gateway_ids = array_map(
+			function( WC_Payment_Gateway $gateway ) : string {
+				return $gateway->id;
+			},
+			$bitcoin_gateways
+		);
+
+		return in_array( $gateway_id, $gateway_ids, true );
 	}
 
 
@@ -108,7 +116,7 @@ class API implements API_Interface {
 	 *
 	 * @see https://github.com/BrianHenryIE/bh-wc-duplicate-payment-gateways
 	 *
-	 * @param int $order_id
+	 * @param int $order_id The id of the (presumed) WooCommerce order to check.
 	 *
 	 * @return bool
 	 */

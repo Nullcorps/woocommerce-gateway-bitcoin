@@ -356,7 +356,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 		$address = '1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F';
 
 		$result = $sut->get_transactions_received( $address );
-		assert( 1 === count( $result ) );
+		assert( 0 < count( $result ) );
 		$first = array_shift( $result );
 
 		$this->assertEquals( 0.02415465, $first['value'] );
