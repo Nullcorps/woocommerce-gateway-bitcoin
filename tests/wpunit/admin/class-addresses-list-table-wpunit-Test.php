@@ -1,0 +1,120 @@
+<?php
+
+namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Post;
+use Codeception\TestCase\WPTestCase;
+use WP_Post;
+
+/**
+ * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table
+ */
+class Addresses_List_Table_WPUnit_Test extends WPTestCase {
+
+	protected array $args;
+
+	protected WP_Post $post;
+	public function setUp(): void {
+		parent::setUp();
+
+		set_current_user( 1 );
+
+		$bitcoin_gateway = null;
+
+		$api = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'get_bitcoin_gateways' => array( &$bitcoin_gateway ),
+			)
+		);
+
+		$bitcoin_gateway                   = new Bitcoin_Gateway( $api );
+		$bitcoin_gateway->settings['xpub'] = 'xpub1a2s3d4f5gabcdef';
+
+		\WC_Payment_Gateways::instance()->payment_gateways['bitcoin_gateway'] = $bitcoin_gateway;
+
+		// Hopefully this is reset between tests?
+		$plugin_post_types = new Post( $api );
+		$plugin_post_types->register_address_post_type();
+		$plugin_post_types->register_wallet_post_type();
+
+		$address       = 'bc1qnlz39q0r40xnv200s9wjutj0fdxex6x8abcdef';
+		$address_index = 22;
+
+		$bitcoin_wallet_factory = new Bitcoin_Wallet_Factory();
+		$wallet_post_id         = $bitcoin_wallet_factory->save_new( 'xpub1a2s3d4f5gabcdef' );
+
+		$wallet = $bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
+
+		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$address_post_id         = $bitcoin_address_factory->save_new( $address, $address_index, $wallet );
+
+		$this->post = get_post( $address_post_id );
+
+		$screen            = \WP_Screen::get();
+		$screen->post_type = 'bh-bitcoin-address'; // Which has not been registered in unit tests.
+
+		$this->args = array(
+			'screen' => $screen,
+		);
+	}
+
+	public function tearDown(): void {
+		parent::tearDown();
+
+		unset( \WC_Payment_Gateways::instance()->payment_gateways['bitcoin_gateway'] );
+	}
+
+	/**
+	 * Column title should be replaced with external link and target set on it.
+	 *
+	 * @covers ::column_title
+	 */
+	public function test_column_title(): void {
+
+		$sut = new Addresses_List_Table( $this->args );
+
+		ob_start();
+		$sut->column_title( $this->post );
+		$result = ob_get_clean();
+
+		$this->assertStringContainsString( '"https://www.blockchain.com/btc/address/bc1qnlz39q0r40xnv200s9wjutj0fdxex6x8abcdef"', $result );
+		$this->assertStringContainsString( 'target="_blank"', $result );
+	}
+
+	/**
+	 * @covers ::column_wallet
+	 */
+	public function test_column_wallet(): void {
+
+		$sut = new Addresses_List_Table( $this->args );
+
+		ob_start();
+		$sut->column_wallet( $this->post );
+		$result = ob_get_clean();
+
+		$this->assertStringContainsString( 'xpub1a2...def', $result );
+		$this->assertStringContainsString( 'admin.php?page=wc-settings&#038;tab=checkout&#038;section=bitcoin_gateway', $result );
+
+	}
+
+	/**
+	 * @covers ::column_derive_path_sequence
+	 */
+	public function test_column_derive_path_sequence(): void {
+
+		$sut = new Addresses_List_Table( $this->args );
+
+		ob_start();
+		$sut->column_derive_path_sequence( $this->post );
+		$result = ob_get_clean();
+
+		$this->assertStringContainsString( '0/22', $result );
+	}
+
+}

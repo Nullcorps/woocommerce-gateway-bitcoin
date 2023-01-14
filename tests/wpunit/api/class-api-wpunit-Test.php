@@ -87,6 +87,9 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertTrue( $all_bitcoin_gateways );
+
+		unset( $wc_payment_gateways->payment_gateways['bitcoin_1'] );
+		unset( $wc_payment_gateways->payment_gateways['bitcoin_2'] );
 	}
 
 	/**

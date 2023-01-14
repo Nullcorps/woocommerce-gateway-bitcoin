@@ -44,7 +44,7 @@ class Bitcoin_Wallet_Factory {
 	}
 
 
-	public function save_new( string $xpub, ?string $gateway_id ): int {
+	public function save_new( string $xpub, ?string $gateway_id = null ): int {
 
 		// TODO: Validate xpub, throw exception.
 

@@ -18,6 +18,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 
 /**
  * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
@@ -25,25 +26,32 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
  */
 class Post {
 
+	protected API_Interface $api;
+
+	public function __construct( API_Interface $api ) {
+		$this->api = $api;
+	}
+
 	/**
 	 * @hooked init
 	 */
 	public function register_wallet_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Crypto Wallets', 'post type general name', 'bh-wc-bitcoin-gateway' ),
-			'singular_name' => _x( 'Crypto Wallet', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
-			'menu_name'     => 'Crypto Wallets',
+			'name'          => _x( 'Bitcoin Wallets', 'post type general name', 'bh-wc-bitcoin-gateway' ),
+			'singular_name' => _x( 'Bitcoin Wallet', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
+			'menu_name'     => 'Bitcoin Wallets',
 		);
 
 		$args = array(
-			'labels'        => $labels,
-			'description'   => 'Wallets used with WooCommerce Bitcoin gateways.',
-			'public'        => true,
-			'menu_position' => 8,
-			'supports'      => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
-			'has_archive'   => false,
-			'show_in_menu'  => false,
+			'labels'         => $labels,
+			'description'    => 'Wallets used with WooCommerce Bitcoin gateways.',
+			'public'         => true,
+			'menu_position'  => 8,
+			'supports'       => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
+			'has_archive'    => false,
+			'show_in_menu'   => false,
+			'plugin_objects' => array( 'api' => $this->api ),
 		);
 
 		register_post_type( BITCOIN_WALLET::POST_TYPE, $args );
@@ -66,18 +74,19 @@ class Post {
 	public function register_address_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Crypto Addresses', 'post type general name', 'bh-wc-bitcoin-gateway' ),
-			'singular_name' => _x( 'Crypto Address', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
-			'menu_name'     => 'Crypto Addresses',
+			'name'          => _x( 'Bitcoin Addresses', 'post type general name', 'bh-wc-bitcoin-gateway' ),
+			'singular_name' => _x( 'Bitcoin Address', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
+			'menu_name'     => 'Bitcoin Addresses',
 		);
 		$args   = array(
-			'labels'        => $labels,
-			'description'   => 'Addresses used with WooCommerce Bitcoin gateways.',
-			'public'        => true,
-			'menu_position' => 8,
-			'supports'      => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
-			'has_archive'   => false,
-			'show_in_menu'  => false,
+			'labels'         => $labels,
+			'description'    => 'Addresses used with WooCommerce Bitcoin gateways.',
+			'public'         => true,
+			'menu_position'  => 8,
+			'supports'       => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
+			'has_archive'    => false,
+			'show_in_menu'   => false,
+			'plugin_objects' => array( 'api' => $this->api ),
 		);
 		register_post_type( BITCOIN_ADDRESS::POST_TYPE, $args );
 
