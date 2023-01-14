@@ -7,6 +7,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -41,6 +43,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	 */
 	protected ?API_Interface $api = null;
 
+	protected Settings_Interface $plugin_settings;
+
 	/**
 	 * A customisable message to show alongside the payment instructions.
 	 *
@@ -68,6 +72,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$this->setLogger( new NullLogger() );
 
 		$this->api = $api ?? $GLOBALS['bh_wc_bitcoin_gateway'];
+
+		$this->plugin_settings = new \BrianHenryIE\WC_Bitcoin_Gateway\API\Settings();
 
 		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' );
 		$this->has_fields         = false;
@@ -194,6 +200,14 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			),
 
 		);
+		$saved_xpub = $this->plugin_settings->get_xpub( $this->id );
+		if ( ! empty( $saved_xpub ) ) {
+			$settings_fields['xpub']['description'] = $saved_xpub;
+		}
+
+		$settings_fields['xpub']['description'] = $settings_fields['xpub']['description'] . ' <a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
+
+		// edit.php?post_type=bh-bitcoin-address
 
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
 		$log_levels_option = array();

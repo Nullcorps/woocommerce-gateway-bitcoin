@@ -13,6 +13,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table;
@@ -128,7 +129,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_custom_post_type_hooks():void {
 
-		$post = new Post();
+		$post = new Post( $this->api );
 		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
 		add_action( 'init', array( $post, 'register_address_post_type' ) );
 	}
@@ -256,18 +257,10 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_addresses_list_page_ui_hooks(): void {
 
-		$addresses_list_page = new Addresses_List_Table();
+		$register_list_tables = new Register_List_Tables();
 
-		add_filter( 'manage_edit-bh-bitcoin-address_columns', array( $addresses_list_page, 'define_columns' ) );
+		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_address_table' ), 10, 2 );
 
-		add_action( 'manage_bh-bitcoin-address_posts_custom_column', array( $addresses_list_page, 'print_columns' ), 10, 2 );
-
-		add_action(
-			'admin_menu',
-			function() use ( $addresses_list_page ) {
-				add_filter( 'post_row_actions', array( $addresses_list_page, 'edit_row_actions' ), 10, 2 );
-			}
-		);
 	}
 
 	/**

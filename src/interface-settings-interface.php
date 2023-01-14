@@ -27,4 +27,7 @@ interface Settings_Interface {
 	 * E.g. `https://example.org/wp-content/plugins/bh-wc-bitcoin-gateway`.
 	 */
 	public function get_plugin_url(): string;
+
+
+	public function get_xpub( string $gateway_id = 'bitcoin_gateway' ): string;
 }

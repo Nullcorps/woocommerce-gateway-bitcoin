@@ -75,11 +75,17 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 
 	/**
 	 * Return the URL of the base of the plugin.
+	 * TODO: check plugin_dir_url is the correct function.
 	 *
 	 * @used-by Frontend_Assets::enqueue_scripts()
 	 * @used-by Frontend_Assets::enqueue_styles()
 	 */
 	public function get_plugin_url(): string {
 		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' ) ? BH_WC_BITCOIN_GATEWAY_URL : plugin_dir_url( $this->get_plugin_basename() );
+	}
+
+	public function get_xpub( string $gateway_id = 'bitcoin_gateway' ): string {
+		$saved_settings = get_option( 'woocommerce_' . $gateway_id . '_settings', array() );
+		return $saved_settings['xpub'] ?? '';
 	}
 }
