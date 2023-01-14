@@ -12,9 +12,16 @@ _The WooCommerce Bitcoin  gateway most philosophically aligned with WordPress an
 
 ![WooCommerce Payment Gateways list](./.wordpress-org/screenshot-1.png "Once the plugin is active, the gateway will be visible in the WooCommerce Payment Gateways list")
 
-2. From your Bitcoin wallet, copy your "Master Public Key". E.g. using [Electrum Bitcoin Wallet](https://electrum.org/), it's in the menu under `Wallet`/`Infromation`. It should start with `xpub`, `zpub` or `ypub` and then a bunch of numbers:
+2. From your Bitcoin wallet, copy your "Master Public Key". It should start with `xpub`, `zpub` or `ypub` and then a long alphanumeric string.
+
+<details>
+<summary>E.g. Electrum Bitcoin Wallet</summary>
+
+For [Electrum Bitcoin Wallet](https://electrum.org/), it's in the menu under `Wallet`/`Infromation`:
 
 ![Electrum Wallet Information Screen](./.wordpress-org/screenshot-2.png "Copy xpub or zpub etc from here")
+
+</details>
 
 3. Paste that into the payment gateway settings screen and save:
 
@@ -75,38 +82,46 @@ Transactions:
 
 Wallets only check a set number of addresses for payments and orders may be assigned an address outside the list your wallet is checking. If your store reports a payment has been received, you may need to configure your wallet to look at more addresses.
 
+<details>
+<summary>E.g. Electrum Bitcoin Wallet</summary>
+
 In the case of Electrum, in the menu choose `View`/`Show Console`, visit the `Console` tab, and set the lookahead value by typing the following:
 ```
 wallet.change_gap_limit(200)
 wallet.synchronize()
 ```
-
 See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-address-in-electrum
+
+</details>
 
 ## TODO
 
-* Num-confirmations required, e.g.g for zero-conf payments (e.g. virtual products)
+* Num-confirmations required, e.g. for zero-conf payments (e.g. virtual products)
 * Unpaid order expiry
 * Partial payment email
 * Show transactions in meta box on order page
 * API failover
 * Tor
-* Units: Add mbtc as well as sats etc (to match default Electrum display settings)
+* Units: Add mbtc as well as sats etc. (to match default Electrum display settings)
 * Zero-conf: to avoid the threat of fraud where the fee is low-balled, only accept zero-conf transactions whose fees are above recent expected range
+* Run contract tests to find what currencies are supported by the Exchange_Rate APIs
+* 100% WPCS and PhpStan
+* WooCommerce Blocks checkout
 
-## Contributing
+## How You Can Help
+
+* Directions and screenshots showing how to find xpub in various wallets
 
 See [BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/BrianHenryIE/WordPress-Plugin-Boilerplate) for project setup rationale. 
 
 # Acknowledgements
 
-This plugin is forked from [Nullcorps/woocommerce-gateway-bitcoin](https://github.com/Nullcorps/woocommerce-gateway-bitcoin) who figured out the core functionality. The work here has been to implement that as a modern WordPress/WooCommerce plugin with Action Scheduler, CPTs, Composer, automated tests, WPCS, etc. Thank you  [NullCorps](https://github.com/Nullcorps)!
+This plugin is forked from [Nullcorps/woocommerce-gateway-bitcoin](https://github.com/Nullcorps/woocommerce-gateway-bitcoin) who figured out all the core functionality, i.e. the address generation, exchange rates, payment confirmations – everything Bitcoin related. The work here has been to implement that as a modern WordPress/WooCommerce plugin with Action Scheduler, CPTs, Composer, automated tests, WPCS, etc. Thank you, [NullCorps](https://github.com/Nullcorps)!
 
 > I think this stuff below is correct, but idk.
 >
 > It's free, go nuts. I'm just sticking things together to make stuff.
 >
-> – Nullcorps
+> – _Nullcorps_
 
-
-Big thank you to [@orionwl](https://twitter.com/orionwl) for talking things through along the way and patiently explaining the maths side of it over and over till I [Nullcorps] get it :)
+Big thank you to [@orionwl](https://twitter.com/orionwl) for talking things through along the way and patiently explaining the maths side of it over and over till I get it :) – _Nullcorps_
