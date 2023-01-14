@@ -148,7 +148,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'title'                 => array(
 				'title'       => __( 'Title', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'The payment method title the customer sees during checkout.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => __( 'Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
@@ -156,7 +156,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'description'           => array(
 				'title'       => __( 'Description', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'Payment method description that the customer will see on your checkout.', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'Payment method description that the customer will beside the Place Order button.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
@@ -172,24 +172,11 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'xpub'                  => array(
 				'title'       => __( 'xpub', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like xbpub2394234924loadsofnumbers', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '',
 				'desc_tip'    => false,
 			),
 			// TODO: Show balance here.
-
-			'fiat_currency'         => array(
-				'title'       => __( 'fiat-currency', 'bh-wc-bitcoin-gateway' ),
-				'type'        => 'select',
-				'description' => __( 'The fiat equivalent currency to use - USD, EUR or GBP', 'bh-wc-bitcoin-gateway' ),
-				'default'     => in_array( get_option( 'woocommerce_currency' ), array( 'USD', 'EUR', 'GBP' ), true ) ? get_option( 'woocommerce_currency' ) : 'USD',
-				'desc_tip'    => false,
-				'options'     => array(
-					'USD' => 'USD',
-					'EUR' => 'EUR',
-					'GBP' => 'GBP',
-				),
-			),
 
 			'btc_rounding_decimals' => array(
 				'title'       => __( 'btc-rounding-decimals', 'bh-wc-bitcoin-gateway' ),
