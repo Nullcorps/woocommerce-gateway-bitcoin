@@ -1,5 +1,6 @@
 <?php
 /**
+ * SoChain public blockchain API.
  *
  * @see https://chain.so/api/
  *
@@ -18,12 +19,18 @@ use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use PHPUnit\Util\Exception;
 
 /**
+ * Queries for v2 SoChain API.
+ *
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
  */
 class SoChain_API implements Blockchain_API_Interface {
 
+	/**
+	 * The SoChain API base.
+	 */
 	protected string $api_base = 'https://chain.so/api/v2/';
 
 	public function get_received_by_address( string $btc_address, bool $confirmed ): string {
@@ -35,13 +42,18 @@ class SoChain_API implements Blockchain_API_Interface {
 	}
 
 	/**
-	 * @param string $btc_address
-	 * @param int    $number_of_confirmations
+	 * Query the address balance.
+	 *
+	 * TODO: NB: If an address was reused, the previous balance would confuse the plugin into thinking the order had been paid.
+	 *
+	 * @param string $btc_address The address to query.
+	 * @param int    $number_of_confirmations Minimum number of confirmations (completed blocks since receiving transaction block).
 	 *
 	 * @see Blockchain_API_Interface::get_address_balance()
 	 *
 	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
-	 * @throws \Exception
+	 * @throws Exception On request failure.
+	 * @throws Exception On error response.
 	 */
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): array {
 
@@ -49,11 +61,18 @@ class SoChain_API implements Blockchain_API_Interface {
 
 		$request_response = wp_remote_get( $endpoint );
 
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
+		if ( is_wp_error( $request_response ) ) {
+			throw new Exception( $request_response->get_error_message() );
+		}
+		if ( 200 !== $request_response['response']['code'] ) {
+			throw new \Exception( 'Server responded with error when querying address balance for ' . $btc_address );
 		}
 
-		/** @var array{success:string, data:array{network:string,address:string,confirmed_balance:string,unconfirmed_balance:string}} $address_balance_result */
+		/**
+		 * The `confirmed_balance` and `unconfirmed_balance` returned.
+		 *
+		 * @var array{success:string, data:array{network:string,address:string,confirmed_balance:string,unconfirmed_balance:string}} $address_balance_result
+		 */
 		$address_balance_result = json_decode( $request_response['body'], true );
 
 		return array(
@@ -65,26 +84,34 @@ class SoChain_API implements Blockchain_API_Interface {
 	}
 
 	/**
+	 * Query for the set of transactions received at an address.
+	 *
+	 * `GET /api/v2/get_tx_received/{NETWORK}/{ADDRESS}[/{AFTER TXID}]`
 	 *
 	 * @see https://chain.so/api/#get-received-tx
 	 * @see Blockchain_API_Interface::get_transactions_received()
 	 *
-	 * @param string $btc_address
+	 * @param string $btc_address The address to query.
 	 *
 	 * @return array<string, array{txid:string, time:DateTimeInterface, value:string, confirmations:int}> Txid, data.
+	 * @throws Exception On request failure.
+	 * @throws Exception On error response.
 	 */
 	public function get_transactions_received( string $btc_address ): array {
-
-		// GET /api/v2/get_tx_received/{NETWORK}/{ADDRESS}[/{AFTER TXID}]
 
 		$endpoint = "{$this->api_base}get_tx_received/BTC/{$btc_address}";
 
 		$request_response = wp_remote_get( $endpoint );
 
-		// TODO: Break this out... wp_error means it failed locally before the network, latter means bad request or server.
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
+		// Wp_error means it failed locally before the network.
+		if ( is_wp_error( $request_response ) ) {
+			throw new Exception( $request_response->get_error_message() );
+		}
+
+		// Bad request or server.
+		if ( 200 !== $request_response['response']['code'] ) {
 			// 404 probably means a bad address.
-			throw new \Exception();
+			throw new \Exception( 'Server returned an error in get_transactions_received for ' . $btc_address );
 		}
 
 		$address_transactions_result = json_decode( $request_response['body'], true, 512, JSON_THROW_ON_ERROR );
@@ -93,10 +120,16 @@ class SoChain_API implements Blockchain_API_Interface {
 			throw new \Exception();
 		}
 
-		/** @var array<array{txid:string, output_no:int, script_asm:string, script_hex:string, value:string, confirmations:int, time:int}> $transactions */
+		/**
+		 * The transactions returned for this address.
+		 *
+		 * @var array<array{txid:string, output_no:int, script_asm:string, script_hex:string, value:string, confirmations:int, time:int}> $transactions
+		 */
 		$transactions = $address_transactions_result['data']['txs'];
 
 		/**
+		 * Return only the required fields and return the time as a DateTimeInterface.
+		 *
 		 * @param array{txid:string, output_no:int, script_asm:string, script_hex:string, value:string, confirmations:int, time:int} $transaction
 		 *
 		 * @return array{txid:string, time:DateTimeInterface, value:string, confirmations:int}
@@ -113,6 +146,8 @@ class SoChain_API implements Blockchain_API_Interface {
 		};
 
 		/**
+		 * Map the API response to the interface format.
+		 *
 		 * @var array<array{txid:string, time:DateTimeInterface, value:string, confirmations:int}> $mapped_transactions
 		 */
 		$mapped_transactions = array_map( $sochain_map, $transactions );
