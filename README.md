@@ -114,6 +114,13 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 See [BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/BrianHenryIE/WordPress-Plugin-Boilerplate) for project setup rationale. 
 
+## Alternatives 
+
+Similar plugins:
+
+* Sovereign Crypto Payments by OnionBazaar – [wordpress.org](https://wordpress.org/plugins/sovereign-crypto-payments/) | [github](https://github.com/onionbazaar/sovereign-crypto-payments)
+* Nomiddleman Bitcoin and Crypto Payments for WooCommerce by nomiddleman – [wordpress.org](https://wordpress.org/plugins/nomiddleman-crypto-payments-for-woocommerce/) | [github](https://github.com/nomiddleman/nomiddleman-woocommerce/)
+
 # Acknowledgements
 
 This plugin is forked from [Nullcorps/woocommerce-gateway-bitcoin](https://github.com/Nullcorps/woocommerce-gateway-bitcoin) who figured out all the core functionality, i.e. the address generation, exchange rates, payment confirmations – everything Bitcoin related. The work here has been to implement that as a modern WordPress/WooCommerce plugin with Action Scheduler, CPTs, Composer, automated tests, WPCS, etc. Thank you, [NullCorps](https://github.com/Nullcorps)!
