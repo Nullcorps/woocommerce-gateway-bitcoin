@@ -4,13 +4,13 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
 
 use Exception;
 use wpdb;
 
 
-class Crypto_Wallet_Factory {
+class Bitcoin_Wallet_Factory {
 
 	/**
 	 * Given a post_id,
@@ -23,7 +23,7 @@ class Crypto_Wallet_Factory {
 	 */
 	public function get_post_id_for_wallet( string $xpub ): ?int {
 
-		$post_id = wp_cache_get( $xpub, Crypto_Wallet::POST_TYPE );
+		$post_id = wp_cache_get( $xpub, Bitcoin_Wallet::POST_TYPE );
 
 		if ( false !== $post_id ) {
 			return (int) $post_id;
@@ -37,7 +37,7 @@ class Crypto_Wallet_Factory {
 
 		if ( ! is_null( $post_id ) ) {
 			$post_id = intval( $post_id );
-			wp_cache_add( $xpub, $post_id, Crypto_Wallet::POST_TYPE );
+			wp_cache_add( $xpub, $post_id, Bitcoin_Wallet::POST_TYPE );
 		}
 
 		return $post_id;
@@ -53,7 +53,7 @@ class Crypto_Wallet_Factory {
 		$args['post_status']  = ! is_null( $gateway_id ) ? 'active' : 'inactive';
 		$args['post_excerpt'] = $xpub;
 		$args['post_name']    = sanitize_title( $xpub ); // An indexed column.
-		$args['post_type']    = Crypto_Wallet::POST_TYPE;
+		$args['post_type']    = Bitcoin_Wallet::POST_TYPE;
 
 		$post_id = wp_insert_post( $args, true );
 
@@ -65,15 +65,15 @@ class Crypto_Wallet_Factory {
 	}
 
 	/**
-	 * Given the id of the wp_posts row storing the crypto wallet, return the typed Crypto_Wallet object.
+	 * Given the id of the wp_posts row storing the bitcoin wallet, return the typed Bitcoin_Wallet object.
 	 *
 	 * @param int $post_id WordPress wp_posts ID.
 	 *
-	 * @return Crypto_Wallet
-	 * @throws Exception When the post_type of the post returned for the given post_id is not a Crypto_Address.
+	 * @return Bitcoin_Wallet
+	 * @throws Exception When the post_type of the post returned for the given post_id is not a Bitcoin_Address.
 	 */
-	public function get_by_post_id( int $post_id ): Crypto_Wallet {
-		return new Crypto_Wallet( $post_id );
+	public function get_by_post_id( int $post_id ): Bitcoin_Wallet {
+		return new Bitcoin_Wallet( $post_id );
 	}
 
 }

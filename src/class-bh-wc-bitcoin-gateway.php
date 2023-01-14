@@ -233,15 +233,15 @@ class BH_WC_Bitcoin_Gateway {
 
 
 	/**
-	 * Customize the columns and data shown in the WP_List_Table for crypto wallets.
+	 * Customize the columns and data shown in the WP_List_Table for bitcoin wallets.
 	 */
 	protected function define_wallets_list_page_ui_hooks(): void {
 
 		$wallets_list_page = new Wallets_List_Table();
 
-		add_filter( 'manage_edit-bh-crypto-wallet_columns', array( $wallets_list_page, 'define_columns' ) );
+		add_filter( 'manage_edit-bh-bitcoin-wallet_columns', array( $wallets_list_page, 'define_columns' ) );
 
-		add_action( 'manage_bh-crypto-wallet_posts_custom_column', array( $wallets_list_page, 'print_columns' ), 10, 2 );
+		add_action( 'manage_bh-bitcoin-wallet_posts_custom_column', array( $wallets_list_page, 'print_columns' ), 10, 2 );
 
 		add_action(
 			'admin_menu',
@@ -252,15 +252,15 @@ class BH_WC_Bitcoin_Gateway {
 	}
 
 	/**
-	 * Customize the columns and data shown in the WP_List_Table for crypto addresses.
+	 * Customize the columns and data shown in the WP_List_Table for bitcoin addresses.
 	 */
 	protected function define_addresses_list_page_ui_hooks(): void {
 
 		$addresses_list_page = new Addresses_List_Table();
 
-		add_filter( 'manage_edit-bh-crypto-address_columns', array( $addresses_list_page, 'define_columns' ) );
+		add_filter( 'manage_edit-bh-bitcoin-address_columns', array( $addresses_list_page, 'define_columns' ) );
 
-		add_action( 'manage_bh-crypto-address_posts_custom_column', array( $addresses_list_page, 'print_columns' ), 10, 2 );
+		add_action( 'manage_bh-bitcoin-address_posts_custom_column', array( $addresses_list_page, 'print_columns' ), 10, 2 );
 
 		add_action(
 			'admin_menu',
@@ -273,7 +273,7 @@ class BH_WC_Bitcoin_Gateway {
 	/**
 	 * Register WP CLI commands.
 	 *
-	 * `wp bh-crypto generate-new-addresses`
+	 * `wp bh-bitcoin generate-new-addresses`
 	 */
 	protected function define_cli_commands(): void {
 
@@ -284,8 +284,8 @@ class BH_WC_Bitcoin_Gateway {
 		$cli = new CLI( $this->api, $this->settings, $this->logger );
 
 		try {
-			WP_CLI::add_command( 'bh-crypto generate-new-addresses', array( $cli, 'generate_new_addresses' ) );
-			WP_CLI::add_command( 'bh-crypto update-address', array( $cli, 'update_address' ) );
+			WP_CLI::add_command( 'bh-bitcoin generate-new-addresses', array( $cli, 'generate_new_addresses' ) );
+			WP_CLI::add_command( 'bh-bitcoin update-address', array( $cli, 'update_address' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'Failed to register WP CLI commands: ' . $e->getMessage(), array( 'exception' => $e ) );
 		}

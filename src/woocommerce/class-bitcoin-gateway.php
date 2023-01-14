@@ -9,7 +9,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -286,7 +286,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			 * This sets the order meta value inside the function.
 			 *
 			 * @see Order::BITCOIN_ADDRESS_META_KEY
-			 * @see Crypto_Address::get_raw_address()
+			 * @see Bitcoin_Address::get_raw_address()
 			 */
 			$btc_address = $api->get_fresh_address_for_order( $order );
 		} catch ( Exception $e ) {

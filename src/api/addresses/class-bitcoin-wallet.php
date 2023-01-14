@@ -7,7 +7,7 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
 
 use Exception;
 use WP_Post;
@@ -15,11 +15,11 @@ use WP_Post;
 /**
  * Facade on WP_Post and post_meta.
  */
-class Crypto_Wallet {
+class Bitcoin_Wallet {
 
-	const POST_TYPE = 'bh-crypto-wallet';
+	const POST_TYPE = 'bh-bitcoin-wallet';
 
-	const BALANCE_META_KEY                    = 'crypto_wallet_balance';
+	const BALANCE_META_KEY                    = 'bitcoin_wallet_balance';
 	const LAST_DERIVED_ADDRESS_INDEX_META_KEY = 'last_derived_address_index';
 
 	/**
@@ -87,17 +87,17 @@ class Crypto_Wallet {
 	}
 
 	/**
-	 * Find addresses generated from this wallet which are unused and return them as `Crypto_Address` objects.
+	 * Find addresses generated from this wallet which are unused and return them as `Bitcoin_Address` objects.
 	 *
 	 * TODO: Maybe this shouldn't be in here?
 	 *
-	 * @return Crypto_Address[]
+	 * @return Bitcoin_Address[]
 	 */
 	public function get_fresh_addresses(): array {
 		$posts = get_posts(
 			array(
 				'post_parent'    => $this->post->ID,
-				'post_type'      => Crypto_Address::POST_TYPE,
+				'post_type'      => Bitcoin_Address::POST_TYPE,
 				'post_status'    => 'unused',
 				'orderby'        => 'ID',
 				'order'          => 'ASC',
@@ -106,7 +106,7 @@ class Crypto_Wallet {
 		);
 		return array_map(
 			function( WP_Post $post ) {
-				return new Crypto_Address( $post->ID );
+				return new Bitcoin_Address( $post->ID );
 			},
 			$posts
 		);

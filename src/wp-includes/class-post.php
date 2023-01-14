@@ -16,12 +16,12 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 
 /**
- * @see wp-admin/edit.php?post_type=bh-crypto-wallet
- * @see wp-admin/edit.php?post_type=bh-crypto-address
+ * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
+ * @see wp-admin/edit.php?post_type=bh-bitcoin-address
  */
 class Post {
 
@@ -46,7 +46,7 @@ class Post {
 			'show_in_menu'  => false,
 		);
 
-		register_post_type( CRYPTO_WALLET::POST_TYPE, $args );
+		register_post_type( BITCOIN_WALLET::POST_TYPE, $args );
 
 		register_post_status(
 			'active',
@@ -79,12 +79,12 @@ class Post {
 			'has_archive'   => false,
 			'show_in_menu'  => false,
 		);
-		register_post_type( CRYPTO_ADDRESS::POST_TYPE, $args );
+		register_post_type( BITCOIN_ADDRESS::POST_TYPE, $args );
 
 		register_post_status(
 			'unknown',
 			array(
-				'post_type'                 => array( Crypto_Address::POST_TYPE ),
+				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unknown', 'post' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => false,
@@ -96,7 +96,7 @@ class Post {
 		register_post_status(
 			'unused',
 			array(
-				'post_type'                 => array( Crypto_Address::POST_TYPE ),
+				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unused', 'post' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => false,
@@ -108,7 +108,7 @@ class Post {
 		register_post_status(
 			'assigned',
 			array(
-				'post_type'                 => array( Crypto_Address::POST_TYPE ),
+				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Assigned', 'post' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => false,
@@ -120,7 +120,7 @@ class Post {
 		register_post_status(
 			'used',
 			array(
-				'post_type'                 => array( Crypto_Address::POST_TYPE ),
+				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Used', 'post' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => false,

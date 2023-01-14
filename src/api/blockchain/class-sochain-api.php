@@ -11,7 +11,7 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain;
 
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use DateTime;

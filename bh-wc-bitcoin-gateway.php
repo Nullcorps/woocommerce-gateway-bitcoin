@@ -24,8 +24,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Activator;
@@ -67,8 +67,8 @@ function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
 	$settings = new Settings();
 	$logger   = Logger::instance( $settings );
 
-	$crypto_wallet_factory  = new Crypto_Wallet_Factory();
-	$crypto_address_factory = new Crypto_Address_Factory();
+	$crypto_wallet_factory  = new Bitcoin_Wallet_Factory();
+	$crypto_address_factory = new Bitcoin_Address_Factory();
 
 	$api = new API( $settings, $logger, $crypto_wallet_factory, $crypto_address_factory );
 

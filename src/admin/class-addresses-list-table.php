@@ -7,21 +7,21 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use WP_Post;
 
 /**
  * Hooks into standard WP_List_Table actions and filters.
  *
- * @see wp-admin/edit.php?post_type=bh-crypto-address
+ * @see wp-admin/edit.php?post_type=bh-bitcoin-address
  * @see WP_Posts_List_Table
  */
 class Addresses_List_Table {
 
 	/**
-	 * Cache to avoid repeatedly instantiating each Crypto_Address.
+	 * Cache to avoid repeatedly instantiating each Bitcoin_Address.
 	 *
-	 * @var array<int, Crypto_Address>
+	 * @var array<int, Bitcoin_Address>
 	 */
 	protected array $data = array();
 
@@ -31,7 +31,7 @@ class Addresses_List_Table {
 	 *
 	 * TODO: Only show the wallet column if there is more than one wallet.
 	 *
-	 * @hooked manage_edit-bh-crypto-address_columns
+	 * @hooked manage_edit-bh-bitcoin-address_columns
 	 * @see get_column_headers()
 	 *
 	 * @param array<string, string> $columns Column name : HTML output.
@@ -68,7 +68,7 @@ class Addresses_List_Table {
 	/**
 	 * Print the output for our custom columns.
 	 *
-	 * @hooked manage_bh-crypto-address_posts_custom_column
+	 * @hooked manage_bh-bitcoin-address_posts_custom_column
 	 * @see \WP_Posts_List_Table::column_default()
 	 *
 	 * @param string $column_name The current column name.
@@ -80,22 +80,22 @@ class Addresses_List_Table {
 
 		if ( ! isset( $this->data[ $post_id ] ) ) {
 			try {
-				$this->data[ $post_id ] = new Crypto_Address( $post_id );
+				$this->data[ $post_id ] = new Bitcoin_Address( $post_id );
 			} catch ( \Exception $exception ) {
-				// If the post_id isn't for a Crypto_Address.
+				// If the post_id isn't for a Bitcoin_Address.
 				return;
 			}
 		}
 
-		$crypto_address = $this->data[ $post_id ];
+		$bitcoin_address = $this->data[ $post_id ];
 
 		switch ( $column_name ) {
 			case 'status':
-				echo esc_html( $crypto_address->get_status() );
+				echo esc_html( $bitcoin_address->get_status() );
 
 				break;
 			case 'order_id':
-				$order_id = $crypto_address->get_order_id();
+				$order_id = $bitcoin_address->get_order_id();
 				if ( ! is_null( $order_id ) ) {
 					$url = admin_url( "post.php?post={$order_id}&action=edit" );
 
@@ -105,11 +105,11 @@ class Addresses_List_Table {
 				break;
 			case 'balance':
 				// TODO: Show current balance or show in + out?
-				echo esc_html( $crypto_address->get_balance() ?? 'unknown' );
+				echo esc_html( $bitcoin_address->get_balance() ?? 'unknown' );
 
 				break;
 			case 'transactions_count':
-				$transactions = $crypto_address->get_transactions();
+				$transactions = $bitcoin_address->get_transactions();
 				if ( is_array( $transactions ) ) {
 					echo count( $transactions );
 				} else {
@@ -118,12 +118,12 @@ class Addresses_List_Table {
 
 				break;
 			case 'wallet':
-				$wallet_post_id = $crypto_address->get_wallet_parent_post_id();
+				$wallet_post_id = $bitcoin_address->get_wallet_parent_post_id();
 				echo esc_html( $wallet_post_id );
 
 				break;
 			case 'derive_path_sequence':
-				$nth  = $crypto_address->get_derivation_path_sequence_number();
+				$nth  = $bitcoin_address->get_derivation_path_sequence_number();
 				$path = "0/$nth";
 				echo esc_html( $path );
 
@@ -149,7 +149,7 @@ class Addresses_List_Table {
 	 */
 	public function edit_row_actions( array $actions, WP_Post $post ): array {
 
-		if ( Crypto_Address::POST_TYPE !== $post->post_type ) {
+		if ( Bitcoin_Address::POST_TYPE !== $post->post_type ) {
 			return $actions;
 		}
 

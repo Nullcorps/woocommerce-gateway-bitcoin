@@ -7,7 +7,7 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
 
 use DateTimeInterface;
 use Exception;
@@ -19,9 +19,9 @@ use WP_Post;
 /**
  * Facade on WP_Post and post_meta.
  */
-class Crypto_Address {
+class Bitcoin_Address {
 
-	const POST_TYPE = 'bh-crypto-address';
+	const POST_TYPE = 'bh-bitcoin-address';
 
 	const TRANSACTION_META_KEY                     = 'address_transactions';
 	const DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY = 'derivation_path_sequence_number';
@@ -189,7 +189,7 @@ class Crypto_Address {
 	}
 
 	/**
-	 * Add order_id metadata to the crypto address and update the status to assigned.
+	 * Add order_id metadata to the bitcoin address and update the status to assigned.
 	 *
 	 * @param int $order_id The WooCommerce order id the address is being used for.
 	 */

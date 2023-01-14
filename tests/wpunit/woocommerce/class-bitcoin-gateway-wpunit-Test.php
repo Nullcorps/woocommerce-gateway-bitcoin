@@ -5,7 +5,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 use Codeception\Stub\Expected;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 
@@ -22,7 +22,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
-				'get_fresh_address_for_order' => $this->makeEmpty( Crypto_Address::class ),
+				'get_fresh_address_for_order' => $this->makeEmpty( Bitcoin_Address::class ),
 				'get_exchange_rate'           => '44444.0',
 				'convert_fiat_to_btc'         => '0.0001',
 			)

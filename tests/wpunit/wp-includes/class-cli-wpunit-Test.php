@@ -4,9 +4,9 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
@@ -27,8 +27,8 @@ class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			array( 'update_address' => Expected::once( array() ) )
 		);
 
-		$factory = new Crypto_Address_Factory();
-		$wallet  = $this->makeEmpty( Crypto_Wallet::class );
+		$factory = new Bitcoin_Address_Factory();
+		$wallet  = $this->makeEmpty( Bitcoin_Wallet::class );
 
 		$post_id = $factory->save_new( 'mockaddress', 0, $wallet );
 

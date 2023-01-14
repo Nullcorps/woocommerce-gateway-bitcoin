@@ -4,7 +4,7 @@
  */
 
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin;
+namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain_API_Interface;

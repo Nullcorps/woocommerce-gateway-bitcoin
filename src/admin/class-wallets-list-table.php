@@ -8,21 +8,21 @@
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use WP_Post;
 
 /**
  * Hooks into standard WP_List_Table actions and filters.
  *
- * @see wp-admin/edit.php?post_type=bh-crypto-wallet
+ * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
  * @see WP_Posts_List_Table
  */
 class Wallets_List_Table {
 
 	/**
-	 * Cache each Crypto_Wallet object between calls to each column in print_columns().
+	 * Cache each Bitcoin_Wallet object between calls to each column in print_columns().
 	 *
-	 * @var array<int, Crypto_Wallet>
+	 * @var array<int, Bitcoin_Wallet>
 	 */
 	protected array $data = array();
 
@@ -32,7 +32,7 @@ class Wallets_List_Table {
 	 *
 	 * TODO: Only show the wallet column if there is more than one wallet.
 	 *
-	 * @hooked manage_edit-bh-crypto-address_columns
+	 * @hooked manage_edit-bh-bitcoin-address_columns
 	 * @see get_column_headers()
 	 *
 	 * @param array<string, string> $columns Column name : HTML output.
@@ -62,7 +62,7 @@ class Wallets_List_Table {
 	/**
 	 * Print the output for our custom columns.
 	 *
-	 * @hooked manage_bh-crypto-wallet_posts_custom_column
+	 * @hooked manage_bh-bitcoin-wallet_posts_custom_column
 	 * @see \WP_Posts_List_Table::column_default()
 	 *
 	 * @param string $column_name The current column name.
@@ -74,22 +74,22 @@ class Wallets_List_Table {
 
 		if ( ! isset( $this->data[ $post_id ] ) ) {
 			try {
-				$this->data[ $post_id ] = new Crypto_Wallet( $post_id );
+				$this->data[ $post_id ] = new Bitcoin_Wallet( $post_id );
 			} catch ( Exception $exception ) {
-				// Not a Crypto_Wallet. Unlikely to ever reach here.
+				// Not a Bitcoin_Wallet. Unlikely to ever reach here.
 				return;
 			}
 		}
 
-		$crypto_wallet = $this->data[ $post_id ];
+		$bitcoin_wallet = $this->data[ $post_id ];
 
 		switch ( $column_name ) {
 			case 'status':
-				echo esc_html( $crypto_wallet->get_status() );
+				echo esc_html( $bitcoin_wallet->get_status() );
 				break;
 
 			case 'balance':
-				echo esc_html( $crypto_wallet->get_balance() ?? 'unknown' );
+				echo esc_html( $bitcoin_wallet->get_balance() ?? 'unknown' );
 				break;
 
 			default:
@@ -112,7 +112,7 @@ class Wallets_List_Table {
 	 */
 	public function edit_row_actions( array $actions, WP_Post $post ): array {
 
-		if ( Crypto_Wallet::POST_TYPE !== $post->post_type ) {
+		if ( Bitcoin_Wallet::POST_TYPE !== $post->post_type ) {
 			return $actions;
 		}
 

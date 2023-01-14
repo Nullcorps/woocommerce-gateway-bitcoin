@@ -18,13 +18,13 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\BitWasp_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Bitcoin\SoChain_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\BitWasp_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\SoChain_API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
@@ -49,16 +49,16 @@ class API implements API_Interface {
 
 	protected Generate_Address_API_Interface $generate_address_api;
 
-	protected Crypto_Wallet_Factory $crypto_wallet_factory;
+	protected Bitcoin_Wallet_Factory $bitcoin_wallet_factory;
 
-	protected Crypto_Address_Factory $crypto_address_factory;
+	protected Bitcoin_Address_Factory $bitcoin_address_factory;
 
-	public function __construct( Settings_Interface $settings, LoggerInterface $logger, Crypto_Wallet_Factory $crypto_wallet_factory, Crypto_Address_Factory $crypto_address_factory ) {
+	public function __construct( Settings_Interface $settings, LoggerInterface $logger, Bitcoin_Wallet_Factory $bitcoin_wallet_factory, Bitcoin_Address_Factory $bitcoin_address_factory ) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
 
-		$this->crypto_wallet_factory  = $crypto_wallet_factory;
-		$this->crypto_address_factory = $crypto_address_factory;
+		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
+		$this->bitcoin_address_factory = $bitcoin_address_factory;
 
 		$this->bitcoin_api = new SoChain_API();
 
@@ -148,9 +148,9 @@ class API implements API_Interface {
 	 *
 	 * @param WC_Order $order The order that will use the address.
 	 *
-	 * @return Crypto_Address
+	 * @return Bitcoin_Address
 	 */
-	public function get_fresh_address_for_order( WC_Order $order ): Crypto_Address {
+	public function get_fresh_address_for_order( WC_Order $order ): Bitcoin_Address {
 
 		$this->logger->debug( 'Get fresh address for `shop_order:' . $order->get_id() . '`' );
 
@@ -160,8 +160,8 @@ class API implements API_Interface {
 
 		$xpub = $gateway->get_xpub();
 
-		$wallet_post_id = $this->crypto_wallet_factory->get_post_id_for_wallet( $xpub );
-		$wallet         = $this->crypto_wallet_factory->get_by_post_id( $wallet_post_id );
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
+		$wallet         = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
 		$fresh_addresses = $wallet->get_fresh_addresses();
 
@@ -241,7 +241,7 @@ class API implements API_Interface {
 			return false;
 		}
 
-		$wallet_post_id = $this->crypto_wallet_factory->get_post_id_for_wallet( $xpub );
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
 
 		if ( is_null( $wallet_post_id ) ) {
 			$this->logger->error(
@@ -254,7 +254,7 @@ class API implements API_Interface {
 			return false;
 		}
 
-		$wallet          = $this->crypto_wallet_factory->get_by_post_id( $wallet_post_id );
+		$wallet          = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 		$fresh_addresses = $wallet->get_fresh_addresses();
 
 		return count( $fresh_addresses ) > 0;
@@ -308,9 +308,9 @@ class API implements API_Interface {
 		$result['btc_amount_received']        = $amount_received;
 		$result['btc_amount_received_before'] = $amount_received;
 
-		$address_post_id                 = $this->crypto_address_factory->get_post_id_for_address( $btc_xpub_address_string );
-		$address                         = $this->crypto_address_factory->get_by_post_id( $address_post_id );
-		$result['crypto_address_object'] = $address;
+		$address_post_id                  = $this->bitcoin_address_factory->get_post_id_for_address( $btc_xpub_address_string );
+		$address                          = $this->bitcoin_address_factory->get_by_post_id( $address_post_id );
+		$result['bitcoin_address_object'] = $address;
 
 		$order_date_created = $order->get_date_created();
 
@@ -498,12 +498,12 @@ class API implements API_Interface {
 			$result['last_checked_time_formatted'] = 'Never';
 		}
 
-		/** @var Crypto_Address $address */
-		$address = $order_details['crypto_address_object'];
+		/** @var Bitcoin_Address $address */
+		$address = $order_details['bitcoin_address_object'];
 
 		$result['btc_address_derivation_path_sequence_number'] = $address->get_derivation_path_sequence_number();
 
-		$wallet                = $this->crypto_wallet_factory->get_by_post_id( $address->get_wallet_parent_post_id() );
+		$wallet                = $this->bitcoin_wallet_factory->get_by_post_id( $address->get_wallet_parent_post_id() );
 		$xpub                  = $wallet->get_xpub();
 		$xpub_friendly_display = substr( $xpub, 0, 7 ) . ' ... ' . substr( $xpub, -3, 3 );
 		$xpub_js_span          = "<span style=\"border-bottom: 1px dashed #999; word-wrap: break-word\" onclick=\"this.innerText = this.innerText === '{$xpub}' ? '{$xpub_friendly_display}' : '{$xpub}';\" title=\"{$xpub}\"'>{$xpub_friendly_display}</span>";
@@ -585,17 +585,17 @@ class API implements API_Interface {
 	 * @param string  $xpub
 	 * @param ?string $gateway_id
 	 *
-	 * @return array{wallet: Crypto_Wallet, wallet_post_id: int, existing_fresh_addresses:array, generated_addresses:array}
+	 * @return array{wallet: Bitcoin_Wallet, wallet_post_id: int, existing_fresh_addresses:array, generated_addresses:array}
 	 * @throws Exception
 	 */
 	public function generate_new_wallet( string $xpub, string $gateway_id = null ): array {
 
 		$result = array();
 
-		$post_id = $this->crypto_wallet_factory->get_post_id_for_wallet( $xpub )
-			?? $this->crypto_wallet_factory->save_new( $xpub, $gateway_id );
+		$post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub )
+			?? $this->bitcoin_wallet_factory->save_new( $xpub, $gateway_id );
 
-		$wallet = $this->crypto_wallet_factory->get_by_post_id( $post_id );
+		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $post_id );
 
 		$result['wallet'] = $wallet;
 
@@ -632,7 +632,7 @@ class API implements API_Interface {
 	 * @used-by CLI::generate_new_addresses()
 	 * @used-by Background_Jobs::generate_new_addresses()
 	 *
-	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Crypto_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
+	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
 	 */
 	public function generate_new_addresses(): array {
 
@@ -644,12 +644,12 @@ class API implements API_Interface {
 
 			$wallet_address = $gateway->get_xpub();
 
-			$wallet_post_id = $this->crypto_wallet_factory->get_post_id_for_wallet( $wallet_address );
+			$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $wallet_address );
 
 			if ( is_null( $wallet_post_id ) ) {
 
 				try {
-					$result[ $gateway->id ]['wallet_post_id'] = $this->crypto_wallet_factory->save_new( $wallet_address, $gateway->id );
+					$result[ $gateway->id ]['wallet_post_id'] = $this->bitcoin_wallet_factory->save_new( $wallet_address, $gateway->id );
 				} catch ( Exception $exception ) {
 					$this->logger->error( 'Failed to save new wallet.' );
 					continue;
@@ -658,7 +658,7 @@ class API implements API_Interface {
 				$result[ $gateway->id ]['wallet_post_id'] = $wallet_post_id;
 			}
 
-			$wallet = $this->crypto_wallet_factory->get_by_post_id( $wallet_post_id );
+			$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
 			$fresh_addresses = $wallet->get_fresh_addresses();
 
@@ -684,7 +684,7 @@ class API implements API_Interface {
 	 * @param string $xpub
 	 * @param int    $generate_count // TODO: Change this up to 50? when in prod.
 	 *
-	 * @return array{xpub:string, generated_addresses:array<Crypto_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
+	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 *
 	 * @throws Exception
 	 */
@@ -694,13 +694,13 @@ class API implements API_Interface {
 
 		$result['xpub'] = $xpub;
 
-		$wallet_post_id = $this->crypto_wallet_factory->get_post_id_for_wallet( $xpub );
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
 
 		if ( is_null( $wallet_post_id ) ) {
 			throw new \Exception();
 		}
 
-		$wallet = $this->crypto_wallet_factory->get_by_post_id( $wallet_post_id );
+		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
 		$address_index = $wallet->get_address_index();
 
@@ -714,13 +714,13 @@ class API implements API_Interface {
 
 			$new_address = $this->generate_address_api->generate_address( $xpub, $address_index );
 
-			if ( ! is_null( $this->crypto_address_factory->get_post_id_for_address( $new_address ) ) ) {
+			if ( ! is_null( $this->bitcoin_address_factory->get_post_id_for_address( $new_address ) ) ) {
 				continue;
 			}
 
-			$crypto_address_new_post_id = $this->crypto_address_factory->save_new( $new_address, $address_index, $wallet );
+			$bitcoin_address_new_post_id = $this->bitcoin_address_factory->save_new( $new_address, $address_index, $wallet );
 
-			$generated_addresses_post_ids[] = $crypto_address_new_post_id;
+			$generated_addresses_post_ids[] = $bitcoin_address_new_post_id;
 			$generated_addresses_count++;
 
 		} while ( $generated_addresses_count < $generate_count );
@@ -728,8 +728,8 @@ class API implements API_Interface {
 		$result['generated_addresses_count']    = $generated_addresses_count;
 		$result['generated_addresses_post_ids'] = $generated_addresses_post_ids;
 		$result['generated_addresses']          = array_map(
-			function( int $post_id ): Crypto_Address {
-				return $this->crypto_address_factory->get_by_post_id( $post_id );
+			function( int $post_id ): Bitcoin_Address {
+				return $this->bitcoin_address_factory->get_by_post_id( $post_id );
 			},
 			$generated_addresses_post_ids
 		);
@@ -749,9 +749,9 @@ class API implements API_Interface {
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 *
-	 * @param Crypto_Address[] $addresses
+	 * @param Bitcoin_Address[] $addresses
 	 *
-	 * @return array<string, array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
+	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
 	public function check_new_addresses_for_transactions( ?array $addresses = null ): array {
 
@@ -764,7 +764,7 @@ class API implements API_Interface {
 			// Get all wallets whose status is unknown.
 			$posts = get_posts(
 				array(
-					'post_type'      => Crypto_Address::POST_TYPE,
+					'post_type'      => Bitcoin_Address::POST_TYPE,
 					'post_status'    => 'unknown',
 					'posts_per_page' => 200,
 					'orderby'        => 'ID',
@@ -782,15 +782,15 @@ class API implements API_Interface {
 
 				$post_id = $post->ID;
 
-				$addresses[] = $this->crypto_address_factory->get_by_post_id( $post_id );
+				$addresses[] = $this->bitcoin_address_factory->get_by_post_id( $post_id );
 
 			}
 		}
 		try {
-			foreach ( $addresses as $crypto_address ) {
+			foreach ( $addresses as $bitcoin_address ) {
 
 				// Check for updates.
-				$result[ $crypto_address->get_raw_address() ] = $this->query_api_for_address_transactions( $crypto_address );
+				$result[ $bitcoin_address->get_raw_address() ] = $this->query_api_for_address_transactions( $bitcoin_address );
 			}
 		} catch ( \Exception $exception ) {
 			// Reschedule if we hit 429 (there will always be at least one address to check if it 429s.).
@@ -815,12 +815,12 @@ class API implements API_Interface {
 	/**
 	 * Remotely check/fetch the latest data for an address.
 	 *
-	 * @param Crypto_Address $address
+	 * @param Bitcoin_Address $address
 	 *
-	 * @return array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
 	 * @throws Exception
 	 */
-	public function query_api_for_address_transactions( Crypto_Address $address ): array {
+	public function query_api_for_address_transactions( Bitcoin_Address $address ): array {
 
 		$btc_xpub_address_string = $address->get_raw_address();
 

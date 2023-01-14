@@ -7,8 +7,8 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Address_Storage\Crypto_Wallet;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use WC_Order;
 
@@ -73,10 +73,10 @@ interface API_Interface {
 	 *
 	 * @param WC_Order $order The (newly placed) WooCommerce order.
 	 *
-	 * @return Crypto_Address
+	 * @return Bitcoin_Address
 	 * @throws Exception When no address is available.
 	 */
-	public function get_fresh_address_for_order( WC_Order $order ): Crypto_Address;
+	public function get_fresh_address_for_order( WC_Order $order ): Bitcoin_Address;
 
 	/**
 	 * Return the current Bitcoin details for an order, optionally refresh.
@@ -106,23 +106,23 @@ interface API_Interface {
 	 * @param string  $xpub_after
 	 * @param ?string $gateway_id
 	 *
-	 * @return array{wallet:Crypto_Wallet, wallet_post_id:int, existing_fresh_addresses:array<Crypto_Address>, generated_addresses:array<Crypto_Address>}
+	 * @return array{wallet:Bitcoin_Wallet, wallet_post_id:int, existing_fresh_addresses:array<Bitcoin_Address>, generated_addresses:array<Bitcoin_Address>}
 	 */
 	public function generate_new_wallet( string $xpub_after, string $gateway_id = null ): array;
 
 	/**
-	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Crypto_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
+	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
 	 */
 	public function generate_new_addresses(): array;
 
 	/**
 	 * @used-by CLI::update_address()
 	 *
-	 * @param Crypto_Address $address
+	 * @param Bitcoin_Address $address
 	 *
-	 * @return array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
 	 */
-	public function query_api_for_address_transactions( Crypto_Address $address ): array;
+	public function query_api_for_address_transactions( Bitcoin_Address $address ): array;
 
 	/**
 	 * Determine do we have any fresh address available for this gateway.
@@ -145,9 +145,9 @@ interface API_Interface {
 	 * @used-by API::generate_new_wallet()
 	 * @used-by CLI::generate_new_addresses()
 	 *
-	 * @param ?Crypto_Address[] $addresses
+	 * @param ?Bitcoin_Address[] $addresses
 	 *
-	 * @return array<string, array{address:Crypto_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
+	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
 	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
 }
