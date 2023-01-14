@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
@@ -39,7 +40,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_name(): string {
-		return 'Bitcoin Gateway for WooCommerce';
+		return 'Bitcoin Gateway';
 	}
 
 	/**
@@ -73,15 +74,12 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	}
 
 	/**
-	 * TODO: Just randomise?
+	 * Return the URL of the base of the plugin.
 	 *
-	 * @return string
+	 * @used-by Frontend_Assets::enqueue_scripts()
+	 * @used-by Frontend_Assets::enqueue_styles()
 	 */
-	public function get_api_preference(): string {
-		return 'Blockchain.info'; // | 'Blockstream.info'
-	}
-
 	public function get_plugin_url(): string {
-		return BH_WC_BITCOIN_GATEWAY_URL;
+		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' ) ? BH_WC_BITCOIN_GATEWAY_URL : plugin_dir_url( $this->get_plugin_basename() );
 	}
 }

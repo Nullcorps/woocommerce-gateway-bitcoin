@@ -14,8 +14,6 @@ interface Settings_Interface {
 	 */
 	public function get_plugin_basename(): string;
 
-	public function get_api_preference(): string;
-
 	/**
 	 * Semver plugin version for caching of js + css.
 	 * Version compare during upgrade.
@@ -24,5 +22,9 @@ interface Settings_Interface {
 	 */
 	public function get_plugin_version(): string;
 
+	/**
+	 * The URL to the plugin folder.
+	 * E.g. `https://example.org/wp-content/plugins/bh-wc-bitcoin-gateway`.
+	 */
 	public function get_plugin_url(): string;
 }
