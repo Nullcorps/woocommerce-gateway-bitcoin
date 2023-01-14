@@ -57,7 +57,7 @@ class Frontend_Assets {
 	/**
 	 * Register the JavaScript for the frontend-facing side of the site.
 	 *
-	 * @hooked ?wp_enqueue_scripts
+	 * @hooked wp_enqueue_scripts
 	 *
 	 * @since    1.0.0
 	 */
