@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Payment_Gateway;
@@ -19,8 +20,11 @@ use WC_Payment_Gateways;
 class Payment_Gateways {
 	use LoggerAwareTrait;
 
-	public function __construct( LoggerInterface $logger ) {
+	protected API_Interface $api;
+
+	public function __construct( API_Interface $api, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
+		$this->api = $api;
 	}
 
 	/**
@@ -35,12 +39,18 @@ class Payment_Gateways {
 	 */
 	public function add_to_woocommerce( array $gateways ): array {
 
+		if ( ! $this->api->is_server_has_dependencies() ) {
+			return $gateways;
+		}
+
 		$gateways[] = Bitcoin_Gateway::class;
 
 		return $gateways;
 	}
 
 	/**
+	 * TODO: Remove. This is now implemented in the Duplicate Payment Gateways plugin.
+	 *
 	 * When linking to WooCommerce/Settings/Payments from plugins.php, filter to only instances of this gateway.
 	 *
 	 * The plugins.php code checks for multiple instances of the gateway, then uses the `class=bh-wc-bitcoin-gateway`

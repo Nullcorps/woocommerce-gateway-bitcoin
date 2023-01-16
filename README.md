@@ -63,7 +63,9 @@ All customer and admin UIs can be easily overridden using the standard WooCommer
 
 ### PHP Requirements
 
-This plugin uses [Bit-Wasp/bitcoin-php](https://github.com/Bit-Wasp/bitcoin-php) to derive Bitcoin payment addresses on your server. This requires PHP's BC Math, Mcrypt and GMP extensions. The former two are provided by polyfill libraries, [phpseclib/bcmath_compat](https://github.com/phpseclib/bcmath_compat) and [phpseclib/mcrypt_compat](https://github.com/phpseclib/mcrypt_compat). The latter may be a problem if it is not installed on your server. You can check using `php -m | grep gmp`.
+This plugin uses [Bit-Wasp/bitcoin-php](https://github.com/Bit-Wasp/bitcoin-php) to derive Bitcoin payment addresses on your server. This requires PHP's BC Math, Mcrypt and GMP extensions. The former two are provided by polyfill libraries, [phpseclib/bcmath_compat](https://github.com/phpseclib/bcmath_compat) and [phpseclib/mcrypt_compat](https://github.com/phpseclib/mcrypt_compat). If the [GMP extension](https://www.php.net/manual/en/book.gmp.php) is not installed on your server, the gateway will not be added to WooCommerce and an admin notice will be displayed explaining why.
+
+![Missing dependency admin notice](./.wordpress-org/screenshot-8.png "Admin notice when required PHP GMP library is unavailable")
 
 ### APIs
 

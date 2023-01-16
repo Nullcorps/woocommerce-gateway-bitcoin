@@ -8,6 +8,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
@@ -208,6 +209,23 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::expectActionAdded(
 			'add_meta_boxes',
 			array( new AnyInstance( Admin_Order_UI::class ), 'register_address_transactions_meta_box' )
+		);
+
+		$api      = $this->makeEmpty( API_Interface::class );
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
+	}
+
+	/**
+	 * @covers ::define_dependencies_admin_notice_hooks
+	 */
+	public function test_define_dependencies_admin_notice_hooks(): void {
+
+		\WP_Mock::expectActionAdded(
+			'admin_notices',
+			array( new AnyInstance( Dependencies_Notice::class ), 'print_dependencies_notice' )
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );

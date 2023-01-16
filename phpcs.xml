@@ -25,6 +25,12 @@
     <exclude-pattern>/wordpress/</exclude-pattern>
     <exclude-pattern>/wp-content/</exclude-pattern>
 
+    <!-- Do not require the object type in the comment, presuming it is strongly typed -->
+    <rule ref="Squiz.Commenting.VariableComment.MissingVar">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
+
+
     <!-- Enforce fewer rules on tests -->
     <rule ref="Generic.Commenting.DocComment.MissingShort">
         <exclude-pattern>*/tests/*</exclude-pattern>

@@ -4,6 +4,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use Codeception\Stub\Expected;
 use WC_Gateway_BACS;
 
 /**
@@ -17,8 +18,14 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	public function test_add_to_woocommerce(): void {
 
 		$logger = new ColorLogger();
+		$api    = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_server_has_dependencies' => Expected::once( true ),
+			)
+		);
 
-		$sut = new Payment_Gateways( $logger );
+		$sut = new Payment_Gateways( $api, $logger );
 
 		$result = $sut->add_to_woocommerce( array() );
 
@@ -31,8 +38,9 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	public function test_filter_to_only_bitcoin_gateways(): void {
 
 		$logger = new ColorLogger();
+		$api    = $this->makeEmpty( API_Interface::class );
 
-		$sut = new Payment_Gateways( $logger );
+		$sut = new Payment_Gateways( $api, $logger );
 
 		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
 
@@ -65,8 +73,9 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	public function test_filter_to_only_bitcoin_gateways_wrong_page(): void {
 
 		$logger = new ColorLogger();
+		$api    = $this->makeEmpty( API_Interface::class );
 
-		$sut = new Payment_Gateways( $logger );
+		$sut = new Payment_Gateways( $api, $logger );
 
 		$gateways = array(
 			new WC_Gateway_BACS(),
@@ -76,6 +85,5 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$result = $sut->filter_to_only_bitcoin_gateways( $gateways );
 
 		$this->assertCount( 2, $result );
-
 	}
 }

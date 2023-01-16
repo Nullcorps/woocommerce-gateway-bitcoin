@@ -150,4 +150,9 @@ interface API_Interface {
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
 	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
+
+	/**
+	 * Check does the server have the required GMP extension installed.
+	 */
+	public function is_server_has_dependencies(): bool;
 }

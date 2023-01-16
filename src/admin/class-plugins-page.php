@@ -9,6 +9,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use WC_Payment_Gateway;
@@ -28,12 +29,21 @@ class Plugins_Page {
 	protected Settings_Interface $settings;
 
 	/**
+	 * Used to conditionally print the gateway settings link only if the server dependencies are present.
+	 *
+	 * @var API_Interface
+	 */
+	protected API_Interface $api;
+
+	/**
 	 * Constructor
 	 *
+	 * @param API_Interface      $api The main plugin functions.
 	 * @param Settings_Interface $settings The plugin's settings.
 	 */
-	public function __construct( Settings_Interface $settings ) {
+	public function __construct( API_Interface $api, Settings_Interface $settings ) {
 		$this->settings = $settings;
+		$this->api      = $api;
 	}
 
 	/**
@@ -47,6 +57,10 @@ class Plugins_Page {
 	 * @see \WP_Plugins_List_Table::display_rows()
 	 */
 	public function add_settings_action_link( array $links_array ): array {
+
+		if ( ! $this->api->is_server_has_dependencies() ) {
+			return $links_array;
+		}
 
 		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			return $links_array;

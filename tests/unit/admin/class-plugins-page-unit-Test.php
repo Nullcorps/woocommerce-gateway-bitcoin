@@ -2,6 +2,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
@@ -25,8 +26,14 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_add_settings_action_link(): void {
 
+		$api      = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_server_has_dependencies' => Expected::once( true ),
+			)
+		);
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$sut      = new Plugins_Page( $settings );
+		$sut      = new Plugins_Page( $api, $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -64,10 +71,57 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	/**
 	 * @covers ::add_settings_action_link
 	 */
+	public function test_do_not_add_settings_action_link_when_missing_dependencies(): void {
+
+		$api      = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_server_has_dependencies' => Expected::once( false ),
+			)
+		);
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$sut      = new Plugins_Page( $api, $settings );
+
+		\WP_Mock::userFunction(
+			'is_plugin_active',
+			array(
+				'times' => 0,
+			)
+		);
+
+		\WP_Mock::userFunction(
+			'admin_url',
+			array(
+				'times' => 0,
+			)
+		);
+
+		\WP_Mock::userFunction(
+			'__',
+			array(
+				'times' => 0,
+			)
+		);
+
+		$result = $sut->add_settings_action_link( array() );
+
+		$this->assertCount( 0, $result );
+	}
+
+
+	/**
+	 * @covers ::add_settings_action_link
+	 */
 	public function test_add_settings_action_link_woocommerce_inactive(): void {
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$sut      = new Plugins_Page( $settings );
+		$api      = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_server_has_dependencies' => Expected::once( true ),
+			)
+		);
+		$sut      = new Plugins_Page( $api, $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -108,7 +162,8 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 				'get_plugin_basename' => Expected::once( 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' ),
 			)
 		);
-		$sut      = new Plugins_Page( $settings );
+		$api      = $this->makeEmpty( API_Interface::class );
+		$sut      = new Plugins_Page( $api, $settings );
 
 		$plugin_meta     = array(
 			0 => 'Version 1.3.3',

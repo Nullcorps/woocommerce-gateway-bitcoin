@@ -13,10 +13,10 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Wallets_List_Table;
 use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\AJAX;
@@ -44,10 +44,19 @@ use WP_CLI;
  */
 class BH_WC_Bitcoin_Gateway {
 
+	/**
+	 * A PSR logger for logging errors, events etc.
+	 */
 	protected LoggerInterface $logger;
 
+	/**
+	 * The plugin settings.
+	 */
 	protected Settings_Interface $settings;
 
+	/**
+	 * The main plugin functions.
+	 */
 	protected API_Interface $api;
 
 	/**
@@ -72,6 +81,7 @@ class BH_WC_Bitcoin_Gateway {
 		$this->set_locale();
 
 		$this->define_plugins_page_hooks();
+		$this->define_dependencies_admin_notice_hooks();
 
 		$this->define_custom_post_type_hooks();
 
@@ -114,7 +124,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_plugins_page_hooks(): void {
 
-		$plugins_page = new Plugins_Page( $this->settings );
+		$plugins_page = new Plugins_Page( $this->api, $this->settings );
 
 		$plugin_basename = $this->settings->get_plugin_basename();
 
@@ -122,6 +132,16 @@ class BH_WC_Bitcoin_Gateway {
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_orders_action_link' ) );
 
 		add_filter( 'plugin_row_meta', array( $plugins_page, 'split_author_link_into_two_links' ), 10, 2 );
+	}
+
+	/**
+	 * Add a hook to display an admin notice when the required PHP extensions are not present.
+	 */
+	protected function define_dependencies_admin_notice_hooks(): void {
+
+		$dependencies_notices = new Dependencies_Notice( $this->api, $this->settings );
+
+		add_action( 'admin_notices', array( $dependencies_notices, 'print_dependencies_notice' ) );
 	}
 
 	/**
@@ -168,7 +188,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_payment_gateway_hooks(): void {
 
-		$payment_gateways = new Payment_Gateways( $this->logger );
+		$payment_gateways = new Payment_Gateways( $this->api, $this->logger );
 
 		// Register the payment gateway with WooCommerce.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'add_to_woocommerce' ) );
