@@ -48,7 +48,7 @@ define( 'BH_WC_BITCOIN_GATEWAY_VERSION', '1.3.3' );
 
 define( 'BH_WC_BITCOIN_GATEWAY_BASENAME', plugin_basename( __FILE__ ) );
 define( 'BH_WC_BITCOIN_GATEWAY_PATH', trailingslashit( __DIR__ ) );
-define( 'BH_WC_BITCOIN_GATEWAY_URL', trailingslashit( plugins_url( __DIR__ ) ) );
+define( 'BH_WC_BITCOIN_GATEWAY_URL', trailingslashit( plugins_url( plugin_basename( __DIR__ ) ) ) );
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
