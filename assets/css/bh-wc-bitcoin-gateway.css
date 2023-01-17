@@ -3,21 +3,21 @@
  * included in this file.
  */
 
-.woobtc_bitcoin_logo {
+.bh_wc_bitcoin_gateway_logo {
     width: 200px;
 }
 
-.btc_logo_qr img {
+.bh_wc_bitcoin_gateway_logo_qr img {
     display: block;
 }
 
-.woobtc_total:after, .woobtc_address:after {
+.bh_wc_bitcoin_gateway_total:after, .bh_wc_bitcoin_gateway_address:after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f481";
 }
 
-.woobtc_total:hover, .woobtc_address:hover, .woobtc_last_checked_time:hover {
+.bh_wc_bitcoin_gateway_total:hover, .bh_wc_bitcoin_gateway_address:hover, .bh_wc_bitcoin_gateway_last_checked_time:hover {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -30,7 +30,7 @@
     margin-right:auto;
 }
 
-.woobtc_last_checked_time:after {
+.bh_wc_bitcoin_gateway_last_checked_time:after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f463";
