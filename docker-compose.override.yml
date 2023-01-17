@@ -1,0 +1,4 @@
+services:
+
+  wordpress-www:
+    image: wordpress61-gmp
