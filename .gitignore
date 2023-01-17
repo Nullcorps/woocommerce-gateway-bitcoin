@@ -62,3 +62,13 @@ docker_tag
 vendor-prefixed
 dist-archive
 .env.wordpress.secret
+
+tests/e2e/test-results.json
+# WooCommerce Core E2E tests.
+# @see https://github.com/woocommerce/woocommerce/blob/trunk/packages/js/e2e-core-tests/README.md#setting-up-core-tests
+/tests/e2e/specs/front-end/
+/tests/e2e/specs/rest-api/
+/tests/e2e/specs/wp-admin/
+/tests/e2e/config/default-woocommerce.e2e-core-tests.json
+/tests/e2e/docker/woocommerce.e2e-core-tests.sh
+tests/e2e/test-results.json
