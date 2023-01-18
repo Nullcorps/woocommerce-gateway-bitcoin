@@ -8,4 +8,4 @@ const jestConfig = useE2EJestConfig( {
 
 module.exports = jestConfig;
 
-defaultJson = 'installFiles/default.json';
+defaultJson = 'default.json';

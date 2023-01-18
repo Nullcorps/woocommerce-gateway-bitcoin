@@ -3,5 +3,4 @@
 FROM wordpress:6.1
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions gmp && \
-    php -r "echo function_exists( 'gmp_init' ) ? 'GMP installed!' : 'GMP not installed.';"
+    install-php-extensions gmp

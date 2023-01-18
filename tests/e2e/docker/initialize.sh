@@ -1,10 +1,8 @@
 #!/bin/bash
 
-
-
-# This really should be "update to version specified in plugin minimum required".
-#echo "Update WordPress to latest version"
-#wp core update
+# Without this, things fail and loop
+# Make sure to include the --user flag with an account that has permissions for this action. {"status":401}
+echo "user: admin" > wp-cli.yml
 
 echo "Install WooCommerce & Storefront"
 wp plugin install woocommerce --activate
@@ -16,7 +14,7 @@ wp user create customer customer@woocommercecoree2etestsuite.com \
 	--role=subscriber \
 	--first_name='Jane' \
 	--last_name='Smith' \
-	--path=/var/www/html
+	--path=/var/www/html || true
 
 echo "Adding basic WooCommerce settings..."
 wp option set woocommerce_store_address "Example Address Line 1"
@@ -55,4 +53,8 @@ wp plugin activate bh-wc-bitcoin-gateway
 
 echo "Success! Your E2E Test Environment is now ready."
 
+# Not all products were being displayed, making it impossible to certainly choose one by name.
 wp option update woocommerce_catalog_rows 10
+
+# Have more than just Bitcoin active so it has to be manually selected at checkout.
+wp wc payment_gateway update cheque --enabled=1
