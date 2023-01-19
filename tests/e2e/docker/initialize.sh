@@ -37,13 +37,13 @@ echo "Importing WooCommerce sample products..."
 wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
 
 echo "Installing basic-auth to interact with the API..."
-wp plugin install https://github.com/WP-API/basic-auth/archive/master.zip --activate
+wp plugin install https://github.com/WP-API/basic-auth/archive/master.zip --activate --force
 
 # install the WP Mail Logging plugin to test emails
 wp plugin install wp-mail-logging --activate
 
-wp plugin deactivate akismet
-wp plugin deactivate hello
+wp plugin delete akismet --force
+wp plugin delete hello --force
 
 # initialize pretty permalinks
 wp rewrite structure /%postname%/
