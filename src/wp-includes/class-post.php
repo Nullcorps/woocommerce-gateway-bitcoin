@@ -10,9 +10,9 @@
  * Its parent will be its xpub.
  *
  * WP_List_Table can show all addresses and their orders and balances and last activity date.
+ *
+ * @package brianhenryie/bh-wc-bitcoin-gateway
  */
-
-// get_defined_vars()
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
 
@@ -21,18 +21,35 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 
 /**
+ * Register the custom post types with WordPress.
+ *
+ * @see register_post_type()
+ * @see register_post_status()
+ *
  * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
  * @see wp-admin/edit.php?post_type=bh-bitcoin-address
  */
 class Post {
 
-	protected API_Interface $api;
+	/**
+	 * Array of plugin objects to pass to post types.
+	 *
+	 * @var array{api:API_Interface} $plugin_objects
+	 */
+	protected array $plugin_objects = array();
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface $api The main plugin functions.
+	 */
 	public function __construct( API_Interface $api ) {
-		$this->api = $api;
+		$this->plugin_objects['api'] = $api;
 	}
 
 	/**
+	 * Registers the bh-bitcoin-wallet post type and its statuses.
+	 *
 	 * @hooked init
 	 */
 	public function register_wallet_post_type(): void {
@@ -51,7 +68,7 @@ class Post {
 			'supports'       => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
 			'has_archive'    => false,
 			'show_in_menu'   => false,
-			'plugin_objects' => array( 'api' => $this->api ),
+			'plugin_objects' => $this->plugin_objects,
 		);
 
 		register_post_type( BITCOIN_WALLET::POST_TYPE, $args );
@@ -61,14 +78,17 @@ class Post {
 			array(
 				'label'                     => _x( 'Active', 'post' ),
 				'public'                    => true,
-				'show_in_admin_all_list'    => false,
+				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin wallets that are in use. */
 				'label_count'               => _n_noop( 'Active <span class="count">(%s)</span>', 'Active <span class="count">(%s)</span>' ),
 			)
 		);
 	}
 
 	/**
+	 * Registers the bh-bitcoin-address post type and its statuses.
+	 *
 	 * @hooked init
 	 */
 	public function register_address_post_type(): void {
@@ -86,7 +106,7 @@ class Post {
 			'supports'       => array( 'title', 'thumbnail', 'excerpt', 'comments' ),
 			'has_archive'    => false,
 			'show_in_menu'   => false,
-			'plugin_objects' => array( 'api' => $this->api ),
+			'plugin_objects' => $this->plugin_objects,
 		);
 		register_post_type( BITCOIN_ADDRESS::POST_TYPE, $args );
 
@@ -96,8 +116,9 @@ class Post {
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unknown', 'post' ),
 				'public'                    => true,
-				'show_in_admin_all_list'    => false,
+				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin addresses whose status is unknown. */
 				'label_count'               => _n_noop( 'Unknown <span class="count">(%s)</span>', 'Unknown <span class="count">(%s)</span>' ),
 			)
 		);
@@ -108,8 +129,9 @@ class Post {
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unused', 'post' ),
 				'public'                    => true,
-				'show_in_admin_all_list'    => false,
+				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin addresses that have yet to be used. */
 				'label_count'               => _n_noop( 'Unused <span class="count">(%s)</span>', 'Unused <span class="count">(%s)</span>' ),
 			)
 		);
@@ -120,8 +142,9 @@ class Post {
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Assigned', 'post' ),
 				'public'                    => true,
-				'show_in_admin_all_list'    => false,
+				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin addresses that have been assigned. */
 				'label_count'               => _n_noop( 'Assigned <span class="count">(%s)</span>', 'Assigned <span class="count">(%s)</span>' ),
 			)
 		);
@@ -132,8 +155,9 @@ class Post {
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Used', 'post' ),
 				'public'                    => true,
-				'show_in_admin_all_list'    => false,
+				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin addresses that have been used. */
 				'label_count'               => _n_noop( 'Used <span class="count">(%s)</span>', 'Used <span class="count">(%s)</span>' ),
 			)
 		);

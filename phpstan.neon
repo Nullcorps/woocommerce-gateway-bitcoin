@@ -29,4 +29,4 @@ parameters:
         # Parameter #1 $message of method a expects b, c given, when bad PhpDoc used.
         # - '/Parameter .* of .* expects .* given\./'
         # Setting an empty array with type associative array in the PhpDoc prints this.
-        - '/does not accept default value of type array\(\)/'
+        - '/does not accept default value of type array.{3}$/'
