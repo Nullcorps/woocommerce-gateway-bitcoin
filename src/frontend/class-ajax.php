@@ -1,5 +1,9 @@
 <?php
 /**
+ * AJAX endpoint for fetching order information.
+ *
+ * Used on Thank You and my-account screens to query for transaction updates.
+ *
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
@@ -9,11 +13,25 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Action `bh_wc_bitcoin_gateway_refresh_order_details` hooked to `wp_ajax` and `wp_ajax_nopriv`.
+ */
 class AJAX {
 	use LoggerAwareTrait;
 
+	/**
+	 * Main class to get order information.
+	 *
+	 * @uses API_Interface::get_formatted_order_details()
+	 */
 	protected API_Interface $api;
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface   $api The main plugin functions.
+	 * @param LoggerInterface $logger A PSR logger.
+	 */
 	public function __construct( API_Interface $api, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
 		$this->api = $api;

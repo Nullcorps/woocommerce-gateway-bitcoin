@@ -169,6 +169,7 @@ class BH_WC_Bitcoin_Gateway {
 		$ajax = new AJAX( $this->api, $this->logger );
 
 		add_action( 'wp_ajax_bh_wc_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
+		add_action( 'wp_ajax_nopriv_bh_wc_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 	}
 
 	/**
