@@ -49,6 +49,8 @@
 		// Let's fade out the numbers to indicate they are maybe about to be updated.
 		$('.bh_wc_bitcoin_gateway_updatable').animate({ opacity: 0.4 });
 
+		$('.bh-wc-bitcoin-gateway-details').addClass('blockUI');
+
 		var data = {
 			'action': 'bh_wc_bitcoin_gateway_refresh_order_details',
 			'_ajax_nonce': nonce,
@@ -82,6 +84,7 @@
 
 			$('.bh_wc_bitcoin_gateway_last_checked_time').text( new_bh_wc_bitcoin_gateway_order_details.last_checked_time_formatted );
 
+			$('.bh-wc-bitcoin-gateway-details').removeClass('blockUI');
 			bh_wc_bitcoin_gateway_order_details = response.data;
 		});
 
