@@ -20,6 +20,8 @@ use DateTimeInterface;
 use DateTimeZone;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use PHPUnit\Util\Exception;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Queries for v2 SoChain API.
@@ -27,6 +29,11 @@ use PHPUnit\Util\Exception;
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
  */
 class SoChain_API implements Blockchain_API_Interface {
+	use LoggerAwareTrait;
+
+	public function __construct( LoggerInterface $logger ) {
+		$this->logger = $logger;
+	}
 
 	/**
 	 * The SoChain API base.
@@ -65,7 +72,8 @@ class SoChain_API implements Blockchain_API_Interface {
 			throw new Exception( $request_response->get_error_message() );
 		}
 		if ( 200 !== $request_response['response']['code'] ) {
-			throw new \Exception( 'Server responded with error when querying address balance for ' . $btc_address );
+			$this->logger->error( 'SoChain returned code ' . $request_response['response']['code'], $request_response );
+			throw new \Exception( 'SoChain responded with error when querying address balance for ' . $btc_address );
 		}
 
 		/**
@@ -110,8 +118,9 @@ class SoChain_API implements Blockchain_API_Interface {
 
 		// Bad request or server.
 		if ( 200 !== $request_response['response']['code'] ) {
+			$this->logger->error( 'SoChain returned code ' . $request_response['response']['code'], $request_response );
 			// 404 probably means a bad address.
-			throw new \Exception( 'Server returned an error in get_transactions_received for ' . $btc_address );
+			throw new \Exception( 'SoChain returned an error in get_transactions_received for ' . $btc_address );
 		}
 
 		$address_transactions_result = json_decode( $request_response['body'], true, 512, JSON_THROW_ON_ERROR );

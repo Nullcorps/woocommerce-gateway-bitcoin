@@ -61,7 +61,7 @@ class API implements API_Interface {
 		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
 		$this->bitcoin_address_factory = $bitcoin_address_factory;
 
-		$this->bitcoin_api = new SoChain_API();
+		$this->bitcoin_api = new SoChain_API( $logger );
 
 		$this->generate_address_api = new BitWasp_API( $logger );
 

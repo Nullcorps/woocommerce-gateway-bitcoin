@@ -2,6 +2,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain;
 
+use BrianHenryIE\ColorLogger\ColorLogger;
+
 /**
  * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\SoChain_API
  */
@@ -15,7 +17,8 @@ class SoChain_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
 
-		$sut = new SoChain_API();
+		$logger = new ColorLogger();
+		$sut    = new SoChain_API( $logger );
 
 		$request_response = array(
 			'body'     => wp_json_encode(
@@ -54,7 +57,8 @@ class SoChain_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$address = 'not-a-valid-address';
 
-		$sut = new SoChain_API();
+		$logger = new ColorLogger();
+		$sut    = new SoChain_API( $logger );
 
 		$request_response = array(
 			'body'     => wp_json_encode(
@@ -98,7 +102,8 @@ class SoChain_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
 
-		$sut = new SoChain_API();
+		$logger = new ColorLogger();
+		$sut    = new SoChain_API( $logger );
 
 		global $project_root_dir;
 		$data             = include $project_root_dir . '/tests/_data/sochain-test-get-transactions-received.php';
