@@ -42,8 +42,8 @@ wp plugin install https://github.com/WP-API/basic-auth/archive/master.zip --acti
 # install the WP Mail Logging plugin to test emails
 wp plugin install wp-mail-logging --activate
 
-wp plugin delete akismet --force
-wp plugin delete hello --force
+wp plugin delete akismet
+wp plugin delete hello
 
 # initialize pretty permalinks
 wp rewrite structure /%postname%/
