@@ -100,7 +100,7 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 ### <= v2.0
 
-* Fix hard-coded log level (respect settings)
+* ~~Fix hard-coded log level (respect settings)~~
 * WooCommerce Blocks checkout
 * Unpaid order expiry
 * 100% WPCS and PhpStan

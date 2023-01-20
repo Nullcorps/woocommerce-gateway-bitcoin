@@ -7,7 +7,10 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
@@ -22,14 +25,16 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	/**
 	 * The minimum severity of logs to record.
 	 *
-	 * TODO: Pull from settings.
-	 *
 	 * @see LogLevel
 	 *
 	 * @return string
 	 */
 	public function get_log_level(): string {
-		return LogLevel::DEBUG;
+		$gateway_id     = 'bitcoin_gateway';
+		$saved_settings = get_option( 'woocommerce_' . $gateway_id . '_settings', array() );
+		$log_levels     = array( LogLevel::DEBUG, LogLevel::INFO, LogLevel::ERROR, LogLevel::NOTICE, LogLevel::WARNING, 'none' );
+		$level          = $saved_settings['log_level'] ?? 'info';
+		return in_array( $level, $log_levels, true ) ? $level : 'info';
 	}
 
 	/**
@@ -53,10 +58,12 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	}
 
 	/**
-	 * The plugin basename is used by the logger to add the plugins page action link.
-	 * (and maybe for PHP errors)
+	 * Used to add links on plugins.php, and to add "Deactivate plugin" link when GMP PHP extension is missing.
 	 *
-	 * @see Logger
+	 * @used-by Plugins_Page
+	 * @used-by Dependencies_Notice::print_dependencies_notice()
+	 *
+	 * @see Logger_Settings_Interface::get_plugin_basename()
 	 *
 	 * @return string
 	 */
@@ -75,7 +82,6 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 
 	/**
 	 * Return the URL of the base of the plugin.
-	 * TODO: check plugin_dir_url is the correct function.
 	 *
 	 * @used-by Frontend_Assets::enqueue_scripts()
 	 * @used-by Frontend_Assets::enqueue_styles()
@@ -84,6 +90,13 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' ) ? BH_WC_BITCOIN_GATEWAY_URL : plugins_url( $this->get_plugin_basename() );
 	}
 
+	/**
+	 * Get the master public key (xpub...) for the specified gateway instance.
+	 *
+	 * @param string $gateway_id The id of the Bitcoin gateway.
+	 *
+	 * @return string
+	 */
 	public function get_xpub( string $gateway_id = 'bitcoin_gateway' ): string {
 		$saved_settings = get_option( 'woocommerce_' . $gateway_id . '_settings', array() );
 		return $saved_settings['xpub'] ?? '';
