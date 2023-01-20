@@ -85,9 +85,12 @@
 			$('.bh_wc_bitcoin_gateway_last_checked_time').text( new_bh_wc_bitcoin_gateway_order_details.last_checked_time_formatted );
 
 			$('.bh-wc-bitcoin-gateway-details').removeClass('blockUI');
-			bh_wc_bitcoin_gateway_order_details = response.data;
-		});
 
+			for (var key in Object.keys(response.data)) {
+				bh_wc_bitcoin_gateway_order_details[key] = response.data[key];
+			}
+
+		});
 
 	}
 
