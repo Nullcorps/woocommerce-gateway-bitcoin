@@ -1,4 +1,17 @@
+# Overrides:
+# @see node_modules/@woocommerce/e2e-environment/docker-compose.yaml
+
+# Requires patch: @see https://github.com/woocommerce/woocommerce/pull/36478
+# node_modules/@woocommerce/e2e-environment/bin/docker-compose.js:93
+# if (fs.existsSync('../../../docker-compose.override.yml')) {
+#    console.log( 'Using `docker-compose.override.yml`.' );
+#    dockerArgs.unshift( '-f',  path.resolve('../../../docker-compose.override.yml' ) );
+# }
+
 services:
 
   wordpress-www:
     image: wordpress61-gmp
+
+    volumes:
+      - "../../../${WC_E2E_FOLDER}/wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins/"

@@ -78,7 +78,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' );
 		$this->has_fields         = false;
 		$this->method_title       = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
-		$this->method_description = __( 'Allows Bitcoin payments. Orders are marked as "on-hold" when received, and marked paid once the specified number of confirmations are met', 'bh-wc-bitcoin-gateway' );
+		$this->method_description = __( 'Accept Bitcoin payments. Customers are shown payment instructions and a QR code. Orders are marked paid once payment is confirmed on the blockchain.', 'bh-wc-bitcoin-gateway' );
 
 		// Load the settings.
 		$this->init_form_fields();
@@ -119,12 +119,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 			if ( ! is_null( $this->api ) ) {
 				$this->api->generate_new_wallet( $xpub_after, $this->id );
-			}
-
-			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
-			if ( ! as_has_scheduled_action( $hook, array( $xpub_after, $this->id ) ) ) {
-				as_schedule_single_action( time(), $hook, array( $xpub_after, $this->id ) );
-				$this->logger->debug( 'New generate new addresses job scheduled for new xpub.' );
+				$this->api->generate_new_addresses_for_wallet( $xpub_after, 2 );
 			}
 
 			// TODO: maybe mark the previous xpub's wallet as "inactive". (although it could be in use in another instance of the gateway).

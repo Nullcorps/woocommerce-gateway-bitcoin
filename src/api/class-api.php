@@ -611,7 +611,7 @@ class API implements API_Interface {
 
 		$generated_addresses = array();
 
-		while ( count( $wallet->get_fresh_addresses() ) < 20 ) {
+		while ( count( $wallet->get_fresh_addresses() ) < 50 ) {
 
 			$generate_addresses_result = $this->generate_new_addresses_for_wallet( $xpub );
 			$new_generated_addresses   = $generate_addresses_result['generated_addresses'];
@@ -747,8 +747,17 @@ class API implements API_Interface {
 
 		if ( $generate_count > 0 ) {
 			// Check the new addresses for transactions etc.
-			// TODO: Refactor for testing. Schedule?
 			$this->check_new_addresses_for_transactions();
+
+			// Schedule more generation after it determines how many unused addresses are available.
+			if ( count( $wallet->get_fresh_addresses() ) < 50 ) {
+
+				$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+				if ( ! as_has_scheduled_action( $hook ) ) {
+					as_schedule_single_action( time(), $hook );
+					$this->logger->debug( 'New generate new addresses background job scheduled.' );
+				}
+			}
 		}
 
 		return $result;
@@ -774,7 +783,7 @@ class API implements API_Interface {
 				array(
 					'post_type'      => Bitcoin_Address::POST_TYPE,
 					'post_status'    => 'unknown',
-					'posts_per_page' => 200,
+					'posts_per_page' => 100,
 					'orderby'        => 'ID',
 					'order'          => 'ASC',
 				)
