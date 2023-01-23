@@ -167,12 +167,6 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::expectFilterAdded(
-			'woocommerce_payment_gateways',
-			array( new AnyInstance( Payment_Gateways::class ), 'filter_to_only_bitcoin_gateways' ),
-			100
-		);
-
-		\WP_Mock::expectFilterAdded(
 			'woocommerce_available_payment_gateways',
 			array( new AnyInstance( Payment_Gateways::class ), 'add_logger_to_gateways' ),
 		);
