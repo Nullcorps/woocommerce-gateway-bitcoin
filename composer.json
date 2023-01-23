@@ -174,7 +174,7 @@
                     "vendor/php-stubs/woocommerce-stubs",
                     "vendor/wordpress/wordpress/src",
                     "vendor/wordpress/wordpress/build",
-                    "wp-content/plugins/woocommerce-gateway-bitcoin",
+                    "wp-content/plugins/bh-wc-bitcoin-gateway",
                     "wordpress/wp-content"
                 ],
                 "composer-symlinks": false
