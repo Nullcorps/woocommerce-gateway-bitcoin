@@ -144,6 +144,9 @@
         "patches": {
             "jaschilz/php-coverage-badger": {
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+            },
+            "wp-cli/dist-archive-command": {
+                "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
             }
         },
         "strauss": {
