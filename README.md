@@ -4,7 +4,7 @@
 
 Self-custody Bitcoin payment gateway for WooCommerce. Bitcoin is paid directly into your wallet. Transactions are verified using public APIs. No private keys are stored on the server. No account is needed with any third party.
 
-_The WooCommerce Bitcoin  gateway most philosophically aligned with WordPress and Bitcoin._
+_The WooCommerce Bitcoin gateway most philosophically aligned with WordPress and Bitcoin._
 
 ## Installation and Use
 
@@ -22,7 +22,7 @@ This plugin requires PHP's [GMP extension](https://www.php.net/manual/en/book.gm
 
 ![WooCommerce Payment Gateways list](./.wordpress-org/screenshot-1.png "Once the plugin is active, the gateway will be visible in the WooCommerce Payment Gateways list")
 
-4. From your Bitcoin wallet, copy your "Master Public Key". It should start with `xpub`, `zpub` or `ypub` and then a long alphanumeric string.
+4. From your Bitcoin wallet, copy your "Master Public Key". It should start with `xpub`, `ypub` or `zpub` and then a long alphanumeric string.
 
 <details>
 <summary>E.g. Electrum Bitcoin Wallet</summary>
@@ -49,6 +49,7 @@ For [Electrum Bitcoin Wallet](https://electrum.org/), it's in the menu under `Wa
 * "Payment Address" and "Payment Total" are both links which copy the value to the clipboard
 * "Last Checked" is a link which queries the blockchain for new transactions
 * A background check runs every five minutes as long as the order remains on-hold
+* The same payment instructions are added to the customer emails
 * The customer can view the same payment instructions under `my-account/orders/123`
 
 8. In the WooCommerce admin order UI, the Bitcoin details are visible in a metabox:
