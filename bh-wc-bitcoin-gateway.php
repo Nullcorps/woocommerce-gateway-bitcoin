@@ -13,6 +13,7 @@
  * Plugin URI:        http://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/
  * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
  * Version:           2.0.0
+ * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Nullcorps, BrianHenryIE
  * Author URI:        https://github.com/Nullcorps/
@@ -20,6 +21,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       bh-wc-bitcoin-gateway
  * Domain Path:       /languages
+ * WC tested up to:   7.3.0
  */
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway;
