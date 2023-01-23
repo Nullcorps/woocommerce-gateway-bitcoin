@@ -38,7 +38,14 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
 
-		$post_type_name   = $this->screen->post_type;
+		$post_type_name = $this->screen->post_type;
+
+		/**
+		 * Since this object is instantiated because it was defined when registering the post type, it's
+		 * extremely unlikely the post type will not exist.
+		 *
+		 * @var \WP_Post_Type $post_type_object
+		 */
 		$post_type_object = get_post_type_object( $post_type_name );
 		$this->api        = $post_type_object->plugin_objects['api'];
 

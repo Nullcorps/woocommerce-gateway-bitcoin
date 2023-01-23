@@ -48,7 +48,6 @@ class Frontend_Assets {
 		}
 
 		$version = $this->settings->get_plugin_version();
-
 		wp_enqueue_style( 'bh-wc-bitcoin-gateway', $this->settings->get_plugin_url() . 'assets/css/bh-wc-bitcoin-gateway.css', array(), $version, 'all' );
 
 		wp_enqueue_style( 'dashicons' );

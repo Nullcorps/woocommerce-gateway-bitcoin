@@ -44,7 +44,7 @@
 
 
 	<tr>
-		<td>Address Details:</td>
+		<td>Wallet Address:</td>
 		<td><?php echo $parent_wallet_xpub_html . ' • 0/' . esc_html( $btc_address_derivation_path_sequence_number ); ?></a></td>
 	</tr>
 
