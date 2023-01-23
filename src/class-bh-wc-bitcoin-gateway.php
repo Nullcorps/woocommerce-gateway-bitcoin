@@ -189,10 +189,13 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_payment_gateway_hooks(): void {
 
-		$payment_gateways = new Payment_Gateways( $this->api, $this->logger );
+		$payment_gateways = new Payment_Gateways( $this->api, $this->settings, $this->logger );
 
 		// Register the payment gateway with WooCommerce.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'add_to_woocommerce' ) );
+
+		// Register the payment gateway with WooCommerce Blocks checkout.
+		add_action( 'woocommerce_blocks_payment_method_type_registration', array( $payment_gateways, 'register_woocommerce_block_checkout_support' ) );
 
 		// When clicking the link from plugins.php filter to only Bitcoin gateways.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'filter_to_only_bitcoin_gateways' ), 100 );

@@ -21,36 +21,74 @@
             "phpstan/extension-installer": true
         }
     },
-    "repositories": [
-        {
+    "repositories": {
+        "wordpress/wordpress": {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
         },
-        {
+        "brianhenryie/composer-phpstorm": {
             "url": "https://github.com/BrianHenryIE/composer-phpstorm",
             "type": "git"
         },
-        {
+        "wpackagist": {
             "type":"composer",
             "url":"https://wpackagist.org"
         },
-        {
+        "brianhenryie/bh-wp-logger": {
             "url": "https://github.com/BrianHenryIE/bh-wp-logger",
             "type": "git"
         },
-        {
+        "brianhenryie/bh-wp-private-uploads":{
             "url": "https://github.com/BrianHenryIE/bh-wp-private-uploads",
             "type": "git"
         },
-        {
+        "wptrt/admin-notices": {
             "url": "https://github.com/BrianHenryIE/admin-notices",
             "type": "git"
         },
-        {
+        "bitwasp/bitcoin-php":{
             "url": "https://github.com/BrianHenryIE/bitcoin-php",
             "type": "git"
+        },
+        "woocommerce/woocommerce":{
+            "type": "package",
+            "package": {
+                "name": "woocommerce/woocommerce",
+                "version": "dev-trunk",
+                "source": {
+                    "url": "https://github.com/woocommerce/woocommerce/",
+                    "type": "git",
+                    "reference": "trunk"
+                },
+                "installation-source": "dist"
+            }
+        },
+        "woocommerce/woocommerce-blocks":{
+            "type": "package",
+            "package": {
+                "name": "woocommerce/woocommerce-blocks",
+                "version": "dev-trunk",
+                "source": {
+                    "url": "https://github.com/woocommerce/woocommerce-blocks/",
+                    "type": "git",
+                    "reference": "trunk"
+                },
+                "installation-source": "source"
+            }
+        },
+        "woocommerce/woocommerce-gateway-dummy":{
+            "type": "package",
+            "package": {
+                "name": "woocommerce/woocommerce-gateway-dummy",
+                "version": "1.0.4",
+                "dist": {
+                    "url": "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip",
+                    "type": "zip"
+                },
+                "installation-source": "dist"
+            }
         }
-    ],
+    },
     "require": {
         "php": ">=7.4",
         "ext-bcmath": "*",
@@ -88,15 +126,19 @@
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
         "voku/portable-ascii": "dev-master",
+        "woocommerce/woocommerce": "dev-trunk",
+        "woocommerce/woocommerce-blocks": "dev-trunk",
+        "woocommerce/woocommerce-gateway-dummy": "^1.0",
+        "woocommerce/woocommerce-sniffs": "*",
         "wordpress/wordpress": "*",
         "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*  ",
+        "wpackagist-plugin/woo-gutenberg-products-block": "*",
         "wpackagist-plugin/woocommerce": "*",
+        "wpackagist-plugin/wp-mail-logging": "^1.10",
         "wpackagist-theme/storefront": "*",
-        "wpackagist-theme/twentytwenty": "*",
-        "woocommerce/woocommerce-sniffs": "*",
-        "wpackagist-plugin/wp-mail-logging": "^1.10"
+        "wpackagist-theme/twentytwenty": "*"
     },
     "extra": {
         "patches": {
@@ -120,7 +162,8 @@
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
-            ".": "wp-content/plugins/bh-wc-bitcoin-gateway"
+            ".": "wp-content/plugins/bh-wc-bitcoin-gateway",
+            "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
         },
         "phpstorm": {
             "exclude_folders": {

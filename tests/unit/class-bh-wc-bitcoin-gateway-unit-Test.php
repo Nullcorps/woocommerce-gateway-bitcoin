@@ -161,6 +161,11 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Payment_Gateways::class ), 'add_to_woocommerce' )
 		);
 
+		\WP_Mock::expectActionAdded(
+			'woocommerce_blocks_payment_method_type_registration',
+			array( new AnyInstance( Payment_Gateways::class ), 'register_woocommerce_block_checkout_support' )
+		);
+
 		\WP_Mock::expectFilterAdded(
 			'woocommerce_payment_gateways',
 			array( new AnyInstance( Payment_Gateways::class ), 'filter_to_only_bitcoin_gateways' ),

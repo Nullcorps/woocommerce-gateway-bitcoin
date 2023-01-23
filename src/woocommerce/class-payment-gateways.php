@@ -7,7 +7,9 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Payment_Gateway;
@@ -22,9 +24,12 @@ class Payment_Gateways {
 
 	protected API_Interface $api;
 
-	public function __construct( API_Interface $api, LoggerInterface $logger ) {
+	protected Settings_Interface $settings;
+
+	public function __construct( API_Interface $api, Settings_Interface $settings, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
-		$this->api = $api;
+		$this->settings = $settings;
+		$this->api      = $api;
 	}
 
 	/**
@@ -46,6 +51,22 @@ class Payment_Gateways {
 		$gateways[] = Bitcoin_Gateway::class;
 
 		return $gateways;
+	}
+
+	/**
+	 * Registers the gateway with WooCommerce Blocks checkout integration.
+	 *
+	 * @hooked woocommerce_blocks_payment_method_type_registration
+	 *
+	 * @param PaymentMethodRegistry $payment_method_registry WooCommerce class which handles blocks checkout gateways.
+	 */
+	public function register_woocommerce_block_checkout_support( PaymentMethodRegistry $payment_method_registry ): void {
+
+		// It seems the `woocommerce_payment_gateways` filter has not yet run, so the gateway hasn't been instantiated yet.
+		$gateway = new Bitcoin_Gateway();
+
+		$support = new Bitcoin_Gateway_Blocks_Checkout_Support( $gateway, $this->settings );
+		$payment_method_registry->register( $support );
 	}
 
 	/**
@@ -94,9 +115,9 @@ class Payment_Gateways {
 	 *
 	 * @hooked woocommerce_available_payment_gateways
 	 *
-	 * @param array<string, WC_Payment_Gateway> $available_gateways The gateways to be displayed on the checkout.
+	 * @param WC_Payment_Gateway[] $available_gateways The gateways to be displayed on the checkout.
 	 *
-	 * @return array<string, WC_Payment_Gateway>
+	 * @return WC_Payment_Gateway[]
 	 */
 	public function add_logger_to_gateways( array $available_gateways ): array {
 

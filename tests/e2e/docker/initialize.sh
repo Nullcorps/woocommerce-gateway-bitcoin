@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "$ printenv"
+printenv
+
 # Without this, things fail and loop
 # Make sure to include the --user flag with an account that has permissions for this action. {"status":401}
 echo "user: admin" > wp-cli.yml
@@ -51,10 +54,16 @@ wp rewrite structure /%postname%/
 # echo "Activate <your-extension>"
 wp plugin activate bh-wc-bitcoin-gateway
 
-echo "Success! Your E2E Test Environment is now ready."
-
 # Not all products were being displayed, making it impossible to certainly choose one by name.
 wp option update woocommerce_catalog_rows 10
 
 # Have more than just Bitcoin active so it has to be manually selected at checkout.
 wp wc payment_gateway update cheque --enabled=1
+
+wp plugin install woo-gutenberg-products-block --activate --force
+wp plugin install https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip --activate --force
+
+# --porcelain
+wp post create --post_type=page --post_title="Blocks Checkout" --post_status=publish ./wp-content/plugins/bh-wc-bitcoin-gateway/tests/e2e/docker/blocks-checkout-post-content.txt
+
+echo "Success! Your E2E Test Environment is now ready."

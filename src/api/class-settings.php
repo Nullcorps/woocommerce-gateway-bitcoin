@@ -87,7 +87,9 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @used-by Frontend_Assets::enqueue_styles()
 	 */
 	public function get_plugin_url(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' ) ? BH_WC_BITCOIN_GATEWAY_URL : plugins_url( $this->get_plugin_basename() );
+		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' )
+			? BH_WC_BITCOIN_GATEWAY_URL
+			: plugins_url( $this->get_plugin_basename() );
 	}
 
 	/**

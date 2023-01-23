@@ -25,6 +25,8 @@ interface Settings_Interface {
 	/**
 	 * The URL to the plugin folder.
 	 * E.g. `https://example.org/wp-content/plugins/bh-wc-bitcoin-gateway`.
+	 *
+	 * Has trailing slash.
 	 */
 	public function get_plugin_url(): string;
 
