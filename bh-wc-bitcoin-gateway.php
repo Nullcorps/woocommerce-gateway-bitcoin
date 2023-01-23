@@ -1,6 +1,6 @@
 <?php
 /**
- * This Bitcoin gateway relies on the BitWasp bitwasp/bitcoin PHP library for the maths/heavy lifting.
+ * This Bitcoin gateway relies on the BitWasp bitwasp/bitcoin-php PHP library for the maths/heavy lifting.
  *
  * @see https://github.com/Bit-Wasp/bitcoin-php
  *
@@ -33,10 +33,11 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Activator;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Deactivator;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger;
+use Exception;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	throw new \Exception( 'WPINC not defined' );
+	throw new Exception( 'WPINC not defined' );
 }
 
 require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
@@ -74,7 +75,7 @@ function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
 
 	$api = new API( $settings, $logger, $crypto_wallet_factory, $crypto_address_factory );
 
-	$plugin = new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
+	new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 
 	return $api;
 }
