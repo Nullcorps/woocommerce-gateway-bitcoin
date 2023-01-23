@@ -56,17 +56,19 @@ class Payment_Gateways {
 	/**
 	 * Registers the gateway with WooCommerce Blocks checkout integration.
 	 *
+	 * It seems the `woocommerce_payment_gateways` filter is not run before this.
+	 *
 	 * @hooked woocommerce_blocks_payment_method_type_registration
 	 *
 	 * @param PaymentMethodRegistry $payment_method_registry WooCommerce class which handles blocks checkout gateways.
 	 */
 	public function register_woocommerce_block_checkout_support( PaymentMethodRegistry $payment_method_registry ): void {
 
-		// It seems the `woocommerce_payment_gateways` filter has not yet run, so the gateway hasn't been instantiated yet.
-		$gateway = new Bitcoin_Gateway();
+		foreach ( $this->api->get_bitcoin_gateways() as $gateway ) {
 
-		$support = new Bitcoin_Gateway_Blocks_Checkout_Support( $gateway, $this->settings );
-		$payment_method_registry->register( $support );
+			$support = new Bitcoin_Gateway_Blocks_Checkout_Support( $gateway, $this->settings );
+			$payment_method_registry->register( $support );
+		}
 	}
 
 	/**
