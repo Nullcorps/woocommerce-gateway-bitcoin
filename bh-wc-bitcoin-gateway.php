@@ -12,7 +12,7 @@
  * Plugin Name:       Bitcoin Gateway
  * Plugin URI:        http://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/
  * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
- * Version:           1.3.3
+ * Version:           2.0.0
  * Requires PHP:      7.4
  * Author:            Nullcorps, BrianHenryIE
  * Author URI:        https://github.com/Nullcorps/
@@ -44,7 +44,7 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'BH_WC_BITCOIN_GATEWAY_VERSION', '1.3.3' );
+define( 'BH_WC_BITCOIN_GATEWAY_VERSION', '2.0.0' );
 
 define( 'BH_WC_BITCOIN_GATEWAY_BASENAME', plugin_basename( __FILE__ ) );
 define( 'BH_WC_BITCOIN_GATEWAY_PATH', trailingslashit( __DIR__ ) );

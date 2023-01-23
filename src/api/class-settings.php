@@ -77,7 +77,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_VERSION' ) ? BH_WC_BITCOIN_GATEWAY_VERSION : '1.3.3';
+		return defined( 'BH_WC_BITCOIN_GATEWAY_VERSION' ) ? BH_WC_BITCOIN_GATEWAY_VERSION : '2.0.0';
 	}
 
 	/**
