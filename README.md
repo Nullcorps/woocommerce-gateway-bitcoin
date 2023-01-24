@@ -8,21 +8,21 @@ _The WooCommerce Bitcoin gateway most philosophically aligned with WordPress and
 
 ## Installation and Use
 
-1. Download and install the latest version from [GitHub Releases](https://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/releases/). 
+1. Download, install and activate the latest version from [GitHub Releases](https://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/releases/). 
 
 This plugin requires PHP's [GMP extension](https://www.php.net/manual/en/book.gmp.php), if it is not installed on your server, the gateway will not be added to WooCommerce and an admin notice will be displayed explaining why.
 
 ![Missing dependency admin notice](./.wordpress-org/screenshot-8.png "Admin notice when required PHP GMP library is unavailable")
 
-2. Activate the plugin.
+If all goes well, you will see a `Settings` link beside the plugin name: 
 
 ![Settings link on plugins.php](./.wordpress-org/screenshot-9.png "Settings link on plugins.php")
 
-3. In the admin dashboard under WooCommerce/Settings/Payments you should now see the payment option listed:
+And in the admin dashboard under WooCommerce/Settings/Payments you will be able to see the payment option listed:
 
 ![WooCommerce Payment Gateways list](./.wordpress-org/screenshot-1.png "Once the plugin is active, the gateway will be visible in the WooCommerce Payment Gateways list")
 
-4. From your Bitcoin wallet, copy your "Master Public Key". It should start with `xpub`, `ypub` or `zpub` and then a long alphanumeric string.
+2. From your Bitcoin wallet, copy your "Master Public Key". It should start with `xpub`, `ypub` or `zpub` and then a long alphanumeric string.
 
 <details>
 <summary>E.g. Electrum Bitcoin Wallet</summary>
@@ -33,15 +33,21 @@ For [Electrum Bitcoin Wallet](https://electrum.org/), it's in the menu under `Wa
 
 </details>
 
-5. Paste that into the payment gateway settings screen and save:
+Paste that into the payment gateway settings screen and save:
 
 ![WooCommerce Bitcoin Gateway settings screen](./.wordpress-org/screenshot-3.png "Paste your xpub into the WooCommerce settings")
 
-6. You will now be able to add an item to your cart, head to the checkout and see the Bitcoin payment option.
+When a master public key is added, the payment addresses are derived.
 
-![Gateway visible on checkout](./.wordpress-org/screenshot-4.png "The gateway will be available at customer checkout")
+3. You will now be able to add an item to your cart, head to the checkout and see the Bitcoin payment option:
 
-7. When an order is placed, a derived payment address is tied to this order and will not be reused. After checkout, this is what the customer will see:
+![Gateway visible on standard checkout](./.wordpress-org/screenshot-4.png "The gateway will be available at customer checkout")
+
+The Bitcoin gateway also works with WooCommerce Blocks checkout:
+
+![Gateway visible on blocks checkout](./.wordpress-org/screenshot-10.png "The gateway works with WooCommerce Blocks checkout")
+
+4. When an order is placed, a derived payment address is tied to this order and will not be reused. After checkout, this is what the customer will see:
 
 ![WooCommerce order thank you page](./.wordpress-org/screenshot-5.png "The thank you page shows the payment instructions")
 
@@ -108,6 +114,7 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 * ~~Fix hard-coded log level (respect settings)~~
 * ~~WooCommerce Blocks checkout~~
 * Unpaid order expiry
+* Verify instructions are added to emails
 * 100% WPCS and PhpStan. JS + CSS linting.
 * Update screenshots + use mobile view for customer screenshots
 * Webpack build in GitHub Actions
