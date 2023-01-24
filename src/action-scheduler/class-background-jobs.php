@@ -9,6 +9,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler;
 
+use ActionScheduler;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
@@ -54,7 +55,23 @@ class Background_Jobs {
 	 */
 	public function check_unpaid_order( int $order_id ): void {
 
-		$this->logger->debug( 'Starting check_unpaid_order() background job for `shop_order:' . $order_id . '`' );
+		// How to find the action_id of the action currently being run?
+		$query = array(
+			'hook' => self::CHECK_UNPAID_ORDER_HOOK,
+			'args' => array( 'order_id' => $order_id ),
+		);
+
+		$action_id = ActionScheduler::store()->query_action( $query );
+		$claim_id  = ActionScheduler::store()->get_claim_id( $action_id );
+
+		$this->logger->debug(
+			"Running check_unpaid_order background task for action id: {$action_id}, claim id: {$claim_id}",
+			array(
+				'task'      => $query,
+				'action_id' => $action_id,
+				'claim_id'  => $claim_id,
+			)
+		);
 
 		$order = wc_get_order( $order_id );
 
@@ -71,43 +88,6 @@ class Background_Jobs {
 			// TODO: Log better.
 			$this->logger->error( 'Error getting details for `shop_order:' . $order_id . '`', array( 'order_id' => $order_id ) );
 		}
-
-		/**
-		 * We've already verified in this function that $order_id is for a valid WC_Order object.
-		 *
-		 * @var WC_Order $order
-		 */
-		$order = wc_get_order( $order_id );
-
-		if ( ! in_array( $order->get_status(), array( 'pending', 'on-hold' ), true ) ) {
-			$this->logger->debug( "`shop_order:{$order_id}` status is {$order->get_status()} – NOT scheduling another check_unpaid_order() background job." );
-			return;
-		}
-
-		// While there are still unpaid Bitcoin orders, keep checking for payments.
-		$hook = self::CHECK_UNPAID_ORDER_HOOK;
-		$args = array( 'order_id' => $order_id );
-		if ( ! as_has_scheduled_action( $hook, $args ) ) {
-			$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
-			$this->logger->debug(
-				"{$order_id} still unpaid, scheduling new check_unpaid_order() background job.",
-				array(
-					'timestamp' => $timestamp,
-					'hook'      => $hook,
-					'args'      => $args,
-				)
-			);
-			as_schedule_single_action( $timestamp, $hook, $args );
-		} else {
-			$this->logger->debug(
-				"{$order_id} still unpaid, but check_unpaid_order() background job already scheduled.",
-				array(
-					'hook' => $hook,
-					'args' => $args,
-				)
-			);
-		}
-
 	}
 
 

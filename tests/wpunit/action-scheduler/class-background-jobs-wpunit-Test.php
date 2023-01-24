@@ -23,7 +23,8 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			array(
 				'get_order_details' => Expected::once(
 					function( $order ) {
-						return array(); }
+						return array();
+					}
 				),
 			)
 		);
@@ -33,11 +34,7 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$order    = new WC_Order();
 		$order_id = $order->save();
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
-
 		$sut->check_unpaid_order( $order_id );
-
-		$this->assertTrue( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
 	}
 
 	/**
@@ -95,7 +92,7 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @covers ::check_unpaid_order
 	 */
-	public function test_check_unpaid_order_logs_exception_schedules_new_job(): void {
+	public function test_check_unpaid_order_logs_exception(): void {
 
 		$logger = new ColorLogger();
 		$api    = $this->makeEmpty(
@@ -109,17 +106,14 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
-
 		$sut = new Background_Jobs( $api, $logger );
 
-		$order    = new WC_Order();
+		$order = new WC_Order();
+		$order->set_status( 'on-hold' );
 		$order_id = $order->save();
 
 		$sut->check_unpaid_order( $order_id );
 
 		$this->assertTrue( $logger->hasErrorRecords() );
-		$this->assertTrue( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
-
 	}
 }

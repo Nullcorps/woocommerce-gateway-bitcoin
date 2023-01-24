@@ -43,6 +43,13 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	 */
 	protected ?API_Interface $api = null;
 
+	/**
+	 * The plugin settings.
+	 *
+	 * Used to read the gateway settings from wp_options before they are initialized in this class.
+	 *
+	 * @var Settings_Interface
+	 */
 	protected Settings_Interface $plugin_settings;
 
 	/**
@@ -66,6 +73,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 * Constructor for the gateway.
+	 *
+	 * @param ?API_Interface $api The main plugin functions.
 	 */
 	public function __construct( ?API_Interface $api = null ) {
 		// TODO: Set the logger externally.
@@ -203,8 +212,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 		$settings_fields['xpub']['description'] = $settings_fields['xpub']['description'] . ' <a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
 
-		// edit.php?post_type=bh-bitcoin-address
-
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
 		$log_levels_option = array();
 		foreach ( $log_levels as $log_level ) {
@@ -302,15 +309,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wc-bitcoin-gateway' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
 
 		$order->save();
-
-		// Schedule background check for payment.
-		$hook = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
-		$args = array( 'order_id' => $order_id );
-		if ( ! as_has_scheduled_action( $hook, $args ) ) {
-			$timestamp = time() + ( 5 * MINUTE_IN_SECONDS );
-			$this->logger->debug( "New order created, `shop_order:{$order_id}`, scheduling background job to check for payments" );
-			as_schedule_single_action( $timestamp, $hook, $args );
-		}
 
 		// Reduce stock levels.
 		wc_reduce_stock_levels( $order_id );

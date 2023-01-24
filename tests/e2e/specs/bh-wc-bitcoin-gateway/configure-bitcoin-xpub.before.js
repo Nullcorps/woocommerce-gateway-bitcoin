@@ -8,8 +8,6 @@ const config = require( 'config' );
 
 const configureBitcoinXpub = async( dispatch ) => {
 
-	await merchant.login();
-
 	await merchant.openSettings( 'checkout', 'bitcoin_gateway' );
 
 	await expect( page )

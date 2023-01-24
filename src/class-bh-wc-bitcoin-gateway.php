@@ -15,6 +15,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway;
 
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
@@ -89,6 +90,8 @@ class BH_WC_Bitcoin_Gateway {
 		$this->define_template_hooks();
 
 		$this->define_payment_gateway_hooks();
+		$this->define_order_hooks();
+		$this->define_action_scheduler_hooks();
 
 		$this->define_thank_you_hooks();
 		$this->define_email_hooks();
@@ -97,8 +100,6 @@ class BH_WC_Bitcoin_Gateway {
 		$this->define_admin_order_ui_hooks();
 		$this->define_wallets_list_page_ui_hooks();
 		$this->define_addresses_list_page_ui_hooks();
-
-		$this->define_action_scheduler_hooks();
 
 		$this->define_cli_commands();
 	}
@@ -198,6 +199,17 @@ class BH_WC_Bitcoin_Gateway {
 		add_action( 'woocommerce_blocks_payment_method_type_registration', array( $payment_gateways, 'register_woocommerce_block_checkout_support' ) );
 
 		add_filter( 'woocommerce_available_payment_gateways', array( $payment_gateways, 'add_logger_to_gateways' ) );
+	}
+
+	/**
+	 * Handle order status changes.
+	 */
+	protected function define_order_hooks(): void {
+
+		$order = new Order( $this->api, $this->logger );
+
+		add_action( 'woocommerce_order_status_changed', array( $order, 'schedule_check_for_transactions' ), 10, 3 );
+		add_action( 'woocommerce_order_status_changed', array( $order, 'unschedule_check_for_transactions' ), 10, 3 );
 	}
 
 	/**

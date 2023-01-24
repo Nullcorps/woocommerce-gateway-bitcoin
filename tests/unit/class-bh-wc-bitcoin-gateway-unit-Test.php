@@ -13,6 +13,7 @@ use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
 use WP_Mock\Matcher\AnyInstance;
@@ -169,6 +170,32 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::expectFilterAdded(
 			'woocommerce_available_payment_gateways',
 			array( new AnyInstance( Payment_Gateways::class ), 'add_logger_to_gateways' ),
+		);
+
+		$api      = $this->makeEmpty( API_Interface::class );
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
+	}
+
+	/**
+	 * @covers ::define_order_hooks
+	 */
+	public function test_define_order_hooks(): void {
+
+		\WP_Mock::expectActionAdded(
+			'woocommerce_order_status_changed',
+			array( new AnyInstance( Order::class ), 'schedule_check_for_transactions' ),
+			10,
+			3
+		);
+
+		\WP_Mock::expectActionAdded(
+			'woocommerce_order_status_changed',
+			array( new AnyInstance( Order::class ), 'unschedule_check_for_transactions' ),
+			10,
+			3
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );

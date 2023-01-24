@@ -15,38 +15,6 @@ use WC_Order;
 class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
-	 * @covers ::process_payment
-	 */
-	public function test_process_payment_schedules_action(): void {
-
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'get_fresh_address_for_order' => $this->makeEmpty( Bitcoin_Address::class ),
-				'get_exchange_rate'           => '44444.0',
-				'convert_fiat_to_btc'         => '0.0001',
-			)
-		);
-
-		$sut = new Bitcoin_Gateway();
-
-		$order = new WC_Order();
-		$order->set_total( '1000' );
-		$order_id = $order->save();
-
-		$scheduled_before = as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK );
-
-		assert( false === $scheduled_before );
-
-		$result = $sut->process_payment( $order_id );
-
-		$scheduled_after = as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK );
-
-		$this->assertNotFalse( $scheduled_after );
-
-	}
-
-	/**
 	 * @covers ::process_admin_options
 	 */
 	public function test_generates_new_addresses_when_xpub_changes(): void {
@@ -54,9 +22,16 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
-				'generate_new_wallet' => Expected::once(
+				'generate_new_wallet'               => Expected::once(
 					function( string $xpub_after, string $gateway_id = null ) {
-						return array();}
+						return array();
+					}
+				),
+				'generate_new_addresses_for_wallet' => Expected::once(
+					function( string $xpub, int $generate_count ): array {
+						assert( 2 === $generate_count );
+						return array();
+					}
 				),
 			)
 		);
@@ -67,15 +42,8 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$xpub_after = 'after';
 
 		$_POST['woocommerce_bitcoin_gateway_xpub'] = $xpub_after;
-		$id                                        = $sut->id;
-
-		assert( false === as_next_scheduled_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK, array( $xpub_after, $id ) ) );
 
 		$sut->process_admin_options();
-
-		$scheduled = as_next_scheduled_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK, array( $xpub_after, $id ) );
-
-		$this->assertNotFalse( $scheduled );
 	}
 
 
