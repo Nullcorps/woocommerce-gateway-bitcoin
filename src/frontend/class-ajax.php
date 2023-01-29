@@ -64,12 +64,30 @@ class AJAX {
 			wp_send_json_error( 'Invalid order id', 400 );
 		}
 
-		// TODO: Include the order key in the AJAX request
+		// TODO: Include the order key in the AJAX request.
 		// if( $order->get_customer_id() !== get_current_user_id() && ! $order->key_is_valid( $key ) ) {
 		// wp_send_json_error( 'Not permitted', 401 );
 		// }
 
 		$result = $this->api->get_formatted_order_details( $order, true );
+
+		// These are the only keys used by the JavaScript.
+		$allowed_keys = array(
+			'btc_address',
+			'btc_total',
+			'order_id',
+			'btc_amount_received',
+			'status',
+			'amount_received',
+			'order_status_formatted',
+			'last_checked_time_formatted',
+		);
+
+		foreach ( array_keys( $result ) as $key ) {
+			if ( ! in_array( $key, $allowed_keys, true ) ) {
+				unset( $result[ $key ] );
+			}
+		}
 
 		wp_send_json_success( $result );
 
