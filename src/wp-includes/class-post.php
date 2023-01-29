@@ -11,6 +11,9 @@
  *
  * WP_List_Table can show all addresses and their orders and balances and last activity date.
  *
+ * @see \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table
+ * @see \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Wallets_List_Table
+ *
  * @package brianhenryie/bh-wc-bitcoin-gateway
  */
 
@@ -76,12 +79,24 @@ class Post {
 		register_post_status(
 			'active',
 			array(
-				'label'                     => _x( 'Active', 'post' ),
+				'label'                     => _x( 'Active', 'post', 'bh-wc-bitcoin-gateway' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
 				/* translators: %s is the number of Bitcoin wallets that are in use. */
 				'label_count'               => _n_noop( 'Active <span class="count">(%s)</span>', 'Active <span class="count">(%s)</span>' ),
+			)
+		);
+
+		register_post_status(
+			'inactive',
+			array(
+				'label'                     => _x( 'Inactive', 'post', 'bh-wc-bitcoin-gateway' ),
+				'public'                    => true,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				/* translators: %s is the number of Bitcoin wallets that have been created but are not currently in use. */
+				'label_count'               => _n_noop( 'Inactive <span class="count">(%s)</span>', 'Inactive <span class="count">(%s)</span>' ),
 			)
 		);
 	}

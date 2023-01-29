@@ -13,6 +13,7 @@ global $project_root_dir;
 $class_map = array(
 	WC_Settings_API::class    => $project_root_dir . '/wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php',
 	WC_Payment_Gateway::class => $project_root_dir . '/wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php',
+	WP_Screen::class          => $project_root_dir . '/wordpress/wp-admin/includes/class-wp-screen.php',
 );
 spl_autoload_register(
 	function ( $classname ) use ( $class_map ) {

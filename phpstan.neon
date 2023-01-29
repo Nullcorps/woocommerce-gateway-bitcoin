@@ -25,6 +25,11 @@ parameters:
         - # WC_Settings_API::process_admin_options() specifies the bool return, but add_action does not expect any.
           message: '#Action callback returns bool but should not return anything.#'
           path: src/woocommerce/class-bitcoin-gateway.php
+        - # We pass the plugin_object array when registering the post type.
+          message: '#Access to an undefined property WP_Post_Type::\$plugin_objects.#'
+          paths:
+            - src/admin/class-wallets-list-table.php
+            - src/admin/class-addresses-list-table.php
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
         # PHPStan show errors when filters have more than two parameters.

@@ -50,6 +50,7 @@ class Bitcoin_Wallet_Factory {
 
 		$args = array();
 
+		$args['post_title']   = $xpub;
 		$args['post_status']  = ! is_null( $gateway_id ) ? 'active' : 'inactive';
 		$args['post_excerpt'] = $xpub;
 		$args['post_name']    = sanitize_title( $xpub ); // An indexed column.

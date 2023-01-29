@@ -98,8 +98,7 @@ class BH_WC_Bitcoin_Gateway {
 		$this->define_my_account_hooks();
 
 		$this->define_admin_order_ui_hooks();
-		$this->define_wallets_list_page_ui_hooks();
-		$this->define_addresses_list_page_ui_hooks();
+		$this->define_wp_list_page_ui_hooks();
 
 		$this->define_cli_commands();
 	}
@@ -265,35 +264,15 @@ class BH_WC_Bitcoin_Gateway {
 		add_action( 'add_meta_boxes', array( $admin_order_ui, 'register_address_transactions_meta_box' ) );
 	}
 
-
 	/**
-	 * Customize the columns and data shown in the WP_List_Table for bitcoin wallets.
+	 * Customize the columns and data shown in the WP_List_Table for bitcoin wallets and bitcoin addresses.
 	 */
-	protected function define_wallets_list_page_ui_hooks(): void {
-
-		$wallets_list_page = new Wallets_List_Table();
-
-		add_filter( 'manage_edit-bh-bitcoin-wallet_columns', array( $wallets_list_page, 'define_columns' ) );
-
-		add_action( 'manage_bh-bitcoin-wallet_posts_custom_column', array( $wallets_list_page, 'print_columns' ), 10, 2 );
-
-		add_action(
-			'admin_menu',
-			function() use ( $wallets_list_page ) {
-				add_filter( 'post_row_actions', array( $wallets_list_page, 'edit_row_actions' ), 10, 2 );
-			}
-		);
-	}
-
-	/**
-	 * Customize the columns and data shown in the WP_List_Table for bitcoin addresses.
-	 */
-	protected function define_addresses_list_page_ui_hooks(): void {
+	protected function define_wp_list_page_ui_hooks(): void {
 
 		$register_list_tables = new Register_List_Tables();
 
 		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_address_table' ), 10, 2 );
-
+		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_wallet_table' ), 10, 2 );
 	}
 
 	/**

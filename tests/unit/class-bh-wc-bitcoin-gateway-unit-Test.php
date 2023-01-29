@@ -10,6 +10,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
+use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
@@ -261,4 +262,29 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
 	}
 
+	/**
+	 * @covers ::define_wp_list_page_ui_hooks
+	 */
+	public function test_define_wp_list_page_ui_hooks(): void {
+
+		\WP_Mock::expectFilterAdded(
+			'wp_list_table_class_name',
+			array( new AnyInstance( Register_List_Tables::class ), 'register_bitcoin_address_table' ),
+			10,
+			2
+		);
+
+		\WP_Mock::expectFilterAdded(
+			'wp_list_table_class_name',
+			array( new AnyInstance( Register_List_Tables::class ), 'register_bitcoin_wallet_table' ),
+			10,
+			2
+		);
+
+		$api      = $this->makeEmpty( API_Interface::class );
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
+	}
 }

@@ -7,7 +7,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
 
-use Exception;
+use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use WP_Post;
 
@@ -17,14 +17,38 @@ use WP_Post;
  * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
  * @see WP_Posts_List_Table
  */
-class Wallets_List_Table {
+class Wallets_List_Table extends \WP_Posts_List_Table {
 
 	/**
-	 * Cache each Bitcoin_Wallet object between calls to each column in print_columns().
+	 * The main plugin functions.
 	 *
-	 * @var array<int, Bitcoin_Wallet>
+	 * Not in use here currently.
 	 */
-	protected array $data = array();
+	protected API_Interface $api;
+
+	/**
+	 * Constructor
+	 *
+	 * @see _get_list_table()
+	 *
+	 * @param array{screen?:\WP_Screen} $args The data passed by WordPress.
+	 */
+	public function __construct( $args = array() ) {
+		parent::__construct( $args );
+
+		$post_type_name = $this->screen->post_type;
+
+		/**
+		 * Since this object is instantiated because it was defined when registering the post type, it's
+		 * extremely unlikely the post type will not exist.
+		 *
+		 * @var \WP_Post_Type $post_type_object
+		 */
+		$post_type_object = get_post_type_object( $post_type_name );
+		$this->api        = $post_type_object->plugin_objects['api'];
+
+		add_filter( 'post_row_actions', array( $this, 'edit_row_actions' ), 10, 2 );
+	}
 
 	/**
 	 * Define the custom columns for the post type.
@@ -32,71 +56,81 @@ class Wallets_List_Table {
 	 *
 	 * TODO: Only show the wallet column if there is more than one wallet.
 	 *
-	 * @hooked manage_edit-bh-bitcoin-address_columns
-	 * @see get_column_headers()
-	 *
-	 * @param array<string, string> $columns Column name : HTML output.
-	 *
-	 * @return array<string, string>
+	 * @return array<string, string> Column name : HTML output.
 	 */
-	public function define_columns( array $columns ): array {
+	public function get_columns() {
+		$columns = parent::get_columns();
 
 		$new_columns = array();
 		foreach ( $columns as $key => $column ) {
 
+			// Omit the "comments" column.
 			if ( 'comments' === $key ) {
 				continue;
 			}
 
+			// Add remaining columns after the Title column.
 			$new_columns[ $key ] = $column;
 			if ( 'title' === $key ) {
 
 				$new_columns['status']  = 'Status';
 				$new_columns['balance'] = 'Balance';
 			}
+			// The date column will be added last.
 		}
 
 		return $new_columns;
 	}
 
 	/**
-	 * Print the output for our custom columns.
+	 * Cache each Bitcoin_Wallet object between calls to each `print_{$column}()`.
 	 *
-	 * @hooked manage_bh-bitcoin-wallet_posts_custom_column
-	 * @see \WP_Posts_List_Table::column_default()
-	 *
-	 * @param string $column_name The current column name.
-	 * @param int    $post_id     The post whose row is being printed.
-	 *
-	 * @return void
+	 * @var array<int, Bitcoin_Wallet>
 	 */
-	public function print_columns( string $column_name, int $post_id ): void {
+	protected array $wallets_cache = array();
 
-		if ( ! isset( $this->data[ $post_id ] ) ) {
-			try {
-				$this->data[ $post_id ] = new Bitcoin_Wallet( $post_id );
-			} catch ( Exception $exception ) {
-				// Not a Bitcoin_Wallet. Unlikely to ever reach here.
-				return;
-			}
+	/**
+	 * Fill or retrieve from the above cache of Wallet objects.
+	 *
+	 * @param WP_Post $post The post object for the current row.
+	 *
+	 * @throws \Exception When the post is not a `bh-bitcoin-wallet` post type.
+	 */
+	protected function get_cached_bitcoin_wallet_object( WP_Post $post ): Bitcoin_Wallet {
+		if ( ! isset( $this->wallets_cache[ $post->ID ] ) ) {
+			$this->wallets_cache[ $post->ID ] = new Bitcoin_Wallet( $post->ID );
 		}
-
-		$bitcoin_wallet = $this->data[ $post_id ];
-
-		switch ( $column_name ) {
-			case 'status':
-				echo esc_html( $bitcoin_wallet->get_status() );
-				break;
-
-			case 'balance':
-				echo esc_html( $bitcoin_wallet->get_balance() ?? 'unknown' );
-				break;
-
-			default:
-				return;
-		}
-
+		return $this->wallets_cache[ $post->ID ];
 	}
+
+	/**
+	 * Print the status of this wallet.
+	 *
+	 * One of active|inactive.
+	 *
+	 * @see Post::register_wallet_post_type()
+	 *
+	 * @param WP_Post $post The post this row is being rendered for.
+	 */
+	public function column_status( WP_Post $post ): void {
+		$bitcoin_wallet = $this->get_cached_bitcoin_wallet_object( $post );
+
+		echo esc_html( $bitcoin_wallet->get_status() );
+	}
+
+	/**
+	 * Print the total Bitcoin received by this wallet.
+	 *
+	 * TODO: Not yet implemented.
+	 *
+	 * @param WP_Post $post The post this row is being rendered for.
+	 */
+	public function column_balance( WP_Post $post ): void {
+		$bitcoin_wallet = $this->get_cached_bitcoin_wallet_object( $post );
+
+		echo esc_html( $bitcoin_wallet->get_balance() ?? 'unknown' );
+	}
+
 	/**
 	 * Remove edit and view actions, add an update action.
 	 *
