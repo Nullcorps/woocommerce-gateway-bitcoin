@@ -16,7 +16,7 @@ use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
-	 * @covers ::update_address
+	 * @covers ::check_transactions
 	 */
 	public function test_update_address_post_id(): void {
 
@@ -30,11 +30,11 @@ class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$factory = new Bitcoin_Address_Factory();
 		$wallet  = $this->makeEmpty( Bitcoin_Wallet::class );
 
-		$post_id = $factory->save_new( 'mockaddress', 0, $wallet );
+		$post_id = (string) $factory->save_new( 'mockaddress', 0, $wallet );
 
 		$sut = new CLI( $api, $settings, $logger );
 
-		$sut->update_address( array( $post_id ) );
+		$sut->check_transactions( array( $post_id ), array() );
 
 	}
 }

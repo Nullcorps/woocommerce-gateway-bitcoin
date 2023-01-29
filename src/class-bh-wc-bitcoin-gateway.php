@@ -311,7 +311,7 @@ class BH_WC_Bitcoin_Gateway {
 
 		try {
 			WP_CLI::add_command( 'bh-bitcoin generate-new-addresses', array( $cli, 'generate_new_addresses' ) );
-			WP_CLI::add_command( 'bh-bitcoin update-address', array( $cli, 'update_address' ) );
+			WP_CLI::add_command( 'bh-bitcoin check-transactions', array( $cli, 'check_transactions' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error( 'Failed to register WP CLI commands: ' . $e->getMessage(), array( 'exception' => $e ) );
 		}

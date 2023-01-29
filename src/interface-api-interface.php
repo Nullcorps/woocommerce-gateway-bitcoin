@@ -118,7 +118,7 @@ interface API_Interface {
 	public function generate_new_addresses_for_wallet( string $xpub, int $generate_count = 25 ): array;
 
 	/**
-	 * @used-by CLI::update_address()
+	 * @used-by CLI::check_transactions()
 	 *
 	 * @param Bitcoin_Address $address
 	 *

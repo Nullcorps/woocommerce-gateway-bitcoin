@@ -8,8 +8,8 @@ class Register_List_Tables {
 	 *
 	 * @see _get_list_table()
 	 *
-	 * @param string                   $class_name Default WP_Posts_List_Table
-	 * @param array{screen:\WP_Screen} $args
+	 * @param string                    $class_name Default WP_Posts_List_Table
+	 * @param array{screen?:\WP_Screen} $args
 	 *
 	 * @return string
 	 */

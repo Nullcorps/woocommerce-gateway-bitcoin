@@ -22,7 +22,7 @@ class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		set_current_user( 1 );
+		wp_set_current_user( 1 );
 
 		$bitcoin_gateway = null;
 

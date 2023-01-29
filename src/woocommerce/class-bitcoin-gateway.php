@@ -106,6 +106,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * When saving the options, if the xpub is changed, initiate a background job to generate addresses.
 	 *
+	 * @see \WC_Settings_API::process_admin_options()
+	 *
 	 * @return bool
 	 */
 	public function process_admin_options() {

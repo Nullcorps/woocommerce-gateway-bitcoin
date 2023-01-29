@@ -1,5 +1,9 @@
 <?php
 /**
+ * WP CLI commands for invoking API functions.
+ *
+ * Most useful to check an order for payment without waiting for Action Scheduler.
+ *
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
@@ -16,10 +20,14 @@ use WC_Order;
 use WP_CLI;
 use WP_CLI_Command;
 
+/**
+ * Run `wp bh-bitcoin help` for documentation.
+ */
 class CLI extends WP_CLI_Command {
 	use LoggerAwareTrait;
 
 	/**
+	 * Not used.
 	 *
 	 * @var Settings_Interface
 	 */
@@ -33,6 +41,8 @@ class CLI extends WP_CLI_Command {
 	protected API_Interface $api;
 
 	/**
+	 * Constructor.
+	 *
 	 * @param API_Interface      $api The main plugin functions.
 	 * @param Settings_Interface $settings The plugin's settings.
 	 * @param LoggerInterface    $logger A PSR logger.
@@ -47,7 +57,18 @@ class CLI extends WP_CLI_Command {
 	/**
 	 * Generate new addresses for all gateways.
 	 *
-	 * `wp bh-bitcoin generate-new-addresses --debug=bh-wc-bitcoin-gateway`
+	 * ## OPTIONS
+	 *
+	 * [--<debug>=bh-wc-bitcoin-gateway]
+	 * : Show detailed progress.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *   # Check for new transactions for all gateways.
+	 *   $ wp bh-bitcoin generate-new-addresses
+	 *
+	 *   # Check for new transactions for all gateways and show detailed progress.
+	 *   $ wp bh-bitcoin generate-new-addresses --debug=bh-wc-bitcoin-gateway
 	 *
 	 * @param array<int|string, string> $args Takes no arguments.
 	 */
@@ -63,47 +84,90 @@ class CLI extends WP_CLI_Command {
 	}
 
 	/**
-	 * Query the blockchain for updates for a specific address (xpub or post_id) or order id.
+	 * Query the blockchain for updates for an address or order.
 	 *
-	 * `wp bh-bitcoin update-address a1b2c3e4 --debug=bh-wc-bitcoin-gateway`
+	 * ## OPTIONS
 	 *
-	 * @param array<int|string, string> $args The address.
+	 * <input>
+	 * : The order id or Bitcoin address.
+	 *
+	 * [--format=<format>]
+	 * Render output in a specific format.
+	 * ---
+	 * default: table
+	 * options:
+	 * - table
+	 * - json
+	 * - csv
+	 * - yaml
+	 * ---
+	 *
+	 * [--<debug>=bh-wc-bitcoin-gateway]
+	 * : Show detailed progress.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *   # Check for new transactions for the provided Bitcoin address
+	 *   $ wp bh-bitcoin check-transactions 0a1b2c3e4f6g7h9
+	 *
+	 *   # Check for new transactions for the provided order
+	 *   $ wp bh-bitcoin check-transactions 123
+	 *
+	 *   # Check for new transactions for the provided order, showing detailed progress.
+	 *   $ wp bh-bitcoin check-transactions 123 --debug=bh-wc-bitcoin-gateway
+	 *
+	 * @param string[]             $args The address.
+	 * @param array<string,string> $assoc_args List of named arguments.
 	 *
 	 * @throws WP_CLI\ExitException When given input that does not match a known xpub, or post_id for a bitcoin address or relevant WooCommerce order.
 	 */
-	public function update_address( array $args ): void {
+	public function check_transactions( array $args, array $assoc_args ): void {
 
-		$input = $args[0];
+		$input  = $args[0];
+		$format = isset( $assoc_args['format'] ) ? $assoc_args['format'] : 'table';
 
 		$address_factory = new Bitcoin_Address_Factory();
 
 		try {
 			switch ( get_post_type( intval( $input ) ) ) {
 				case Bitcoin_Address::POST_TYPE:
-					$this->logger->debug( 'CLI input was a bh-bitcoin-address post_id: ' . $input );
+					$this->logger->debug( "CLI input was `bh-bitcoin-address:{$input}`" );
 					$bitcoin_address = new Bitcoin_Address( intval( $input ) );
 					break;
 				case 'shop_order':
-					$input = intval( $input );
-					$this->logger->debug( 'CLI input was WooCommerce shop_order:' . $input );
-					$order = wc_get_order( $input );
-					if ( ( $order instanceof WC_Order ) && $this->api->is_order_has_bitcoin_gateway( $input ) ) {
-						$input                   = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
-						$bitcoin_address_post_id = $address_factory->get_post_id_for_address( $input );
-						$bitcoin_address         = $address_factory->get_by_post_id( $bitcoin_address_post_id );
-					} else {
-						WP_CLI::error( "Order {$input} is not a Bitcoin order" );
+					$order_id = intval( $input );
+					$this->logger->debug( "CLI input was WooCommerce `shop_order:{$order_id}`" );
+					/**
+					 * This was already determined to be an order!
+					 *
+					 * @var WC_Order $order
+					 */
+					$order = wc_get_order( $order_id );
+					if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
+						$this->logger->error( "`shop_order:{$order_id}` is not a Bitcoin order" );
 						return;
 					}
+					$address                 = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
+					$bitcoin_address_post_id = $address_factory->get_post_id_for_address( $address );
+					if ( is_null( $bitcoin_address_post_id ) ) {
+						$this->logger->error( "Could not find Bitcoin address object for address {$address} from order id {$input}." );
+						return;
+					}
+					$bitcoin_address = $address_factory->get_by_post_id( $bitcoin_address_post_id );
 					break;
 				default:
+					// Assuming a raw address has been input.
 					$bitcoin_address_post_id = $address_factory->get_post_id_for_address( $input );
-					$bitcoin_address         = $address_factory->get_by_post_id( $bitcoin_address_post_id );
+					if ( is_null( $bitcoin_address_post_id ) ) {
+						$this->logger->error( "Could not find Bitcoin address object for {$input}." );
+						return;
+					}
+					$bitcoin_address = $address_factory->get_by_post_id( $bitcoin_address_post_id );
 			}
 
 			$result = $this->api->query_api_for_address_transactions( $bitcoin_address );
 
-			WP_CLI::log( wp_json_encode( $result ) );
+			WP_CLI\Utils\format_items( $format, $result, array_keys( $result ) );
 
 			WP_CLI::log( 'Finished update-address.' );
 
