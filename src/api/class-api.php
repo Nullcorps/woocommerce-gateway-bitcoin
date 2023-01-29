@@ -13,6 +13,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API;
+use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -61,7 +63,7 @@ class API implements API_Interface {
 		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
 		$this->bitcoin_address_factory = $bitcoin_address_factory;
 
-		$this->bitcoin_api = new SoChain_API( $logger );
+		$this->bitcoin_api = new Blockstream_Info_API( $logger );
 
 		$this->generate_address_api = new BitWasp_API( $logger );
 

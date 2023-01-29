@@ -2,6 +2,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain;
 
+use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\TestCase\WPTestCase;
 
 /**
@@ -11,7 +12,10 @@ class SoChain_API_Contract_Test extends WPTestCase {
 
 	public function test_query_address(): void {
 
-		$sut = new SoChain_API();
+		$this->markTestSkipped( 'API Deprecated' );
+
+		$logger = new ColorLogger();
+		$sut    = new SoChain_API( $logger );
 
 		$sent_to = $_ENV['EXAMPLE_GET_ADDRESS_BALANCE_ADDRESS'];
 
@@ -22,7 +26,10 @@ class SoChain_API_Contract_Test extends WPTestCase {
 
 	public function test_transaction(): void {
 
-		$sut = new SoChain_API();
+		$this->markTestSkipped( 'API Deprecated' );
+
+		$logger = new ColorLogger();
+		$sut    = new SoChain_API( $logger );
 
 		$sent_to = $_ENV['EXAMPLE_GET_ADDRESS_BALANCE_ADDRESS'];
 

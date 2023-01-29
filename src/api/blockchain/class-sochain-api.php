@@ -2,6 +2,10 @@
 /**
  * SoChain public blockchain API.
  *
+ * @deprecated
+ *
+ * The v2 API retired January 2023. v3 requires API key.
+ *
  * @see https://chain.so/api/
  *
  * The public infrastructure for SoChain allows 300 requests/minute free-of-charge.

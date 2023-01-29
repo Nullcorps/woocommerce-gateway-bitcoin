@@ -295,7 +295,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			 */
 			$btc_address = $api->get_fresh_address_for_order( $order );
 		} catch ( Exception $e ) {
-			// TODO: Log.
+			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
 			throw new Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
 

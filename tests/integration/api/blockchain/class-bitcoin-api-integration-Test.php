@@ -19,7 +19,7 @@ class Bitcoin_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$result[] = array( new SoChain_API() );
+		$result[] = array( new SoChain_API( $logger ) );
 		$result[] = array( new Blockchain_Info_API( $logger ) );
 		$result[] = array( new Blockstream_Info_API( $logger ) );
 
