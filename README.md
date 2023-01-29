@@ -87,9 +87,9 @@ Exchange rate:
 
 Transactions:
 
-* [SoChain](https://www.sochain.com/) - [API](https://sochain.com/api/) - default
+* [Blockstream.info](https://blockstream.info/) - [API](https://github.com/Blockstream/esplora/blob/master/API.md) - default
 * [Blockchain.com](https://blockchain.com) - [API](https://www.blockchain.com/api) - implemented but not in use
-* [Blockstream.info](https://blockstream.info/) - [API](https://github.com/Blockstream/esplora/blob/master/API.md) - implemented but not in use
+* [SoChain](https://www.sochain.com/) - [API](https://sochain.com/api/) - deprecated
 
 ### Syncing received payments with wallets
 
@@ -139,6 +139,7 @@ Please contribute:
 
 * Directions and screenshots showing how to find master public key (xpub) in various wallets
 * Directions on enabling PHP GMP extension – even just notes on which hosts enabled it when requested or refused the request.
+* Suggestions for public blockchain APIs that can be used
 * Bug reports
 * Feature requests, particularly UX related
 * Code review
