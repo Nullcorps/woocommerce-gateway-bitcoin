@@ -26,6 +26,7 @@ describe('Refresh order details', () => {
 
     // Configure the gateway.
     beforeAll(async () => {
+        await merchant.login();
         await configureBitcoinXpub();
         await createSimpleProduct();
         await placeBitcoinOrderBefore();

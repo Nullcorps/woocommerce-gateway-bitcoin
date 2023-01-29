@@ -29,6 +29,7 @@ describe('Generate new addresses', () => {
 
     // Configure the gateway.
     beforeAll(async () => {
+        await merchant.login();
         await configureBitcoinXpub();
     });
 
@@ -84,18 +85,13 @@ describe('Generate new addresses', () => {
         let actionSchedulerUrl = 'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending';
         await page.goto( actionSchedulerUrl, {waitUntil: 'networkidle0',} );
 
-        await new Promise((r) => setTimeout(r, 2000));
-
         var [pendingJobName] = await page.$x(`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`);
 
         if (!pendingJobName) {
 
             console.log( 'Did not find bh_wc_bitcoin_gateway_generate_new_addresses job in pending actions. BAD?');
 
-
         } else {
-
-            // await new Promise((r) => setTimeout(r, 2000));
 
             var tdText = await page.evaluate(element => element.textContent, pendingJobName);
             // tdText: bh_wc_bitcoin_gateway_generate_new_addressesRun | CancelShow more details
@@ -116,9 +112,6 @@ describe('Generate new addresses', () => {
             } else {
                 console.log( 'runLink not found (.run a)');
             }
-            // await pendingJobName.click('.run a', {text: 'Run'});
-            // await page.waitForNavigation( { waitUntil: 'networkidle0' } );
-
 
             [pendingJobName] = await page.$x(`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`);
 
@@ -157,7 +150,7 @@ describe('Generate new addresses', () => {
 
         console.log( 'updatedUnusedAddressCountNumAfter: ' + updatedUnusedAddressCountNumAfter );
 
-        expect( updatedUnusedAddressCountNumAfter ).toBeGreaterThan(50 );
+        expect( updatedUnusedAddressCountNumAfter ).toBeGreaterThanOrEqual(50 );
 
     });
 

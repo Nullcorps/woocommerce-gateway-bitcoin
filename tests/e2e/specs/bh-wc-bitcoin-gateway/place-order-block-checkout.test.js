@@ -16,6 +16,7 @@ describe('Place orders on block checkout', () => {
 
     // Configure the gateway.
     beforeAll(async () => {
+        await merchant.login();
         await configureBitcoinXpub();
         await createSimpleProduct();
     });
