@@ -571,7 +571,11 @@ class API implements API_Interface {
 	}
 
 	/**
-	 * @param string $currency 'USD'|'EUR'|'GBP'.
+	 * Get the BTC value of another currency amount.
+	 *
+	 * Rounds to ~6 decimal places.
+	 *
+	 * @param string $currency 'USD'|'EUR'|'GBP', maybe others.
 	 * @param float  $fiat_amount This is stored in the WC_Order object as a float.
 	 *
 	 * @return string Bitcoin amount.
@@ -583,9 +587,11 @@ class API implements API_Interface {
 
 		$float_result = $fiat_amount / floatval( $exchange_rate );
 
-		// TODO: round to ~7 decimal places.
-
-		return (string) $float_result;
+		// This is a good number for January 2023, 0.000001 BTC = 0.02 USD.
+		// TODO: Calculate the appropriate number of decimals on the fly.
+		$num_decimal_places = 6;
+		$string_result      = (string) wc_round_discount( $float_result, $num_decimal_places + 1 );
+		return rtrim( $string_result, '012345' );
 	}
 
 	/**
