@@ -142,14 +142,14 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 		$settings_fields = array(
 
-			'enabled'               => array(
+			'enabled'      => array(
 				'title'   => __( 'Enable/Disable', 'bh-wc-bitcoin-gateway' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable Bitcoin Payment', 'bh-wc-bitcoin-gateway' ),
 				'default' => 'yes',
 			),
 
-			'title'                 => array(
+			'title'        => array(
 				'title'       => __( 'Title', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'The payment method title the customer sees during checkout.', 'bh-wc-bitcoin-gateway' ),
@@ -157,34 +157,26 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 				'desc_tip'    => false,
 			),
 
-			'description'           => array(
+			'description'  => array(
 				'title'       => __( 'Description', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'Payment method description that the customer will beside the Place Order button.', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'Text the customer will see when the gateway is chosen at checkout.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
 
-			'xpub'                  => array(
-				'title'       => __( 'xpub', 'bh-wc-bitcoin-gateway' ),
+			'xpub'         => array(
+				'title'       => __( 'Master Public Key', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '',
 				'desc_tip'    => false,
 			),
 
-			'btc_rounding_decimals' => array(
-				'title'       => __( 'btc-rounding-decimals', 'bh-wc-bitcoin-gateway' ),
-				'type'        => 'text',
-				'description' => __( 'Integer, somewhere around 6 or 7 is probably ideal currently.', 'bh-wc-bitcoin-gateway' ),
-				'default'     => '7',
-				'desc_tip'    => false,
-			),
-
-			'price_margin'          => array(
+			'price_margin' => array(
 				'title'       => __( 'price-margin', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'A percentage amount of shortfall from the shown price which will be accepted to allow for rounding errors. Recommend value between 0 and 3', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'A percentage shortfall from the shown price which will be accepted to allow for volatility.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '2',
 				'desc_tip'    => false,
 			),
@@ -192,10 +184,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		);
 		$saved_xpub = $this->plugin_settings->get_xpub( $this->id );
 		if ( ! empty( $saved_xpub ) ) {
-			$settings_fields['xpub']['description'] = $saved_xpub;
+			$settings_fields['xpub']['description'] = '<a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
 		}
-
-		$settings_fields['xpub']['description'] = $settings_fields['xpub']['description'] . ' <a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
 
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
 		$log_levels_option = array();

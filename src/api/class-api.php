@@ -583,6 +583,8 @@ class API implements API_Interface {
 
 		$float_result = $fiat_amount / floatval( $exchange_rate );
 
+		// TODO: round to ~7 decimal places.
+
 		return (string) $float_result;
 	}
 
