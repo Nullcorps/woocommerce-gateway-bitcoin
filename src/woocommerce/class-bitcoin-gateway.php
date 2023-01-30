@@ -174,11 +174,16 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			),
 
 			'price_margin' => array(
-				'title'       => __( 'price-margin', 'bh-wc-bitcoin-gateway' ),
-				'type'        => 'text',
-				'description' => __( 'A percentage shortfall from the shown price which will be accepted to allow for volatility.', 'bh-wc-bitcoin-gateway' ),
-				'default'     => '2',
-				'desc_tip'    => false,
+				'title'             => __( 'price-margin', 'bh-wc-bitcoin-gateway' ),
+				'type'              => 'number',
+				'description'       => __( 'A percentage shortfall from the shown price which will be accepted, to allow for volatility.', 'bh-wc-bitcoin-gateway' ),
+				'default'           => '2',
+				'custom_attributes' => array(
+					'min'  => 0,
+					'max'  => 100,
+					'step' => 1,
+				),
+				'desc_tip'          => false,
 			),
 
 		);
