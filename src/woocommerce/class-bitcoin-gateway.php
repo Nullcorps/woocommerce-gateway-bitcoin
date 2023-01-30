@@ -168,7 +168,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'xpub'         => array(
 				'title'       => __( 'Master Public Key', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'The xpub/zpub (master public key) for your HD wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'The xpub/ypub/zpub for your Bitcoin wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wc-bitcoin-gateway' ),
 				'default'     => '',
 				'desc_tip'    => false,
 			),
