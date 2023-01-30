@@ -96,14 +96,15 @@ class Admin_Order_UI {
 		$refresh = ! $order->is_paid();
 
 		try {
-			$order_details = $this->api->get_formatted_order_details( $order, $refresh );
+			$template_args = $this->api->get_formatted_order_details( $order, $refresh );
 		} catch ( \Exception $exception ) {
-			$this->logger->error( 'Failed to get order details for email templates: ' . $exception->getMessage(), array( 'exception' => $exception ) );
+			$this->logger->error( 'Failed to get order details for admin ui template: ' . $exception->getMessage(), array( 'exception' => $exception ) );
 			return;
 		}
 
-		wc_get_template( self::TEMPLATE_NAME, $order_details );
+		$template_args['template'] = self::TEMPLATE_NAME;
 
+		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
 
 }
