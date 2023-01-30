@@ -53,13 +53,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	protected Settings_Interface $plugin_settings;
 
 	/**
-	 * A customisable message to show alongside the payment instructions.
-	 *
-	 * @var string
-	 */
-	protected string $instructions;
-
-	/**
 	 * Is this gateway enabled and has a payment address available.
 	 *
 	 * Previously we were using a static value in a method to store this, but that caused problems with tests, and
@@ -94,9 +87,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->title        = $this->get_option( 'title' );
-		$this->description  = $this->get_option( 'description' );
-		$this->instructions = $this->get_option( 'instructions', $this->description );
+		$this->title       = $this->get_option( 'title' );
+		$this->description = $this->get_option( 'description' );
 
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -173,14 +165,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 				'desc_tip'    => false,
 			),
 
-			'instructions'          => array(
-				'title'       => __( 'Instructions', 'bh-wc-bitcoin-gateway' ),
-				'type'        => 'textarea',
-				'description' => __( 'Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made.', 'bh-wc-bitcoin-gateway' ),
-				'default'     => 'NB: Please only send Bitcoin, which always has the ticker BTC, not any of the many clones. If you send coins other than Bitcoin (e.g. Bitcoin Cash) then those coins will be lost and your order will still not be paid.',
-				'desc_tip'    => false,
-			),
-
 			'xpub'                  => array(
 				'title'       => __( 'xpub', 'bh-wc-bitcoin-gateway' ),
 				'type'        => 'text',
@@ -188,7 +172,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 				'default'     => '',
 				'desc_tip'    => false,
 			),
-			// TODO: Show balance here.
 
 			'btc_rounding_decimals' => array(
 				'title'       => __( 'btc-rounding-decimals', 'bh-wc-bitcoin-gateway' ),
@@ -323,17 +306,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'result'   => 'success',
 			'redirect' => $this->get_return_url( $order ),
 		);
-	}
-
-	/**
-	 * Get the instructions configured by the admin to display on the Thank You page.
-	 *
-	 * "Additional instructions to appear alongside the payment address and amount, after the order has been placed but before payment has been made."
-	 *
-	 * @return string
-	 */
-	public function get_instructions(): string {
-		return $this->settings['instructions'] ?? '';
 	}
 
 	/**

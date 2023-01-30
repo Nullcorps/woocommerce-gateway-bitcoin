@@ -38,3 +38,5 @@ parameters:
         # - '/Parameter .* of .* expects .* given\./'
         # Setting an empty array with type associative array in the PhpDoc prints this.
         - '/does not accept default value of type array.{3}$/'
+        # Sometimes seems to not find the test parent class's methods.
+        - '/Call to an undefined method.*(make|assert).*/'

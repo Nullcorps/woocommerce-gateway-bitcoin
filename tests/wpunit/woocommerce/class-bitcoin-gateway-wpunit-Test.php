@@ -151,29 +151,6 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers ::get_instructions
-	 */
-	public function test_get_instructions(): void {
-
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
-
-		add_filter(
-			'wc_gateway_bitcoin_form_fields',
-			function( array $settings_fields ): array {
-				$settings_fields['instructions']['default'] = 'Expected';
-				return $settings_fields;
-			}
-		);
-
-		$sut = new Bitcoin_Gateway();
-
-		$result = $sut->get_instructions();
-
-		$this->assertEquals( 'Expected', $result );
-
-	}
-
-	/**
 	 * @covers ::process_payment
 	 */
 	public function test_process_payment_returns_exception_on_bad_order_id(): void {
