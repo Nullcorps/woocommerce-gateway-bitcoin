@@ -35,11 +35,11 @@ class My_Account_View_Order {
 		/** @var WC_Order $order */
 		$order = wc_get_order( $order_id );
 
-		$order_details = $this->api->get_formatted_order_details( $order, false );
+		$template_args = $this->api->get_formatted_order_details( $order, false );
 
-		wc_get_template( self::TEMPLATE_NAME, $order_details );
+		$template_args['template'] = self::TEMPLATE_NAME;
 
+		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
-
 
 }

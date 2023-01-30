@@ -5,6 +5,7 @@
  *
  * @see \BrianHenryIE\WC_Bitcoin_Gateway\API_Interface::get_order_details()
  *
+ * @var array{template_name:string, template_path:string, located:string, args:array} $action_args
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *
  * @var string $btc_logo_url // TODO
@@ -12,7 +13,7 @@
  * @var string $btc_address Destination payment address.
  * @var string $btc_total Order total in BTC.
  * @var string $btc_total_formatted Order total prefixed with "฿".
- * @var string $btc_exchange_rate_formatted // TODO: Format it! The Bitcoin exchange rate with friendly thousand separators.
+ * @var string $btc_exchange_rate_formatted The Bitcoin exchange rate with friendly thousand separators.
  * @var string $btc_amount_received Amount received at the destination address so far.
  * @var string $btc_amount_received_formatted Amount received prefixed with "฿".
  * @var string $last_checked_time_formatted The last time a blockchain service was queried for updates to the payment address.
@@ -70,11 +71,9 @@ $btc_logo_url = BH_WC_BITCOIN_GATEWAY_URL . '/assets/bitcoin.png';
 
 	</table>
 
+	<?php do_action( 'bh_wc_bitcoin_gateway_template_bitcoin_unpaid_after_table', $args['template'], $args ); ?>
 
-	<p>NB: Please only send <i>Bitcoin</i>, which always has the ticker BTC, not any of the many clones. If you send coins other than Bitcoin (e.g. Bitcoin Cash) then those coins will be lost and your order will still not be paid.</p>
-
-
-	<p>Exchange rate at time of order: 1 BTC = <?php echo $btc_exchange_rate_formatted; ?></p>
+	<p>Exchange rate at time of order: 1 BTC = <?php echo wp_kses_post( $btc_exchange_rate_formatted ); ?></p>
 
 </div>
 
