@@ -107,13 +107,18 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 </details>
 
+### Complementary Plugins
+
+* [Payment Gateway Based Fees and Discounts for WooCommerce](https://wordpress.org/plugins/checkout-fees-for-woocommerce/)
+* [WooCommerce Cancel Abandoned Order](https://wordpress.org/plugins/woo-cancel-abandoned-order/)
+* [Set WooCommerce Payment Gateway by URL](https://wordpress.org/plugins/bh-wc-set-gateway-by-url/)
+
 ## TODO
 
 ### <= v2.0
 
 * ~~Fix hard-coded log level (respect settings)~~
 * ~~WooCommerce Blocks checkout~~
-* Unpaid order expiry
 * Verify instructions are added to emails
 * 100% WPCS and PhpStan. JS + CSS linting.
 * Update screenshots + use mobile view for customer screenshots
@@ -127,7 +132,9 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 * Run contract tests to find what currencies are supported by the Exchange_Rate APIs
 * Remove 'required' setting on checkout billing fields
 * API round-robin and failover
+* Template for paid orders
 * Partial payment email
+* Delay order-received/on-hold email for an hour; check for payment in mempool
 * Tor
 * Units: Add mbtc as well as sats etc. (to match default Electrum display settings)
 * Add: change payment method button below payment details, if a customer accidentally chooses/changes their mind
