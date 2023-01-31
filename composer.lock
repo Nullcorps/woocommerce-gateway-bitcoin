@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "694e4ec04fc7cde255ed8530f50cb28b",
+    "content-hash": "76cba95d1fcd113ec9ab17fee438af81",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -12242,6 +12242,60 @@
                 "wiki": "https://github.com/WordPress/WordPress-Coding-Standards/wiki"
             },
             "time": "2020-05-13T23:57:56+00:00"
+        },
+        {
+            "name": "wpackagist-plugin/bh-wc-set-gateway-by-url",
+            "version": "1.2.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/bh-wc-set-gateway-by-url/",
+                "reference": "tags/1.2.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/bh-wc-set-gateway-by-url.1.2.1.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/bh-wc-set-gateway-by-url/"
+        },
+        {
+            "name": "wpackagist-plugin/checkout-fees-for-woocommerce",
+            "version": "2.9.0",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/checkout-fees-for-woocommerce/",
+                "reference": "tags/2.9.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/checkout-fees-for-woocommerce.2.9.0.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/checkout-fees-for-woocommerce/"
+        },
+        {
+            "name": "wpackagist-plugin/woo-cancel-abandoned-order",
+            "version": "2.0.0",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/woo-cancel-abandoned-order/",
+                "reference": "trunk"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/woo-cancel-abandoned-order.zip?timestamp=1667209966"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/woo-cancel-abandoned-order/"
         },
         {
             "name": "wpackagist-plugin/woo-gutenberg-products-block",

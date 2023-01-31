@@ -109,9 +109,19 @@ See: https://bitcoin.stackexchange.com/questions/63641/how-to-list-all-the-hd-ad
 
 ### Complementary Plugins
 
-* [Payment Gateway Based Fees and Discounts for WooCommerce](https://wordpress.org/plugins/checkout-fees-for-woocommerce/)
-* [WooCommerce Cancel Abandoned Order](https://wordpress.org/plugins/woo-cancel-abandoned-order/)
-* [Set WooCommerce Payment Gateway by URL](https://wordpress.org/plugins/bh-wc-set-gateway-by-url/)
+* WooCommerce Cancel Abandoned Order  
+[WordPress.org](https://wordpress.org/plugins/woo-cancel-abandoned-order/) | [GitHub](https://github.com/rvola/woo-cancel-abandoned-order)    
+Automatically clean up unpaid orders after x days. Partially paid orders will not be canceled.
+
+
+* Payment Gateway Based Fees and Discounts for WooCommerce  
+[WordPress.org](https://wordpress.org/plugins/checkout-fees-for-woocommerce/) | [GitHub](https://github.com/TycheSoftwares/checkout-fees-for-woocommerce)  
+Offer a discount for paying with Bitcoin.
+
+
+* Set WooCommerce Payment Gateway by URL  
+[WordPress.org](https://wordpress.org/plugins/bh-wc-set-gateway-by-url/) | [GitHub](https://github.com/BrianHenryIE/bh-wc-set-gateway-by-url)  
+Pre-select Bitcoin at checkout when sending emails to customers.
 
 ## TODO
 
