@@ -65,8 +65,9 @@ class Background_Jobs {
 		$claim_id  = ActionScheduler::store()->get_claim_id( $action_id );
 
 		$this->logger->debug(
-			"Running check_unpaid_order background task for action id: {$action_id}, claim id: {$claim_id}",
+			"Running check_unpaid_order background task for `shop_order:{$order_id}` action id: {$action_id}, claim id: {$claim_id}",
 			array(
+				'order_id'  => $order_id,
 				'task'      => $query,
 				'action_id' => $action_id,
 				'claim_id'  => $claim_id,
