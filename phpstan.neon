@@ -30,6 +30,8 @@ parameters:
           paths:
             - src/admin/class-wallets-list-table.php
             - src/admin/class-addresses-list-table.php
+        # Using exceptions in filters as controlflow to avoid die().
+        - message: '/Filter callback return statement is missing./'
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
         # PHPStan show errors when filters have more than two parameters.
