@@ -18,7 +18,8 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_add_instructions(): void {
 
-		$api = $this->makeEmpty(
+		$logger = new ColorLogger();
+		$api    = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
@@ -34,7 +35,7 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$sut = new Thank_You( $api );
+		$sut = new Thank_You( $api, $logger );
 
 		$order = new \WC_Order();
 		$order->set_payment_method( 'bitcoin' );
@@ -65,7 +66,8 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_add_instructions_order_not_for_this_gateway(): void {
 
-		$api = $this->makeEmpty(
+		$logger = new ColorLogger();
+		$api    = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
@@ -77,7 +79,7 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$sut = new Thank_You( $api );
+		$sut = new Thank_You( $api, $logger );
 
 		$order_id = 123;
 

@@ -219,7 +219,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_thank_you_hooks(): void {
 
-		$thank_you = new Thank_You( $this->api );
+		$thank_you = new Thank_You( $this->api, $this->logger );
 
 		add_action( 'woocommerce_thankyou', array( $thank_you, 'print_instructions' ), 5 );
 	}

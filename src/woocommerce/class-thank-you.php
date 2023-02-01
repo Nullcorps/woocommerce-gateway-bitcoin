@@ -10,10 +10,12 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Exception;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use WC_Order;
 
 class Thank_You {
-
+	use LoggerAwareTrait;
 	const TEMPLATE_NAME = 'checkout/thankyou-bitcoin-instructions-status.php';
 
 	/**
@@ -30,7 +32,8 @@ class Thank_You {
 	 *
 	 * @param API_Interface $api The main plugin functions.
 	 */
-	public function __construct( API_Interface $api ) {
+	public function __construct( API_Interface $api, LoggerInterface $logger ) {
+		$this->setLogger( $logger );
 		$this->api = $api;
 	}
 
