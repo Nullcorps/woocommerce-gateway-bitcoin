@@ -80,7 +80,9 @@ class Order {
 	}
 
 	/**
-	 * When an order's status is set to "on-hold", schedule a background job to check for payments.
+	 * When an order's status changes away from "pending" and "on-hold", cancel the scheduled background.
+	 *
+	 * E.g. when the order is paid or canceled.
 	 *
 	 * @hooked woocommerce_order_status_changed
 	 * @see WC_Order::status_transition()
@@ -91,7 +93,7 @@ class Order {
 	 */
 	public function unschedule_check_for_transactions( int $order_id, string $status_from, string $status_to ): void {
 
-		if ( ! in_array( $status_to, wc_get_is_paid_statuses(), true ) ) {
+		if ( in_array( $status_to, array( 'pending', 'on-hold' ), true ) ) {
 			return;
 		}
 
