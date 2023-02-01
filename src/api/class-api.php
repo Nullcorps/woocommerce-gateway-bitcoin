@@ -366,7 +366,9 @@ class API implements API_Interface {
 					}
 				);
 
-				// Sum the transactions with the required number of confirmations.
+				$result['transactions'] = $order_transactions;
+
+					// Sum the transactions with the required number of confirmations.
 				$result['btc_amount_received'] = array_reduce(
 					$order_transactions,
 					function( float $carry, array $transaction ) use ( $gateway_num_required_confirmations ): float {
@@ -538,8 +540,8 @@ class API implements API_Interface {
 		} else {
 			$to = $from + DAY_IN_SECONDS;
 		}
-		$exchange_rate_url                  = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
-		$order_details['exchange_rate_url'] = $exchange_rate_url;
+		$exchange_rate_url           = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
+		$result['exchange_rate_url'] = $exchange_rate_url;
 
 		// Unchanged data.
 		foreach ( array( 'order', 'btc_total', 'btc_exchange_rate', 'btc_address', 'transactions', 'btc_amount_received', 'status' ) as $key ) {
