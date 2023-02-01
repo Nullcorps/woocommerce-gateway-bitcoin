@@ -299,7 +299,7 @@ class API implements API_Interface {
 		$btc_xpub_address_string = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 
 		if ( empty( $btc_xpub_address_string ) ) {
-			$this->logger->error( "`shop_order:{$order->get_id()} has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
+			$this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new Exception( 'Order has no Bitcoin address.' );
 		}
 
@@ -582,7 +582,7 @@ class API implements API_Interface {
 	 */
 	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): string {
 
-		// 1 BTC = xx USD
+		// 1 BTC = xx USD.
 		$exchange_rate = $this->get_exchange_rate( $currency );
 
 		$float_result = $fiat_amount / floatval( $exchange_rate );

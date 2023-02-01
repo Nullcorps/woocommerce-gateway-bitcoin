@@ -9,6 +9,7 @@
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use Exception;
 use WC_Order;
 
 class Thank_You {
@@ -57,7 +58,19 @@ class Thank_You {
 		 */
 		$order = wc_get_order( $order_id );
 
-		$template_args = $this->api->get_formatted_order_details( $order, false );
+		try {
+			$template_args = $this->api->get_formatted_order_details( $order, false );
+		} catch ( Exception $exception ) {
+			// Exception sometimes occurs when an order has no Bitcoin address, although that's not likely the case here.
+			$this->logger->warning(
+				"Failed to get `shop_order:{$order_id}` details for Thank You template: {$exception->getMessage()}",
+				array(
+					'order_id'  => $order_id,
+					'exception' => $exception,
+				)
+			);
+			return;
+		}
 
 		$template_args['template'] = self::TEMPLATE_NAME;
 

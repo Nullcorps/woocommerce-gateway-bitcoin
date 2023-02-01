@@ -240,7 +240,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_my_account_hooks(): void {
 
-		$my_account_order = new My_Account_View_Order( $this->api );
+		$my_account_order = new My_Account_View_Order( $this->api, $this->logger );
 
 		add_action( 'woocommerce_view_order', array( $my_account_order, 'print_status_instructions' ), 9 );
 	}

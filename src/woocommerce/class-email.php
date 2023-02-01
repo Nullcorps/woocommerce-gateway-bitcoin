@@ -56,7 +56,13 @@ class Email {
 		try {
 			$template_args = $this->api->get_formatted_order_details( $order, false );
 		} catch ( \Exception $exception ) {
-			$this->logger->error( 'Failed to get order details for email templates: ' . $exception->getMessage(), array( 'exception' => $exception ) );
+			$this->logger->warning(
+				"Failed to get `shop_order:{$order->get_id()}` details for Email template: {$exception->getMessage()}",
+				array(
+					'order_id'  => $order->get_id(),
+					'exception' => $exception,
+				)
+			);
 			return;
 		}
 

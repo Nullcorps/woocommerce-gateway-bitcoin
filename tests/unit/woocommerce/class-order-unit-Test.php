@@ -47,14 +47,6 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 		$order_id = '123';
 
 		\WP_Mock::userFunction(
-			'wc_get_is_paid_statuses',
-			array(
-				'times'  => 1,
-				'return' => array( 'processing', 'completed' ),
-			)
-		);
-
-		\WP_Mock::userFunction(
 			'as_unschedule_action',
 			array(
 				'times' => 1,
@@ -83,14 +75,6 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 		$order_id = '123';
 
 		\WP_Mock::userFunction(
-			'wc_get_is_paid_statuses',
-			array(
-				'times'  => 1,
-				'return' => array( 'processing', 'completed' ),
-			)
-		);
-
-		\WP_Mock::userFunction(
 			'as_unschedule_action',
 			array(
 				'times' => 0,
@@ -116,14 +100,6 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 		$sut = new Order( $api, $logger );
 
 		$order_id = '123';
-
-		\WP_Mock::userFunction(
-			'wc_get_is_paid_statuses',
-			array(
-				'times'  => 1,
-				'return' => array( 'processing', 'completed' ),
-			)
-		);
 
 		\WP_Mock::userFunction(
 			'as_unschedule_action',

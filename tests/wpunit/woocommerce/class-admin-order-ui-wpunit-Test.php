@@ -133,7 +133,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$sut->print_address_transactions_metabox( $post );
 
 		// Is there a better way to say wc_get_template was called?
-		$this->assertTrue( $logger->hasErrorThatContains( 'no btc address exception' ) );
+		$this->assertTrue( $logger->hasWarningThatContains( 'no btc address exception' ) );
 
 	}
 

@@ -98,7 +98,13 @@ class Admin_Order_UI {
 		try {
 			$template_args = $this->api->get_formatted_order_details( $order, $refresh );
 		} catch ( \Exception $exception ) {
-			$this->logger->error( 'Failed to get order details for admin ui template: ' . $exception->getMessage(), array( 'exception' => $exception ) );
+			$this->logger->warning(
+				"Failed to get `shop_order:{$order_id}` details for admin order ui metabox template: {$exception->getMessage()}",
+				array(
+					'order_id'  => $order_id,
+					'exception' => $exception,
+				)
+			);
 			return;
 		}
 
