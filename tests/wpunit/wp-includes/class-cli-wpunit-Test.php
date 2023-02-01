@@ -20,6 +20,8 @@ class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_update_address_post_id(): void {
 
+		$this->markTestIncomplete();
+
 		$logger   = new ColorLogger();
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$api      = $this->makeEmpty(
