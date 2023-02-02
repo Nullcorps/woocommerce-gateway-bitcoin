@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use ActionScheduler;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
@@ -101,9 +102,31 @@ class Order {
 			return;
 		}
 
-		$hook = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
-		$args = array( 'order_id' => $order_id );
+		if ( empty( $status_to ) ) {
+			$status_to = 'trash?';
+		}
 
-		as_unschedule_action( $hook, $args );
+		$context = array(
+			'order_id'    => $order_id,
+			'status_from' => $status_from,
+			'status_to'   => $status_to,
+		);
+
+		$hook  = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$args  = array( 'order_id' => $order_id );
+		$query = array(
+			'hook' => $hook,
+			'args' => $args,
+		);
+
+		$context['action_scheduler_query'] = $query;
+
+		$action_id = ActionScheduler::store()->query_action( $query );
+		if ( $action_id ) {
+			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to, running `as_unschedule_action` for check_unpaid_order job, action_id $action_id.", $context );
+			as_unschedule_action( $hook, $args );
+		} else {
+			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to. No check_unpaid_order background job present to cancel.", $context );
+		}
 	}
 }
