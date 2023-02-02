@@ -16,6 +16,7 @@ namespace BrianHenryIE\WC_Bitcoin_Gateway;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WC_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
 use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
@@ -100,6 +101,8 @@ class BH_WC_Bitcoin_Gateway {
 
 		$this->define_admin_order_ui_hooks();
 		$this->define_wp_list_page_ui_hooks();
+
+		$this->define_woocommerce_features_hooks();
 
 		$this->define_cli_commands();
 
@@ -276,6 +279,16 @@ class BH_WC_Bitcoin_Gateway {
 
 		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_address_table' ), 10, 2 );
 		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_wallet_table' ), 10, 2 );
+	}
+
+	/**
+	 * Declare compatibility with WooCommerce High Performace Order Storage.
+	 */
+	protected function define_woocommerce_features_hooks(): void {
+
+		$hpos = new HPOS( $this->settings );
+
+		add_action( 'before_woocommerce_init', array( $hpos, 'declare_compatibility' ) );
 	}
 
 	/**

@@ -15,6 +15,7 @@ use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WC_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
+use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
 use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
@@ -305,6 +306,23 @@ class BH_WC_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Woo_Cancel_Abandoned_Order::class ), 'abort_canceling_partially_paid_order' ),
 			10,
 			3
+		);
+
+		$api      = $this->makeEmpty( API_Interface::class );
+		$settings = $this->makeEmpty( Settings_Interface::class );
+		$logger   = new ColorLogger();
+
+		new BH_WC_Bitcoin_Gateway( $api, $settings, $logger );
+	}
+
+	/**
+	 * @covers ::define_woocommerce_features_hooks
+	 */
+	public function test_define_woocommerce_features_hooks(): void {
+
+		\WP_Mock::expectActionAdded(
+			'before_woocommerce_init',
+			array( new AnyInstance( HPOS::class ), 'declare_compatibility' )
 		);
 
 		$api      = $this->makeEmpty( API_Interface::class );
