@@ -25,10 +25,11 @@ const requestToHandle = (request) => {
 };
 
 // Export configuration.
-module.exports = {
+const myConfig = {
 	...defaultConfig,
 	entry: {
-		'frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout': '/resources/js/bh-wc-bitcoin-gateway-blocks-checkout.js',
+		'frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout': '/assets/js/frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout.js',
+		'frontend/bh-wc-bitcoin-gateway': '/assets/js/frontend/bh-wc-bitcoin-gateway.js',
 	},
 	output: {
 		path: path.resolve( __dirname, 'assets/js' ),
@@ -38,6 +39,7 @@ module.exports = {
 		...defaultConfig.plugins.filter(
 			(plugin) =>
 				plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'
+			&& plugin.constructor.name !== 'CleanWebpackPlugin'
 		),
 		new WooCommerceDependencyExtractionWebpackPlugin({
 			requestToExternal,
@@ -45,3 +47,5 @@ module.exports = {
 		})
 	]
 };
+
+module.exports = myConfig;
