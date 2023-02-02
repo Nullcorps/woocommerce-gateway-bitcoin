@@ -185,8 +185,39 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 				),
 				'desc_tip'          => false,
 			),
-
 		);
+
+		/**
+		 * Let's get some products, filter to one that can be purchased, then use it to link to the checkout so
+		 * the admin can see what it will all look like.
+		 *
+		 * @var \WC_Product[] $products
+		 */
+		$products = wc_get_products(
+			array(
+				'status' => 'publish',
+				'limit'  => 10,
+			)
+		);
+		$products = array_filter(
+			$products,
+			function( \WC_Product $product ): bool {
+				return $product->is_purchasable();
+			}
+		);
+		if ( ! empty( $products ) ) {
+			$a_product = array_pop( $products );
+
+			$checkout_url                                   = add_query_arg(
+				array(
+					'add-to-cart'     => $a_product->get_id(),
+					'payment_gateway' => 'bitcoin_gateway',
+				),
+				wc_get_checkout_url()
+			);
+			$settings_fields['description']['description'] .= ' <a href="' . esc_url( $checkout_url ) . '">View checkout</a>.';
+		}
+
 		$saved_xpub = $this->plugin_settings->get_xpub( $this->id );
 		if ( ! empty( $saved_xpub ) ) {
 			$settings_fields['xpub']['description'] = '<a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
