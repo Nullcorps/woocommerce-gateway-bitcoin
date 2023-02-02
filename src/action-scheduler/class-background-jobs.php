@@ -55,23 +55,27 @@ class Background_Jobs {
 	 */
 	public function check_unpaid_order( int $order_id ): void {
 
+		$context = array();
+
 		// How to find the action_id of the action currently being run?
 		$query = array(
 			'hook' => self::CHECK_UNPAID_ORDER_HOOK,
 			'args' => array( 'order_id' => $order_id ),
 		);
 
+		$context['query'] = $query;
+
 		$action_id = ActionScheduler::store()->query_action( $query );
 		$claim_id  = ActionScheduler::store()->get_claim_id( $action_id );
 
+		$context['order_id']  = $order_id;
+		$context['task']      = $query;
+		$context['action_id'] = $action_id;
+		$context['claim_id']  = $claim_id;
+
 		$this->logger->debug(
 			"Running check_unpaid_order background task for `shop_order:{$order_id}` action id: {$action_id}, claim id: {$claim_id}",
-			array(
-				'order_id'  => $order_id,
-				'task'      => $query,
-				'action_id' => $action_id,
-				'claim_id'  => $claim_id,
-			)
+			$context
 		);
 
 		$order = wc_get_order( $order_id );
