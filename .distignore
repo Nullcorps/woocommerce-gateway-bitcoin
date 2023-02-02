@@ -29,3 +29,10 @@ xdebug.sh
 7.4linux.sh
 DOCKER_ENV
 docker_tag
+
+resources
+/*.yml
+/*.json
+/*.xml
+/*.rej*
+/*.js
