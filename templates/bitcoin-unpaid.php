@@ -23,7 +23,7 @@
 
 use BrianHenryIE\WC_Bitcoin_Gateway\chillerlan\QRCode\QRCode;
 
-$qr_address = 'bitcoin:' . $btc_address . '?amount=' . $btc_total;
+$bitcoin_href_address = 'bitcoin:' . $btc_address . '?amount=' . $btc_total;
 
 $btc_logo_url = BH_WC_BITCOIN_GATEWAY_URL . '/assets/bitcoin.png';
 ?>
@@ -36,8 +36,8 @@ $btc_logo_url = BH_WC_BITCOIN_GATEWAY_URL . '/assets/bitcoin.png';
 	<div class="bh_wc_bitcoin_gateway_logo_qr">
 	<img alt="Bitcoin logo" class="bh_wc_bitcoin_gateway_logo" src="<?php echo esc_attr( $btc_logo_url ); ?>">
 
-	<a href="<?php echo esc_attr( $qr_address ); ?>">
-		<img src="<?php echo esc_attr( ( new QRCode() )->render( $qr_address ) ); ?>" alt="<?php esc_attr_e( 'Payment QR Code', 'bh-wc-bitcoin-gateway' ); ?>" />
+	<a href="<?php echo esc_attr( $bitcoin_href_address ); ?>">
+		<img src="<?php echo esc_attr( ( new QRCode() )->render( $bitcoin_href_address ) ); ?>" alt="<?php esc_attr_e( 'Payment QR Code', 'bh-wc-bitcoin-gateway' ); ?>" />
 	</a>
 	</div>
 
