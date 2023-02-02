@@ -121,8 +121,9 @@ class Order {
 
 		$context['action_scheduler_query'] = $query;
 
-		$action_id = ActionScheduler::store()->query_action( $query );
-		if ( $action_id ) {
+		$actions = as_get_scheduled_actions( $query );
+		if ( ! empty( $actions ) ) {
+			$action_id = array_key_first( $actions );
 			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to, running `as_unschedule_action` for check_unpaid_order job, action_id $action_id.", $context );
 			as_unschedule_action( $hook, $args );
 		} else {

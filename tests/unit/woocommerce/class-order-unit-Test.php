@@ -46,15 +46,26 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 
 		$order_id = '123';
 
+		$action_id = '456';
+
+		\WP_Mock::userFunction(
+			'as_get_scheduled_actions',
+			array(
+				'args'   => array( \WP_Mock\Functions::type( 'array' ) ),
+				'times'  => 1,
+				'return' => array( $action_id => array( 'action' ) ),
+			)
+		);
+
 		\WP_Mock::userFunction(
 			'as_unschedule_action',
 			array(
+				'args'  => array( 'bh_wc_bitcoin_gateway_check_unpaid_order', \WP_Mock\Functions::type( 'array' ) ),
 				'times' => 1,
 			)
 		);
 
 		$sut->unschedule_check_for_transactions( $order_id, 'on-hold', 'processing' );
-
 	}
 
 	/**
