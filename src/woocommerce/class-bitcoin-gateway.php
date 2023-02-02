@@ -192,6 +192,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			$settings_fields['xpub']['description'] = '<a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
 		}
 
+		$settings_fields['price_margin']['description'] .= __( 'See: ', 'bh-wc-bitcoin-gateway' ) . '<a href="https://buybitcoinworldwide.com/volatility-index/" target="_blank">Bitcoin Volatility</a>.';
+
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
 		$log_levels_option = array();
 		foreach ( $log_levels as $log_level ) {
