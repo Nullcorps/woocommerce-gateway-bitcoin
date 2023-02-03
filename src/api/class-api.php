@@ -26,7 +26,6 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\BitWasp_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\SoChain_API;
 use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
