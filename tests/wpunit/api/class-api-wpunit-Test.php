@@ -162,7 +162,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			2
 		);
 
-		$result = $api->convert_fiat_to_btc( 'USD', '10.99' );
+		$result = $api->convert_fiat_to_btc( 'USD', 10.99 );
 
 		$this->assertEquals( '0.0004663', $result );
 	}
