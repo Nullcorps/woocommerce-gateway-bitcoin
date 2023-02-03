@@ -35,4 +35,5 @@ resources
 /*.json
 /*.xml
 /*.rej*
-/*.js
+webpack.config.js
+
