@@ -86,6 +86,12 @@ class CLI extends WP_CLI_Command {
 	/**
 	 * Query the blockchain for updates for an address or order.
 	 *
+	 * TODO: This doesn't seem to actually update the order!
+	 *
+	 * See also: `wp post list --post_type=shop_order --post_status=wc-on-hold --meta_key=_payment_gateway --meta_value=bitcoin_gateway --format=ids`.
+	 * `wp post list --post_type=shop_order --post_status=wc-on-hold --meta_key=_payment_gateway --meta_value=bitcoin_gateway --format=ids | xargs -0 -d ' ' -I % wp bh-bitcoin check-transactions % --debug=bh-wc-bitcoin-gateway`
+	 *
+	 *
 	 * ## OPTIONS
 	 *
 	 * <input>
@@ -167,7 +173,21 @@ class CLI extends WP_CLI_Command {
 
 			$result = $this->api->query_api_for_address_transactions( $bitcoin_address );
 
-			WP_CLI\Utils\format_items( $format, $result, array_keys( $result ) );
+			// TODO: Check for WooCommerce active.
+
+			$formatted = array(
+				'address' => $result['address']->get_raw_address(),
+				'updated' => wc_bool_to_string( $result['updated'] ),
+			);
+
+			if ( $result['updated'] ) {
+				$formatted['new_transactions']  = $result['updates']['new_transactions'];
+				$formatted['new_confirmations'] = $result['updates']['new_confirmations'];
+			}
+
+			$formatted['balance'] = $result['address']->get_balance();
+
+			WP_CLI\Utils\format_items( $format, $formatted, array_keys( $formatted ) );
 
 			WP_CLI::log( 'Finished update-address.' );
 
