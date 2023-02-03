@@ -68,7 +68,7 @@ jobs:
 
       - name: Read .nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT;
-#          echo ::set-output name=NODE_VERSION::$(cat .nvmrc) # this is deprecated, hopefully the previous line works.
+        id: nvm
 
       - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
         uses: actions/setup-node@v2
