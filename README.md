@@ -142,6 +142,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 * Run contract tests to find what currencies are supported by the Exchange_Rate APIs
 * Remove 'required' setting on checkout billing fields
 * API round-robin and failover
+* CLI commands
 * Template for paid orders
 * Partial payment email
 * Delay order-received/on-hold email for an hour; check for payment in mempool
@@ -161,6 +162,8 @@ Please contribute:
 * Feature requests, particularly UX related
 * Code review
 * Pull requests: read the [composer.json](https://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/blob/master/composer.json) and see [BrianHenryIE/WordPress-Plugin-Boilerplate](https://github.com/BrianHenryIE/WordPress-Plugin-Boilerplate) to understand developer setup 
+
+And please share the plugin with others!
 
 ## Motivation and Alternatives 
 
