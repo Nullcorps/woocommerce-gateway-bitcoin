@@ -139,4 +139,31 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( $result );
 	}
+
+	/**
+	 * @covers ::convert_fiat_to_btc
+	 */
+	public function test_convert_fiat_to_btc(): void {
+
+		$logger                  = new ColorLogger();
+		$settings                = $this->makeEmpty( Settings_Interface::class );
+		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
+		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+
+		$transient_name = 'bh_wc_bitcoin_gateway_exchange_rate_USD';
+		add_filter(
+			"pre_transient_{$transient_name}",
+			function( $retval, $transient ) {
+				return 23567;
+			},
+			10,
+			2
+		);
+
+		$result = $api->convert_fiat_to_btc( 'USD', '10.99' );
+
+		$this->assertEquals( '0.0004663', $result );
+	}
 }

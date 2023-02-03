@@ -593,7 +593,7 @@ class API implements API_Interface {
 		// TODO: Calculate the appropriate number of decimals on the fly.
 		$num_decimal_places = 6;
 		$string_result      = (string) wc_round_discount( $float_result, $num_decimal_places + 1 );
-		return rtrim( $string_result, '012345' );
+		return $string_result;
 	}
 
 	/**
