@@ -43,18 +43,28 @@ class Bitcoin_Wallet_Factory {
 		return $post_id;
 	}
 
-
-	public function save_new( string $xpub, ?string $gateway_id = null ): int {
+	/**
+	 * Create a new Bitcoin_Wallet WordPress post for the provided address and optionally specify the associated gateway.
+	 *
+	 * @param string  $master_public_key The xpub/ypub/zpub of the wallet.
+	 * @param ?string $gateway_id The WC_Payment_Gateway the wallet is being used with.
+	 *
+	 * @return int The wp_posts ID.
+	 * @throws Exception
+	 */
+	public function save_new( string $master_public_key, ?string $gateway_id = null ): int {
 
 		// TODO: Validate xpub, throw exception.
 
 		$args = array();
 
-		$args['post_title']   = $xpub;
+		$args['post_title']   = $master_public_key;
 		$args['post_status']  = ! is_null( $gateway_id ) ? 'active' : 'inactive';
-		$args['post_excerpt'] = $xpub;
-		$args['post_name']    = sanitize_title( $xpub ); // An indexed column.
+		$args['post_excerpt'] = $master_public_key;
+		$args['post_name']    = sanitize_title( $master_public_key ); // An indexed column.
 		$args['post_type']    = Bitcoin_Wallet::POST_TYPE;
+
+		// TODO: Add the gateway as meta.
 
 		$post_id = wp_insert_post( $args, true );
 

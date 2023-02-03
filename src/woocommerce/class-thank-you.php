@@ -1,5 +1,6 @@
 <?php
 /**
+ * Print the payment details on the Thank You / order-received page.
  *
  * TODO: JS to scroll to the payment details.
  *
@@ -14,6 +15,9 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
 
+/**
+ * Get the order details and pass them to the thank you page template.
+ */
 class Thank_You {
 	use LoggerAwareTrait;
 	const TEMPLATE_NAME = 'checkout/thankyou-bitcoin-instructions-status.php';
@@ -30,7 +34,8 @@ class Thank_You {
 	/**
 	 * Constructor
 	 *
-	 * @param API_Interface $api The main plugin functions.
+	 * @param API_Interface   $api The main plugin functions.
+	 * @param LoggerInterface $logger A PSR logger.
 	 */
 	public function __construct( API_Interface $api, LoggerInterface $logger ) {
 		$this->setLogger( $logger );

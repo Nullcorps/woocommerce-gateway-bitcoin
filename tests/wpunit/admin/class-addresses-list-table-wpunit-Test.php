@@ -16,9 +16,20 @@ use WP_Post;
  */
 class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 
+	/**
+	 * The `$args` array used when constructing the Addresses_List_Table sut.
+	 *
+	 * @var array{screen:\WP_Screen}
+	 */
 	protected array $args;
 
+	/**
+	 * The sample WP_Post whose data we will "display".
+	 *
+	 * @var WP_Post
+	 */
 	protected WP_Post $post;
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -100,7 +111,6 @@ class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 
 		$this->assertStringContainsString( 'xpub1a2...def', $result );
 		$this->assertStringContainsString( 'admin.php?page=wc-settings&#038;tab=checkout&#038;section=bitcoin_gateway', $result );
-
 	}
 
 	/**

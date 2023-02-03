@@ -21,7 +21,7 @@
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
-$btc_exchange_rate_formatted = strip_tags( $btc_exchange_rate_formatted );
+$btc_exchange_rate_formatted = wp_strip_all_tags( $btc_exchange_rate_formatted );
 
 if ( ! $order->is_paid() ) :
 
@@ -34,5 +34,4 @@ if ( ! $order->is_paid() ) :
 	<p>Payment Address: <a target="_blank" href="<?php echo esc_url( $bitcoin_href_address, array( 'bitcoin' ) ); ?>"><?php echo esc_html( $btc_address ); ?></a></p>
 
 	<?php
-
- endif;
+endif;

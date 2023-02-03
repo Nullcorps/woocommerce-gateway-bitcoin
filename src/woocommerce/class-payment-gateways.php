@@ -22,10 +22,24 @@ use WC_Payment_Gateways;
 class Payment_Gateways {
 	use LoggerAwareTrait;
 
+	/**
+	 * Check can the server run the plugin math.
+	 * Get the list of Bitcoin gateways to register with WooCommerce Blocks checkout.
+	 */
 	protected API_Interface $api;
 
+	/**
+	 * Passed to Bitcoin_Gateway_Blocks_Checkout_Support.
+	 */
 	protected Settings_Interface $settings;
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface      $api The main plugin functions.
+	 * @param Settings_Interface $settings The plugin settings.
+	 * @param LoggerInterface    $logger A PSR logger.
+	 */
 	public function __construct( API_Interface $api, Settings_Interface $settings, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;

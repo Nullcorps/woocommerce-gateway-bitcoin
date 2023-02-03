@@ -14,17 +14,32 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use WC_Order;
 
 /**
- *
+ * Enqueue CSS, JS and JSON order details on the order-received page.
  */
 class Frontend_Assets {
 	use LoggerAwareTrait;
 
+	/**
+	 * Get the plugin version for caching.
+	 */
 	protected Settings_Interface $settings;
 
+	/**
+	 * Check is the order a Bitcoin order.
+	 * Get the order details.
+	 */
 	protected API_Interface $api;
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface      $api The main plugin functions.
+	 * @param Settings_Interface $settings The plugin settings.
+	 * @param LoggerInterface    $logger A PSR logger.
+	 */
 	public function __construct( API_Interface $api, Settings_Interface $settings, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
@@ -69,7 +84,11 @@ class Frontend_Assets {
 			return;
 		}
 
-		/** @var \WC_Order $order */
+		/**
+		 * We confirmed this is a shop_order in the previous line.
+		 *
+		 * @var WC_Order $order
+		 */
 		$order = wc_get_order( $order_id );
 
 		try {

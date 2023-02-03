@@ -2,6 +2,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+
 /**
  * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Templates
  */
@@ -19,10 +21,13 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 
 	/**
 	 * @covers ::load_bitcoin_templates
+	 * @covers ::__construct
 	 */
 	public function test_load_unrelated_template(): void {
 
-		$sut = new Templates();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+
+		$sut = new Templates( $settings );
 
 		$template      = '/path/to/woocommerce/templates/product-searchform.php';
 		$template_name = 'product-searchform.php';
@@ -43,7 +48,9 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_load_already_provided_template(): void {
 
-		$sut = new Templates();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+
+		$sut = new Templates( $settings );
 
 		// Use any existing file here for the test.
 		$template      = __FILE__;
@@ -64,7 +71,9 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_exists_in_theme_template(): void {
 
-		$sut = new Templates();
+		$settings = $this->makeEmpty( Settings_Interface::class );
+
+		$sut = new Templates( $settings );
 
 		// Use any existing file here for the test.
 		$template      = 'bitcoin-unpaid.php';

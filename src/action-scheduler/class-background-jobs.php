@@ -112,7 +112,7 @@ class Background_Jobs {
 
 	/**
 	 * After new addresses have been created, we check to see are they fresh/available to use.
-	 * It's not unlikely we'll hit 429 rate limits during this, so we'll loop through as many as we can,
+	 * TODO It's not unlikely we'll hit 429 rate limits during this, so we'll loop through as many as we can,
 	 * then schedule a new job when we're told to stop.
 	 *
 	 * @hooked bh_wc_bitcoin_gateway_check_new_addresses_transactions
@@ -122,7 +122,7 @@ class Background_Jobs {
 
 		$this->logger->debug( 'Starting check_new_addresses_for_transactions() background job.' );
 
-		$this->api->check_new_addresses_for_transactions();
+		$result = $this->api->check_new_addresses_for_transactions();
 	}
 
 }

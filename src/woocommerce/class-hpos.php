@@ -15,7 +15,9 @@ use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
 
 /**
+ * Message FeaturesUtil that this plugin has no incompatibilities with HPOS.
  *
+ * @see https://woocommerce.com/document/high-performance-order-storage/
  */
 class HPOS {
 

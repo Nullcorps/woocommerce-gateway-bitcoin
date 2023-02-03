@@ -16,7 +16,7 @@ interface Blockchain_API_Interface {
 	/**
 	 * The total amount in BTC received at this address.
 	 *
-	 * @param string $btc_address The Bitcoin address.
+	 * @param string $btc_address The payment address to check.
 	 * @param bool   $confirmed
 	 *
 	 * @return string
@@ -26,7 +26,7 @@ interface Blockchain_API_Interface {
 	/**
 	 * The current balance of the address.
 	 *
-	 * @param string $btc_address
+	 * @param string $btc_address The payment address to check.
 	 * @param int    $number_of_confirmations
 	 *
 	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
@@ -36,7 +36,7 @@ interface Blockchain_API_Interface {
 	/**
 	 * Query the Blockchain API for the transactions received at this address.
 	 *
-	 * @param string $btc_address
+	 * @param string $btc_address The payment address to check.
 	 *
 	 * @return array<string, TransactionArray> Txid, data.
 	 */

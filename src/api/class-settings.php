@@ -99,8 +99,17 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 *
 	 * @return string
 	 */
-	public function get_xpub( string $gateway_id = 'bitcoin_gateway' ): string {
+	public function get_master_public_key( string $gateway_id = 'bitcoin_gateway' ): string {
 		$saved_settings = get_option( 'woocommerce_' . $gateway_id . '_settings', array() );
 		return $saved_settings['xpub'] ?? '';
+	}
+
+	/**
+	 * Get the absolute path to the plugin root on the server filesystem, with trailingslash.
+	 */
+	public function get_plugin_dir(): string {
+		return defined( 'BH_WC_BITCOIN_GATEWAY_PATH' )
+				? BH_WC_BITCOIN_GATEWAY_PATH
+				: WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->get_plugin_basename() );
 	}
 }

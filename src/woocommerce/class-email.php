@@ -1,5 +1,6 @@
 <?php
 /**
+ * Print payment details in customer emails.
  *
  * TODO: Prevent sending the on-hold email immediately, reschedule it for one hour later.
  *
@@ -13,13 +14,26 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
 
+/**
+ * Load the order details and pass to the email template.
+ */
 class Email {
 	use LoggerAwareTrait;
 
 	const TEMPLATE_NAME = 'emails/email-bitcoin-instructions-status.php';
 
+	/**
+	 * Check is the order a bitcoin order.
+	 * Get the order details.
+	 */
 	protected API_Interface $api;
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface   $api The main plugin functions.
+	 * @param LoggerInterface $logger A PSR logger.
+	 */
 	public function __construct( API_Interface $api, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
 		$this->api = $api;
@@ -70,7 +84,6 @@ class Email {
 
 		// TODO: Create a plain text template.
 		wc_get_template( self::TEMPLATE_NAME, $template_args );
-
 	}
 
 }

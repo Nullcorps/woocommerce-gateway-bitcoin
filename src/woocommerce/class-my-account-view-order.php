@@ -15,21 +15,37 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
 
+/**
+ * Get the order details and pass them to the my-account order ui template.
+ */
 class My_Account_View_Order {
 	use LoggerAwareTrait;
 
+	/**
+	 * Check is it a Bitcoin order.
+	 * Get the order details.
+	 */
 	protected API_Interface $api;
 
 	const TEMPLATE_NAME = 'myaccount/view-order-bitcoin-instructions-status.php';
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface   $api The main plugin functions.
+	 * @param LoggerInterface $logger A PSR logger.
+	 */
 	public function __construct( API_Interface $api, LoggerInterface $logger ) {
 		$this->setLogger( $logger );
 		$this->api = $api;
 	}
 
 	/**
+	 * If it is a Bitcoin order being displayed, print the payment details, via template.
 	 *
 	 * @hooked woocommerce_view_order
+	 *
+	 * @param int $order_id The id of the order being viewed.
 	 */
 	public function print_status_instructions( int $order_id ): void {
 

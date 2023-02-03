@@ -10,6 +10,8 @@
 
 namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
 
+use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+
 /**
  * Hooks into the wc_get_template filter called inside `wc_get_template()` to return templates inside this plugin
  * if they have not already been provided by the theme or another plugin.
@@ -18,6 +20,20 @@ class Templates {
 
 	const BITCOIN_UNPAID_TEMPLATE_NAME = 'bitcoin-unpaid.php';
 	const BITCOIN_PAID_TEMPLATE_NAME   = 'bitcoin-paid.php';
+
+	/**
+	 * Used to get the plugin directory URL.
+	 */
+	protected Settings_Interface $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Settings_Interface $settings The plugin settings.
+	 */
+	public function __construct( Settings_Interface $settings ) {
+		$this->settings = $settings;
+	}
 
 	/**
 	 * Returns the full template path for templates defined within this plugin.
@@ -68,8 +84,7 @@ class Templates {
 			return $theme_template;
 		}
 
-		return BH_WC_BITCOIN_GATEWAY_PATH . '/templates/' . $template_name;
-
+		return $this->settings->get_plugin_dir() . 'templates/' . $template_name;
 	}
 
 }

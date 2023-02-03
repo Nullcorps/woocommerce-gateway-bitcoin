@@ -184,7 +184,7 @@ class BH_WC_Bitcoin_Gateway {
 	 */
 	protected function define_template_hooks(): void {
 
-		$templates = new Templates();
+		$templates = new Templates( $this->settings );
 
 		add_filter( 'wc_get_template', array( $templates, 'load_bitcoin_templates' ), 10, 5 );
 	}

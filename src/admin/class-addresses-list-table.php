@@ -239,18 +239,16 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 		}
 		$gateways = $this->wallet_id_to_gateways_map[ $wallet_post_id ];
 
-		$a = '';
+		$href_html = '';
 		if ( 1 === count( $gateways ) ) {
-			$gateway = array_pop( $gateways );
-
-			$a = '<a href="' . esc_url( admin_url( "admin.php?page=wc-settings&tab=checkout&section={$gateway->id}" ) ) . '">';
+			$gateway   = array_pop( $gateways );
+			$href_html = '<a href="' . esc_url( admin_url( "admin.php?page=wc-settings&tab=checkout&section={$gateway->id}" ) ) . '">';
 		}
 
 		echo '<span title="' . esc_attr( $wallet_address ) . '">';
-		if ( ! empty( $a ) ) {
-			echo $a; }
+		echo $href_html;
 		echo esc_html( $abbreviated );
-		if ( ! empty( $a ) ) {
+		if ( ! empty( $href_html ) ) {
 			echo '</a>'; }
 		echo '</span>';
 	}
