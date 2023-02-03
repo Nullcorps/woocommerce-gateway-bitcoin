@@ -129,7 +129,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 
 * ~~Fix hard-coded log level (respect settings)~~
 * ~~WooCommerce Blocks checkout~~
-* Verify instructions are added to emails
+* ~~Verify instructions are added to emails~~
 * 100% WPCS and PhpStan. JS + CSS linting.
 * Update screenshots + use mobile view for customer screenshots
 * Webpack build in GitHub Actions
