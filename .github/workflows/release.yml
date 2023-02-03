@@ -67,10 +67,8 @@ jobs:
           sudo vendor/bin/wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
 
       - name: Read .nvmrc
-        run: | 
-#          echo ::set-output name=NODE_VERSION::$(cat .nvmrc) # this is deprecated, hopefully the following line works.
-          echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT;
-        id: nvm
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT;
+#          echo ::set-output name=NODE_VERSION::$(cat .nvmrc) # this is deprecated, hopefully the previous line works.
 
       - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
         uses: actions/setup-node@v2
