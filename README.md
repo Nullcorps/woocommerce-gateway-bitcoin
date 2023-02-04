@@ -54,7 +54,7 @@ The Bitcoin gateway also works with WooCommerce Blocks checkout:
 * The QR code can be scanned or clicked, and contains the address and amount
 * "Payment Address" and "Payment Total" are both links which copy the value to the clipboard
 * "Last Checked" is a link which queries the blockchain for new transactions
-* A background check runs every five minutes as long as the order remains on-hold
+* A background check runs every ten minutes (approximate block time) as long as the order remains on-hold
 * The same payment instructions are added to the customer emails
 * The customer can view the same payment instructions under `my-account/orders/123`
 

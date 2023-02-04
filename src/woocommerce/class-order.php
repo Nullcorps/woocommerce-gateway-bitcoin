@@ -73,8 +73,8 @@ class Order {
 		$args = array( 'order_id' => $order_id );
 
 		if ( ! as_has_scheduled_action( $hook, $args ) ) {
-			$timestamp         = time() + ( 5 * MINUTE_IN_SECONDS );
-			$recurring_seconds = ( 5 * MINUTE_IN_SECONDS );
+			$timestamp         = time() + ( 10 * MINUTE_IN_SECONDS );
+			$recurring_seconds = ( 10 * MINUTE_IN_SECONDS );
 			$this->logger->debug( "New order created, `shop_order:{$order_id}`, scheduling background job to check for payments" );
 			as_schedule_recurring_action( $timestamp, $recurring_seconds, $hook, $args );
 		}
