@@ -102,6 +102,10 @@ class API implements API_Interface {
 	 * @return array<string, Bitcoin_Gateway>
 	 */
 	public function get_bitcoin_gateways(): array {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			return array();
+		}
+
 		$payment_gateways = WC_Payment_Gateways::instance()->payment_gateways();
 		$bitcoin_gateways = array();
 		foreach ( $payment_gateways as $gateway ) {
@@ -109,6 +113,7 @@ class API implements API_Interface {
 				$bitcoin_gateways[ $gateway->id ] = $gateway;
 			}
 		}
+
 		return $bitcoin_gateways;
 	}
 
