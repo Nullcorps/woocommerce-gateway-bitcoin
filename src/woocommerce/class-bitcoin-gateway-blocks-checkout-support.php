@@ -43,6 +43,7 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 	public function __construct( Bitcoin_Gateway $gateway, Settings_Interface $plugin_settings ) {
 		$this->plugin_settings = $plugin_settings;
 		$this->gateway         = $gateway;
+		$this->name            = $gateway->id;
 	}
 
 	/**
@@ -52,7 +53,6 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 	 */
 	public function initialize(): void {
 		$this->settings = $this->gateway->settings;
-		$this->name     = $this->gateway->id;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 
 		$handle = 'bh-wc-bitcoin-gateway-blocks';
 
-		$script_url = $this->plugin_settings->get_plugin_dir() . 'assets/js/frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout.min.js';
+		$script_url = $this->plugin_settings->get_plugin_url() . 'assets/js/frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout.min.js';
 
 		$dependencies = array( 'wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-html-entities', 'wp-i18n' );
 		$version      = $this->plugin_settings->get_plugin_version();
