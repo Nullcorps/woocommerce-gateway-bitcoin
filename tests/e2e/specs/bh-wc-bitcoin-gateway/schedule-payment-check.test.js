@@ -3,7 +3,10 @@
 // is returning true for the action that is currently running.
 
 const {
-    merchant, uiUnblocked, waitForSelectorWithoutThrow, createSimpleProduct
+	merchant,
+	uiUnblocked,
+	waitForSelectorWithoutThrow,
+	createSimpleProduct,
 } = require( '@woocommerce/e2e-utils' );
 
 const config = require( 'config' );
@@ -11,163 +14,160 @@ const config = require( 'config' );
 const configureBitcoinXpub = require( './configure-bitcoin-xpub.before.js' );
 const placeBitcoinOrderBefore = require( './place-bitcoin-order.before.js' );
 
-jest.setTimeout(60000);
+jest.setTimeout( 60000 );
 
-describe('Schedule payment checks', () => {
+describe( 'Schedule payment checks', () => {
+	// Configure the gateway.
+	beforeAll( async () => {
+		await merchant.login();
+		await createSimpleProduct();
+		await configureBitcoinXpub();
+	} );
 
-    // Configure the gateway.
-    beforeAll(async () => {
-        await merchant.login();
-        await createSimpleProduct();
-        await configureBitcoinXpub();
-    });
+	// Clear the all pending jobs.
+	beforeEach( async () => {
+		await deletePendingActionSchedulerPaymentChecks();
+	} );
 
-    // Clear the all pending jobs.
-    beforeEach( async () => {
-        await deletePendingActionSchedulerPaymentChecks();
-    });
+	// Open Action Scheduler and delete any existing events
+	async function deletePendingActionSchedulerPaymentChecks() {
+		const actionSchedulerUrlPending =
+			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
+		await page.goto( actionSchedulerUrlPending, {
+			waitUntil: 'networkidle0',
+		} );
 
-    // Open Action Scheduler and delete any existing events
-    async function deletePendingActionSchedulerPaymentChecks() {
+		const found = await waitForSelectorWithoutThrow(
+			'#bulk-action-selector-top'
+		);
 
-        let actionSchedulerUrlPending = 'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
-        await page.goto( actionSchedulerUrlPending, {waitUntil: 'networkidle0',} );
-        
+		if ( found ) {
+			// TODO: use `setCheckbox()`?
+			await page.click( '#cb-select-all-1' );
+			// Select the "Bulk actions" > "Delete" option.
+			await page.select( '#bulk-action-selector-top', 'delete' );
+			// Submit the form to send all bh_wc_bitcoin_gateway_check_unpaid_order actions to the trash.
+			await page.click( '#doaction' );
+		}
+	}
 
-        const found = await waitForSelectorWithoutThrow('#bulk-action-selector-top');
+	async function isJobScheduledForOrder( orderId ) {
+		const actionSchedulerTableRowForOrder = await getActionSchedulerTableRowForOrder(
+			orderId
+		);
 
-        if (found) {
-            // TODO: use `setCheckbox()`?
-            await page.click('#cb-select-all-1');
-            // Select the "Bulk actions" > "Delete" option.
-            await page.select('#bulk-action-selector-top', 'delete');
-            // Submit the form to send all bh_wc_bitcoin_gateway_check_unpaid_order actions to the trash.
-            await page.click('#doaction');
-            
-        }
-    }
+		return typeof actionSchedulerTableRowForOrder !== 'undefined';
+	}
 
-    async function isJobScheduledForOrder( orderId ) {
-        var actionSchedulerTableRowForOrder = await getActionSchedulerTableRowForOrder(orderId);
+	async function getActionSchedulerTableRowForOrder( orderId ) {
+		const actionSchedulerUrl =
+			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
+		await page.goto( actionSchedulerUrl, { waitUntil: 'networkidle0' } );
 
-        return typeof actionSchedulerTableRowForOrder !== 'undefined';
-    }
+		const [ pendingJobTrElement ] = await page.$x(
+			`//td[@data-colname="Arguments"][contains(., "'order_id' => ${ orderId }")]/..`
+		);
 
-    async function getActionSchedulerTableRowForOrder( orderId ) {
+		return pendingJobTrElement;
+	}
 
-        let actionSchedulerUrl = 'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
-        await page.goto( actionSchedulerUrl, {waitUntil: 'networkidle0'} );
+	async function setOrderStatus( orderId, status ) {
+		await merchant.goToOrder( orderId );
 
-        var [pendingJobTrElement] = await page.$x(`//td[@data-colname="Arguments"][contains(., "'order_id' => ${orderId}")]/..`);
+		await expect( page.title() ).resolves.toMatch( 'Edit order' );
+		await merchant.updateOrderStatus( orderId, status );
+	}
 
-        return pendingJobTrElement;
-    }
+	async function runActionInRow( actionSchedulerTableRow ) {
+		const [
+			pendingJobHookColumnTdElement,
+		] = await actionSchedulerTableRow.$x( `//td[@data-colname="Hook"]` );
 
-    async function setOrderStatus(orderId, status){
+		expect( pendingJobHookColumnTdElement ).toBeDefined();
 
-        await merchant.goToOrder(orderId);
+		// Focus to unveil actions.
+		await pendingJobHookColumnTdElement.focus();
 
-        await expect(page.title()).resolves.toMatch('Edit order');
-        await merchant.updateOrderStatus(orderId, status);
-        
-    }
+		const runLink = await pendingJobHookColumnTdElement.$( '.run a' );
 
+		expect( runLink ).toBeDefined();
 
-    async function runActionInRow(actionSchedulerTableRow) {
+		runLink.focus();
 
-        var [pendingJobHookColumnTdElement] = await actionSchedulerTableRow.$x(`//td[@data-colname="Hook"]`);
+		await Promise.all( [
+			page.keyboard.press( 'Enter' ),
+			page.waitForNavigation( { waitUntil: 'networkidle0' } ),
+		] );
+	}
 
-        expect(pendingJobHookColumnTdElement).toBeDefined();
+	it( 'should schedule a payment check when a Bitcoin order is placed', async () => {
+		const orderId = await placeBitcoinOrderBefore();
+		await merchant.login();
 
-        // Focus to unveil actions.
-        await pendingJobHookColumnTdElement.focus();
+		const isScheduled = await isJobScheduledForOrder( orderId );
+		expect( isScheduled ).toBe( true );
+	} );
 
-        var runLink = await pendingJobHookColumnTdElement.$('.run a');
+	it( 'should schedule a payment check when a Bitcoin orders status is set to on-hold', async () => {
+		const orderId = await placeBitcoinOrderBefore();
+		await merchant.login();
 
-        expect(runLink).toBeDefined();
+		await setOrderStatus( orderId, 'wc-pending' );
 
-        runLink.focus();
+		await deletePendingActionSchedulerPaymentChecks();
 
-        await Promise.all(
-            [
-                page.keyboard.press('Enter'),
-                page.waitForNavigation({waitUntil: 'networkidle0'})
-            ]
-        );
-    }
+		await setOrderStatus( orderId, 'wc-on-hold' );
 
+		const isScheduled = await isJobScheduledForOrder( orderId );
+		expect( isScheduled ).toBe( true );
+	} );
 
-    it('should schedule a payment check when a Bitcoin order is placed', async() => {
+	it( 'should cancel the scheduled check when the order is marked paid', async () => {
+		const orderId = await placeBitcoinOrderBefore();
+		await merchant.login();
 
-        let orderId = await placeBitcoinOrderBefore();
-        await merchant.login();
+		const isScheduledBefore = await isJobScheduledForOrder( orderId );
+		expect( isScheduledBefore ).toEqual( true );
 
-        let isScheduled = await isJobScheduledForOrder(orderId);
-        expect(isScheduled).toBe(true);
-    });
+		await setOrderStatus( orderId, 'wc-processing' );
 
-    it('should schedule a payment check when a Bitcoin orders status is set to on-hold', async() => {
+		const isScheduledAfter = await isJobScheduledForOrder( orderId );
+		expect( isScheduledAfter ).toBe( false );
+	} );
 
-        let orderId = await placeBitcoinOrderBefore();
-        await merchant.login();
+	it( 'should schedule a payment check when a Bitcoin orders status is set to on hold via the bulk actions menu', async () => {
+		const orderId = await placeBitcoinOrderBefore();
+		await merchant.login();
 
-        await setOrderStatus(orderId, 'wc-pending');
+		await setOrderStatus( orderId, 'wc-pending' );
 
-        await deletePendingActionSchedulerPaymentChecks();
+		await deletePendingActionSchedulerPaymentChecks();
 
-        await setOrderStatus(orderId, 'wc-on-hold');
+		await merchant.openAllOrdersView();
 
-        let isScheduled = await isJobScheduledForOrder(orderId);
-        expect(isScheduled).toBe(true);
-    });
+		await page.click( '#cb-select-all-1' );
+		// Select the "Bulk actions" > "Change status to on-hold" option.
+		await page.select( '#bulk-action-selector-top', 'mark_on-hold' );
+		await page.click( '#doaction' );
 
-    it('should cancel the scheduled check when the order is marked paid', async() => {
-        let orderId = await placeBitcoinOrderBefore();
-        await merchant.login();
+		const isScheduled = await isJobScheduledForOrder( orderId );
+		expect( isScheduled ).toBe( true );
+	} );
 
-        let isScheduledBefore = await isJobScheduledForOrder(orderId);
-        expect(isScheduledBefore).toEqual(true);
+	// The old way was to create a new scheduled task each time the order was checked for payment but had not yet been paid.
+	// The new way is to create a single repeating task, and only cancel that task when the order is paid. (TODO: or expiry time passes).
+	it( 'should schedule new payment check after each check that does not have payment', async () => {
+		// Arrange.
+		const orderId = await placeBitcoinOrderBefore();
+		await merchant.login();
 
-        await setOrderStatus(orderId, 'wc-processing');
+		const tableRowForOrder = await getActionSchedulerTableRowForOrder(
+			orderId
+		);
 
-        let isScheduledAfter = await isJobScheduledForOrder(orderId);
-        expect(isScheduledAfter).toBe(false);
-    });
+		await runActionInRow( tableRowForOrder );
 
-    it('should schedule a payment check when a Bitcoin orders status is set to on hold via the bulk actions menu', async() => {
-
-        let orderId = await placeBitcoinOrderBefore();
-        await merchant.login();
-
-        await setOrderStatus(orderId, 'wc-pending');
-
-        await deletePendingActionSchedulerPaymentChecks();
-
-        await merchant.openAllOrdersView();
-
-        await page.click('#cb-select-all-1');
-        // Select the "Bulk actions" > "Change status to on-hold" option.
-        await page.select('#bulk-action-selector-top', 'mark_on-hold');
-        await page.click('#doaction');
-
-        let isScheduled = await isJobScheduledForOrder(orderId);
-        expect(isScheduled).toBe(true);
-    });
-
-    // The old way was to create a new scheduled task each time the order was checked for payment but had not yet been paid.
-    // The new way is to create a single repeating task, and only cancel that task when the order is paid. (TODO: or expiry time passes).
-    it('should schedule new payment check after each check that does not have payment', async () => {
-
-        // Arrange.
-        let orderId = await placeBitcoinOrderBefore();
-        await merchant.login();
-
-        let tableRowForOrder = await getActionSchedulerTableRowForOrder(orderId);
-
-        await runActionInRow(tableRowForOrder);
-
-        let isScheduled = await isJobScheduledForOrder(orderId);
-        expect(isScheduled).toBe(true);
-    });
-
-});
+		const isScheduled = await isJobScheduledForOrder( orderId );
+		expect( isScheduled ).toBe( true );
+	} );
+} );
