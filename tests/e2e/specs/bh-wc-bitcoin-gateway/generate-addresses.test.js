@@ -185,7 +185,7 @@ describe( 'Generate new addresses', () => {
 		let allAddressCountNum = allAddressCountText.replace( /[\D]/g, '' );
 		allAddressCountNum = parseInt( allAddressCountNum );
 
-		expect( allAddressCountNum !== 0 );
+		expect( allAddressCountNum ).not.toEqual( 0 );
 
 		const unusedAddressCountElement = await page.$( '.unused a .count' );
 		const unusedAddressCountText = await page.evaluate(
@@ -214,9 +214,8 @@ describe( 'Generate new addresses', () => {
 			assignedAddressCountNum = parseInt( assignedAddressCountNum );
 		}
 
-		expect(
-			unusedAddressCountNum + assignedAddressCountNum ===
-				allAddressCountNum
+		expect( unusedAddressCountNum + assignedAddressCountNum ).toEqual(
+			allAddressCountNum
 		);
 	} );
 } );
