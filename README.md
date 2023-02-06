@@ -180,6 +180,9 @@ I would like to acknowledge plugins similar to this one, who do not have any of 
 * Sovereign Crypto Payments _by OnionBazaar_ – [WordPress.org](https://wordpress.org/plugins/sovereign-crypto-payments/) | [GitHub](https://github.com/onionbazaar/sovereign-crypto-payments)
 * Nomiddleman Bitcoin and Crypto Payments for WooCommerce – [WordPress.org](https://wordpress.org/plugins/nomiddleman-crypto-payments-for-woocommerce/) | [GitHub](https://github.com/nomiddleman/nomiddleman-woocommerce/)
 * Accept Bitcoin _by Bitonymous_ – [WordPress.org](https://wordpress.org/plugins/accept-bitcoin)
+* Crypto Payments Woo _by Idan Neeman_ – [WordPress.org](https://wordpress.org/plugins/crypto-payments-woo/) | [GitHub](https://github.com/Idan-Neeman/Crypto-Payments-Woo)
+* Cryptocurrency Checkout _by Nimiq_ – [WordPress.org](https://wordpress.org/plugins/woo-nimiq-gateway/) | [GitHub](https://github.com/nimiq/woocommerce-gateway-nimiq) 
+* Decentralized Bitcoin CryptoDEC Payment Gateway for WooCommerce _by ITLS_ – [WordPress.org](https://wordpress.org/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce/)
 
 WooCommerce are themselves (officially) encouraging the use of crypto (see [It’s Time to Start Accepting Cryptocurrency](https://woocommerce.com/posts/start-accepting-cryptocurrency/), woocommerce.com, 2022-11-02) but the [plugins listed on their site](https://woocommerce.com/cryptocurrency/) are all by venture-capital backed companies.
 
