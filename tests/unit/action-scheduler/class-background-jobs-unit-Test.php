@@ -58,8 +58,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertTrue( $logger->hasDebugRecords() );
 
-		// TODO:
-		// $this->assertTrue( $logger->hasInfoThatContains( '' ) );
+		$this->markTestIncomplete( 'Assert the function logs a summary of the result.' );
 	}
 
 }
