@@ -3,8 +3,6 @@ const {
 	settingsPageSaveChanges,
 } = require( '@woocommerce/e2e-utils' );
 
-const config = require( 'config' );
-
 describe( 'Set log level', () => {
 	it( 'should respect the log level that is saved on the gateway settings page', async () => {
 		await merchant.login();

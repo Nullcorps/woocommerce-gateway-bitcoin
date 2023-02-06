@@ -1,19 +1,18 @@
-import { sprintf, __ } from '@wordpress/i18n';
 import { registerPaymentMethod } from '@woocommerce/blocks-registry';
 import { decodeEntities } from '@wordpress/html-entities';
 import { getSetting } from '@woocommerce/settings';
 
-const bh_settings = getSetting( 'bitcoin_gateway_data', {} );
+const bhSettings = getSetting( 'bitcoin_gateway_data', {} );
 
-const bh_defaultLabel = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
+const bhDefaultLabel = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
 
-const bh_label = decodeEntities( bh_settings.title ) || bh_defaultLabel;
+const bhLabel = decodeEntities( bhSettings.title ) || bhDefaultLabel;
 
 /**
  * Content component
  */
 const BHContent = () => {
-	return decodeEntities( bh_settings.description || '' );
+	return decodeEntities( bhSettings.description || '' );
 };
 
 /**
@@ -23,7 +22,7 @@ const BHContent = () => {
  */
 const BHLabel = ( props ) => {
 	const { PaymentMethodLabel } = props.components;
-	return <PaymentMethodLabel text={ bh_label } />;
+	return <PaymentMethodLabel text={ bhLabel } />;
 };
 
 /**
@@ -35,9 +34,9 @@ const BitcoinGateway = {
 	content: <BHContent />,
 	edit: <BHContent />,
 	canMakePayment: () => true,
-	ariaLabel: bh_label,
+	ariaLabel: bhLabel,
 	supports: {
-		features: bh_settings.supports,
+		features: bhSettings.supports,
 	},
 };
 

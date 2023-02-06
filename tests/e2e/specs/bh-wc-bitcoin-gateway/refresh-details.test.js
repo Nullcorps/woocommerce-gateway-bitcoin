@@ -6,22 +6,13 @@
 // 2. Place an order, arrive on the Thank You page, press refresh twice.
 // First refresh is overwriting data needed for subsequent requests.
 
-// import {expect, jest, test} from '@jest/globals';
 import { expect } from '@jest/globals';
 
 const {
-	shopper,
 	uiUnblocked,
 	merchant,
-	setCheckbox,
-	settingsPageSaveChanges,
-	verifyCheckboxIsSet,
-	clearAndFillInput,
 	createSimpleProduct,
 } = require( '@woocommerce/e2e-utils' );
-
-const config = require( 'config' );
-const simpleProductName = config.get( 'products.simple.name' );
 
 const configureBitcoinXpub = require( './configure-bitcoin-xpub.before.js' );
 const placeBitcoinOrderBefore = require( './place-bitcoin-order.before.js' );

@@ -4,12 +4,9 @@
 
 const {
 	merchant,
-	uiUnblocked,
 	waitForSelectorWithoutThrow,
 	createSimpleProduct,
 } = require( '@woocommerce/e2e-utils' );
-
-const config = require( 'config' );
 
 const configureBitcoinXpub = require( './configure-bitcoin-xpub.before.js' );
 const placeBitcoinOrderBefore = require( './place-bitcoin-order.before.js' );

@@ -4,10 +4,6 @@ const {
 	shopper,
 	uiUnblocked,
 	merchant,
-	setCheckbox,
-	settingsPageSaveChanges,
-	verifyCheckboxIsSet,
-	clearAndFillInput,
 	createSimpleProduct,
 } = require( '@woocommerce/e2e-utils' );
 

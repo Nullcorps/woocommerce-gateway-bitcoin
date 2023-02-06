@@ -1,8 +1,4 @@
-const {
-	shopper,
-	uiUnblocked,
-	createSimpleProduct,
-} = require( '@woocommerce/e2e-utils' );
+const { shopper, uiUnblocked } = require( '@woocommerce/e2e-utils' );
 
 const config = require( 'config' );
 const simpleProductName = config.get( 'products.simple.name' );

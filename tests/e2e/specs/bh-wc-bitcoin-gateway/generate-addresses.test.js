@@ -18,8 +18,6 @@ jest.setTimeout( 60000 );
 
 const { merchant } = require( '@woocommerce/e2e-utils' );
 
-const config = require( 'config' );
-
 const configureBitcoinXpub = require( './configure-bitcoin-xpub.before.js' );
 const placeBitcoinOrderBefore = require( './place-bitcoin-order.before.js' );
 
@@ -56,8 +54,6 @@ describe( 'Generate new addresses', () => {
 			''
 		);
 
-		console.log( 'unusedAddressCountNum: ' + unusedAddressCountNum );
-
 		do {
 			// Use `setCheckbox()`?
 			await page.waitForSelector( '#cb-select-all-1' );
@@ -81,8 +77,6 @@ describe( 'Generate new addresses', () => {
 			);
 		} while ( unusedAddressCountNum >= 50 );
 
-		console.log( 'unusedAddressCountNum: ' + unusedAddressCountNum );
-
 		// Act.
 		// Place an order – which should create a background job to generate the addresses.
 		// Invoke cron – which should generate them.
@@ -98,18 +92,7 @@ describe( 'Generate new addresses', () => {
 			`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`
 		);
 
-		if ( ! pendingJobName ) {
-			console.log(
-				'Did not find bh_wc_bitcoin_gateway_generate_new_addresses job in pending actions. BAD?'
-			);
-		} else {
-			const tdText = await page.evaluate(
-				( element ) => element.textContent,
-				pendingJobName
-			);
-			// tdText: bh_wc_bitcoin_gateway_generate_new_addressesRun | CancelShow more details
-			console.log( 'tdText: ' + tdText );
-
+		if ( pendingJobName ) {
 			// Focus to unveil actions.
 			await pendingJobName.focus();
 
@@ -124,23 +107,11 @@ describe( 'Generate new addresses', () => {
 					} ),
 				] );
 				// await runLink.click();
-			} else {
-				console.log( 'runLink not found (.run a)' );
 			}
 
 			[ pendingJobName ] = await page.$x(
 				`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`
 			);
-
-			if ( pendingJobName ) {
-				console.log(
-					'DID find bh_wc_bitcoin_gateway_generate_new_addresses job in pending actions. Bad.'
-				);
-			} else {
-				console.log(
-					'Did NOT find bh_wc_bitcoin_gateway_generate_new_addresses job in pending actions. Good. '
-				);
-			}
 		}
 
 		await page.goto(
@@ -177,17 +148,9 @@ describe( 'Generate new addresses', () => {
 			/[\D]/g,
 			''
 		);
-		console.log(
-			'updatedUnusedAddressCountNumAfter: ' +
-				updatedUnusedAddressCountNumAfter
-		);
+
 		updatedUnusedAddressCountNumAfter = parseInt(
 			updatedUnusedAddressCountNumAfter
-		);
-
-		console.log(
-			'updatedUnusedAddressCountNumAfter: ' +
-				updatedUnusedAddressCountNumAfter
 		);
 
 		expect( updatedUnusedAddressCountNumAfter ).toBeGreaterThanOrEqual(

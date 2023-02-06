@@ -1,3 +1,4 @@
+/* global navigator, jQuery, bh_wc_bitcoin_gateway_order_details, bh_wc_bitcoin_gateway_ajax_data */
 ( function( $ ) {
 	'use strict';
 
@@ -28,15 +29,15 @@
 		} );
 
 		$( '.bh_wc_bitcoin_gateway_last_checked_time' ).click( function() {
-			check_now();
+			checkNow();
 		} );
 	} );
 
-	function check_now() {
-		const ajax_url = bh_wc_bitcoin_gateway_ajax_data.ajax_url;
+	function checkNow() {
+		const ajaxUrl = bh_wc_bitcoin_gateway_ajax_data.ajax_url;
 		const nonce = bh_wc_bitcoin_gateway_ajax_data.nonce;
 
-		const order_id = bh_wc_bitcoin_gateway_order_details.order_id;
+		const orderId = bh_wc_bitcoin_gateway_order_details.order_id;
 
 		// Let's fade out the numbers to indicate they are maybe about to be updated.
 		$( '.bh_wc_bitcoin_gateway_updatable' ).animate( { opacity: 0.4 } );
@@ -46,19 +47,19 @@
 		const data = {
 			action: 'bh_wc_bitcoin_gateway_refresh_order_details',
 			_ajax_nonce: nonce,
-			order_id,
+			order_id: orderId,
 		};
 
-		jQuery.post( ajax_url, data, function( response ) {
+		$.post( ajaxUrl, data, function( response ) {
 			// Compare the existing totals,
 			// If they are the same, just reset opacity,
 			// If they are different, display:none the slow fade in.
 
-			const new_bh_wc_bitcoin_gateway_order_details = response.data;
+			const newData = response.data;
 
 			if (
 				bh_wc_bitcoin_gateway_order_details.btc_amount_received !==
-				new_bh_wc_bitcoin_gateway_order_details.btc_amount_received
+				newData.btc_amount_received
 			) {
 				// We have a new payment!
 				$( '.bh_wc_bitcoin_gateway_updatable' ).css(
@@ -66,15 +67,11 @@
 					'none'
 				);
 
-				$( '.bh_wc_bitcoin_gateway_status' ).text(
-					new_bh_wc_bitcoin_gateway_order_details.status
-				);
+				$( '.bh_wc_bitcoin_gateway_status' ).text( newData.status );
 				$( '.bh_wc_bitcoin_gateway_amount_received' ).text(
-					new_bh_wc_bitcoin_gateway_order_details.amount_received
+					newData.amount_received
 				);
-				$( '.order-status' ).text(
-					new_bh_wc_bitcoin_gateway_order_details.order_status_formatted
-				);
+				$( '.order-status' ).text( newData.order_status_formatted );
 
 				// TODO: Transactions.
 
@@ -87,7 +84,7 @@
 			}
 
 			$( '.bh_wc_bitcoin_gateway_last_checked_time' ).text(
-				new_bh_wc_bitcoin_gateway_order_details.last_checked_time_formatted
+				newData.last_checked_time_formatted
 			);
 
 			$( '.bh-wc-bitcoin-gateway-details' ).removeClass( 'blockUI' );

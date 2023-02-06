@@ -4,8 +4,6 @@ const {
 	clearAndFillInput,
 } = require( '@woocommerce/e2e-utils' );
 
-const config = require( 'config' );
-
 const configureBitcoinXpub = async ( dispatch ) => {
 	await merchant.openSettings( 'checkout', 'bitcoin_gateway' );
 

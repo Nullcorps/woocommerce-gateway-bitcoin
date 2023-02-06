@@ -1,16 +1,4 @@
-const {
-	shopper,
-	uiUnblocked,
-	merchant,
-	setCheckbox,
-	settingsPageSaveChanges,
-	verifyCheckboxIsSet,
-	clearAndFillInput,
-	createSimpleProduct,
-} = require( '@woocommerce/e2e-utils' );
-
-const config = require( 'config' );
-const simpleProductName = config.get( 'products.simple.name' );
+const { merchant, createSimpleProduct } = require( '@woocommerce/e2e-utils' );
 
 const configureBitcoinXpub = require( './configure-bitcoin-xpub.before.js' );
 const placeBitcoinOrderBefore = require( './place-bitcoin-order.before.js' );
