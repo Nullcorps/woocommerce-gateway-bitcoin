@@ -3,7 +3,7 @@ const { shopper, uiUnblocked } = require( '@woocommerce/e2e-utils' );
 const config = require( 'config' );
 const simpleProductName = config.get( 'products.simple.name' );
 
-const placeBitcoinOrderBefore = async ( dispatch ) => {
+const placeBitcoinOrderBefore = async () => {
 	await shopper.goToShop();
 
 	await shopper.addToCartFromShopPage( simpleProductName );

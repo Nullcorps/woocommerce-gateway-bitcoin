@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { expect } from '@jest/globals';
 
 const {

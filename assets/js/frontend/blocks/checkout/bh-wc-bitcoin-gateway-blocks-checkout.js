@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { registerPaymentMethod } from '@woocommerce/blocks-registry';
 import { decodeEntities } from '@wordpress/html-entities';
 import { getSetting } from '@woocommerce/settings';

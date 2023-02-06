@@ -4,7 +4,7 @@ const {
 	clearAndFillInput,
 } = require( '@woocommerce/e2e-utils' );
 
-const configureBitcoinXpub = async ( dispatch ) => {
+const configureBitcoinXpub = async () => {
 	await merchant.openSettings( 'checkout', 'bitcoin_gateway' );
 
 	// TODO: read from env.secret.

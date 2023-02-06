@@ -1,3 +1,8 @@
+/**
+ * External dependencies
+ */
+import { expect } from '@jest/globals';
+
 // Fix bugs when refreshing the payment details box (i.e. looking for new transactions).
 
 // 1. Place an order, arrive on the Thank You page, press refresh.
@@ -5,8 +10,6 @@
 
 // 2. Place an order, arrive on the Thank You page, press refresh twice.
 // First refresh is overwriting data needed for subsequent requests.
-
-import { expect } from '@jest/globals';
 
 const {
 	uiUnblocked,
