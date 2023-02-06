@@ -348,6 +348,8 @@ class API implements API_Interface {
 		/** @var Bitcoin_Gateway $gateway */
 		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
 
+		// TODO: null check here. When WooCommerce is inactive `$bitcoin_gateways` is empty.
+
 		// TODO: get from gateway.
 		$gateway_num_required_confirmations = 3;
 
@@ -586,7 +588,7 @@ class API implements API_Interface {
 	 *
 	 * @return string Bitcoin amount.
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): string {
+	public function convert_fiat_to_btc( string $currency, float $fiat_amount = 1.0 ): string {
 
 		// 1 BTC = xx USD.
 		$exchange_rate = $this->get_exchange_rate( $currency );
@@ -705,20 +707,20 @@ class API implements API_Interface {
 
 
 	/**
-	 * @param string $xpub
+	 * @param string $master_public_key
 	 * @param int    $generate_count // TODO: Change this up to 50? when in prod.
 	 *
 	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 *
 	 * @throws Exception
 	 */
-	public function generate_new_addresses_for_wallet( string $xpub, int $generate_count = 25 ): array {
+	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array {
 
 		$result = array();
 
-		$result['xpub'] = $xpub;
+		$result['xpub'] = $master_public_key;
 
-		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key );
 
 		if ( is_null( $wallet_post_id ) ) {
 			throw new \Exception();
@@ -736,7 +738,7 @@ class API implements API_Interface {
 			// TODO: Post increment or we will never generate address 0 like this.
 			$address_index++;
 
-			$new_address = $this->generate_address_api->generate_address( $xpub, $address_index );
+			$new_address = $this->generate_address_api->generate_address( $master_public_key, $address_index );
 
 			if ( ! is_null( $this->bitcoin_address_factory->get_post_id_for_address( $new_address ) ) ) {
 				continue;
@@ -892,7 +894,6 @@ class API implements API_Interface {
 			'updates'               => $updates,
 			'previous_transactions' => $previous_transactions,
 		);
-
 	}
 
 	/**

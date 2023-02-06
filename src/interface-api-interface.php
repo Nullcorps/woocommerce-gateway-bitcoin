@@ -1,5 +1,7 @@
 <?php
 /**
+ * The core plugin settings that may preferably be set by supplying another instance conforming to this interface.
+ *
  * @package    brianhenryie/bh-wc-bitcoin-gateway
  */
 
@@ -12,8 +14,9 @@ use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use WC_Order;
 
-
 /**
+ * Methods in API class that are used by other classes, primarily Bitcoin_Gateway, Background_Jobs and CLI.
+ *
  * @phpstan-type TransactionArray array{txid:string, time:\DateTimeInterface, value:string, confirmations:int}
  */
 interface API_Interface {
@@ -23,7 +26,7 @@ interface API_Interface {
 	 *
 	 * @see https://github.com/BrianHenryIE/bh-wc-duplicate-payment-gateways
 	 *
-	 * @param int $order_id
+	 * @param int $order_id A WooCommerce order id (presumably).
 	 *
 	 * @return bool
 	 */
@@ -34,22 +37,25 @@ interface API_Interface {
 	 *
 	 * @see https://github.com/BrianHenryIE/bh-wc-duplicate-payment-gateways
 	 *
-	 * @param string $gateway_id
+	 * @param string $gateway_id The WC_Payment_Gateway id to be checked.
 	 *
 	 * @return bool
 	 */
 	public function is_bitcoin_gateway( string $gateway_id ): bool;
 
 	/**
+	 * Get a list of payment gateways registered with WooCommerce which are instances of Bitcoin_Gateway.
+	 *
 	 * @return Bitcoin_Gateway[]
 	 */
 	public function get_bitcoin_gateways(): array;
 
 	/**
+	 * Find what the value of 1 BTC is in the specified currency.
 	 *
 	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
-	 * @param string $currency USD|EUR|GBP.
+	 * @param string $currency E.g. USD|EUR|GBP.
 	 *
 	 * @return string
 	 */
@@ -65,10 +71,11 @@ interface API_Interface {
 	 *
 	 * @return string
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount ): string;
+	public function convert_fiat_to_btc( string $currency, float $fiat_amount = 1.0 ): string;
 
 	/**
 	 * Return an unused address for use in an order.
+	 *
 	 * Adds the address as metadata to the order.
 	 *
 	 * @param WC_Order $order The (newly placed) WooCommerce order.
@@ -89,11 +96,13 @@ interface API_Interface {
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array;
 
 	/**
-	 * @param WC_Order $order
-	 * @param bool     $refresh
+	 * Returns the array from `get_order_details()` with additional keys for printing in HTML/email.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 * @param bool     $refresh Should an API request be made to check for new transactions, or just use existing data.
 	 *
 	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
-	 * @throws Exception
+	 * @throws Exception When the order has no Bitcoin address.
 	 */
 	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array;
 
@@ -103,24 +112,40 @@ interface API_Interface {
 	 *
 	 * @used-by Bitcoin_Gateway::process_admin_options()
 	 *
-	 * @param string  $xpub_after
-	 * @param ?string $gateway_id
+	 * @param string  $master_public_key The wallet address to save as a wallet object cpt.
+	 * @param ?string $gateway_id The Bitcoin gateway (it is presumably linked to one).
 	 *
 	 * @return array{wallet:Bitcoin_Wallet, wallet_post_id:int, existing_fresh_addresses:array<Bitcoin_Address>, generated_addresses:array<Bitcoin_Address>}
 	 */
-	public function generate_new_wallet( string $xpub_after, string $gateway_id = null ): array;
+	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): array;
 
 	/**
+	 * For each Bitcoin gateway, calls `generate_new_addresses_for_wallet()`.
+	 *
 	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
 	 */
 	public function generate_new_addresses(): array;
 
-	public function generate_new_addresses_for_wallet( string $xpub, int $generate_count = 25 ): array;
+	/**
+	 * Generate fresh addresses for a wallet.
+	 *
+	 * Gets the wallet object (CPT), get the last address index generated, derives the following 25 addresses for
+	 * that wallet, checks the new addresses for transactions, queues a new background job to generate more if
+	 * total is still below threshold.
+	 *
+	 * @param string $master_public_key The main wallet address (xpub/ypub/zpub).
+	 * @param int    $generate_count The number of sub-addresses to derive.
+	 *
+	 * @return array
+	 */
+	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array;
 
 	/**
+	 * Get transactions for an address object, with number of confirmations for each, and show which are new or updated.
+	 *
 	 * @used-by CLI::check_transactions()
 	 *
-	 * @param Bitcoin_Address $address
+	 * @param Bitcoin_Address $address Address object for existing saved address (i.e. this doesn't work for arbitrary addresses).
 	 *
 	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
 	 */
@@ -132,14 +157,14 @@ interface API_Interface {
 	 *
 	 * @used-by Bitcoin_Gateway::is_available()
 	 *
-	 * @param Bitcoin_Gateway $gateway
+	 * @param Bitcoin_Gateway $gateway The WooCommerce payment gateway which should have addresses generated.
 	 *
 	 * @return bool
 	 */
 	public function is_fresh_address_available_for_gateway( Bitcoin_Gateway $gateway ): bool;
 
 	/**
-	 *
+	 * Validate addresses have not been used before by checking for transactions.
 	 *
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 * @used-by API::generate_new_addresses()
@@ -147,7 +172,7 @@ interface API_Interface {
 	 * @used-by API::generate_new_wallet()
 	 * @used-by CLI::generate_new_addresses()
 	 *
-	 * @param ?Bitcoin_Address[] $addresses
+	 * @param ?Bitcoin_Address[] $addresses Array of Bitcoin address objects, or omit the parameter to check generated addresses whose status is "unknown".
 	 *
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
