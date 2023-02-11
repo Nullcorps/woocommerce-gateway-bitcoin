@@ -150,6 +150,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 * Units: Add mbtc as well as sats etc. (to match default Electrum display settings)
 * Add: change payment method button below payment details, if a customer accidentally chooses/changes their mind
 * Read the issues and requests of other Bitcoin gateways
+* Show current exchange rate on settings page
 
 ## How You Can Help
 
