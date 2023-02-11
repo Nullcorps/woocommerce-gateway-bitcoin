@@ -159,7 +159,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 			'description'  => array(
 				'title'       => __( 'Description', 'bh-wc-bitcoin-gateway' ),
-				'type'        => 'textarea',
+				'type'        => 'text',
 				'description' => __( 'Text the customer will see when the gateway is chosen at checkout.', 'bh-wc-bitcoin-gateway' ),
 				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wc-bitcoin-gateway' ),
 				'desc_tip'    => false,
