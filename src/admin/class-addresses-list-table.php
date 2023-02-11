@@ -246,7 +246,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 		}
 
 		echo '<span title="' . esc_attr( $wallet_address ) . '">';
-		echo $href_html;
+		echo wp_kses_post( $href_html );
 		echo esc_html( $abbreviated );
 		if ( ! empty( $href_html ) ) {
 			echo '</a>'; }
