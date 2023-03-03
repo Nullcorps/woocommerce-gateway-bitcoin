@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\HPOS
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS
  */
 class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -19,7 +19,7 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
-				'get_plugin_basename' => Expected::once( 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' ),
+				'get_plugin_basename' => Expected::once( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' ),
 			)
 		);
 
@@ -35,7 +35,7 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = FeaturesUtil::get_compatible_plugins_for_feature( 'custom_order_tables' );
 
-		$this->assertContains( 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php', $result['compatible'] );
+		$this->assertContains( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', $result['compatible'], json_encode( $result['compatible'] ) );
 	}
 
 }

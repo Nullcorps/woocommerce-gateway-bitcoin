@@ -14,7 +14,7 @@ describe( 'Set log level', () => {
 		await settingsPageSaveChanges();
 
 		await page.goto(
-			'http://localhost:8084/wp-admin/admin.php?page=bh-wc-bitcoin-gateway-logs',
+			'http://localhost:8084/wp-admin/admin.php?page=bh-wp-bitcoin-gateway-logs',
 			{
 				waitUntil: 'networkidle0',
 			}

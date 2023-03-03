@@ -2,14 +2,14 @@
 /**
  * Constants for order meta keys.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use ActionScheduler;
-use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -25,17 +25,17 @@ class Order {
 	 */
 	protected API_Interface $api;
 
-	const BITCOIN_ADDRESS_META_KEY = 'bh_wc_bitcoin_gateway_address';
+	const BITCOIN_ADDRESS_META_KEY = 'bh_wp_bitcoin_gateway_address';
 
-	const TRANSACTIONS_META_KEY = 'bh_wc_bitcoin_gateway_transactions';
+	const TRANSACTIONS_META_KEY = 'bh_wp_bitcoin_gateway_transactions';
 
-	const EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wc_bitcoin_gateway_exchange_rate_at_time_of_purchase';
+	const EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wp_bitcoin_gateway_exchange_rate_at_time_of_purchase';
 
-	const ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wc_bitcoin_gateway_bitcoin_total_at_time_of_purchase';
+	const ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wp_bitcoin_gateway_bitcoin_total_at_time_of_purchase';
 
-	const BITCOIN_AMOUNT_RECEIVED_META_KEY = 'bh_wc_bitcoin_gateway_bitcoin_amount_received';
+	const BITCOIN_AMOUNT_RECEIVED_META_KEY = 'bh_wp_bitcoin_gateway_bitcoin_amount_received';
 
-	const LAST_CHECKED_META_KEY = 'bh_wc_bitcoin_gateway_last_checked_time';
+	const LAST_CHECKED_META_KEY = 'bh_wp_bitcoin_gateway_last_checked_time';
 
 	/**
 	 * Constructor.

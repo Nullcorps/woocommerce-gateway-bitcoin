@@ -2,10 +2,10 @@
 /**
  * Required settings for the plugin.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway;
+namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 /**
  * Typed settings, presumably saved in `wp_options`.
@@ -25,7 +25,7 @@ interface Settings_Interface {
 
 	/**
 	 * The URL to the plugin folder.
-	 * E.g. `https://example.org/wp-content/plugins/bh-wc-bitcoin-gateway/`.
+	 * E.g. `https://example.org/wp-content/plugins/bh-wp-bitcoin-gateway/`.
 	 *
 	 * Has trailing slash.
 	 */

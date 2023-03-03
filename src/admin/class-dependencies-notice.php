@@ -2,13 +2,13 @@
 /**
  * Print an admin notice if the required GMP PHP extension is not present.
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 /**
  * Hooks into wp-admin's admin_notice action and prints a warning if the plugin's dependencies are not present.
@@ -67,7 +67,7 @@ class Dependencies_Notice {
 
 		printf(
 			/* translators: %s is replaced with a link to the PHP.net page for the missing GMP extension. */
-			esc_html( __( 'Required PHP extension %s is not installed on this server. This is required for the calculations to derive Bitcoin payment addresses.', 'bh-wc-bitcoin-gateway' ) ),
+			esc_html( __( 'Required PHP extension %s is not installed on this server. This is required for the calculations to derive Bitcoin payment addresses.', 'bh-wp-bitcoin-gateway' ) ),
 			wp_kses(
 				$gmp_link,
 				array(
@@ -80,7 +80,7 @@ class Dependencies_Notice {
 		);
 		echo ' ';
 
-		echo wp_kses( __( 'Please <b>contact your hosting provider for support</b>.', 'bh-wc-bitcoin-gateway' ), array( 'b' => array() ) );
+		echo wp_kses( __( 'Please <b>contact your hosting provider for support</b>.', 'bh-wp-bitcoin-gateway' ), array( 'b' => array() ) );
 		echo ' ';
 
 		$deactivate_link = wp_nonce_url(
@@ -97,7 +97,7 @@ class Dependencies_Notice {
 		);
 
 		echo ' <a href="' . esc_url( $deactivate_link ) . '">';
-		echo esc_html( __( 'Deactivate Bitcoin Gateway plugin', 'bh-wc-bitcoin-gateway' ) );
+		echo esc_html( __( 'Deactivate Bitcoin Gateway plugin', 'bh-wp-bitcoin-gateway' ) );
 		echo '</a>.';
 
 		echo '</p>';

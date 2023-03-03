@@ -4,15 +4,15 @@
  *
  * Mostly just registers a script.
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry;
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 /**
  * Instance of the class expected by PaymentMethodRegistry.
@@ -69,16 +69,16 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 	 */
 	public function get_payment_method_script_handles(): array {
 
-		$handle = 'bh-wc-bitcoin-gateway-blocks';
+		$handle = 'bh-wp-bitcoin-gateway-blocks';
 
-		$script_url = $this->plugin_settings->get_plugin_url() . 'assets/js/frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout.min.js';
+		$script_url = $this->plugin_settings->get_plugin_url() . 'assets/js/frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout.min.js';
 
 		$dependencies = array( 'wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-html-entities', 'wp-i18n' );
 		$version      = $this->plugin_settings->get_plugin_version();
 
 		wp_register_script( $handle, $script_url, $dependencies, $version, true );
 
-		wp_set_script_translations( $handle, 'bh-wc-bitcoin-gateway', $this->plugin_settings->get_plugin_url() . 'languages/' );
+		wp_set_script_translations( $handle, 'bh-wp-bitcoin-gateway', $this->plugin_settings->get_plugin_url() . 'languages/' );
 
 		return array( $handle );
 	}

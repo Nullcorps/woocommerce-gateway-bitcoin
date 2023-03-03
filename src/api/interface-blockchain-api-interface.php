@@ -1,12 +1,12 @@
 <?php
 /**
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use DateTimeInterface;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 /**
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray

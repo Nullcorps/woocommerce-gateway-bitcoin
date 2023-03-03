@@ -1,18 +1,18 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Post;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
 use Codeception\TestCase\WPTestCase;
 use WP_Post;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table
  */
 class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 

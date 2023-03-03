@@ -4,12 +4,12 @@
  *
  * @see woocommerce/templates/myaccount/view-order.php
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;

@@ -2,18 +2,18 @@
 /**
  * Object containing the plugin settings.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
-use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
+use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LogLevel;
 
 /**
@@ -54,7 +54,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_slug(): string {
-		return 'bh-wc-bitcoin-gateway';
+		return 'bh-wp-bitcoin-gateway';
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_basename(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_BASENAME' ) ? BH_WC_BITCOIN_GATEWAY_BASENAME : 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php';
+		return defined( 'BH_WP_BITCOIN_GATEWAY_BASENAME' ) ? BH_WP_BITCOIN_GATEWAY_BASENAME : 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php';
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @return string
 	 */
 	public function get_plugin_version(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_VERSION' ) ? BH_WC_BITCOIN_GATEWAY_VERSION : '2.0.0';
+		return defined( 'BH_WP_BITCOIN_GATEWAY_VERSION' ) ? BH_WP_BITCOIN_GATEWAY_VERSION : '2.0.0';
 	}
 
 	/**
@@ -87,8 +87,8 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * @used-by Frontend_Assets::enqueue_styles()
 	 */
 	public function get_plugin_url(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_URL' )
-			? BH_WC_BITCOIN_GATEWAY_URL
+		return defined( 'BH_WP_BITCOIN_GATEWAY_URL' )
+			? BH_WP_BITCOIN_GATEWAY_URL
 			: plugins_url( $this->get_plugin_basename() );
 	}
 
@@ -108,8 +108,8 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	 * Get the absolute path to the plugin root on the server filesystem, with trailingslash.
 	 */
 	public function get_plugin_dir(): string {
-		return defined( 'BH_WC_BITCOIN_GATEWAY_PATH' )
-				? BH_WC_BITCOIN_GATEWAY_PATH
+		return defined( 'BH_WP_BITCOIN_GATEWAY_PATH' )
+				? BH_WP_BITCOIN_GATEWAY_PATH
 				: WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->get_plugin_basename() );
 	}
 }

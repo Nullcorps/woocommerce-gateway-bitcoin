@@ -30,7 +30,7 @@ const placeBitcoinOrderBefore = async () => {
 	// Order received
 	await expect( page ).toMatch( 'Order received' );
 
-	// http://localhost:8080/bh-wc-bitcoin-gateway/checkout/order-received/137/?key=wc_order_dzIP5fmDheHlK
+	// http://localhost:8080/bh-wp-bitcoin-gateway/checkout/order-received/137/?key=wc_order_dzIP5fmDheHlK
 	const url = await page.url();
 	const orderId = url.match( /order-received.(\d+).\?/ )[ 1 ];
 

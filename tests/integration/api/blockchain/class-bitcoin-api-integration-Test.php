@@ -4,13 +4,13 @@
  *
  * This should be in the Contracts test folder.
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
 
 /**
  * @coversNothing

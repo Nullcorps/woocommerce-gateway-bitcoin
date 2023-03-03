@@ -89,7 +89,7 @@ describe( 'Generate new addresses', () => {
 		await page.goto( actionSchedulerUrl, { waitUntil: 'networkidle0' } );
 
 		let [ pendingJobName ] = await page.$x(
-			`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`
+			`//td[@data-colname="Hook"][contains(text(), "bh_wp_bitcoin_gateway_generate_new_addresses")]`
 		);
 
 		if ( pendingJobName ) {
@@ -110,7 +110,7 @@ describe( 'Generate new addresses', () => {
 			}
 
 			[ pendingJobName ] = await page.$x(
-				`//td[@data-colname="Hook"][contains(text(), "bh_wc_bitcoin_gateway_generate_new_addresses")]`
+				`//td[@data-colname="Hook"][contains(text(), "bh_wp_bitcoin_gateway_generate_new_addresses")]`
 			);
 		}
 

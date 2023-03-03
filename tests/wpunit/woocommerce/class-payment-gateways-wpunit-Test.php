@@ -1,15 +1,15 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 use WC_Gateway_BACS;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways
  */
 class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

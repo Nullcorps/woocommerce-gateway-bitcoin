@@ -4,14 +4,14 @@
  *  - TODO After x unpaid time, mark unpaid orders as failed/cancelled.
  * When the fresh address list falls below the cache threshold, generate new addresses.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use ActionScheduler;
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -22,9 +22,9 @@ use WC_Order;
 class Background_Jobs {
 	use LoggerAwareTrait;
 
-	const CHECK_UNPAID_ORDER_HOOK               = 'bh_wc_bitcoin_gateway_check_unpaid_order';
-	const GENERATE_NEW_ADDRESSES_HOOK           = 'bh_wc_bitcoin_gateway_generate_new_addresses';
-	const CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK = 'bh_wc_bitcoin_gateway_check_new_addresses_transactions';
+	const CHECK_UNPAID_ORDER_HOOK               = 'bh_wp_bitcoin_gateway_check_unpaid_order';
+	const GENERATE_NEW_ADDRESSES_HOOK           = 'bh_wp_bitcoin_gateway_generate_new_addresses';
+	const CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK = 'bh_wp_bitcoin_gateway_check_new_addresses_transactions';
 
 	/**
 	 * Main class for carrying out the jobs.
@@ -48,7 +48,7 @@ class Background_Jobs {
 	 * Query a Blockchain API for updates to the order. If the order is still awaiting payment, schedule another job
 	 * to check again soon.
 	 *
-	 * @hooked bh_wc_bitcoin_gateway_check_unpaid_order
+	 * @hooked bh_wp_bitcoin_gateway_check_unpaid_order
 	 * @see self::CHECK_UNPAID_ORDER_HOOK
 	 *
 	 * @param int $order_id WooCommerce order id to check.
@@ -99,7 +99,7 @@ class Background_Jobs {
 	/**
 	 * When available addresses fall below a threshold, more are generated on a background job.
 	 *
-	 * @hooked bh_wc_bitcoin_gateway_generate_new_addresses
+	 * @hooked bh_wp_bitcoin_gateway_generate_new_addresses
 	 * @see self::GENERATE_NEW_ADDRESSES_HOOK
 	 */
 	public function generate_new_addresses(): void {
@@ -115,7 +115,7 @@ class Background_Jobs {
 	 * TODO It's not unlikely we'll hit 429 rate limits during this, so we'll loop through as many as we can,
 	 * then schedule a new job when we're told to stop.
 	 *
-	 * @hooked bh_wc_bitcoin_gateway_check_new_addresses_transactions
+	 * @hooked bh_wp_bitcoin_gateway_check_new_addresses_transactions
 	 * @see self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK
 	 */
 	public function check_new_addresses_for_transactions(): void {

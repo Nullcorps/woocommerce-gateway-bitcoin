@@ -2,5 +2,5 @@
 /**
  * TODO: Removed *required on billing fields.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */

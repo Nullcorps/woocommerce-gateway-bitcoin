@@ -1,11 +1,11 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Post
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post
  */
 class Post_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

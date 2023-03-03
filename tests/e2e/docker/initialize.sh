@@ -52,7 +52,7 @@ wp plugin delete hello
 wp rewrite structure /%postname%/
 
 # echo "Activate <your-extension>"
-wp plugin activate bh-wc-bitcoin-gateway
+wp plugin activate bh-wp-bitcoin-gateway
 
 # Not all products were being displayed, making it impossible to certainly choose one by name.
 wp option update woocommerce_catalog_rows 10
@@ -64,6 +64,6 @@ wp plugin install woo-gutenberg-products-block --activate --force
 wp plugin install https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip --activate --force
 
 # --porcelain
-wp post create --post_type=page --post_title="Blocks Checkout" --post_status=publish ./wp-content/plugins/bh-wc-bitcoin-gateway/tests/e2e/docker/blocks-checkout-post-content.txt
+wp post create --post_type=page --post_title="Blocks Checkout" --post_status=publish ./wp-content/plugins/bh-wp-bitcoin-gateway/tests/e2e/docker/blocks-checkout-post-content.txt
 
 echo "Success! Your E2E Test Environment is now ready."

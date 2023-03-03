@@ -2,17 +2,17 @@
 /**
  * The main payment gateway class for the plugin.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
@@ -73,14 +73,14 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		// TODO: Set the logger externally.
 		$this->setLogger( new NullLogger() );
 
-		$this->api = $api ?? $GLOBALS['bh_wc_bitcoin_gateway'];
+		$this->api = $api ?? $GLOBALS['bh_wp_bitcoin_gateway'];
 
-		$this->plugin_settings = new \BrianHenryIE\WC_Bitcoin_Gateway\API\Settings();
+		$this->plugin_settings = new \BrianHenryIE\WP_Bitcoin_Gateway\API\Settings();
 
-		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' );
+		$this->icon               = plugins_url( 'assets/bitcoin.png', 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' );
 		$this->has_fields         = false;
-		$this->method_title       = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
-		$this->method_description = __( 'Accept Bitcoin payments. Customers are shown payment instructions and a QR code. Orders are marked paid once payment is confirmed on the blockchain.', 'bh-wc-bitcoin-gateway' );
+		$this->method_title       = __( 'Bitcoin', 'bh-wp-bitcoin-gateway' );
+		$this->method_description = __( 'Accept Bitcoin payments. Customers are shown payment instructions and a QR code. Orders are marked paid once payment is confirmed on the blockchain.', 'bh-wp-bitcoin-gateway' );
 
 		// Load the settings.
 		$this->init_form_fields();
@@ -143,40 +143,40 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$settings_fields = array(
 
 			'enabled'      => array(
-				'title'   => __( 'Enable/Disable', 'bh-wc-bitcoin-gateway' ),
+				'title'   => __( 'Enable/Disable', 'bh-wp-bitcoin-gateway' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable Bitcoin Payment', 'bh-wc-bitcoin-gateway' ),
+				'label'   => __( 'Enable Bitcoin Payment', 'bh-wp-bitcoin-gateway' ),
 				'default' => 'yes',
 			),
 
 			'title'        => array(
-				'title'       => __( 'Title', 'bh-wc-bitcoin-gateway' ),
+				'title'       => __( 'Title', 'bh-wp-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'The payment method title the customer sees during checkout.', 'bh-wc-bitcoin-gateway' ),
-				'default'     => __( 'Bitcoin', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'The payment method title the customer sees during checkout.', 'bh-wp-bitcoin-gateway' ),
+				'default'     => __( 'Bitcoin', 'bh-wp-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
 
 			'description'  => array(
-				'title'       => __( 'Description', 'bh-wc-bitcoin-gateway' ),
+				'title'       => __( 'Description', 'bh-wp-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Text the customer will see when the gateway is chosen at checkout.', 'bh-wc-bitcoin-gateway' ),
-				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'Text the customer will see when the gateway is chosen at checkout.', 'bh-wp-bitcoin-gateway' ),
+				'default'     => __( 'Pay quickly and easily with Bitcoin', 'bh-wp-bitcoin-gateway' ),
 				'desc_tip'    => false,
 			),
 
 			'xpub'         => array(
-				'title'       => __( 'Master Public Key', 'bh-wc-bitcoin-gateway' ),
+				'title'       => __( 'Master Public Key', 'bh-wp-bitcoin-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'The xpub/ypub/zpub for your Bitcoin wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wc-bitcoin-gateway' ),
+				'description' => __( 'The xpub/ypub/zpub for your Bitcoin wallet, which we use to locally generate the addresses to pay to (no API calls). Find it in Electrum under menu:wallet/information. It looks like <code>xpub1a2bc3d4longalphanumericstring</code>', 'bh-wp-bitcoin-gateway' ),
 				'default'     => '',
 				'desc_tip'    => false,
 			),
 
 			'price_margin' => array(
-				'title'             => __( 'price-margin', 'bh-wc-bitcoin-gateway' ),
+				'title'             => __( 'price-margin', 'bh-wp-bitcoin-gateway' ),
 				'type'              => 'number',
-				'description'       => __( 'A percentage shortfall from the shown price which will be accepted, to allow for volatility.', 'bh-wc-bitcoin-gateway' ),
+				'description'       => __( 'A percentage shortfall from the shown price which will be accepted, to allow for volatility.', 'bh-wp-bitcoin-gateway' ),
 				'default'           => '2',
 				'custom_attributes' => array(
 					'min'  => 0,
@@ -223,7 +223,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			$settings_fields['xpub']['description'] = '<a href="' . esc_url( admin_url( 'edit.php?post_type=bh-bitcoin-address' ) ) . '">View addresses</a>';
 		}
 
-		$settings_fields['price_margin']['description'] .= __( 'See: ', 'bh-wc-bitcoin-gateway' ) . '<a href="https://buybitcoinworldwide.com/volatility-index/" target="_blank">Bitcoin Volatility</a>.';
+		$settings_fields['price_margin']['description'] .= __( 'See: ', 'bh-wp-bitcoin-gateway' ) . '<a href="https://buybitcoinworldwide.com/volatility-index/" target="_blank">Bitcoin Volatility</a>.';
 
 		$log_levels        = array( 'none', LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO, LogLevel::DEBUG );
 		$log_levels_option = array();
@@ -236,7 +236,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			'label'       => __( 'Enable Logging', 'text-domain' ),
 			'type'        => 'select',
 			'options'     => $log_levels_option,
-			'description' => __( 'Increasingly detailed levels of logs. ', 'bh-wc-bitcoin-gateway' ) . '<a href="' . admin_url( 'admin.php?page=bh-wc-bitcoin-gateway-logs' ) . '">View Logs</a>',
+			'description' => __( 'Increasingly detailed levels of logs. ', 'bh-wp-bitcoin-gateway' ) . '<a href="' . admin_url( 'admin.php?page=bh-wp-bitcoin-gateway-logs' ) . '">View Logs</a>',
 			'desc_tip'    => false,
 			'default'     => 'info',
 		);
@@ -282,11 +282,11 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 		if ( ! ( $order instanceof WC_Order ) ) {
 			// This should never happen.
-			throw new Exception( __( 'Error creating order.', 'bh-wc-bitcoin-gateway' ) );
+			throw new Exception( __( 'Error creating order.', 'bh-wp-bitcoin-gateway' ) );
 		}
 
 		if ( is_null( $this->api ) ) {
-			throw new Exception( __( 'API unavailable for new Bitcoin gateway order.', 'bh-wc-bitcoin-gateway' ) );
+			throw new Exception( __( 'API unavailable for new Bitcoin gateway order.', 'bh-wp-bitcoin-gateway' ) );
 		}
 
 		$api = $this->api;
@@ -319,7 +319,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 		// Mark as on-hold (we're awaiting the payment).
 		/* translators: %F: The order total in BTC */
-		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wc-bitcoin-gateway' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
+		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wp-bitcoin-gateway' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
 
 		$order->save();
 

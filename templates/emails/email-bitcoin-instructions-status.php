@@ -2,7 +2,7 @@
 /**
  * Template to display in emails to customers.
  *
- * @see \BrianHenryIE\WC_Bitcoin_Gateway\API_Interface::get_order_details()
+ * @see \BrianHenryIE\WP_Bitcoin_Gateway\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_formatted_order_details()`, extracted into these variables:
  *
@@ -18,7 +18,7 @@
  * @var string $exchange_rate_url
  * @var string $btc_exchange_rate_formatted
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
 $btc_exchange_rate_formatted = wp_strip_all_tags( $btc_exchange_rate_formatted );

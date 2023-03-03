@@ -8,10 +8,10 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
 /**
  * Define the internationalization functionality.
@@ -31,7 +31,7 @@ class I18n {
 	public function load_plugin_textdomain(): void {
 
 		load_plugin_textdomain(
-			'bh-wc-bitcoin-gateway',
+			'bh-wp-bitcoin-gateway',
 			false,
 			plugin_basename( dirname( __FILE__, 3 ) ) . '/languages/'
 		);

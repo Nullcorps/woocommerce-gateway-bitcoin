@@ -2,7 +2,7 @@
 /**
  * Friendly info table to display after the order is considered paid.
  *
- * @see \BrianHenryIE\WC_Bitcoin_Gateway\API_Interface::get_order_details()
+ * @see \BrianHenryIE\WP_Bitcoin_Gateway\API_Interface::get_order_details()
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *
@@ -16,7 +16,7 @@
  * @var string $btc_amount_received_formatted Amount received prefixed with "฿".
  * @var string $last_checked_time_formatted The last time a blockchain service was queried for updates to the payment address.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
 // TODO.

@@ -2,7 +2,7 @@ parameters:
     level: 8
     paths:
         - src
-        - bh-wc-bitcoin-gateway.php
+        - bh-wp-bitcoin-gateway.php
         - autoload.php
         - uninstall.php
     excludePaths:

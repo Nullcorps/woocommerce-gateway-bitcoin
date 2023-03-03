@@ -1,9 +1,9 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Settings
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Settings
  */
 class Settings_Unit_Test extends \Codeception\Test\Unit {
 
@@ -33,7 +33,7 @@ class Settings_Unit_Test extends \Codeception\Test\Unit {
 	public function test_get_plugin_version(): void {
 		global $plugin_root_dir, $plugin_name_php;
 
-		$plugin_file = $plugin_root_dir . DIRECTORY_SEPARATOR . 'bh-wc-bitcoin-gateway.php';
+		$plugin_file = $plugin_root_dir . DIRECTORY_SEPARATOR . 'bh-wp-bitcoin-gateway.php';
 
 		$plugin_file_contents = (string) file_get_contents( $plugin_file );
 

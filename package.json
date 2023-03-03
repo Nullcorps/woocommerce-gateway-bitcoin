@@ -1,7 +1,7 @@
 {
-  "name": "bh-wc-bitcoin-gateway",
+  "name": "bh-wp-bitcoin-gateway",
   "version": "2.0.0",
-  "description": "Bitcoin payment gateway for WooCommerce",
+  "description": "Bitcoin payment gateway",
   "main": "index.js",
   "scripts": {
     "docker:down": "npx wc-e2e docker:down",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BrianHenryIE/bh-wc-bitcoin-gateway.git"
+    "url": "git+https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway.git"
   },
   "author": "BrianHenryIE",
   "license": "GPL-2.0+",
   "bugs": {
-    "url": "https://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/issues"
+    "url": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/issues"
   },
-  "homepage": "https://github.com/BrianHenryIE/bh-wc-bitcoin-gateway#readme",
+  "homepage": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",

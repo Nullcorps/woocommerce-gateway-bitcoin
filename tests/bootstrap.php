@@ -1,6 +1,6 @@
 <?php
 /**
- * @package           brianhenryie/bh-wc-bitcoin-gateway
+ * @package           brianhenryie/bh-wp-bitcoin-gateway
  */
 
 $GLOBALS['project_root_dir']   = $project_root_dir  = dirname( __FILE__, 2 );

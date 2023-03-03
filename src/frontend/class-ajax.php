@@ -4,17 +4,17 @@
  *
  * Used on Thank You and my-account screens to query for transaction updates.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Frontend;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
 /**
- * Action `bh_wc_bitcoin_gateway_refresh_order_details` hooked to `wp_ajax` and `wp_ajax_nopriv`.
+ * Action `bh_wp_bitcoin_gateway_refresh_order_details` hooked to `wp_ajax` and `wp_ajax_nopriv`.
  */
 class AJAX {
 	use LoggerAwareTrait;
@@ -42,7 +42,7 @@ class AJAX {
 	 * is the order paid.
 	 * does more need to be sent
 	 *
-	 * @hooked wp_ajax_bh_wc_bitcoin_gateway_refresh_order_details
+	 * @hooked wp_ajax_bh_wp_bitcoin_gateway_refresh_order_details
 	 *
 	 * @return void
 	 */

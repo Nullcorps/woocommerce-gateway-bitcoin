@@ -1,19 +1,19 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\API
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\API
  */
 class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -152,7 +152,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
 
-		$transient_name = 'bh_wc_bitcoin_gateway_exchange_rate_USD';
+		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_USD';
 		add_filter(
 			"pre_transient_{$transient_name}",
 			function( $retval, $transient ) {

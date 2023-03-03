@@ -1,11 +1,11 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\BitWasp_API
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API
  */
 class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 

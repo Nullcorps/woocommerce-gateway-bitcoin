@@ -1,14 +1,14 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 use Codeception\TestCase\WPTestCase;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice
  */
 class Dependencies_Notice_WPUnit_Test extends WPTestCase {
 
@@ -96,7 +96,7 @@ class Dependencies_Notice_WPUnit_Test extends WPTestCase {
 		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
-				'get_plugin_basename' => Expected::exactly( 2, 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' ),
+				'get_plugin_basename' => Expected::exactly( 2, 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' ),
 			)
 		);
 

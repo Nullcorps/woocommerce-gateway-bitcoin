@@ -4,7 +4,7 @@
  *
  * @see https://phpstan.org/user-guide/discovering-symbols#global-constants
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
 define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );

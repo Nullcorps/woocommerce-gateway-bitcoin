@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs
  */
 class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 

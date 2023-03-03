@@ -29,7 +29,7 @@ describe( 'Schedule payment checks', () => {
 	// Open Action Scheduler and delete any existing events
 	async function deletePendingActionSchedulerPaymentChecks() {
 		const actionSchedulerUrlPending =
-			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
+			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
 		await page.goto( actionSchedulerUrlPending, {
 			waitUntil: 'networkidle0',
 		} );
@@ -43,7 +43,7 @@ describe( 'Schedule payment checks', () => {
 			await page.click( '#cb-select-all-1' );
 			// Select the "Bulk actions" > "Delete" option.
 			await page.select( '#bulk-action-selector-top', 'delete' );
-			// Submit the form to send all bh_wc_bitcoin_gateway_check_unpaid_order actions to the trash.
+			// Submit the form to send all bh_wp_bitcoin_gateway_check_unpaid_order actions to the trash.
 			await page.click( '#doaction' );
 		}
 	}
@@ -58,7 +58,7 @@ describe( 'Schedule payment checks', () => {
 
 	async function getActionSchedulerTableRowForOrder( orderId ) {
 		const actionSchedulerUrl =
-			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wc_bitcoin_gateway_check_unpaid_order';
+			'http://localhost:8084/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
 		await page.goto( actionSchedulerUrl, { waitUntil: 'networkidle0' } );
 
 		const [ pendingJobTrElement ] = await page.$x(

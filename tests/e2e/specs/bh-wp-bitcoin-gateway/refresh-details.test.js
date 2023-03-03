@@ -32,7 +32,7 @@ describe( 'Refresh order details', () => {
 	// The last checked time is only specific to the minute, so unless we let each test
 	// run for 60 seconds, we can't be sure the text updated... unless we seed it with
 	// something else!
-	// .bh_wc_bitcoin_gateway_last_checked_time
+	// .bh_wp_bitcoin_gateway_last_checked_time
 	it( 'should successfully refresh the details for logged out user', async () => {
 		await expect( page ).toMatch(
 			'Thank you. Your order has been received.'
@@ -41,12 +41,12 @@ describe( 'Refresh order details', () => {
 		// Get the last checked time
 		// e.g. "January 18, 2023, 4:15 pm +00:00",
 		const lastCheckedHtmlElement = await page.$(
-			'.bh_wc_bitcoin_gateway_last_checked_time'
+			'.bh_wp_bitcoin_gateway_last_checked_time'
 		);
 
 		// Change that text so we know when it is updated later.
 		await page.evaluate(
-			'document.querySelector(".bh_wc_bitcoin_gateway_last_checked_time:first-child").innerHTML = "TEXT WHICH SHOULD BE UPDATED AFTER REFRESH REQUEST"'
+			'document.querySelector(".bh_wp_bitcoin_gateway_last_checked_time:first-child").innerHTML = "TEXT WHICH SHOULD BE UPDATED AFTER REFRESH REQUEST"'
 		);
 
 		// Get the element's text value.
@@ -57,7 +57,7 @@ describe( 'Refresh order details', () => {
 		lastCheckedText = lastCheckedText.trim();
 
 		// And click the last checked element to refresh
-		await page.click( '.bh_wc_bitcoin_gateway_last_checked_time', {
+		await page.click( '.bh_wp_bitcoin_gateway_last_checked_time', {
 			text: lastCheckedText,
 		} );
 
@@ -79,7 +79,7 @@ describe( 'Refresh order details', () => {
 		);
 
 		const lastCheckedHtmlElement = await page.$(
-			'.bh_wc_bitcoin_gateway_last_checked_time'
+			'.bh_wp_bitcoin_gateway_last_checked_time'
 		);
 
 		let lastCheckedText = await page.evaluate(
@@ -89,7 +89,7 @@ describe( 'Refresh order details', () => {
 		lastCheckedText = lastCheckedText.trim();
 
 		// And click the last checked element to refresh
-		await page.click( '.bh_wc_bitcoin_gateway_last_checked_time', {
+		await page.click( '.bh_wp_bitcoin_gateway_last_checked_time', {
 			text: lastCheckedText,
 		} );
 		await uiUnblocked();
@@ -98,7 +98,7 @@ describe( 'Refresh order details', () => {
 
 		// Change that text so we know when it is updated later.
 		await page.evaluate(
-			'document.querySelector(".bh_wc_bitcoin_gateway_last_checked_time:first-child").innerHTML = "TEXT WHICH SHOULD BE UPDATED AFTER REFRESH REQUEST"'
+			'document.querySelector(".bh_wp_bitcoin_gateway_last_checked_time:first-child").innerHTML = "TEXT WHICH SHOULD BE UPDATED AFTER REFRESH REQUEST"'
 		);
 
 		lastCheckedText = await page.evaluate(
@@ -108,7 +108,7 @@ describe( 'Refresh order details', () => {
 		lastCheckedText = lastCheckedText.trim();
 
 		// And click the last checked element to refresh
-		await page.click( '.bh_wc_bitcoin_gateway_last_checked_time', {
+		await page.click( '.bh_wp_bitcoin_gateway_last_checked_time', {
 			text: lastCheckedText,
 		} );
 

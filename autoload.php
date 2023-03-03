@@ -6,14 +6,14 @@
  *
  * @link              http://example.com
  * @since             1.0.0
- * @package           brianhenryie/bh-wc-bitcoin-gateway
+ * @package           brianhenryie/bh-wp-bitcoin-gateway
  *
  * @see https://github.com/pablo-sg-pacheco/wp-namespace-autoloader/
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway;
+namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\Alley_Interactive\Autoloader\Autoloader;
+use BrianHenryIE\WP_Bitcoin_Gateway\Alley_Interactive\Autoloader\Autoloader;
 
 $class_map_files = array(
 	__DIR__ . '/autoload-classmap.php',
@@ -41,6 +41,6 @@ unset( $class_map_files, $class_map_file, $class_map );
 require_once __DIR__ . '/vendor-prefixed/autoload.php';
 
 Autoloader::generate(
-	'BrianHenryIE\WC_Bitcoin_Gateway',
+	'BrianHenryIE\WP_Bitcoin_Gateway',
 	__DIR__ . '/src',
 )->register();

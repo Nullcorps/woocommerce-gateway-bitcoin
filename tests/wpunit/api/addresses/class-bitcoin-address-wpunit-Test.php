@@ -1,9 +1,9 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address
  */
 class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

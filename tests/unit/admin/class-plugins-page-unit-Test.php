@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page
  */
 class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 
@@ -159,7 +159,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
-				'get_plugin_basename' => Expected::once( 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php' ),
+				'get_plugin_basename' => Expected::once( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' ),
 			)
 		);
 		$api      = $this->makeEmpty( API_Interface::class );
@@ -168,9 +168,9 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 		$plugin_meta     = array(
 			0 => 'Version 1.3.3',
 			1 => 'By <a href="https://github.com/Nullcorps/">Nullcorps, BrianHenryIE</a>',
-			2 => '<a href="http://github.com/BrianHenryIE/bh-wc-bitcoin-gateway/" aria-label="Visit plugin site for BH WC Bitcoin Gateway">Visit plugin site</a>',
+			2 => '<a href="http://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/" aria-label="Visit plugin site for BH WP Bitcoin Gateway">Visit plugin site</a>',
 		);
-		$plugin_filename = 'bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php';
+		$plugin_filename = 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php';
 
 		$result = $sut->split_author_link_into_two_links( $plugin_meta, $plugin_filename );
 

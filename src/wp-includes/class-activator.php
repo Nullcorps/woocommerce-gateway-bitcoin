@@ -5,10 +5,10 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
 /**
  * Fired during plugin activation.

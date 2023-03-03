@@ -4,10 +4,10 @@
  *
  * TODO: Update the wp_post last modified time when updating metadata.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 
 use Exception;
 use WP_Post;

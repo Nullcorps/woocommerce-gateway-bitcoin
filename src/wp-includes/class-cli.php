@@ -4,16 +4,16 @@
  *
  * Most useful to check an order for payment without waiting for Action Scheduler.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -59,7 +59,7 @@ class CLI extends WP_CLI_Command {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [--<debug>=bh-wc-bitcoin-gateway]
+	 * [--<debug>=bh-wp-bitcoin-gateway]
 	 * : Show detailed progress.
 	 *
 	 * ## EXAMPLES
@@ -68,7 +68,7 @@ class CLI extends WP_CLI_Command {
 	 *   $ wp bh-bitcoin generate-new-addresses
 	 *
 	 *   # Check for new transactions for all gateways and show detailed progress.
-	 *   $ wp bh-bitcoin generate-new-addresses --debug=bh-wc-bitcoin-gateway
+	 *   $ wp bh-bitcoin generate-new-addresses --debug=bh-wp-bitcoin-gateway
 	 *
 	 * @param array<int|string, string> $args Takes no arguments.
 	 */
@@ -89,7 +89,7 @@ class CLI extends WP_CLI_Command {
 	 * TODO: This doesn't seem to actually update the order!
 	 *
 	 * See also: `wp post list --post_type=shop_order --post_status=wc-on-hold --meta_key=_payment_gateway --meta_value=bitcoin_gateway --format=ids`.
-	 * `wp post list --post_type=shop_order --post_status=wc-on-hold --meta_key=_payment_gateway --meta_value=bitcoin_gateway --format=ids | xargs -0 -d ' ' -I % wp bh-bitcoin check-transactions % --debug=bh-wc-bitcoin-gateway`
+	 * `wp post list --post_type=shop_order --post_status=wc-on-hold --meta_key=_payment_gateway --meta_value=bitcoin_gateway --format=ids | xargs -0 -d ' ' -I % wp bh-bitcoin check-transactions % --debug=bh-wp-bitcoin-gateway`
 	 *
 	 *
 	 * ## OPTIONS
@@ -108,7 +108,7 @@ class CLI extends WP_CLI_Command {
 	 * - yaml
 	 * ---
 	 *
-	 * [--<debug>=bh-wc-bitcoin-gateway]
+	 * [--<debug>=bh-wp-bitcoin-gateway]
 	 * : Show detailed progress.
 	 *
 	 * ## EXAMPLES
@@ -120,7 +120,7 @@ class CLI extends WP_CLI_Command {
 	 *   $ wp bh-bitcoin check-transactions 123
 	 *
 	 *   # Check for new transactions for the provided order, showing detailed progress.
-	 *   $ wp bh-bitcoin check-transactions 123 --debug=bh-wc-bitcoin-gateway
+	 *   $ wp bh-bitcoin check-transactions 123 --debug=bh-wp-bitcoin-gateway
 	 *
 	 * @param string[]             $args The address.
 	 * @param array<string,string> $assoc_args List of named arguments.

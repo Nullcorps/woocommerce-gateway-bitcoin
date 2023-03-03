@@ -8,29 +8,29 @@
  * * checking addresses for transactions
  * * getting order details for display
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\BitWasp_API;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Thank_You;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Thank_You;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -120,7 +120,7 @@ class API implements API_Interface {
 	/**
 	 * Given an order id, determine is the order's gateway an instance of this Bitcoin gateway.
 	 *
-	 * @see https://github.com/BrianHenryIE/bh-wc-duplicate-payment-gateways
+	 * @see https://github.com/BrianHenryIE/bh-wp-duplicate-payment-gateways
 	 *
 	 * @param int $order_id The id of the (presumed) WooCommerce order to check.
 	 *
@@ -296,7 +296,7 @@ class API implements API_Interface {
 		// $btc_price                  = $order_details['btc_price'];
 		// $bitcoin_formatted_price    = $btc_symbol . wc_format_decimal( $btc_price, $round_btc );
 		//
-		// $btc_logo_url = $site_url . '/wp-content/plugins/bh-wc-bitcoin-gateway/assets/bitcoin.png';
+		// $btc_logo_url = $site_url . '/wp-content/plugins/bh-wp-bitcoin-gateway/assets/bitcoin.png';
 
 		$result = array();
 
@@ -464,13 +464,13 @@ class API implements API_Interface {
 		// If the order is not marked paid, but has transactions, it is partly-paid.
 		switch ( true ) {
 			case $order->is_paid():
-				$result['status'] = __( 'Paid', 'bh-wc-bitcoin-gateway' );
+				$result['status'] = __( 'Paid', 'bh-wp-bitcoin-gateway' );
 				break;
 			case ! empty( $refreshed_transactions ):
-				$result['status'] = __( 'Partly Paid', 'bh-wc-bitcoin-gateway' );
+				$result['status'] = __( 'Partly Paid', 'bh-wp-bitcoin-gateway' );
 				break;
 			default:
-				$result['status'] = __( 'Awaiting Payment', 'bh-wc-bitcoin-gateway' );
+				$result['status'] = __( 'Awaiting Payment', 'bh-wp-bitcoin-gateway' );
 		}
 
 		return $result;
@@ -566,7 +566,7 @@ class API implements API_Interface {
 	 * @return string
 	 */
 	public function get_exchange_rate( string $currency ): string {
-		$transient_name = 'bh_wc_bitcoin_gateway_exchange_rate_' . $currency;
+		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency;
 
 		$exchange_rate = get_transient( $transient_name );
 

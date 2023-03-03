@@ -1,5 +1,5 @@
 {
-    "name": "brianhenryie/bh-wc-bitcoin-gateway",
+    "name": "brianhenryie/bh-wp-bitcoin-gateway",
     "description": "This is a short description of what plugin_title does.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0+-or-later",
@@ -156,11 +156,11 @@
             }
         },
         "strauss": {
-            "namespace_prefix": "BrianHenryIE\\WC_Bitcoin_Gateway\\",
+            "namespace_prefix": "BrianHenryIE\\WP_Bitcoin_Gateway\\",
             "target_directory": "/vendor-prefixed/",
-            "classmap_prefix": "BrianHenryIE_WC_Bitcoin_Gateway_",
+            "classmap_prefix": "BrianHenryIE_WP_Bitcoin_Gateway_",
             "namespace_replacement_patterns": {
-                "~BrianHenryIE\\\\(.*)~" : "BrianHenryIE\\WC_Bitcoin_Gateway\\\\$1"
+                "~BrianHenryIE\\\\(.*)~" : "BrianHenryIE\\WP_Bitcoin_Gateway\\\\$1"
             },
             "exclude_from_prefix": {
                 "packages": [
@@ -171,7 +171,7 @@
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
-            ".": "wp-content/plugins/bh-wc-bitcoin-gateway",
+            ".": "wp-content/plugins/bh-wp-bitcoin-gateway",
             "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
         },
         "phpstorm": {
@@ -180,7 +180,7 @@
                     "vendor/php-stubs/woocommerce-stubs",
                     "vendor/wordpress/wordpress/src",
                     "vendor/wordpress/wordpress/build",
-                    "wp-content/plugins/bh-wc-bitcoin-gateway",
+                    "wp-content/plugins/bh-wp-bitcoin-gateway",
                     "wordpress/wp-content"
                 ],
                 "composer-symlinks": false

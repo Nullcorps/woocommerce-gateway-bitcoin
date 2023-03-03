@@ -8,12 +8,12 @@
  * @see https://github.com/rvola/woo-cancel-abandoned-order
  * @see https://wordpress.org/plugins/woo-cancel-abandoned-order/
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Integrations;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Exception;
 use RVOLA\WOO\CAO\CAO;
 use WC_Order;

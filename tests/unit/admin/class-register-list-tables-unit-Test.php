@@ -1,9 +1,9 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Admin;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables
  */
 class Register_List_Tables_Unit_Test extends \Codeception\Test\Unit {
 

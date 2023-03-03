@@ -1,16 +1,16 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use Codeception\Stub\Expected;
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway
  */
 class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
@@ -19,7 +19,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_generates_new_addresses_when_xpub_changes(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'generate_new_wallet'               => Expected::once(
@@ -52,7 +52,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_does_not_generate_new_addresses_when_xpub_does_not_change(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array()
 		);
@@ -74,7 +74,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_checks_for_available_address_for_availability_true(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
@@ -98,7 +98,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_checks_for_available_address_for_availability_false(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
@@ -122,7 +122,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_checks_for_available_address_for_availability_uses_cache(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
 
 		$sut = new class() extends Bitcoin_Gateway {
 			public function __construct() {
@@ -141,7 +141,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_checks_for_available_address_for_availability_false_when_no_api_class(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = null;
+		$GLOBALS['bh_wp_bitcoin_gateway'] = null;
 
 		$sut = new Bitcoin_Gateway();
 
@@ -155,7 +155,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_process_payment_returns_exception_on_bad_order_id(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
 
 		$sut = new Bitcoin_Gateway();
 
@@ -175,7 +175,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_process_payment_returns_exception_on_missing_api_instance(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = null;
+		$GLOBALS['bh_wp_bitcoin_gateway'] = null;
 
 		$sut = new Bitcoin_Gateway();
 
@@ -199,7 +199,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_process_payment_returns_exception_when_no_address_available(): void {
 
-		$GLOBALS['bh_wc_bitcoin_gateway'] = $this->makeEmpty(
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'get_fresh_address_for_order' => Expected::once(

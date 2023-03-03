@@ -5,13 +5,13 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Frontend;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Frontend;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WC_Bitcoin_Gateway\Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -63,7 +63,7 @@ class Frontend_Assets {
 		}
 
 		$version = $this->settings->get_plugin_version();
-		wp_enqueue_style( 'bh-wc-bitcoin-gateway', $this->settings->get_plugin_url() . 'assets/css/bh-wc-bitcoin-gateway.css', array(), $version, 'all' );
+		wp_enqueue_style( 'bh-wp-bitcoin-gateway', $this->settings->get_plugin_url() . 'assets/css/bh-wp-bitcoin-gateway.css', array(), $version, 'all' );
 
 		wp_enqueue_style( 'dashicons' );
 	}
@@ -100,13 +100,13 @@ class Frontend_Assets {
 
 		$version = $this->settings->get_plugin_version();
 
-		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/bh-wc-bitcoin-gateway.min.js';
+		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/bh-wp-bitcoin-gateway.min.js';
 
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			$script_url = str_replace( '.min', '', $script_url );
 		}
 
-		wp_enqueue_script( 'bh-wc-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
+		wp_enqueue_script( 'bh-wp-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
 
 		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
 
@@ -117,12 +117,12 @@ class Frontend_Assets {
 		$ajax_data_json = wp_json_encode( $ajax_data, JSON_PRETTY_PRINT );
 
 		$script = <<<EOD
-var bh_wc_bitcoin_gateway_ajax_data = $ajax_data_json;
-var bh_wc_bitcoin_gateway_order_details = $order_details_json;
+var bh_wp_bitcoin_gateway_ajax_data = $ajax_data_json;
+var bh_wp_bitcoin_gateway_order_details = $order_details_json;
 EOD;
 
 		wp_add_inline_script(
-			'bh-wc-bitcoin-gateway',
+			'bh-wp-bitcoin-gateway',
 			$script,
 			'before'
 		);

@@ -1,15 +1,15 @@
 <?php
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\Integrations;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
 use Codeception\TestCase\WPTestCase;
 use stdClass;
 use WC_Order;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WC_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order
  */
 class Woo_Cancel_Abandoned_Order_Unit_Test extends WPTestCase {
 

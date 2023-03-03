@@ -3,34 +3,34 @@
  * included in this file.
  */
 
-.bh_wc_bitcoin_gateway_logo {
+.bh_wp_bitcoin_gateway_logo {
     width: 200px;
 }
 
-.bh_wc_bitcoin_gateway_logo_qr img {
+.bh_wp_bitcoin_gateway_logo_qr img {
     display: block;
 }
 
-.bh_wc_bitcoin_gateway_total:after, .bh_wc_bitcoin_gateway_address:after {
+.bh_wp_bitcoin_gateway_total:after, .bh_wp_bitcoin_gateway_address:after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f481";
 }
 
-.bh_wc_bitcoin_gateway_total:hover, .bh_wc_bitcoin_gateway_address:hover, .bh_wc_bitcoin_gateway_last_checked_time:hover {
+.bh_wp_bitcoin_gateway_total:hover, .bh_wp_bitcoin_gateway_address:hover, .bh_wp_bitcoin_gateway_last_checked_time:hover {
     text-decoration: underline;
     cursor: pointer;
 }
 
-.bh_wc_bitcoin_gateway_logo_qr {
+.bh_wp_bitcoin_gateway_logo_qr {
     text-align:center;
 }
-.bh_wc_bitcoin_gateway_logo_qr img {
+.bh_wp_bitcoin_gateway_logo_qr img {
     margin-left:auto;
     margin-right:auto;
 }
 
-.bh_wc_bitcoin_gateway_last_checked_time:after {
+.bh_wp_bitcoin_gateway_last_checked_time:after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f463";

@@ -28,10 +28,10 @@ const requestToHandle = ( request ) => {
 const myConfig = {
 	...defaultConfig,
 	entry: {
-		'frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout':
-			'/assets/js/frontend/blocks/checkout/bh-wc-bitcoin-gateway-blocks-checkout.js',
-		'frontend/bh-wc-bitcoin-gateway':
-			'/assets/js/frontend/bh-wc-bitcoin-gateway.js',
+		'frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout':
+			'/assets/js/frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout.js',
+		'frontend/bh-wp-bitcoin-gateway':
+			'/assets/js/frontend/bh-wp-bitcoin-gateway.js',
 	},
 	output: {
 		path: path.resolve( __dirname, 'assets/js' ),

@@ -5,12 +5,12 @@
  *
  * @see https://api-pub.bitfinex.com/v2/conf/pub:list:pair:exchange
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 

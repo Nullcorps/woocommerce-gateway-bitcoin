@@ -11,17 +11,17 @@
  *
  * WP_List_Table can show all addresses and their orders and balances and last activity date.
  *
- * @see \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Addresses_List_Table
- * @see \BrianHenryIE\WC_Bitcoin_Gateway\Admin\Wallets_List_Table
+ * @see \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table
+ * @see \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Wallets_List_Table
  *
- * @package brianhenryie/bh-wc-bitcoin-gateway
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WC_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WC_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 /**
  * Register the custom post types with WordPress.
@@ -58,8 +58,8 @@ class Post {
 	public function register_wallet_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Bitcoin Wallets', 'post type general name', 'bh-wc-bitcoin-gateway' ),
-			'singular_name' => _x( 'Bitcoin Wallet', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
+			'name'          => _x( 'Bitcoin Wallets', 'post type general name', 'bh-wp-bitcoin-gateway' ),
+			'singular_name' => _x( 'Bitcoin Wallet', 'post type singular name', 'bh-wp-bitcoin-gateway' ),
 			'menu_name'     => 'Bitcoin Wallets',
 		);
 
@@ -79,7 +79,7 @@ class Post {
 		register_post_status(
 			'active',
 			array(
-				'label'                     => _x( 'Active', 'post', 'bh-wc-bitcoin-gateway' ),
+				'label'                     => _x( 'Active', 'post', 'bh-wp-bitcoin-gateway' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
@@ -91,7 +91,7 @@ class Post {
 		register_post_status(
 			'inactive',
 			array(
-				'label'                     => _x( 'Inactive', 'post', 'bh-wc-bitcoin-gateway' ),
+				'label'                     => _x( 'Inactive', 'post', 'bh-wp-bitcoin-gateway' ),
 				'public'                    => true,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
@@ -109,8 +109,8 @@ class Post {
 	public function register_address_post_type(): void {
 
 		$labels = array(
-			'name'          => _x( 'Bitcoin Addresses', 'post type general name', 'bh-wc-bitcoin-gateway' ),
-			'singular_name' => _x( 'Bitcoin Address', 'post type singular name', 'bh-wc-bitcoin-gateway' ),
+			'name'          => _x( 'Bitcoin Addresses', 'post type general name', 'bh-wp-bitcoin-gateway' ),
+			'singular_name' => _x( 'Bitcoin Address', 'post type singular name', 'bh-wp-bitcoin-gateway' ),
 			'menu_name'     => 'Bitcoin Addresses',
 		);
 		$args   = array(

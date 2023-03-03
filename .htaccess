@@ -1,6 +1,6 @@
 ## Serve all files from inside wordpress directory, except those listed
 RewriteEngine on
-RewriteCond %{REQUEST_URI} !bh-wc-bitcoin-gateway/wordpress/ [NC]
+RewriteCond %{REQUEST_URI} !bh-wp-bitcoin-gateway/wordpress/ [NC]
 RewriteCond %{REQUEST_URI} !/vendor-prefixed/ [NC]
 RewriteCond %{REQUEST_URI} !/assets/ [NC]
 RewriteCond %{REQUEST_URI} !/templates/ [NC]

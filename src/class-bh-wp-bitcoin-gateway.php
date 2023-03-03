@@ -8,31 +8,31 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway;
+namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Dependencies_Notice;
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Register_List_Tables;
-use BrianHenryIE\WC_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\HPOS;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
-use BrianHenryIE\WC_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Plugins_Page;
-use BrianHenryIE\WC_Bitcoin_Gateway\Admin\Wallets_List_Table;
-use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\AJAX;
-use BrianHenryIE\WC_Bitcoin_Gateway\Frontend\Frontend_Assets;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Email;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\My_Account_View_Order;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Templates;
-use BrianHenryIE\WC_Bitcoin_Gateway\WooCommerce\Thank_You;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\CLI;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\I18n;
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Includes\Post;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
+use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Wallets_List_Table;
+use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\AJAX;
+use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Email;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\My_Account_View_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Templates;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Thank_You;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\CLI;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
 use Psr\Log\LoggerInterface;
 use WP_CLI;
 
@@ -45,7 +45,7 @@ use WP_CLI;
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  */
-class BH_WC_Bitcoin_Gateway {
+class BH_WP_Bitcoin_Gateway {
 
 	/**
 	 * A PSR logger for logging errors, events etc.
@@ -174,8 +174,8 @@ class BH_WC_Bitcoin_Gateway {
 
 		$ajax = new AJAX( $this->api, $this->logger );
 
-		add_action( 'wp_ajax_bh_wc_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
-		add_action( 'wp_ajax_nopriv_bh_wc_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
+		add_action( 'wp_ajax_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
+		add_action( 'wp_ajax_nopriv_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 	}
 
 	/**

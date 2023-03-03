@@ -17,7 +17,7 @@ modules:
             tablePrefix: "%TEST_TABLE_PREFIX%"
             domain: "%TEST_SITE_WP_DOMAIN%"
             adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
-            title: "bh-wc-bitcoin-gateway"
-            plugins: ['bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php', 'woocommerce/woocommerce.php']
-            activatePlugins: ['bh-wc-bitcoin-gateway/bh-wc-bitcoin-gateway.php', 'woocommerce/woocommerce.php']
+            title: "bh-wp-bitcoin-gateway"
+            plugins: ['bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', 'woocommerce/woocommerce.php']
+            activatePlugins: ['bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', 'woocommerce/woocommerce.php']
 bootstrap: _bootstrap.php

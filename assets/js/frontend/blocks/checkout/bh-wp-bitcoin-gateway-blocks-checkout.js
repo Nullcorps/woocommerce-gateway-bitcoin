@@ -7,7 +7,7 @@ import { getSetting } from '@woocommerce/settings';
 
 const bhSettings = getSetting( 'bitcoin_gateway_data', {} );
 
-const bhDefaultLabel = __( 'Bitcoin', 'bh-wc-bitcoin-gateway' );
+const bhDefaultLabel = __( 'Bitcoin', 'bh-wp-bitcoin-gateway' );
 
 const bhLabel = decodeEntities( bhSettings.title ) || bhDefaultLabel;
 

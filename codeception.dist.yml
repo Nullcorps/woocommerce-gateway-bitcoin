@@ -22,7 +22,7 @@ coverage:
     enabled: true
     include:
         - /src/*
-        - /bh-wc-bitcoin-gateway.php
+        - /bh-wp-bitcoin-gateway.php
         - /uninstall.php
         - /templates/*
     exclude:

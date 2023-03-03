@@ -2,13 +2,13 @@
 /**
  * Tests for the root plugin file.
  *
- * @package    brianhenryie/bh-wc-bitcoin-gateway
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\WC_Bitcoin_Gateway;
+namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
-use BrianHenryIE\WC_Bitcoin_Gateway\WP_Logger\Logger;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
 
 /**
  * Class Plugin_WP_Mock_Test
@@ -33,7 +33,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
-			array( BH_WC_Bitcoin_Gateway::class, '__construct' ),
+			array( BH_WP_Bitcoin_Gateway::class, '__construct' ),
 			function() {}
 		);
 		\Patchwork\redefine(
@@ -65,7 +65,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 			'plugins_url',
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
-				'return' => 'http://localhost:8080/bh-wc-bitcoin-gateway/',
+				'return' => 'http://localhost:8080/bh-wp-bitcoin-gateway/',
 			)
 		);
 
@@ -87,7 +87,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		ob_start();
 
-		include $plugin_root_dir . '/bh-wc-bitcoin-gateway.php';
+		include $plugin_root_dir . '/bh-wp-bitcoin-gateway.php';
 
 		$printed_output = ob_get_contents();
 
@@ -95,9 +95,9 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertEmpty( $printed_output );
 
-		$this->assertArrayHasKey( 'bh_wc_bitcoin_gateway', $GLOBALS );
+		$this->assertArrayHasKey( 'bh_wp_bitcoin_gateway', $GLOBALS );
 
-		$this->assertInstanceOf( API_Interface::class, $GLOBALS['bh_wc_bitcoin_gateway'] );
+		$this->assertInstanceOf( API_Interface::class, $GLOBALS['bh_wp_bitcoin_gateway'] );
 
 	}
 
