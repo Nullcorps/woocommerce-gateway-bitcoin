@@ -10,8 +10,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
 use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 

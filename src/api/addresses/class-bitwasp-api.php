@@ -22,8 +22,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\BitWasp\Bitcoin\Network\NetworkFactory;
 use BrianHenryIE\WP_Bitcoin_Gateway\BitWasp\Bitcoin\Network\Slip132\BitcoinRegistry;
 use BrianHenryIE\WP_Bitcoin_Gateway\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\Base58ExtendedKeySerializer;
 use BrianHenryIE\WP_Bitcoin_Gateway\BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\ExtendedKeySerializer;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
 
 /**
  * Use Bitwasp API to generate public addresses.

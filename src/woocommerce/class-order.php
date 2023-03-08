@@ -10,8 +10,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 use ActionScheduler;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
 
 /**
  * Defines constants for metakeys.

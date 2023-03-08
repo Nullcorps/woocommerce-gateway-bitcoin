@@ -12,8 +12,8 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
 
 /**
  * @phpstan-type Stats array{funded_txo_count:int, funded_txo_sum:int, spent_txo_count:int, spent_txo_sum:int, tx_count:int}

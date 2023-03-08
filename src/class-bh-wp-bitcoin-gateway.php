@@ -15,6 +15,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WP_Bitcoin_Gateway\GiveWP\GiveWP_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\GiveWP\GiveWP_NextGen_Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
@@ -33,7 +35,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Thank_You;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\CLI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
-use Psr\Log\LoggerInterface;
+use Give\Framework\PaymentGateways\PaymentGatewayRegister;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
 use WP_CLI;
 
 /**

@@ -13,9 +13,9 @@ use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LogLevel;
+use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\NullLogger;
 use WC_Order;
 use WC_Payment_Gateway;
 
