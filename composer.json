@@ -50,6 +50,40 @@
             "url": "https://github.com/BrianHenryIE/bitcoin-php",
             "type": "git"
         },
+        "impress-org/give-next-gen":{
+            "type": "package",
+            "packagist.org": false,
+            "package": {
+                "name": "impress-org/give-next-gen",
+                "type": "wordpress-plugin",
+                "version": "0.2.0",
+                "source": {
+                    "url": "https://github.com/impress-org/givewp-next-gen",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "dist": {
+                    "url": "https://github.com/impress-org/givewp-next-gen/releases/download/0.2.0/givewp-next-gen-0.2.0.zip",
+                    "type": "zip"
+                },
+                "installation-source": "dist"
+            }
+        },
+        "impress-org/givewp-example-gateway": {
+            "type": "package",
+            "packagist.org": false,
+            "package": {
+                "name": "impress-org/givewp-example-gateway",
+                "type": "wordpress-plugin",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/impress-org/givewp-example-gateway",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "installation-source": "source"
+            }
+        },
         "woocommerce/woocommerce":{
             "type": "package",
             "package": {
@@ -116,6 +150,8 @@
         "codeception/util-universalframework": "^1.0",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "impress-org/givewp-example-gateway": "dev-master",
+        "impress-org/give-next-gen": "0.2.0",
         "jaschilz/php-coverage-badger": "^2.0",
         "kporras07/composer-symlinks": "dev-master",
         "lucatume/wp-browser": "*",
@@ -138,6 +174,7 @@
         "wpackagist-plugin/checkout-fees-for-woocommerce": "^2.9",
         "wpackagist-plugin/crypto-payments-woo": "^1.2",
         "wpackagist-plugin/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "^2.0",
+        "wpackagist-plugin/give": "^2.25",
         "wpackagist-plugin/woo-cancel-abandoned-order": "^2.0",
         "wpackagist-plugin/woo-gutenberg-products-block": "*",
         "wpackagist-plugin/woo-nimiq-gateway": "^3.4",
