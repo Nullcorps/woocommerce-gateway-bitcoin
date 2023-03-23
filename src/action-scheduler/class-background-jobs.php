@@ -85,6 +85,11 @@ class Background_Jobs {
 			return;
 		}
 
+		if ( in_array( $order->get_status(), wc_get_is_paid_statuses(), true ) ) {
+			$this->logger->error( "`shop_order:{$order_id}` already paid, status: {$order->get_status()}.", array( 'order_id' => $order_id ) );
+			return;
+		}
+
 		try {
 			$result = $this->api->get_order_details( $order );
 		} catch ( Exception $exception ) {
