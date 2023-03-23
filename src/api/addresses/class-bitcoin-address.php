@@ -102,8 +102,6 @@ class Bitcoin_Address {
 	 * @used-by API::query_api_for_address_transactions()
 	 *
 	 * @param array<string,array{txid:string, time:DateTimeInterface, value:string, confirmations:int}> $refreshed_transactions Array of the transaction details keyed by each transaction id.
-	 *
-	 * @return void
 	 */
 	public function set_transactions( array $refreshed_transactions ): void {
 

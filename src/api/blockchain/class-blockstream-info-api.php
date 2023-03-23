@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use JsonException;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -105,6 +106,8 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 	 * @param string $btc_address
 	 *
 	 * @return array<string, array{txid:string, time:DateTimeInterface, value:string, confirmations:int}>
+	 *
+	 * @throws JsonException
 	 */
 	public function get_transactions_received( string $btc_address ): array {
 

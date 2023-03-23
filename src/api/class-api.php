@@ -55,6 +55,14 @@ class API implements API_Interface {
 
 	protected Bitcoin_Address_Factory $bitcoin_address_factory;
 
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface      $settings
+	 * @param LoggerInterface         $logger
+	 * @param Bitcoin_Wallet_Factory  $bitcoin_wallet_factory
+	 * @param Bitcoin_Address_Factory $bitcoin_address_factory
+	 */
 	public function __construct( Settings_Interface $settings, LoggerInterface $logger, Bitcoin_Wallet_Factory $bitcoin_wallet_factory, Bitcoin_Address_Factory $bitcoin_address_factory ) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
@@ -93,7 +101,6 @@ class API implements API_Interface {
 
 		return in_array( $gateway_id, $gateway_ids, true );
 	}
-
 
 	/**
 	 * Get all instances of the Bitcoin gateway.
@@ -167,6 +174,8 @@ class API implements API_Interface {
 	 * @param WC_Order $order The order that will use the address.
 	 *
 	 * @return Bitcoin_Address
+	 *
+	 * @throws \JsonException
 	 */
 	public function get_fresh_address_for_order( WC_Order $order ): Bitcoin_Address {
 
@@ -283,8 +292,8 @@ class API implements API_Interface {
 	 *
 	 * As a really detailed array for printing.
 	 *
-	 * @param WC_Order $order
-	 * @param bool     $refresh
+	 * @param WC_Order $order The WooCommerce order to check.
+	 * @param bool     $refresh Should the result be returned from cache or refreshed from remote APIs.
 	 *
 	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface}
 	 * @throws Exception
@@ -348,6 +357,7 @@ class API implements API_Interface {
 		}
 
 		$bitcoin_gateways = $this->get_bitcoin_gateways();
+		// $bitcoin_gateway = $this->get_bitcoin_gateway( $order->get_payment_method() );
 
 		/** @var Bitcoin_Gateway $gateway */
 		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
@@ -394,7 +404,7 @@ class API implements API_Interface {
 
 				$note = '';
 				if ( ! empty( $updated_address['updates']['new_transactions'] ) ) {
-					// TODO: plural
+					// TODO: plural.
 					$note                  .= 'New transactions seen: ';
 					$new_transactions_notes = array();
 					foreach ( $updated_address['updates']['new_transactions'] as $new_transaction ) {
@@ -481,8 +491,8 @@ class API implements API_Interface {
 	}
 
 	/**
-	 * @param WC_Order $order
-	 * @param bool     $refresh
+	 * @param WC_Order $order The WooCommerce order object to update.
+	 * @param bool     $refresh Should saved order details be returned or remote APIs be queried?
 	 *
 	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
 	 * @throws Exception
@@ -494,15 +504,11 @@ class API implements API_Interface {
 		$order_details = $this->get_order_details( $order, $refresh );
 
 		// ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
-		$btc_symbol                    = '฿';
-		$result['btc_total_formatted'] = $btc_symbol . ' ' . wc_trim_zeros( $order_details['btc_total'] );
-
-		$result['btc_exchange_rate_formatted'] = wc_price( $order_details['btc_exchange_rate'], array( 'currency' => $order->get_currency() ) );
-
+		$btc_symbol                              = '฿';
+		$result['btc_total_formatted']           = $btc_symbol . ' ' . wc_trim_zeros( $order_details['btc_total'] );
+		$result['btc_exchange_rate_formatted']   = wc_price( $order_details['btc_exchange_rate'], array( 'currency' => $order->get_currency() ) );
 		$result['order_status_before_formatted'] = wc_get_order_statuses()[ 'wc-' . $order_details['order_status_before'] ];
-
-		$result['order_status_formatted'] = wc_get_order_statuses()[ 'wc-' . $order_details['order_status'] ];
-
+		$result['order_status_formatted']        = wc_get_order_statuses()[ 'wc-' . $order_details['order_status'] ];
 		$result['btc_amount_received_formatted'] = $btc_symbol . ' ' . $order_details['btc_amount_received'];
 
 		if ( isset( $order_details['last_checked_time'] ) ) {
@@ -514,13 +520,11 @@ class API implements API_Interface {
 			// $last_checked_time is in UTC... change it to local time.?
 			// The server time is not local time... maybe use their address?
 			// @see https://stackoverflow.com/tags/timezone/info
-
 			$result['last_checked_time_formatted'] = $last_checked_time->format( $date_format . ', ' . $time_format ) . ' ' . $timezone;
 		} else {
 			$result['last_checked_time_formatted'] = 'Never';
 		}
 
-		/** @var Bitcoin_Address $address */
 		$address = $order_details['bitcoin_address_object'];
 
 		$result['btc_address_derivation_path_sequence_number'] = $address->get_derivation_path_sequence_number();
@@ -567,7 +571,9 @@ class API implements API_Interface {
 	 *
 	 * Value of 1 BTC.
 	 *
-	 * @return string
+	 * @param string $currency
+	 *
+	 * @throws Exception
 	 */
 	public function get_exchange_rate( string $currency ): string {
 		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency;
@@ -641,7 +647,6 @@ class API implements API_Interface {
 			$generated_addresses = array_merge( $generated_addresses, $new_generated_addresses );
 
 			$check_new_addresses_result = $this->check_new_addresses_for_transactions( $generated_addresses );
-
 		}
 
 		$result['existing_fresh_addresses'] = $existing_fresh_addresses;
@@ -716,7 +721,7 @@ class API implements API_Interface {
 	 *
 	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 *
-	 * @throws Exception
+	 * @throws Exception When no wallet object is found for the master public key (xpub) string.
 	 */
 	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array {
 
@@ -788,7 +793,7 @@ class API implements API_Interface {
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 *
-	 * @param Bitcoin_Address[] $addresses
+	 * @param Bitcoin_Address[] $addresses Array of address objects to query.
 	 *
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
 	 */
@@ -854,10 +859,11 @@ class API implements API_Interface {
 	/**
 	 * Remotely check/fetch the latest data for an address.
 	 *
-	 * @param Bitcoin_Address $address
+	 * @param Bitcoin_Address $address The address object to query.
 	 *
 	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
-	 * @throws Exception
+	 *
+	 * @throws \JsonException
 	 */
 	public function query_api_for_address_transactions( Bitcoin_Address $address ): array {
 
@@ -866,7 +872,12 @@ class API implements API_Interface {
 		// Null when never checked before.
 		$previous_transactions = $address->get_transactions();
 
-		$refreshed_transactions = $this->bitcoin_api->get_transactions_received( $btc_xpub_address_string );
+		try {
+			$refreshed_transactions = $this->bitcoin_api->get_transactions_received( $btc_xpub_address_string );
+		} catch ( \JsonException $json_exception ) {
+			// Don't bother trying again.
+		}
+		// catch ( RateLimitException $rate_limit_exception ) ... DO try again
 
 		$updates                      = array();
 		$updates['new_transactions']  = array();
