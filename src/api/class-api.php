@@ -128,6 +128,10 @@ class API implements API_Interface {
 	 */
 	public function is_order_has_bitcoin_gateway( int $order_id ): bool {
 
+		if ( ! function_exists( 'wc_get_order' ) ) {
+			return false;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! ( $order instanceof WC_Order ) ) {
