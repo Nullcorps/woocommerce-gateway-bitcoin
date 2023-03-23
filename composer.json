@@ -42,10 +42,6 @@
             "url": "https://github.com/BrianHenryIE/bh-wp-private-uploads",
             "type": "git"
         },
-        "wptrt/admin-notices": {
-            "url": "https://github.com/BrianHenryIE/admin-notices",
-            "type": "git"
-        },
         "bitwasp/bitcoin-php":{
             "url": "https://github.com/BrianHenryIE/bitcoin-php",
             "type": "git"
@@ -203,6 +199,9 @@
                 "packages": [
                     "phpseclib/bcmath_compat",
                     "phpseclib/mcrypt_compat"
+                ],
+                "file_patterns": [
+                    "/^psr.*$/"
                 ]
             }
         },
@@ -222,7 +221,8 @@
                 ],
                 "composer-symlinks": false
             }
-        }
+        },
+        "enable-patching": "true"
     },
     "scripts": {
         "post-install-cmd": [

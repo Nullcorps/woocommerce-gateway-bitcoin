@@ -11,8 +11,8 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 class Bitfinex_API implements Exchange_Rate_API_Interface {
 	use LoggerAwareTrait;

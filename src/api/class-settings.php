@@ -14,7 +14,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Trait;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LogLevel;
+use Psr\Log\LogLevel;
 
 /**
  * Plain object pulling setting from wp_options.

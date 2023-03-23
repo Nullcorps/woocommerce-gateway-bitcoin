@@ -14,8 +14,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerAwareTrait;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray

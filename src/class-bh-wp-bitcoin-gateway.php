@@ -36,7 +36,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\CLI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
 use Give\Framework\PaymentGateways\PaymentGatewayRegister;
-use BrianHenryIE\WP_Bitcoin_Gateway\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use WP_CLI;
 
 /**
