@@ -51,6 +51,10 @@ class Admin_Order_UI {
 
 		global $post;
 
+		if ( 'shop_order' !== $post->post_type ) {
+			return;
+		}
+
 		$order_id = $post->ID;
 
 		if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
