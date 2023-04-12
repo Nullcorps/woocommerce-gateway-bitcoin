@@ -1,5 +1,6 @@
 <?php
 /**
+ * Save new Bitcoin addresses in WordPress, and fetch them via xpub or post id.
  *
  * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
@@ -9,14 +10,17 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 use Exception;
 use wpdb;
 
+/**
+ * Interface for creating/getting Bitcoin_Address objects stored in wp_posts table.
+ */
 class Bitcoin_Address_Factory {
 
 	/**
-	 * Given a post_id,
+	 * Given a bitcoin master public key, get the WordPress post_id it is saved under.
 	 *
-	 * @param string $address
+	 * @param string $address Xpub|ypub|zpub.
 	 *
-	 * @return int|null
+	 * @return int|null The post id if it exists, null if it is not found.
 	 */
 	public function get_post_id_for_address( string $address ): ?int {
 
@@ -26,7 +30,13 @@ class Bitcoin_Address_Factory {
 			return (int) $post_id;
 		}
 
-		/** @var wpdb $wpdb */
+		/**
+		 * WordPress database object.
+		 *
+		 * TODO: Can this be replaced with a `get_posts()` call?
+		 *
+		 * @var wpdb $wpdb
+		 */
 		global $wpdb;
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// @phpstan-ignore-next-line
@@ -44,7 +54,7 @@ class Bitcoin_Address_Factory {
 	 * Wrapper on wp_insert_post(), sets the address as the post_title, post_excerpt and post_name.
 	 *
 	 * @param string         $address The Bitcoin address.
-	 * @param int            $address_index
+	 * @param int            $address_index The derivation sequence number.
 	 * @param Bitcoin_Wallet $wallet The wallet whose xpub this address was derived from.
 	 *
 	 * @return int The new post_id.
@@ -90,5 +100,4 @@ class Bitcoin_Address_Factory {
 	public function get_by_post_id( int $post_id ): Bitcoin_Address {
 		return new Bitcoin_Address( $post_id );
 	}
-
 }

@@ -61,6 +61,8 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 
 		if ( 1 !== $number_of_confirmations ) {
 			error_log( __CLASS__ . ' ' . __FUNCTION__ . ' using 1 for number of confirmations.' );
+
+			// Maybe `number_of_confirmations` should be block_height and the client can decide is that enough.
 		}
 
 		$result                            = array();

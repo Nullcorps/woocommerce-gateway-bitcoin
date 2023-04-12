@@ -136,7 +136,7 @@ interface API_Interface {
 	 * @param string $master_public_key The main wallet address (xpub/ypub/zpub).
 	 * @param int    $generate_count The number of sub-addresses to derive.
 	 *
-	 * @return array
+	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 */
 	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array;
 

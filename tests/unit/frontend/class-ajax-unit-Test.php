@@ -35,6 +35,7 @@ class AJAX_Unit_Test extends \Codeception\Test\Unit {
 			'check_ajax_referer',
 			array(
 				'return' => false,
+				'times'  => 1,
 			)
 		);
 
@@ -49,10 +50,8 @@ class AJAX_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		try {
-			$sut->get_order_details();
-		} catch ( Exception $e ) {
-		}
+		self::expectException( \Exception::class );
 
+		$sut->get_order_details();
 	}
 }

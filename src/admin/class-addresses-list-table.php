@@ -26,6 +26,11 @@ use WP_Post;
  */
 class Addresses_List_Table extends \WP_Posts_List_Table {
 
+	/**
+	 *
+	 *
+	 * @uses API_Interface::get_bitcoin_gateways()
+	 */
 	protected API_Interface $api;
 
 	/**
@@ -209,7 +214,13 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	}
 
 	/**
-	 * TODO: This is linking to the WC_Payment_Gateway page. Maybe it should link externally like the title column?
+	 * Print the HTML for the "wallet" column.
+	 *
+	 * Most sites will probably only ever use one wallet. Others might change wallet once or twice. Some will have
+	 * multiple instances of the gateway running at the same time.
+	 *
+	 * TODO: Currently, this links to the WC_Payment_Gateway page. Maybe it should link externally like the
+	 * title column?
 	 *
 	 * @param WP_Post $item The post this row is being rendered for.
 	 *
@@ -217,7 +228,11 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 */
 	public function column_wallet( WP_Post $item ) {
 
-		$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
+		try {
+			$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
+		} catch ( Exception $exception ) {
+			return;
+		}
 
 		$wallet_post_id = $bitcoin_address->get_wallet_parent_post_id();
 		$wallet_post    = get_post( $wallet_post_id );

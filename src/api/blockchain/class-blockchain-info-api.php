@@ -14,6 +14,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use DateTimeZone;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -23,10 +24,14 @@ use Psr\Log\LoggerInterface;
 class Blockchain_Info_API implements Blockchain_API_Interface {
 	use LoggerAwareTrait;
 
+	/**
+	 * Constructor
+	 *
+	 * @param LoggerInterface $logger A PSR logger.
+	 */
 	public function __construct( LoggerInterface $logger ) {
 		$this->logger = $logger;
 	}
-
 
 	/**
 	 *
@@ -97,6 +102,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 	 * @param string $btc_address
 	 *
 	 * @return array<string, TransactionArray>
+	 * @throws \Exception
 	 */
 	public function get_transactions_received( string $btc_address ): array {
 
@@ -126,6 +132,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 		 * @param array $blockchain_transaction
 		 *
 		 * @return array{txid:string, time:DateTimeInterface, value:string, confirmations:int}
+		 * @throws \Exception
 		 */
 		$blockchain_mapper = function( array $blockchain_transaction ) use ( $blockchain_height ): array {
 
@@ -145,7 +152,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 
 			return array(
 				'txid'          => $txid,
-				'time'          => new DateTimeImmutable( '@' . $blockchain_transaction['time'], new \DateTimeZone( 'UTC' ) ),
+				'time'          => new DateTimeImmutable( '@' . $blockchain_transaction['time'], new DateTimeZone( 'UTC' ) ),
 				'value'         => "{$value}",
 				'confirmations' => $confirmations,
 			);

@@ -1,5 +1,6 @@
 <?php
 /**
+ * Save new Bitcoin wallets in WordPress, and fetch them via xpub or post id.
  *
  * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
@@ -9,7 +10,9 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 use Exception;
 use wpdb;
 
-
+/**
+ * Factory for wallets, saved in wp_posts.
+ */
 class Bitcoin_Wallet_Factory {
 
 	/**
@@ -17,9 +20,9 @@ class Bitcoin_Wallet_Factory {
 	 *
 	 * NB: post_name is 200 characters long. zpub is 111 characters.
 	 *
-	 * @param string $xpub
+	 * @param string $xpub The master public key of the wallet.
 	 *
-	 * @return int|null
+	 * @return int|null The wp_posts ID when it exists, or null when absent.
 	 */
 	public function get_post_id_for_wallet( string $xpub ): ?int {
 
@@ -29,7 +32,13 @@ class Bitcoin_Wallet_Factory {
 			return (int) $post_id;
 		}
 
-		/** @var wpdb $wpdb */
+		/**
+		 * The WordPress wpdb object for database operations.
+		 *
+		 * TODO: Can this be replaced with a `get_posts( array( 'post_name' => $xpub, 'post_type' => Bitcoin_Wallet::POST_TYPE, 'numberposts' => 1 ) )` call?
+		 *
+		 * @var wpdb $wpdb
+		 */
 		global $wpdb;
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// @phpstan-ignore-next-line
@@ -50,7 +59,7 @@ class Bitcoin_Wallet_Factory {
 	 * @param ?string $gateway_id The WC_Payment_Gateway the wallet is being used with.
 	 *
 	 * @return int The wp_posts ID.
-	 * @throws Exception
+	 * @throws Exception When `wp_insert_post()` fails.
 	 */
 	public function save_new( string $master_public_key, ?string $gateway_id = null ): int {
 
@@ -63,13 +72,14 @@ class Bitcoin_Wallet_Factory {
 		$args['post_excerpt'] = $master_public_key;
 		$args['post_name']    = sanitize_title( $master_public_key ); // An indexed column.
 		$args['post_type']    = Bitcoin_Wallet::POST_TYPE;
-
-		// TODO: Add the gateway as meta.
+		$args['meta_input']   = array(
+			Bitcoin_Wallet::GATEWAY_IDS_META_KEY => array( $gateway_id ),
+		);
 
 		$post_id = wp_insert_post( $args, true );
 
 		if ( is_wp_error( $post_id ) ) {
-			throw new \Exception( 'Failed to save new wallet as wp_post' );
+			throw new Exception( 'Failed to save new wallet as wp_post' );
 		}
 
 		return $post_id;
@@ -81,7 +91,7 @@ class Bitcoin_Wallet_Factory {
 	 * @param int $post_id WordPress wp_posts ID.
 	 *
 	 * @return Bitcoin_Wallet
-	 * @throws Exception When the post_type of the post returned for the given post_id is not a Bitcoin_Address.
+	 * @throws Exception When the post_type of the post returned for the given post_id is not a Bitcoin_Wallet.
 	 */
 	public function get_by_post_id( int $post_id ): Bitcoin_Wallet {
 		return new Bitcoin_Wallet( $post_id );

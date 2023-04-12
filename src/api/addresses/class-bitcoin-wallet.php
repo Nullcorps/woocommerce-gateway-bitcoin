@@ -22,6 +22,9 @@ class Bitcoin_Wallet {
 	const BALANCE_META_KEY                    = 'bitcoin_wallet_balance';
 	const LAST_DERIVED_ADDRESS_INDEX_META_KEY = 'last_derived_address_index';
 
+	const GATEWAY_IDS_META_KEY = 'payment_gateway_ids';
+
+
 	/**
 	 * The actual data as retrieved by WordPress from the database.
 	 *

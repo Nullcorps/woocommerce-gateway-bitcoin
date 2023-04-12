@@ -59,6 +59,9 @@
     <rule ref="Squiz.Commenting.FunctionComment.EmptyThrows">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
+    <rule ref="Squiz.Commenting.VariableComment.Missing">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
     <rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
@@ -104,5 +107,6 @@
     <rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
+
 
 </ruleset>
