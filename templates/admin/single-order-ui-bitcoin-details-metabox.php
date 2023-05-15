@@ -55,7 +55,11 @@
 			if ( empty( $transactions ) ) {
 				echo esc_html__( 'No transactions yet', 'bh-wp-bitcoin-gateway' );
 			} else {
-				// TODO.
+				echo '<ul>';
+				foreach ( $transactions as $transaction ) {
+					echo '<li>' . esc_html( $transaction['time']->format( DATE_ATOM ) ) . ' – <a href="' . esc_url( "https://blockchain.com/explorer/transactions/btc/{$transaction['txid']}" ) . '" target="_blank">' . esc_html( $transaction['txid'] ) . '</a> – ' . esc_html( $transaction['value'] ) . ' </li>';
+				}
+				echo '</ul>';
 			}
 			?>
 		</td>
