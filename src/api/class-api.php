@@ -443,9 +443,12 @@ class API implements API_Interface {
 					);
 					foreach ( $updated_address['updates']['new_confirmations'] as $transaction ) {
 						if ( $above_required_confirmations ) {
-							$note .= 'Transaction ';
-							$note .= $transaction['txid']; // TODO: add href.
-							$note .= ' now has ' . $transaction['confirmations'] . ".\n\n";
+							$note .= sprintf(
+								"Transaction <a href=\"%s\" target=\"_blank\">%s</a> now has %s confirmations.\n\n",
+								esc_url( 'https://blockchain.com/explorer/transactions/btc/' . $transaction['txid'] ),
+								substr( $transaction['txid'], 0, 3 ) . '...' . substr( $transaction['txid'], -3 ),
+								$transaction['confirmations']
+							);
 						}
 					}
 				}
