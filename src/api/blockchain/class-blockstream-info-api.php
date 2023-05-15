@@ -158,6 +158,12 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 
 			$confirmations = (int) ( $blockchain_height - $blockstream_transaction['status']['block_height'] );
 
+			// TODO: Confirmations was returning the block height - 1. Presumably that meant mempool/0 confirmations, but I need test data to understand.
+			// Quick fix.
+			if ( $confirmations === $blockchain_height || $confirmations === $blockchain_height - 1 ) {
+				$confirmations = 0;
+			}
+
 			$block_time = (int) $blockstream_transaction['status']['block_time'];
 
 			return array(
