@@ -413,17 +413,8 @@ class API implements API_Interface {
 
 				$result['transactions'] = $order_transactions;
 
-					// Sum the transactions with the required number of confirmations.
-				$result['btc_amount_received'] = array_reduce(
-					$order_transactions,
-					function( float $carry, array $transaction ) use ( $gateway_num_required_confirmations ): float {
-						if ( $gateway_num_required_confirmations <= $transaction['confirmations'] ) {
-							$carry += floatval( $transaction['value'] );
-						}
-						return $carry;
-					},
-					0.0
-				);
+				// NB: This is predicated on the address having a zero balance, which is checked for elsewhere.
+				$result['btc_amount_received'] = $this->bitcoin_api->get_address_balance( $address->get_raw_address(), 1 );
 
 				// Add a note saying "one new transactions seen, unconfirmed total =, confirmed total = ...".
 
