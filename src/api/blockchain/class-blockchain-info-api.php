@@ -106,13 +106,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 	 */
 	public function get_transactions_received( string $btc_address ): array {
 
-		$blockchain_height_url = 'https://blockchain.info/q/getblockcount';
-		$request_response      = wp_remote_get( $blockchain_height_url );
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
-
-		$blockchain_height = (int) $request_response['body'];
+		$blockchain_height = $this->get_blockchain_height();
 
 		$url = "https://blockchain.info/rawaddr/$btc_address";
 
@@ -174,6 +168,19 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 		}
 
 		return $keyed_transactions;
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function get_blockchain_height(): int {
+		$blockchain_height_url = 'https://blockchain.info/q/getblockcount';
+		$request_response      = wp_remote_get( $blockchain_height_url );
+		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
+			throw new \Exception();
+		}
+
+		return (int) $request_response['body'];
 	}
 
 }
