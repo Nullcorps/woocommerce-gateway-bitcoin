@@ -282,7 +282,7 @@ class BH_WP_Bitcoin_Gateway {
 	}
 
 	/**
-	 * Declare compatibility with WooCommerce High Performace Order Storage.
+	 * Declare compatibility with WooCommerce High Performance Order Storage.
 	 */
 	protected function define_woocommerce_features_hooks(): void {
 
