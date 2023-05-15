@@ -476,6 +476,8 @@ class API implements API_Interface {
 				}
 			}
 
+			$order->add_meta_data( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, $result['btc_amount_received'], true );
+
 			// @phpstan-ignore-next-line This works fine.
 			$order->add_meta_data( Order::LAST_CHECKED_META_KEY, $time_now, true );
 			$order->save();
