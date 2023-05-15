@@ -112,13 +112,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 	 * @throws JsonException
 	 */
 	public function get_transactions_received( string $btc_address ): array {
-
-		$blocks_url_bs    = 'https://blockstream.info/api/blocks/tip/height';
-		$request_response = wp_remote_get( $blocks_url_bs );
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
-		$blockchain_height = intval( $request_response['body'] );
+		$blockchain_height = $this->get_blockchain_height();
 
 		$address_info_url_bs = "https://blockstream.info/api/address/{$btc_address}/txs";
 
@@ -196,5 +190,18 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 		}
 
 		return $keyed_transactions;
+	}
+
+	/**
+	 * @return int
+	 * @throws \Exception
+	 */
+	public function get_blockchain_height(): int {
+		$blocks_url_bs    = 'https://blockstream.info/api/blocks/tip/height';
+		$request_response = wp_remote_get( $blocks_url_bs );
+		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
+			throw new \Exception();
+		}
+		return intval( $request_response['body'] );
 	}
 }
