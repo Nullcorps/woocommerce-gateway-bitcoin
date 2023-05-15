@@ -58,7 +58,7 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::userFunction(
-			'as_unschedule_action',
+			'as_unschedule_all_actions',
 			array(
 				'args'  => array( 'bh_wp_bitcoin_gateway_check_unpaid_order', \WP_Mock\Functions::type( 'array' ) ),
 				'times' => 1,

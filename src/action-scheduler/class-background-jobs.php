@@ -86,7 +86,19 @@ class Background_Jobs {
 		}
 
 		if ( in_array( $order->get_status(), wc_get_is_paid_statuses(), true ) ) {
-			$this->logger->error( "`shop_order:{$order_id}` already paid, status: {$order->get_status()}.", array( 'order_id' => $order_id ) );
+			$this->logger->info( "`shop_order:{$order_id}` already paid, status: {$order->get_status()}.", array( 'order_id' => $order_id ) );
+
+			add_action(
+				'action_scheduler_after_process_queue',
+				function() use ( $query, $action_id, $order ) {
+					$this->logger->info( "Cancellilng future update checks for `shop_order:{$order->get_id()}`, status: {$order->get_status()}." );
+					try {
+						as_unschedule_all_actions( $query['hook'], $query['args'] );
+					} catch ( \InvalidArgumentException $exception ) {
+						$this->logger->error( "Failed to as_unschedule_all_actions for action {$action_id}", array( 'exception' => $exception ) );
+					}
+				}
+			);
 			return;
 		}
 

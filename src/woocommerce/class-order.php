@@ -124,8 +124,8 @@ class Order {
 		$actions = as_get_scheduled_actions( $query );
 		if ( ! empty( $actions ) ) {
 			$action_id = array_key_first( $actions );
-			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to, running `as_unschedule_action` for check_unpaid_order job, action_id $action_id.", $context );
-			as_unschedule_action( $hook, $args );
+			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to, running `as_unschedule_all_actions` for check_unpaid_order job, action_id $action_id.", $context );
+			as_unschedule_all_actions( $hook, $args );
 		} else {
 			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to. No check_unpaid_order background job present to cancel.", $context );
 		}
