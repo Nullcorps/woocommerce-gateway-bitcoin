@@ -417,17 +417,18 @@ class API implements API_Interface {
 				$result['btc_amount_received'] = $this->bitcoin_api->get_address_balance( $address->get_raw_address(), 1 );
 
 				// Add a note saying "one new transactions seen, unconfirmed total =, confirmed total = ...".
-
 				$note = '';
 				if ( ! empty( $updated_address['updates']['new_transactions'] ) ) {
 					// TODO: plural.
 					$note                  .= 'New transactions seen: ';
 					$new_transactions_notes = array();
 					foreach ( $updated_address['updates']['new_transactions'] as $new_transaction ) {
-						$new_transactions_note    = '';
-						$new_transactions_note   .= $new_transaction['txid']; // TODO: add href.
-						$new_transactions_note   .= ', ' . $new_transaction['confirmations'] . ' confirmations';
-						$new_transactions_notes[] = $new_transactions_note;
+						$new_transactions_notes[] = sprintf(
+							'<a href="%s" target="_blank">%s</a>, %s confirmations',
+							esc_url( 'https://blockchain.com/explorer/transactions/btc/' . $new_transaction['txid'] ),
+							substr( $new_transaction['txid'], 0, 3 ) . '...' . substr( $new_transaction['txid'], -3 ),
+							$new_transaction['confirmations']
+						);
 					}
 					$note .= implode( ',', $new_transactions_notes ) . ".\n\n";
 				}
