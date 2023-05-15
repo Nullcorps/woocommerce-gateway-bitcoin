@@ -320,7 +320,7 @@ class API implements API_Interface {
 	 * @param WC_Order $order The WooCommerce order to check.
 	 * @param bool     $refresh Should the result be returned from cache or refreshed from remote APIs.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string}
+	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string, order_status_before:string}
 	 * @throws Exception
 	 */
 	public function get_order_details( WC_Order $order, bool $refresh = true ): array {
@@ -510,6 +510,10 @@ class API implements API_Interface {
 	}
 
 	/**
+	 * Get order details for printing in HTML.
+	 *
+	 * @uses \BrianHenryIE\WP_Bitcoin_Gateway\API_Interface::get_order_details()
+	 *
 	 * @param WC_Order $order The WooCommerce order object to update.
 	 * @param bool     $refresh Should saved order details be returned or remote APIs be queried?
 	 *
