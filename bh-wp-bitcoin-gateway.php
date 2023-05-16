@@ -34,13 +34,23 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Activator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Deactivator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
 use Exception;
+use Throwable;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	throw new Exception( 'WPINC not defined' );
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
+// If the GitHub repo was installed without running `composer install` to add the dependencies, the autoload will fail.
+try {
+	require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
+} catch ( Throwable $error ) {
+	$display_download_from_releases_error_notice = function() {
+		echo '<div class="notice notice-error"><p><b>Bitcoin Gateway missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p></div>';
+	};
+	add_action( 'admin_notices', $display_download_from_releases_error_notice );
+	return;
+}
 
 /**
  * Current plugin version.
