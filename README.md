@@ -136,7 +136,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 
 ### v2.0+
 
-* Show transactions in meta box on order page
+* ~~Show transactions in meta box on order page~~
 * Zero-conf payments for virtual products (mempool). To avoid the threat of fraud where the fee is low-balled, only accept zero-conf transactions whose fees are above recent expected range
 * GitHub Actions for E2E tests
 * Run contract tests to find what currencies are supported by the Exchange_Rate APIs
@@ -151,6 +151,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 * Add: change payment method button below payment details, if a customer accidentally chooses/changes their mind
 * Read the issues and requests of other Bitcoin gateways
 * Show current exchange rate on settings page
+* Lightning network
 
 ## How You Can Help
 
