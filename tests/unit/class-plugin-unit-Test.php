@@ -31,6 +31,10 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_plugin_include(): void {
 
+		if ( ! function_exists( '\Patchwork\redefine' ) ) {
+			$this->markTestSkipped( 'Patchwork not loaded' );
+		}
+
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
 			array( BH_WP_Bitcoin_Gateway::class, '__construct' ),

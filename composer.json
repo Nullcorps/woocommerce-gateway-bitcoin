@@ -146,6 +146,7 @@
         "codeception/util-universalframework": "^1.0",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "ext-xdebug": "*",
         "impress-org/givewp-example-gateway": "dev-master",
         "impress-org/give-next-gen": "0.2.0",
         "jaschilz/php-coverage-badger": "^2.0",

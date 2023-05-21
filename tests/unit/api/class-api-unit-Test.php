@@ -27,6 +27,10 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_is_server_has_dependencies(): void {
 
+		if ( ! function_exists( '\Patchwork\redefine' ) ) {
+			$this->markTestSkipped( 'Patchwork not loaded' );
+		}
+
 		$logger                  = new ColorLogger();
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
@@ -53,6 +57,10 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 	 * @covers ::is_server_has_dependencies
 	 */
 	public function test_is_server_is_missing_dependencies(): void {
+
+		if ( ! function_exists( '\Patchwork\redefine' ) ) {
+			$this->markTestSkipped( 'Patchwork not loaded' );
+		}
 
 		$logger                  = new ColorLogger();
 		$settings                = $this->makeEmpty( Settings_Interface::class );
