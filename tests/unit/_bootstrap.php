@@ -8,6 +8,8 @@
 /**
  * Requires XDebug 3.1 for debug/coverage modes, or returns null in XDebug 3.0.
  *
+ * Earlier versions print out the settings to the screen.
+ *
  * @see https://xdebug.org/docs/all_functions#xdebug_info
  *
  * @var string[] $xdebug_info
@@ -17,9 +19,12 @@ $xdebug_info = xdebug_info( 'mode' ) ?? array();
 /**
  * Do not use Patchwork if coverage is enabled.
  * There is an out of memory error occurring.
+ *
  * @see https://patchwork2.org/
  */
-WP_Mock::setUsePatchwork( ! in_array( 'coverage', $xdebug_info, true ) );
+// WP_Mock::setUsePatchwork( ! in_array( 'coverage', $xdebug_info, true ) );
+// WP_Mock::setUsePatchwork( false );
+WP_Mock::setUsePatchwork( true );
 
 WP_Mock::bootstrap();
 
@@ -41,3 +46,5 @@ spl_autoload_register(
 
 global $plugin_root_dir;
 require_once $plugin_root_dir . '/autoload.php';
+
+define( 'HOUR_IN_SECONDS', 60 * 60 );

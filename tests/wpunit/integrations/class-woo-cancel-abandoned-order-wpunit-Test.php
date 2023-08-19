@@ -2,6 +2,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
 use Codeception\TestCase\WPTestCase;
@@ -15,6 +17,7 @@ class Woo_Cancel_Abandoned_Order_Unit_Test extends WPTestCase {
 
 	/**
 	 * @covers ::enable_cao_for_bitcoin
+	 * @covers ::__construct
 	 */
 	public function test_enable_cao_for_bitcoin(): void {
 
@@ -44,15 +47,25 @@ class Woo_Cancel_Abandoned_Order_Unit_Test extends WPTestCase {
 	 */
 	public function test_abort_canceling_partially_paid_order(): void {
 
-		$order_details = array(
-			'transactions' => array( 'tx1', 'tx2' ),
+		$bitcoin_address_mock = self::make(
+			Bitcoin_Address::class,
+			array(
+				'get_blockchain_transactions' => Expected::once( array( 'not', 'empty' ) ),
+			)
+		);
+
+		$bitcoin_order_mock = self::makeEmpty(
+			Bitcoin_Order::class,
+			array(
+				'get_address' => Expected::once( $bitcoin_address_mock ),
+			)
 		);
 
 		$api = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once( true ),
-				'get_order_details'            => Expected::once( $order_details ),
+				'get_order_details'            => Expected::once( $bitcoin_order_mock ),
 			)
 		);
 
@@ -104,15 +117,24 @@ class Woo_Cancel_Abandoned_Order_Unit_Test extends WPTestCase {
 	 */
 	public function test_abort_canceling_partially_paid_order_no_transactions(): void {
 
-		$order_details = array(
-			'transactions' => array(),
+		$address_mock       = self::makeEmpty(
+			Bitcoin_Address::class,
+			array(
+				'get_blockchain_transactions' => Expected::once( array() ),
+			)
+		);
+		$bitcoin_order_mock = self::makeEmpty(
+			Bitcoin_Order::class,
+			array(
+				'get_address' => Expected::once( $address_mock ),
+			)
 		);
 
 		$api = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once( true ),
-				'get_order_details'            => Expected::once( $order_details ),
+				'get_order_details'            => Expected::once( $bitcoin_order_mock ),
 			)
 		);
 

@@ -13,11 +13,12 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
-use DateTime;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use DateTimeImmutable;
-use DateTimeInterface;
+use DateTimeZone;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -39,7 +40,7 @@ use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 
 /**
- * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
+ *
  */
 class API implements API_Interface {
 	use LoggerAwareTrait;
@@ -52,7 +53,7 @@ class API implements API_Interface {
 	/**
 	 * API to query transactions.
 	 */
-	protected Blockchain_API_Interface $bitcoin_api;
+	protected Blockchain_API_Interface $blockchain_api;
 
 	/**
 	 * API to calculate prices.
@@ -82,20 +83,25 @@ class API implements API_Interface {
 	 * @param Bitcoin_Wallet_Factory  $bitcoin_wallet_factory Wallet factory.
 	 * @param Bitcoin_Address_Factory $bitcoin_address_factory Address factory.
 	 */
-	public function __construct( Settings_Interface $settings, LoggerInterface $logger, Bitcoin_Wallet_Factory $bitcoin_wallet_factory, Bitcoin_Address_Factory $bitcoin_address_factory ) {
+	public function __construct(
+		Settings_Interface $settings,
+		LoggerInterface $logger,
+		Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
+		Bitcoin_Address_Factory $bitcoin_address_factory,
+		?Blockchain_API_Interface $blockchain_api = null,
+		?Generate_Address_API_Interface $generate_address_api = null,
+		?Exchange_Rate_API_Interface $exchange_rate_api = null
+	) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
 
 		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
 		$this->bitcoin_address_factory = $bitcoin_address_factory;
 
-		$this->bitcoin_api = new Blockstream_Info_API( $logger );
-
-		$this->generate_address_api = new BitWasp_API( $logger );
-
-		$this->exchange_rate_api = new Bitfinex_API( $logger );
+		$this->blockchain_api       = $blockchain_api ?? new Blockstream_Info_API( $logger );
+		$this->generate_address_api = $generate_address_api ?? new BitWasp_API( $logger );
+		$this->exchange_rate_api    = $exchange_rate_api ?? new Bitfinex_API( $logger );
 	}
-
 
 	/**
 	 * Check a gateway id and determine is it an instance of this gateway type.
@@ -108,6 +114,9 @@ class API implements API_Interface {
 	 * @return bool
 	 */
 	public function is_bitcoin_gateway( string $gateway_id ): bool {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			return false;
+		}
 
 		$bitcoin_gateways = $this->get_bitcoin_gateways();
 
@@ -149,12 +158,9 @@ class API implements API_Interface {
 	 * @see https://github.com/BrianHenryIE/bh-wp-duplicate-payment-gateways
 	 *
 	 * @param int $order_id The id of the (presumed) WooCommerce order to check.
-	 *
-	 * @return bool
 	 */
 	public function is_order_has_bitcoin_gateway( int $order_id ): bool {
-
-		if ( ! function_exists( 'wc_get_order' ) ) {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			return false;
 		}
 
@@ -195,87 +201,51 @@ class API implements API_Interface {
 	 * @return Bitcoin_Address
 	 *
 	 * @throws JsonException
-	 * @throws Exception When the wallet does not exist or could not be created.
 	 */
 	public function get_fresh_address_for_order( WC_Order $order ): Bitcoin_Address {
-
 		$this->logger->debug( 'Get fresh address for `shop_order:' . $order->get_id() . '`' );
 
-		$gateway_id = $order->get_payment_method();
+		$btc_addresses = $this->get_fresh_addresses_for_gateway( $this->get_bitcoin_gateways()[ $order->get_payment_method() ] );
 
-		$gateway = $this->get_bitcoin_gateways()[ $gateway_id ];
+		$btc_address = array_shift( $btc_addresses );
 
-		$xpub = $gateway->get_xpub();
-
-		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
-
-		if ( is_null( $wallet_post_id ) ) {
-			$this->logger->warning( 'Did not find expected wallet for master public key ' . $xpub );
-			$wallet_post_id = $this->bitcoin_wallet_factory->save_new( $xpub, $gateway_id );
-		}
-
-		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
-
-		$fresh_addresses = $wallet->get_fresh_addresses();
-
-		// This mostly shouldn't happen, since it will be checked before the order is placed anyway.
-		// A very unusual race condition could make it happen.
-		if ( empty( $fresh_addresses ) ) {
-
-			// TODO: This is inadequate. It only generates a new address, need to also check the address is unused.
-			$generated_addresses = $this->generate_new_addresses_for_wallet( $gateway->get_xpub(), 1 );
-			$fresh_addresses     = $generated_addresses['generated_addresses'];
-		}
-
-		if ( empty( $fresh_addresses ) ) {
-			throw new Exception( 'No Bitcoin address available.' );
-		}
-
-		foreach ( $fresh_addresses as $address ) {
-			$address_transactions = $this->query_api_for_address_transactions( $address );
-			if ( ! empty( $address_transactions['transactions'] ) ) {
-				if ( 'assigned' !== $address->get_status() ) {
-					$address->set_status( 'used' );
-				}
-			} else {
-				// Success, we have found an unused address.
-				break;
-			}
-		}
-
-		// But we maybe just got to the end of the array, so check again.
-		if ( ! isset( $address ) || ! empty( $address_transactions['transactions'] ) ) {
-			throw new Exception( 'No Bitcoin address available.' );
-		}
-
-		$raw_address = $address->get_raw_address();
-
-		$address->set_order_id( $order->get_id() );
-		$address->set_status( 'assigned' );
-
-		$num_remaining_addresses = count( $fresh_addresses );
-
-		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $raw_address, true );
+		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address->get_raw_address() );
 		$order->save();
 
-		// Schedule address generation if needed.
-		if ( $num_remaining_addresses < 50 ) {
-			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
-			if ( ! as_has_scheduled_action( $hook ) ) {
-				$this->logger->debug( "Under 50 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
-				as_schedule_single_action( time(), $hook );
-			}
-		}
+		$btc_address->set_status( 'assigned' );
 
-		$this->logger->debug(
-			"Returning fresh address {$raw_address}. {$num_remaining_addresses} generated, fresh addresses remaining.",
-			array(
-				'address'                 => $address,
-				'num_remaining_addresses' => $num_remaining_addresses,
+		$this->logger->info(
+			sprintf(
+				'Assigned `bh-bitcoin-address:%d` %s to `shop_order:%d`.',
+				$this->bitcoin_address_factory->get_post_id_for_address( $btc_address->get_raw_address() ),
+				$btc_address->get_raw_address(),
+				$order->get_id()
 			)
 		);
 
-		return $address;
+		return $btc_address;
+	}
+
+	/**
+	 * @param Bitcoin_Gateway $gateway
+	 *
+	 * @return Bitcoin_Address[]
+	 * @throws Exception
+	 */
+	public function get_fresh_addresses_for_gateway( Bitcoin_Gateway $gateway ): array {
+
+		if ( empty( $gateway->get_xpub() ) ) {
+			$this->logger->debug( "No master public key set on gateway {$gateway->id}", array( 'gateway' => $gateway ) );
+			return array();
+		}
+
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $gateway->get_xpub() )
+					   ?? $this->bitcoin_wallet_factory->save_new( $gateway->get_xpub(), $gateway->id );
+
+		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
+
+		/** @var Bitcoin_Address[] $fresh_addresses */
+		return $wallet->get_fresh_addresses();
 	}
 
 	/**
@@ -283,33 +253,12 @@ class API implements API_Interface {
 	 *
 	 * @param Bitcoin_Gateway $gateway The gateway id the address is for.
 	 *
+	 * @used-by Bitcoin_Gateway::is_available()
+	 *
 	 * @return bool
 	 */
 	public function is_fresh_address_available_for_gateway( Bitcoin_Gateway $gateway ): bool {
-
-		$xpub = $gateway->get_xpub();
-
-		if ( empty( $xpub ) ) {
-			return false;
-		}
-
-		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub );
-
-		if ( is_null( $wallet_post_id ) ) {
-			$this->logger->error(
-				'No post id for xpub: ' . $xpub,
-				array(
-					'gateway_id' => $gateway->id,
-					'xpub'       => $xpub,
-				)
-			);
-			return false;
-		}
-
-		$wallet          = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
-		$fresh_addresses = $wallet->get_fresh_addresses();
-
-		return count( $fresh_addresses ) > 0;
+		return count( $this->get_fresh_addresses_for_gateway( $gateway ) ) > 0;
 	}
 
 	/**
@@ -317,276 +266,188 @@ class API implements API_Interface {
 	 *
 	 * As a really detailed array for printing.
 	 *
-	 * @param WC_Order $order The WooCommerce order to check.
+	 * `array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string, order_status_before:string}`
+	 *
+	 * @param WC_Order $wc_order The WooCommerce order to check.
 	 * @param bool     $refresh Should the result be returned from cache or refreshed from remote APIs.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string, order_status_before:string}
+	 * @return Bitcoin_Order_Interface
 	 * @throws Exception
 	 */
-	public function get_order_details( WC_Order $order, bool $refresh = true ): array {
+	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): Bitcoin_Order_Interface {
 
-		// $currency    = $order_details['currency'];
-		// $fiat_symbol = get_woocommerce_currency_symbol( $currency );
-		//
-		// TODO: Find a WooCommerce function which correctly places the currency symbol before/after.
-		// $btc_price_at_at_order_time = $fiat_symbol . ' ' . $order_details['exchange_rate'];
-		// $fiat_formatted_price       = $order->get_formatted_order_total();
-		// $btc_price                  = $order_details['btc_price'];
-		// $bitcoin_formatted_price    = $btc_symbol . wc_format_decimal( $btc_price, $round_btc );
-		//
-		// $btc_logo_url = $site_url . '/wp-content/plugins/bh-wp-bitcoin-gateway/assets/bitcoin.png';
-
-		$result = array();
-
-		$btc_xpub_address_string = $order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
-
-		if ( empty( $btc_xpub_address_string ) ) {
-			$this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
-			throw new Exception( 'Order has no Bitcoin address.' );
-		}
-
-		$order_id = $order->get_id();
-
-		$result['order_id']            = $order_id;
-		$result['order_status_before'] = $order->get_status();
-		$result['btc_address']         = $btc_xpub_address_string;
-
-		$result['btc_total'] = $order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, true );
-
-		$result['btc_exchange_rate'] = $order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, true );
-
-		$amount_received                      = $order->get_meta( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, true );
-		$amount_received                      = is_numeric( $amount_received ) ? $amount_received : 0.0;
-		$result['btc_amount_received']        = $amount_received;
-		$result['btc_amount_received_before'] = $amount_received;
-
-		$address_post_id                  = $this->bitcoin_address_factory->get_post_id_for_address( $btc_xpub_address_string );
-		$address                          = $this->bitcoin_address_factory->get_by_post_id( $address_post_id );
-		$result['bitcoin_address_object'] = $address;
-
-		$order_date_created = $order->get_date_created();
-
-		// Null if never checked before.
-		$address_transactions = $address->get_transactions();
-
-		// Filter transactions to this bitcoin address to only transactions that happened after the order was placed.
-		$order_transactions_before = array_filter(
-			$address_transactions ?? array(),
-			function( array $transaction ) use ( $order_date_created ) {
-				return $transaction['time'] > $order_date_created;
-			}
-		);
-
-		if ( ! $refresh ) {
-			$result['transactions'] = $order_transactions_before;
-		}
-
-		$bitcoin_gateways = $this->get_bitcoin_gateways();
-		// $bitcoin_gateway = $this->get_bitcoin_gateway( $order->get_payment_method() );
-
-		/** @var Bitcoin_Gateway $gateway */
-		$gateway = $bitcoin_gateways[ $order->get_payment_method() ];
-
-		// TODO: null check here. When WooCommerce is inactive `$bitcoin_gateways` is empty.
-
-		// TODO: get from gateway.
-		$gateway_num_required_confirmations = 3;
+		$bitcoin_order = new Bitcoin_Order( $wc_order, $this->bitcoin_address_factory );
 
 		if ( $refresh ) {
-
-			$time_now = new DateTimeImmutable( 'now', new \DateTimeZone( 'UTC' ) );
-
-			$updated_address = $this->query_api_for_address_transactions( $address );
-
-			if ( $updated_address['updated'] ) {
-
-				$refreshed_transactions = $updated_address['transactions'];
-
-				// We're only concerned with transactions that happened after the order was placed.
-				// TODO: Careful with timezones here.
-				$order_transactions = array_filter(
-					$refreshed_transactions,
-					function( array $transaction ) use ( $order_date_created ) {
-						return $transaction['time'] > $order_date_created;
-					}
-				);
-
-				$result['transactions'] = $order_transactions;
-
-				// NB: This is predicated on the address having a zero balance, which is checked for elsewhere.
-				$result['btc_amount_received'] = $this->bitcoin_api->get_address_balance( $address->get_raw_address(), 1 );
-
-				// Add a note saying "one new transactions seen, unconfirmed total =, confirmed total = ...".
-				$note = '';
-				if ( ! empty( $updated_address['updates']['new_transactions'] ) ) {
-					// TODO: plural.
-					$note                  .= 'New transactions seen: ';
-					$new_transactions_notes = array();
-					foreach ( $updated_address['updates']['new_transactions'] as $new_transaction ) {
-						$new_transactions_notes[] = sprintf(
-							'<a href="%s" target="_blank">%s</a>, %s confirmations',
-							esc_url( 'https://blockchain.com/explorer/transactions/btc/' . $new_transaction['txid'] ),
-							substr( $new_transaction['txid'], 0, 3 ) . '...' . substr( $new_transaction['txid'], -3 ),
-							$new_transaction['confirmations']
-						);
-					}
-					$note .= implode( ',', $new_transactions_notes ) . ".\n\n";
-				}
-
-				if ( ! empty( $updated_address['updates']['new_confirmations'] ) ) {
-					$above_required_confirmations = array_reduce(
-						$updated_address['updates']['new_confirmations'],
-						function( bool $carry, array $transaction ) use ( $gateway_num_required_confirmations ) {
-							return $carry && $transaction['confirmations'] >= $gateway_num_required_confirmations;
-						},
-						true
-					);
-					foreach ( $updated_address['updates']['new_confirmations'] as $transaction ) {
-						if ( $above_required_confirmations ) {
-							$note .= sprintf(
-								"Transaction <a href=\"%s\" target=\"_blank\">%s</a> now has %s confirmations.\n\n",
-								esc_url( 'https://blockchain.com/explorer/transactions/btc/' . $transaction['txid'] ),
-								substr( $transaction['txid'], 0, 3 ) . '...' . substr( $transaction['txid'], -3 ),
-								$transaction['confirmations']
-							);
-						}
-					}
-				}
-
-				if ( ! empty( $note ) ) {
-					$this->logger->info(
-						$note,
-						array(
-							'order_id' => $order_id,
-							'updates'  => $updated_address['updates'],
-						)
-					);
-
-					$order->add_order_note( $note );
-				}
-			}
-
-			// Maybe mark the order as paid.
-			if ( ! $order->is_paid() ) {
-				$expected     = $result['btc_total'];
-				$price_margin = $gateway->get_price_margin_percent();
-
-				$minimum_payment = $expected * ( 100 - $price_margin ) / 100;
-
-				if ( $result['btc_amount_received'] > $minimum_payment ) {
-					$order->payment_complete( $btc_xpub_address_string );
-					$this->logger->info( "`shop_order:{$order_id}` has been marked paid.", array( 'order_id' => $order_id ) );
-				}
-			}
-
-			$order->add_meta_data( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, $result['btc_amount_received'], true );
-
-			// @phpstan-ignore-next-line This works fine.
-			$order->add_meta_data( Order::LAST_CHECKED_META_KEY, $time_now, true );
-			$order->save();
-
-			$last_checked_time = $time_now;
-		} else {
-			$last_checked_time = $order->get_meta( Order::LAST_CHECKED_META_KEY );
-			$last_checked_time = empty( $last_checked_time ) ? null : $last_checked_time;
+			$this->refresh_order( $bitcoin_order );
 		}
 
-		$result['last_checked_time'] = $last_checked_time;
-
-		$result['order_status'] = $order->get_status();
-
-		$result['order'] = $order;
-
-		// If the order is not marked paid, but has transactions, it is partly-paid.
-		switch ( true ) {
-			case $order->is_paid():
-				$result['status'] = __( 'Paid', 'bh-wp-bitcoin-gateway' );
-				break;
-			case ! empty( $refreshed_transactions ):
-				$result['status'] = __( 'Partly Paid', 'bh-wp-bitcoin-gateway' );
-				break;
-			default:
-				$result['status'] = __( 'Awaiting Payment', 'bh-wp-bitcoin-gateway' );
-		}
-
-		return $result;
+		return $bitcoin_order;
 	}
 
 	/**
-	 * Get order details for printing in HTML.
+	 *
+	 * TODO: mempool.
+	 */
+	protected function refresh_order( Bitcoin_Order_Interface $bitcoin_order ):bool {
+
+		$updated = false;
+
+		$time_now = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+
+		$order_transactions_before = $bitcoin_order->get_address()->get_blockchain_transactions();
+
+		if ( is_null( $order_transactions_before ) ) {
+			$this->logger->debug( 'Checking for the first time' );
+			$order_transactions_before = array();
+		}
+
+		/** @var array<string, Transaction_Interface> $address_transactions_current */
+		$address_transactions_current = $this->update_address_transactions( $bitcoin_order->get_address() );
+
+		// TODO: Check are any previous transactions no longer present!!!
+
+		// Filter to transactions that occurred after the order was placed.
+		$order_transactions_current = array();
+		foreach ( $address_transactions_current as $txid => $transaction ) {
+			// TODO: maybe use block height at order creation rather than date?
+			// TODO: be careful with timezones.
+			if ( $transaction->get_time() > $bitcoin_order->get_date_created() ) {
+				$order_transactions_current[ $txid ] = $transaction;
+			}
+		}
+
+		$order_transactions_current_mempool = array_filter(
+			$address_transactions_current,
+			function( Transaction_Interface $transaction ) {
+				is_null( $transaction->get_block_height() );
+			}
+		);
+
+		$order_transactions_current_blockchain = array_filter(
+			$address_transactions_current,
+			function( Transaction_Interface $transaction ) {
+				! is_null( $transaction->get_block_height() );
+			}
+		);
+
+		$gateway = $bitcoin_order->get_gateway();
+
+		// $confirmations = $gateway->get_confirmations();
+		$required_confirmations = 3;
+
+		$blockchain_height = $this->blockchain_api->get_blockchain_height();
+
+		$raw_address               = $bitcoin_order->get_address()->get_raw_address();
+		$confirmed_value_current   = array_reduce(
+			$order_transactions_current_blockchain,
+			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
+				if ( $blockchain_height - $transaction->get_block_height() ?? $blockchain_height > $required_confirmations ) {
+					return $carry + $transaction->get_value( $raw_address );
+				}
+				return $carry;
+			},
+			0.0
+		);
+		$unconfirmed_value_current = array_reduce(
+			$order_transactions_current_blockchain,
+			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
+				if ( $blockchain_height - $transaction->get_block_height() ?? $blockchain_height > $required_confirmations ) {
+					return $carry;
+				}
+				return $carry + $transaction->get_value( $raw_address );
+			},
+			0.0
+		);
+
+		// Filter to transactions that have just been seen, so we can record them in notes.
+		$new_order_transactions = array();
+		foreach ( $order_transactions_current as $txid => $transaction ) {
+			if ( ! isset( $order_transactions_before[ $txid ] ) ) {
+				$new_order_transactions[ $txid ] = $transaction;
+			}
+		}
+
+		$transaction_formatter = new Transaction_Formatter();
+
+		// Add a note saying "one new transactions seen, unconfirmed total =, confirmed total = ...".
+		$note = '';
+		if ( ! empty( $new_order_transactions ) ) {
+			$updated = true;
+			$note   .= $transaction_formatter->get_order_note( $new_order_transactions );
+		}
+
+		if ( ! empty( $note ) ) {
+			$this->logger->info(
+				$note,
+				array(
+					'order_id' => $bitcoin_order->get_id(),
+					'updates'  => $order_transactions_current,
+				)
+			);
+
+			$bitcoin_order->add_order_note( $note );
+		}
+
+		if ( ! $bitcoin_order->is_paid() && $confirmed_value_current > 0 ) {
+			$expected        = $bitcoin_order->get_btc_total_price();
+			$price_margin    = $gateway->get_price_margin_percent();
+			$minimum_payment = $expected * ( 100 - $price_margin ) / 100;
+
+			if ( $confirmed_value_current > $minimum_payment ) {
+				$bitcoin_order->payment_complete( $order_transactions_current[ array_key_last( $order_transactions_current ) ]->get_txid() );
+				$this->logger->info( "`shop_order:{$bitcoin_order->get_id()}` has been marked paid.", array( 'order_id' => $bitcoin_order->get_id() ) );
+
+				$updated = true;
+			}
+		}
+
+		if ( $updated ) {
+			$bitcoin_order->set_amount_received( $confirmed_value_current );
+		}
+		$bitcoin_order->set_last_checked_time( $time_now );
+
+		$bitcoin_order->save();
+
+		return $updated;
+	}
+
+
+	/**
+	 * Get order details for printing in HTML templates.
+	 *
+	 * Returns an array of:
+	 * * html formatted values
+	 * * raw values that are known to be used in the templates
+	 * * objects the values are from
 	 *
 	 * @uses \BrianHenryIE\WP_Bitcoin_Gateway\API_Interface::get_order_details()
+	 * @see Details_Formatter
 	 *
 	 * @param WC_Order $order The WooCommerce order object to update.
-	 * @param bool     $refresh Should saved order details be returned or remote APIs be queried?
+	 * @param bool     $refresh Should saved order details be returned or remote APIs be queried.
 	 *
-	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
-	 * @throws Exception
+	 * @return array<string, mixed>
 	 */
 	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array {
 
-		$result = array();
-
 		$order_details = $this->get_order_details( $order, $refresh );
 
-		// ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
-		$btc_symbol                              = '฿';
-		$result['btc_total_formatted']           = $btc_symbol . ' ' . wc_trim_zeros( $order_details['btc_total'] );
-		$result['btc_exchange_rate_formatted']   = wc_price( $order_details['btc_exchange_rate'], array( 'currency' => $order->get_currency() ) );
-		$result['order_status_before_formatted'] = wc_get_order_statuses()[ 'wc-' . $order_details['order_status_before'] ];
-		$result['order_status_formatted']        = wc_get_order_statuses()[ 'wc-' . $order_details['order_status'] ];
-		$result['btc_amount_received_formatted'] = $btc_symbol . ' ' . $order_details['btc_amount_received'];
+		$formatted = new Details_Formatter( $order_details );
 
-		if ( isset( $order_details['last_checked_time'] ) ) {
-			$last_checked_time = $order_details['last_checked_time'];
-			$date_format       = get_option( 'date_format' );
-			$time_format       = get_option( 'time_format' );
-			$timezone          = wp_timezone_string();
+		// HTML formatted data.
+		$result = $formatted->to_array();
 
-			// $last_checked_time is in UTC... change it to local time.?
-			// The server time is not local time... maybe use their address?
-			// @see https://stackoverflow.com/tags/timezone/info
-			$result['last_checked_time_formatted'] = $last_checked_time->format( $date_format . ', ' . $time_format ) . ' ' . $timezone;
-		} else {
-			$result['last_checked_time_formatted'] = 'Never';
-		}
+		// Raw data.
+		$result['btc_total']           = $order_details->get_btc_total_price();
+		$result['btc_exchange_rate']   = $order_details->get_btc_exchange_rate();
+		$result['btc_address']         = $order_details->get_address()->get_raw_address();
+		$result['transactions']        = $order_details->get_address()->get_blockchain_transactions();
+		$result['btc_amount_received'] = $order_details->get_address()->get_amount_received() ?? 'unknown';
 
-		$address = $order_details['bitcoin_address_object'];
-
-		$result['btc_address_derivation_path_sequence_number'] = $address->get_derivation_path_sequence_number();
-
-		$wallet                = $this->bitcoin_wallet_factory->get_by_post_id( $address->get_wallet_parent_post_id() );
-		$xpub                  = $wallet->get_xpub();
-		$xpub_friendly_display = substr( $xpub, 0, 7 ) . ' ... ' . substr( $xpub, -3, 3 );
-		$xpub_js_span          = "<span style=\"border-bottom: 1px dashed #999; word-wrap: break-word\" onclick=\"this.innerText = this.innerText === '{$xpub}' ? '{$xpub_friendly_display}' : '{$xpub}';\" title=\"{$xpub}\"'>{$xpub_friendly_display}</span>";
-
-		$result['parent_wallet_xpub_html'] = $xpub_js_span;
-
-		// TODO: Link to the CPT list table.
-		// $result['parent_wallet_url'] =
-
-		// Add a link showing the exchange rate around the time of the order ( -12 hours to +12 hours after payment).
-
-		/**
-		 * This supposedly could be null, but I can't imagine a scenario where WooCommerce returns an order object
-		 * that doesn't have a DateTime for created.
-		 *
-		 * @var DateTime $date_created
-		 */
-		$date_created = $order->get_date_created();
-		$from         = $date_created->getTimestamp() - ( DAY_IN_SECONDS / 2 );
-		if ( ! is_null( $order->get_date_paid() ) ) {
-			$to = $order->get_date_paid()->getTimestamp() + ( DAY_IN_SECONDS / 2 );
-		} else {
-			$to = $from + DAY_IN_SECONDS;
-		}
-		$exchange_rate_url           = "https://www.blockchain.com/prices/BTC?from={$from}&to={$to}&timeSpan=custom&scale=0&style=line";
-		$result['exchange_rate_url'] = $exchange_rate_url;
-
-		// Unchanged data.
-		foreach ( array( 'order', 'btc_total', 'btc_exchange_rate', 'btc_address', 'transactions', 'btc_amount_received', 'status' ) as $key ) {
-			$result[ $key ] = $order_details[ $key ];
-		}
+		// Objects.
+		$result['order']         = $order;
+		$result['bitcoin_order'] = $order_details;
 
 		return $result;
 	}
@@ -602,9 +463,9 @@ class API implements API_Interface {
 	 * @throws Exception
 	 */
 	public function get_exchange_rate( string $currency ): string {
+		$currency       = strtoupper( $currency );
 		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency;
-
-		$exchange_rate = get_transient( $transient_name );
+		$exchange_rate  = get_transient( $transient_name );
 
 		if ( empty( $exchange_rate ) ) {
 			$exchange_rate = $this->exchange_rate_api->get_exchange_rate( $currency );
@@ -620,7 +481,7 @@ class API implements API_Interface {
 	 * Rounds to ~6 decimal places.
 	 *
 	 * @param string $currency 'USD'|'EUR'|'GBP', maybe others.
-	 * @param float  $fiat_amount This is stored in the WC_Order object as a float.
+	 * @param float  $fiat_amount This is stored in the WC_Order object as a float (as a string in meta).
 	 *
 	 * @return string Bitcoin amount.
 	 */
@@ -665,7 +526,7 @@ class API implements API_Interface {
 
 		$generated_addresses = array();
 
-		while ( count( $wallet->get_fresh_addresses() ) < 50 ) {
+		while ( count( $wallet->get_fresh_addresses() ) < 20 ) {
 
 			$generate_addresses_result = $this->generate_new_addresses_for_wallet( $xpub );
 			$new_generated_addresses   = $generate_addresses_result['generated_addresses'];
@@ -687,7 +548,7 @@ class API implements API_Interface {
 
 
 	/**
-	 * If a wallet has fewer than 50 fresh addresses available, generate some more.
+	 * If a wallet has fewer than 20 fresh addresses available, generate some more.
 	 *
 	 * @see API_Interface::generate_new_addresses()
 	 * @used-by CLI::generate_new_addresses()
@@ -727,7 +588,7 @@ class API implements API_Interface {
 
 			$fresh_addresses = $wallet->get_fresh_addresses();
 
-			if ( count( $fresh_addresses ) > 50 ) {
+			if ( count( $fresh_addresses ) > 20 ) {
 				continue;
 			}
 
@@ -747,23 +608,20 @@ class API implements API_Interface {
 
 	/**
 	 * @param string $master_public_key
-	 * @param int    $generate_count // TODO: Change this up to 50? when in prod.
+	 * @param int    $generate_count // TODO:  20 is the standard. cite.
 	 *
 	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 *
 	 * @throws Exception When no wallet object is found for the master public key (xpub) string.
 	 */
-	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array {
+	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 20 ): array {
 
 		$result = array();
 
 		$result['xpub'] = $master_public_key;
 
-		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key );
-
-		if ( is_null( $wallet_post_id ) ) {
-			throw new \Exception();
-		}
+		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key )
+			?? $this->bitcoin_wallet_factory->save_new( $master_public_key );
 
 		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
@@ -807,7 +665,7 @@ class API implements API_Interface {
 			$this->check_new_addresses_for_transactions();
 
 			// Schedule more generation after it determines how many unused addresses are available.
-			if ( count( $wallet->get_fresh_addresses() ) < 50 ) {
+			if ( count( $wallet->get_fresh_addresses() ) < 20 ) {
 
 				$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
 				if ( ! as_has_scheduled_action( $hook ) ) {
@@ -823,50 +681,58 @@ class API implements API_Interface {
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 *
-	 * @param Bitcoin_Address[] $addresses Array of address objects to query.
+	 * @param Bitcoin_Address[] $addresses Array of address objects to query and update.
 	 *
-	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
+	 * @return array<string, Transaction_Interface>
 	 */
-	public function check_new_addresses_for_transactions( ?array $addresses = null ): array {
+	public function check_new_addresses_for_transactions(): array {
+
+		$addresses = array();
+
+		// Get all wallets whose status is unknown.
+		$posts = get_posts(
+			array(
+				'post_type'      => Bitcoin_Address::POST_TYPE,
+				'post_status'    => 'unknown',
+				'posts_per_page' => 100,
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+			)
+		);
+
+		if ( empty( $posts ) ) {
+			$this->logger->debug( 'No addresses with "unknown" status to check' );
+
+			return array(); // TODO: return something meaningful.
+		}
+
+		foreach ( $posts as $post ) {
+
+			$post_id = $post->ID;
+
+			$addresses[] = $this->bitcoin_address_factory->get_by_post_id( $post_id );
+
+		}
+
+		return $this->check_addresses_for_transactions( $addresses );
+	}
+
+	/**
+	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
+	 *
+	 * @param Bitcoin_Address[] $addresses Array of address objects to query and update.
+	 *
+	 * @return array<string, Transaction_Interface>
+	 */
+	public function check_addresses_for_transactions( array $addresses ): array {
 
 		$result = array();
 
-		if ( is_null( $addresses ) ) {
-
-			$addresses = array();
-
-			// Get all wallets whose status is unknown.
-			$posts = get_posts(
-				array(
-					'post_type'      => Bitcoin_Address::POST_TYPE,
-					'post_status'    => 'unknown',
-					'posts_per_page' => 100,
-					'orderby'        => 'ID',
-					'order'          => 'ASC',
-				)
-			);
-
-			if ( empty( $posts ) ) {
-				$this->logger->debug( 'No addresses with "unknown" status to check' );
-
-				return array(); // TODO: return something meaningful.
-			}
-
-			foreach ( $posts as $post ) {
-
-				$post_id = $post->ID;
-
-				$addresses[] = $this->bitcoin_address_factory->get_by_post_id( $post_id );
-
-			}
-		}
 		try {
 			foreach ( $addresses as $bitcoin_address ) {
-
-				// Check for updates.
-				$result[ $bitcoin_address->get_raw_address() ] = $this->query_api_for_address_transactions( $bitcoin_address );
+				$result[ $bitcoin_address->get_raw_address() ] = $this->update_address_transactions( $bitcoin_address );
 			}
-		} catch ( \Exception $exception ) {
+		} catch ( Exception $exception ) {
 			// Reschedule if we hit 429 (there will always be at least one address to check if it 429s.).
 			$this->logger->debug( $exception->getMessage() );
 
@@ -880,7 +746,7 @@ class API implements API_Interface {
 		}
 
 		// TODO: After this is complete, there could be 0 fresh addresses (e.g. if we start at index 0 but 200 addresses
-		// are already used. => We really need to generate new addresses until we have some.
+		// are already used). => We really need to generate new addresses until we have some.
 
 		// TODO: Return something useful.
 		return $result;
@@ -891,59 +757,20 @@ class API implements API_Interface {
 	 *
 	 * @param Bitcoin_Address $address The address object to query.
 	 *
-	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @return array<string, Transaction_Interface>
 	 *
 	 * @throws JsonException
 	 */
-	public function query_api_for_address_transactions( Bitcoin_Address $address ): array {
+	public function update_address_transactions( Bitcoin_Address $address ): array {
 
 		$btc_xpub_address_string = $address->get_raw_address();
 
-		// Null when never checked before.
-		$previous_transactions = $address->get_transactions();
+		// TODO: retry on rate limit.
+		$transactions = $this->blockchain_api->get_transactions_received( $btc_xpub_address_string );
 
-		try {
-			$refreshed_transactions = $this->bitcoin_api->get_transactions_received( $btc_xpub_address_string );
-		} catch ( JsonException $json_exception ) {
-			// Don't bother trying again.
-			return array(
-				'address'               => $address,
-				'updated'               => false,
-				'previous_transactions' => $previous_transactions,
-			);
-		}
-		// TODO catch ( RateLimitException $rate_limit_exception ) ... DO try again
+		$address->set_transactions( $transactions );
 
-		$updates                      = array();
-		$updates['new_transactions']  = array();
-		$updates['new_confirmations'] = array();
-
-		if ( is_null( $previous_transactions ) ) {
-			$updates['new_transactions'] = $refreshed_transactions;
-
-		} else {
-			foreach ( $refreshed_transactions as $txid => $refreshed_transaction ) {
-				if ( ! isset( $previous_transactions[ $txid ] ) ) {
-					$updates['new_transactions'][ $txid ] = $refreshed_transaction;
-				} elseif ( $previous_transactions[ $txid ]['confirmations'] !== $refreshed_transaction['confirmations'] ) {
-					$updates['new_confirmations'][ $txid ] = $refreshed_transaction;
-				}
-			}
-		}
-
-		$updated = is_null( $previous_transactions ) || ! empty( $updates['new_transactions'] ) || ! empty( $updates['new_confirmations'] );
-
-		if ( $updated ) {
-			$address->set_transactions( $refreshed_transactions );
-		}
-
-		return array(
-			'address'               => $address,
-			'transactions'          => $refreshed_transactions,
-			'updated'               => $updated,
-			'updates'               => $updates,
-			'previous_transactions' => $previous_transactions,
-		);
+		return $transactions;
 	}
 
 	/**

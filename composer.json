@@ -15,11 +15,11 @@
         "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
-            "cweagans/composer-patches": true,
             "composer/installers": true,
+            "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "phpstan/extension-installer": true,
-            "johnpbloch/wordpress-core-installer": true
+            "johnpbloch/wordpress-core-installer": true,
+            "phpstan/extension-installer": true
         }
     },
     "repositories": {
@@ -42,6 +42,10 @@
         "brianhenryie/bh-wp-private-uploads":{
             "url": "https://github.com/BrianHenryIE/bh-wp-private-uploads",
             "type": "git"
+        },
+        "brianhenryie/bh-php-blockchain-info":{
+            "type": "path",
+            "url":  "../bh-php-blockchain-info/"
         },
         "bitwasp/bitcoin-php":{
             "url": "https://github.com/BrianHenryIE/bitcoin-php",
@@ -111,7 +115,7 @@
             "type": "package",
             "package": {
                 "name": "woocommerce/woocommerce-gateway-dummy",
-                "version": "1.0.4",
+                "version": "1.0.5",
                 "dist": {
                     "url": "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip",
                     "type": "zip"
@@ -126,11 +130,16 @@
         "ext-gmp": "*",
         "ext-json": "*",
         "alleyinteractive/wordpress-autoloader": "^1.1",
+        "art4/requests-psr18-adapter": "^1.0",
         "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
+        "brianhenryie/bh-php-blockchain-info": "dev-main",
         "brianhenryie/bh-wp-logger": "dev-master",
         "chillerlan/php-qrcode": "^4.3",
+        "json-mapper/json-mapper": "^2.18",
         "phpseclib/bcmath_compat": "^2.0",
-        "phpseclib/mcrypt_compat": "^2.0"
+        "phpseclib/mcrypt_compat": "^2.0",
+        "psr/http-client": "^1.0.0",
+        "psr/http-factory": "^1.0.0"
     },
     "require-dev": {
         "10up/wp_mock": "*",
@@ -147,7 +156,6 @@
         "codeception/util-universalframework": "^1.0",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "ext-xdebug": "*",
         "impress-org/givewp-example-gateway": "dev-master",
         "impress-org/give-next-gen": "0.2.0",
         "jaschilz/php-coverage-badger": "^2.0",
@@ -198,13 +206,20 @@
             "namespace_replacement_patterns": {
                 "~BrianHenryIE\\\\(.*)~" : "BrianHenryIE\\WP_Bitcoin_Gateway\\\\$1"
             },
+            "exclude_from_copy": {
+                "packages": [
+                    "rmccue/requests"
+                ]
+            },
             "exclude_from_prefix": {
                 "packages": [
                     "phpseclib/bcmath_compat",
                     "phpseclib/mcrypt_compat"
                 ],
                 "file_patterns": [
-                    "/^psr.*$/"
+                    "/^psr.*$/",
+                    "#symfony/polyfill-php80/Resources/stubs/Stringable.php#",
+                    "#myclabs/php-enum/stubs/Stringable.php#"
                 ]
             }
         },
@@ -265,9 +280,10 @@
         "restore-acceptance-database": [
             "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
         ],
-        "coverage-tests": [
-            "codecept run unit --coverage unit.cov",
-            "codecept run wpunit --coverage wpunit.cov",
+        "test-coverage": [
+            "rm tests/_output/*.cov || true; rm tests/_output/clover.xml || true",
+            "vendor/bin/codecept run unit --coverage unit.cov",
+            "vendor/bin/codecept run wpunit --coverage wpunit.cov",
             "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
             "open tests/_output/html/index.html"
         ],

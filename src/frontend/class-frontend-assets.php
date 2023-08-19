@@ -102,12 +102,13 @@ class Frontend_Assets {
 
 		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/bh-wp-bitcoin-gateway.min.js';
 
-		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		if ( defined( 'SCRIPT_DEBUG' ) && constant( 'SCRIPT_DEBUG' ) ) {
 			$script_url = str_replace( '.min', '', $script_url );
 		}
 
 		wp_enqueue_script( 'bh-wp-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
 
+		// TODO: For security, filter array to explicit allow-list containing only the required keys.
 		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
 
 		$ajax_data      = array(

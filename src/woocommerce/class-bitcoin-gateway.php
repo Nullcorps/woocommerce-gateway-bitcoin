@@ -299,7 +299,6 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		 */
 		try {
 			/**
-			 * This sets the order meta value inside the function.
 			 *
 			 * @see Order::BITCOIN_ADDRESS_META_KEY
 			 * @see Bitcoin_Address::get_raw_address()

@@ -32,11 +32,7 @@ coverage:
         - /scratch/*
         - /wordpress/*
         - /vendor-prefixed/*
-        - /*/interface-*.*
-        - /*/index.php
-        - /*/*.txt
-        - autoload.php
-        - autoload-classmap.php
-        - /*/*.css
-        - /*/*.js
+        - /autoload.php
+#        - /*/interface-*.*
+#        - /*/index.php
 bootstrap: bootstrap.php

@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WC_Order;
@@ -17,15 +18,12 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_check_unpaid_order(): void {
 
-		$logger = new ColorLogger();
-		$api    = $this->makeEmpty(
+		$logger             = new ColorLogger();
+		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
+		$api                = $this->makeEmpty(
 			API_Interface::class,
 			array(
-				'get_order_details' => Expected::once(
-					function( $order ) {
-						return array();
-					}
-				),
+				'get_order_details' => Expected::once( $bitcoin_order_mock ),
 			)
 		);
 
@@ -60,17 +58,18 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_check_unpaid_order_does_not_reschedule_job_when_order_status_paid(): void {
 
-		$logger = new ColorLogger();
-		$api    = $this->makeEmpty(
+		$logger             = new ColorLogger();
+		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
+		$api                = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'get_order_details' => Expected::once(
-					function( WC_Order $order ) {
+					function( WC_Order $order ) use ( $bitcoin_order_mock ) {
 
 						$order->payment_complete();
 						$order->save();
 
-						return array();
+						return $bitcoin_order_mock;
 					}
 				),
 			)

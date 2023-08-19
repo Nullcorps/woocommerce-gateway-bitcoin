@@ -6,7 +6,7 @@
  *
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_formatted_order_details()`, extracted into these variables:
  *
- * @var string $status 'Awaiting Payment'|'Partially Paid'|'Paid'.
+ * @var string $payment_status 'Awaiting Payment'|'Partially Paid'|'Paid'.
  * @var string $btc_address Destination payment address.
  * @var string $btc_total Order total in BTC.
  * @var string $btc_total_formatted Order total prefixed with "฿".

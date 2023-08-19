@@ -1,5 +1,8 @@
 {
   "redefinable-internals": [
+    "constant",
+    "define",
+    "defined",
     "function_exists"
   ]
 }

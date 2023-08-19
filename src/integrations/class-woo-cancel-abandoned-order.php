@@ -80,12 +80,12 @@ class Woo_Cancel_Abandoned_Order {
 		}
 
 		try {
-			$order_details = $this->api->get_order_details( $order );
+			$bitcoin_order = $this->api->get_order_details( $order );
 		} catch ( Exception $exception ) {
 			// If something is going wrong, do not automatically cancel the order.
 			return false;
 		}
 
-		return empty( $order_details['transactions'] );
+		return empty( $bitcoin_order->get_address()->get_blockchain_transactions() );
 	}
 }

@@ -9,7 +9,7 @@
  * @var array<string, mixed> $args Associative array containing the result of `API_Interface::get_order_details()`, extracted into these variables:
  *
  * @var string $btc_logo_url // TODO
- * @var string $status 'Awaiting Payment'|'Partially Paid'|'Paid'.
+ * @var string $payment_status 'Awaiting Payment'|'Partially Paid'|'Paid'.
  * @var string $btc_address Destination payment address.
  * @var string $btc_total Order total in BTC.
  * @var string $btc_total_formatted Order total prefixed with "฿".
@@ -58,7 +58,7 @@ $btc_logo_url = BH_WP_BITCOIN_GATEWAY_URL . '/assets/bitcoin.png';
 			<td><span class=""><?php esc_html_e( 'Status:', 'bh-wp-bitcoin-gateway' ); ?></span></td>
 			<td><span class="bh_wp_bitcoin_gateway_status bh_wp_bitcoin_gateway_updatable">
 			<?php
-			echo esc_html( $status );
+			echo esc_html( $payment_status );
 			?>
 			</span></td>
 		</tr>

@@ -9,11 +9,13 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use DateTimeInterface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
-use tad\WPBrowser\Generators\Date;
+use RuntimeException;
+use InvalidArgumentException;
 use WP_Post;
 
 /**
@@ -35,6 +37,21 @@ class Bitcoin_Address {
 	 */
 	protected WP_Post $post;
 
+	protected int $post_id;
+	protected string $status;
+	protected int $wallet_parent_post_id;
+	protected ?int $derivation_path_sequence_number;
+	protected string $raw_address;
+
+	/** @var array<string,Transaction_Interface> */
+	protected ?array $transactions;
+	/**
+	 * @var mixed|string|null
+	 */
+	protected $balance;
+	protected ?int $order_id;
+
+
 	/**
 	 * Constructor
 	 *
@@ -45,10 +62,18 @@ class Bitcoin_Address {
 	public function __construct( int $post_id ) {
 		$post = get_post( $post_id );
 		if ( ! ( $post instanceof WP_Post ) || self::POST_TYPE !== $post->post_type ) {
-			throw new Exception( 'post_id ' . $post_id . ' is not a ' . self::POST_TYPE . ' post object' );
+			throw new InvalidArgumentException( 'post_id ' . $post_id . ' is not a ' . self::POST_TYPE . ' post object' );
 		}
 
-		$this->post = $post;
+		$this->post                            = $post;
+		$this->post_id                         = $post_id;
+		$this->wallet_parent_post_id           = $this->post->post_parent;
+		$this->status                          = $this->post->post_status;
+		$this->derivation_path_sequence_number = (int) get_post_meta( $post_id, self::DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY, true );
+		$this->raw_address                     = $this->post->post_excerpt;
+		$this->transactions                    = get_post_meta( $post_id, self::TRANSACTION_META_KEY, true ) ?: null;
+		$this->balance                         = get_post_meta( $post_id, self::BALANCE_META_KEY, true );
+		$this->order_id                        = intval( get_post_meta( $post_id, self::ORDER_ID_META_KEY, true ) );
 	}
 
 	/**
@@ -57,17 +82,16 @@ class Bitcoin_Address {
 	 * @return int
 	 */
 	public function get_wallet_parent_post_id(): int {
-		return $this->post->post_parent;
+		return $this->wallet_parent_post_id;
 	}
 
 	/**
 	 * Get this Bitcoin address's derivation path.
 	 *
-	 * @return ?int
+	 * @readonly
 	 */
 	public function get_derivation_path_sequence_number(): ?int {
-		$value = get_post_meta( $this->post->ID, self::DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY, true );
-		return is_numeric( $value ) ? intval( $value ) : null;
+		return is_numeric( $this->derivation_path_sequence_number ) ? intval( $this->derivation_path_sequence_number ) : null;
 	}
 
 	/**
@@ -76,32 +100,33 @@ class Bitcoin_Address {
 	 * @used-by API::check_new_addresses_for_transactions() When verifying newly generated addresses have no existing transactions.
 	 * @used-by API::get_fresh_address_for_order() When adding the payment address to the order meta.
 	 * @used-by Bitcoin_Gateway::process_payment() When adding a link in the order notes to view transactions on a 3rd party website.
-	 * @used-by API::query_api_for_address_transactions() When checking has an order been paid.
+	 * @used-by API::update_address_transactions() When checking has an order been paid.
 	 */
 	public function get_raw_address(): string {
-		return $this->post->post_excerpt;
+		return $this->raw_address;
 	}
 
 	/**
 	 * Return the previously saved transactions for this address.
 	 *
-	 * @used-by API::query_api_for_address_transactions() When checking previously fetched transactions before a new query.
+	 * @used-by API::update_address_transactions() When checking previously fetched transactions before a new query.
 	 * @used-by API::get_order_details() When displaying the order/address details in the admin/frontend UI.
 	 * @used-by Addresses_List_Table::print_columns() When displaying all addresses.
 	 *
-	 * @return array<string,array{txid:string, time:DateTimeInterface, value:string, confirmations:int}>|null
+	 * @return array<string,Transaction_Interface>|null
 	 */
-	public function get_transactions(): ?array {
-		$value = get_post_meta( $this->post->ID, self::TRANSACTION_META_KEY, true );
-		return is_array( $value ) ? $value : null;
+	public function get_blockchain_transactions(): ?array {
+		return is_array( $this->transactions ) ? $this->transactions : null;
 	}
+
+	// get_mempool_transactions()
 
 	/**
 	 * Save the transactions recently fetched from the API.
 	 *
-	 * @used-by API::query_api_for_address_transactions()
+	 * @used-by API::update_address_transactions()
 	 *
-	 * @param array<string,array{txid:string, time:DateTimeInterface, value:string, confirmations:int}> $refreshed_transactions Array of the transaction details keyed by each transaction id.
+	 * @param array<string,Transaction_Interface> $refreshed_transactions Array of the transaction details keyed by each transaction id.
 	 */
 	public function set_transactions( array $refreshed_transactions ): void {
 
@@ -118,7 +143,12 @@ class Bitcoin_Address {
 			$update['post_status'] = 'used';
 		}
 
-		wp_update_post( $update );
+		$result = wp_update_post( $update );
+		if ( ! is_wp_error( $result ) ) {
+			$this->transactions = $update;
+		} else {
+			throw new RuntimeException( $result->get_error_message() );
+		}
 	}
 
 	/**
@@ -131,12 +161,15 @@ class Bitcoin_Address {
 	 * @return ?string Null if unknown.
 	 */
 	public function get_balance(): ?string {
-		$balance = get_post_meta( $this->post->ID, self::BALANCE_META_KEY, true );
-		if ( empty( $balance ) ) {
-			$balance = '0.0';
-		}
-
+		$balance = empty( $this->balance ) ? '0.0' : $this->balance;
 		return 'unknown' === $this->get_status() ? null : $balance;
+	}
+
+	/**
+	 * TODO: "balance" is not an accurate term for what we need.
+	 */
+	public function get_amount_received(): ?string {
+		return $this->get_balance();
 	}
 
 	/**
@@ -151,8 +184,7 @@ class Bitcoin_Address {
 	 * @return string unknown|unused|assigned|used.
 	 */
 	public function get_status(): string {
-
-		return $this->post->post_status;
+		return $this->status;
 	}
 
 	/**
@@ -167,13 +199,23 @@ class Bitcoin_Address {
 	 */
 	public function set_status( string $status ): void {
 
-		wp_update_post(
+		if ( ! in_array( $status, array( 'unknown', 'unused', 'assigned', 'used' ), true ) ) {
+			throw new InvalidArgumentException( "{$status} should be one of unknown|unused|assigned|used" );
+		}
+
+		$result = wp_update_post(
 			array(
 				'post_type'   => self::POST_TYPE,
 				'ID'          => $this->post->ID,
 				'post_status' => $status,
 			)
 		);
+
+		if ( ! is_wp_error( $result ) ) {
+			$this->status = $status;
+		} else {
+			throw new RuntimeException( $result );
+		}
 	}
 
 	/**
@@ -182,8 +224,7 @@ class Bitcoin_Address {
 	 * @return ?int
 	 */
 	public function get_order_id(): ?int {
-		$value = intval( get_post_meta( $this->post->ID, self::ORDER_ID_META_KEY, true ) );
-		return 0 === $value ? null : $value;
+		return 0 === $this->order_id ? null : $this->order_id;
 	}
 
 	/**
@@ -204,7 +245,11 @@ class Bitcoin_Address {
 			$update['post_status'] = 'assigned';
 		}
 
-		wp_update_post( $update );
+		$result = wp_update_post( $update );
+		if ( ! is_wp_error( $result ) ) {
+			$this->order_id = $order_id;
+		} else {
+			throw new RuntimeException( $result->get_error_message() );
+		}
 	}
-
 }

@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
@@ -17,8 +18,8 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_enqueue_scripts(): void {
 
-		$logger   = new ColorLogger();
-		$settings = $this->makeEmpty(
+		$logger             = new ColorLogger();
+		$settings           = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
 				'get_plugin_version' => Expected::once(
@@ -28,7 +29,8 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				),
 			)
 		);
-		$api      = $this->makeEmpty(
+		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
+		$api                = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
@@ -36,11 +38,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 						return true;
 					}
 				),
-				'get_order_details'            => Expected::once(
-					function( $order ) {
-						return array( 'test' => 'testdata' );
-					}
-				),
+				'get_order_details'            => Expected::once( $bitcoin_order_mock ),
 			)
 		);
 

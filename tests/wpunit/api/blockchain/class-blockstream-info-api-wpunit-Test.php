@@ -57,7 +57,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		$result = $sut->get_address_balance( $address, 1 );
 
-		$this->assertEquals( 0.00018142, $result['confirmed_balance'] );
+		$this->assertEquals( 0.00018142, $result->get_confirmed_balance() );
 	}
 
 	/**
@@ -116,6 +116,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 	 * @see https://esplora.blockstream.com/tx/8e5e6b898750a7afbe683a953fbf30bd990bb57ccd2d904c76df29f61054e743
 	 */
 	public function test_get_transactions(): void {
+
 		$logger = new ColorLogger();
 
 		$sut = new Blockstream_Info_API( $logger );
@@ -359,7 +360,6 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 		assert( 0 < count( $result ) );
 		$first = array_shift( $result );
 
-		$this->assertEquals( 0.02415465, $first['value'] );
-
+		$this->assertEquals( 0.02413, $first->get_value( $address ) );
 	}
 }

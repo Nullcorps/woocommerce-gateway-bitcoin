@@ -9,9 +9,12 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use ActionScheduler;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use WC_Order;
 
 /**
  * Defines constants for metakeys.
@@ -26,8 +29,6 @@ class Order {
 	protected API_Interface $api;
 
 	const BITCOIN_ADDRESS_META_KEY = 'bh_wp_bitcoin_gateway_address';
-
-	const TRANSACTIONS_META_KEY = 'bh_wp_bitcoin_gateway_transactions';
 
 	const EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wp_bitcoin_gateway_exchange_rate_at_time_of_purchase';
 

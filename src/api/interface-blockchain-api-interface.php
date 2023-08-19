@@ -5,13 +5,14 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use DateTimeInterface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
-/**
- * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
- */
 interface Blockchain_API_Interface {
+
+	public function get_blockchain_height():int;
 
 	/**
 	 * The total amount in BTC received at this address.
@@ -28,17 +29,15 @@ interface Blockchain_API_Interface {
 	 *
 	 * @param string $btc_address The payment address to check.
 	 * @param int    $number_of_confirmations
-	 *
-	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
 	 */
-	public function get_address_balance( string $btc_address, int $number_of_confirmations ): array;
+	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance;
 
 	/**
 	 * Query the Blockchain API for the transactions received at this address.
 	 *
 	 * @param string $btc_address The payment address to check.
 	 *
-	 * @return array<string, TransactionArray> Txid, data.
+	 * @return array<string, Transaction_Interface> Txid, data.
 	 */
 	public function get_transactions_received( string $btc_address ): array;
 

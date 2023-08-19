@@ -13,6 +13,7 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::declare_compatibility
+	 * @covers ::__construct
 	 */
 	public function test_declare_compatibility(): void {
 

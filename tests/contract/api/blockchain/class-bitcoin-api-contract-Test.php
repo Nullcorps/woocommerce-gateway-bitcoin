@@ -11,11 +11,12 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 
 /**
  * @coversNothing
  */
-class Bitcoin_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class Bitcoin_API_Contract_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @return array<Blockchain_API_Interface[]>
@@ -46,16 +47,13 @@ class Bitcoin_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$logger->info( get_class( $sut ) );
 		$logger->info( wp_json_encode( $result, JSON_THROW_ON_ERROR ) );
 
-		/** @var array{txid:string, time:\DateTimeInterface, value:string, confirmations:int} $first_transaction */
+		/** @var Transaction_Interface $first_transaction */
 		$first_transaction = array_pop( $result );
 
-		// Verify all APIs are returning the time as a DateTime.
-		$this->assertInstanceOf( \DateTimeInterface::class, $first_transaction['time'] );
+		self::assertEquals( '882dccf5a828a62ecc42c1251b3086ad4f315ef6864653e01f3e64a1793555bd', $first_transaction->get_txid() );
+		self::assertEquals( 0.00730728, $first_transaction->get_value( $sent_to ) );
+		self::assertEquals( '686306', $first_transaction->get_block_height() );
+		self::assertEquals( 1622852486, $first_transaction->get_time()->getTimestamp() );
 
-		// Verify the value is returned as a string.
-		$this->assertIsString( $first_transaction['value'] );
-
-		// Verify all APIs return the number of confirmations for the transactions.
-		$this->assertArrayHasKey( 'confirmations', $first_transaction );
 	}
 }

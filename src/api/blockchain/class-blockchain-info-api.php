@@ -1,4 +1,5 @@
 <?php
+
 /**
  * "Please limit your queries to a maximum of 1 every 10 seconds"
  *
@@ -10,19 +11,22 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Art4\Requests\Psr\HttpClient;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\BlockchainInfoApi;
+use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\TransactionOut;
 use DateTimeImmutable;
-use DateTimeInterface;
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use DateTimeZone;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
-/**
- * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
- */
-class Blockchain_Info_API implements Blockchain_API_Interface {
+class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterface {
 	use LoggerAwareTrait;
+
+	protected BlockchainInfoApi $api;
 
 	/**
 	 * Constructor
@@ -31,6 +35,13 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 	 */
 	public function __construct( LoggerInterface $logger ) {
 		$this->logger = $logger;
+
+		// Define Requests options
+		$options = array();
+
+		$client = new HttpClient( $options );
+
+		$this->api = new BlockchainInfoApi( $client, $client, $logger );
 	}
 
 	/**
@@ -44,126 +55,102 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 	 * @throws \Exception
 	 */
 	public function get_received_by_address( string $btc_address, bool $confirmed ): string {
-
 		$minimum_confirmations = $confirmed ? 1 : 0;
 
-		$url = "https://blockchain.info/q/getreceivedbyaddress/{$btc_address}?confirmations={$minimum_confirmations}";
-
-		$request_response = wp_remote_get( $url );
-
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
-
-		return $request_response['body'];
+		return $this->api->getReceivedByAddress( $btc_address, $minimum_confirmations );
 	}
 
-
-	/**
-	 * @param string $btc_address
-	 * @param int    $number_of_confirmations
-	 *
-	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
-	 * @throws \Exception
-	 */
-	public function get_address_balance( string $btc_address, int $number_of_confirmations ): array {
+	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
 		$result                            = array();
 		$result['number_of_confirmations'] = $number_of_confirmations;
-		$result['unconfirmed_balance']     = $this->query_address_balance( $btc_address, 0 );
-		$result['confirmed_balance']       = $this->query_address_balance( $btc_address, $number_of_confirmations );
+		$result['unconfirmed_balance']     = $this->api->getAddressBalance( $btc_address, 0 );
+		$result['confirmed_balance']       = $this->api->getAddressBalance( $btc_address, $number_of_confirmations );
 
-		return $result;
-	}
+		return new class( $result ) implements Address_Balance {
 
-	protected function query_address_balance( string $btc_address, int $number_of_confirmations ): string {
+			protected array $result;
 
-		$url = "https://blockchain.info/q/addressbalance/{$btc_address}?confirmations={$number_of_confirmations}";
+			public function __construct( $result ) {
+				$this->result = $result;
+			}
 
-		$request_response = wp_remote_get( $url );
+			public function get_confirmed_balance(): string {
+				return $this->result['confirmed_balance'];
+			}
 
-		// TODO: Does "Item not found" mean address-unused?
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			// {"message":"Item not found or argument invalid","error":"not-found-or-invalid-arg"}
-			// 429
-			throw new \Exception();
-		}
+			public function get_unconfirmed_balance(): string {
+				return $this->result['unconfirmed_balance'];
+			}
 
-		$balance = $request_response['body'];
-
-		if ( is_numeric( $balance ) && $balance > 0 ) {
-			$balance = floatval( $balance ) / 100000000;
-		}
-
-		return (string) $balance;
+			public function get_number_of_confirmations(): int {
+				return $this->result['number_of_confirmations'];
+			}
+		};
 	}
 
 	/**
 	 * @param string $btc_address
 	 *
-	 * @return array<string, TransactionArray>
+	 * @return array<string, Transaction_Interface>
 	 * @throws \Exception
 	 */
 	public function get_transactions_received( string $btc_address ): array {
+		$raw_address = $this->api->getRawAddr( $btc_address );
 
-		$blockchain_height = $this->get_blockchain_height();
-
-		$url = "https://blockchain.info/rawaddr/$btc_address";
-
-		$this->logger->debug( 'Querying: ' . $url );
-
-		$request_response = wp_remote_get( $url );
-
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
-
-		$address_data = json_decode( $request_response['body'], true );
-
-		$blockchain_transactions = isset( $address_data['txs'] ) ? $address_data['txs'] : array();
+		$blockchain_transactions = $raw_address->getTxs();
 
 		/**
 		 * @param array $blockchain_transaction
 		 *
-		 * @return array{txid:string, time:DateTimeInterface, value:string, confirmations:int}
 		 * @throws \Exception
 		 */
-		$blockchain_mapper = function( array $blockchain_transaction ) use ( $blockchain_height ): array {
+		$blockchain_mapper = function ( \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $blockchain_transaction ): Transaction_Interface {
 
-			$txid = (string) $blockchain_transaction['hash'];
+			return new class($blockchain_transaction) implements Transaction_Interface {
+				private \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $transaction;
 
-			$value_including_fee = array_reduce(
-				$blockchain_transaction['inputs'],
-				function( $carry, $v_in ) {
-					return $carry + $v_in['prev_out']['value'];
-				},
-				0
-			);
+				public function __construct( \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $transaction ) {
+					$this->transaction = $transaction;
+				}
 
-			$confirmations = $blockchain_height - $blockchain_transaction['block_height'];
+				public function get_txid(): string {
+					return $this->transaction->getHash();
+				}
 
-			$value = ( $value_including_fee - $blockchain_transaction['fee'] ) / 100000000;
+				public function get_time(): \DateTimeInterface {
+					return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
+				}
 
-			return array(
-				'txid'          => $txid,
-				'time'          => new DateTimeImmutable( '@' . $blockchain_transaction['time'], new DateTimeZone( 'UTC' ) ),
-				'value'         => "{$value}",
-				'confirmations' => $confirmations,
-			);
+				public function get_value( string $to_address ): float {
+
+					$value_including_fee = array_reduce(
+						$this->transaction->getOut(),
+						function ( $carry, TransactionOut $out ) use ( $to_address ) {
+
+							if ( $out->getAddr() === $to_address ) {
+								return $carry + $out->getValue();
+							}
+							return $carry;
+						},
+						0
+					);
+
+					return $value_including_fee / 100000000;
+				}
+
+				public function get_block_height(): int {
+					return $this->transaction->getBlockHeight();
+				}
+			};
 		};
 
-		$transactions_received = array_filter(
-			$blockchain_transactions,
-			function( array $transaction ): bool {
-				return $transaction['result'] > 0;
-			}
-		);
+		$transactions = array_map( $blockchain_mapper, $blockchain_transactions );
 
-		$transactions = array_map( $blockchain_mapper, $transactions_received );
-
+		// Return the array keyed by id.
 		$keyed_transactions = array();
 		foreach ( $transactions as $transaction ) {
-			$txid                        = (string) $transaction['txid'];
+			$txid                        = (string) $transaction->get_txid();
 			$keyed_transactions[ $txid ] = $transaction;
 		}
 
@@ -174,13 +161,7 @@ class Blockchain_Info_API implements Blockchain_API_Interface {
 	 * @throws \Exception
 	 */
 	public function get_blockchain_height(): int {
-		$blockchain_height_url = 'https://blockchain.info/q/getblockcount';
-		$request_response      = wp_remote_get( $blockchain_height_url );
-		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
-		}
 
-		return (int) $request_response['body'];
+		return $this->api->getBlockCount();
 	}
-
 }

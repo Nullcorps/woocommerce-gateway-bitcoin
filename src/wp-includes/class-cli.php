@@ -171,7 +171,7 @@ class CLI extends WP_CLI_Command {
 					$bitcoin_address = $address_factory->get_by_post_id( $bitcoin_address_post_id );
 			}
 
-			$result = $this->api->query_api_for_address_transactions( $bitcoin_address );
+			$result = $this->api->update_address_transactions( $bitcoin_address );
 
 			// TODO: Check for WooCommerce active.
 

@@ -106,6 +106,4 @@ class Settings_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertEquals( 'info', $result );
 	}
-
-
 }

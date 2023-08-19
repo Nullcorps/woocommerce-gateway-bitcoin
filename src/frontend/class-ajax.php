@@ -53,7 +53,7 @@ class AJAX {
 		}
 
 		if ( ! isset( $_POST['order_id'] ) ) {
-			wp_send_json_error( 'No order id provided.', 400 );
+			wp_send_json_error( array( 'message' => 'No order id provided.' ), 400 );
 		}
 
 		$order_id = intval( wp_unslash( $_POST['order_id'] ) );
@@ -61,7 +61,7 @@ class AJAX {
 		$order = wc_get_order( $order_id );
 
 		if ( ! ( $order instanceof \WC_Order ) ) {
-			wp_send_json_error( 'Invalid order id', 400 );
+			wp_send_json_error( array( 'message' => 'Invalid order id' ), 400 );
 		}
 
 		// TODO: Include the order key in the AJAX request.

@@ -8,11 +8,14 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use JsonException;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -20,7 +23,7 @@ use Psr\Log\LoggerInterface;
  * @phpstan-type Stats array{funded_txo_count:int, funded_txo_sum:int, spent_txo_count:int, spent_txo_sum:int, tx_count:int}
  * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
  */
-class Blockstream_Info_API implements Blockchain_API_Interface {
+class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInterface {
 	use LoggerAwareTrait;
 
 	public function __construct( LoggerInterface $logger ) {
@@ -57,7 +60,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
 	 * @throws \Exception
 	 */
-	public function get_address_balance( string $btc_address, int $number_of_confirmations ): array {
+	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
 		if ( 1 !== $number_of_confirmations ) {
 			error_log( __CLASS__ . ' ' . __FUNCTION__ . ' using 1 for number of confirmations.' );
@@ -80,7 +83,24 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 
 		$result['unconfirmed_balance'] = (string) $unconfirmed_balance;
 
-		return $result;
+		return new class($result) implements Address_Balance {
+			protected $result;
+			public function __construct( $result ) {
+				$this->result = $result;
+			}
+
+			public function get_confirmed_balance(): string {
+				return $this->result['confirmed_balance'];
+			}
+
+			public function get_unconfirmed_balance(): string {
+				return $this->result['unconfirmed_balance'];
+			}
+
+			public function get_number_of_confirmations(): int {
+				return $this->result['number_of_confirmations'];
+			}
+		};
 	}
 
 	/**
@@ -107,12 +127,11 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 	/**
 	 * @param string $btc_address
 	 *
-	 * @return array<string, array{txid:string, time:DateTimeInterface, value:string, confirmations:int}>
+	 * @return array<string, Transaction_Interface>
 	 *
 	 * @throws JsonException
 	 */
 	public function get_transactions_received( string $btc_address ): array {
-		$blockchain_height = $this->get_blockchain_height();
 
 		$address_info_url_bs = "https://blockstream.info/api/address/{$btc_address}/txs";
 
@@ -134,59 +153,61 @@ class Blockstream_Info_API implements Blockchain_API_Interface {
 		 *
 		 * @param array{txid:string, version:int, locktime:int, vin:array, vout:array, size:int, weight:int, fee:int, status:array{confirmed:bool, block_height:int, block_hash:string, block_time:int}} $blockstream_transaction
 		 *
-		 * @return array{txid:string, time:DateTimeInterface, value:numeric-string, confirmations:int}
+		 * @return Transaction_Interface
 		 */
-		$blockstream_mapper = function( array $blockstream_transaction ) use ( $blockchain_height ) : array {
+		$blockstream_mapper = function( array $blockstream_transaction ): Transaction_Interface {
 
-			$txid = (string) $blockstream_transaction['txid'];
+			return new class( $blockstream_transaction ) implements Transaction_Interface {
 
-			$value_including_fee = array_reduce(
-				$blockstream_transaction['vin'],
-				function( $carry, $v_in ) {
-					return $carry + $v_in['prevout']['value'];
-				},
-				0
-			);
+				protected $blockstream_transaction;
 
-			$value = (string) ( ( $value_including_fee - $blockstream_transaction['fee'] ) / 100000000 );
+				public function __construct( $blockstream_transaction ) {
+					$this->blockstream_transaction = $blockstream_transaction;
+				}
 
-			$confirmations = (int) ( $blockchain_height - $blockstream_transaction['status']['block_height'] );
+				public function get_txid(): string {
+					return (string) $this->blockstream_transaction['txid'];
+				}
 
-			// TODO: Confirmations was returning the block height - 1. Presumably that meant mempool/0 confirmations, but I need test data to understand.
-			// Quick fix.
-			if ( $confirmations === $blockchain_height || $confirmations === $blockchain_height - 1 ) {
-				$confirmations = 0;
-			}
+				public function get_time(): \DateTimeInterface {
 
-			$block_time = (int) $blockstream_transaction['status']['block_time'];
+					$block_time = (int) $this->blockstream_transaction['status']['block_time'];
 
-			return array(
-				'txid'          => $txid,
-				'time'          => new DateTimeImmutable( '@' . $block_time, new DateTimeZone( 'UTC' ) ),
-				'value'         => $value,
-				'confirmations' => $confirmations,
-			);
+					return new DateTimeImmutable( '@' . $block_time, new DateTimeZone( 'UTC' ) );
+				}
+
+				public function get_value( string $to_address ): float {
+					$value_including_fee = array_reduce(
+						$this->blockstream_transaction['vout'],
+						function( $carry, $out ) use ( $to_address ) {
+							if ( $out['scriptpubkey_address'] === $to_address ) {
+								return $carry + $out['value'];
+							}
+							return $carry;
+						},
+						0
+					);
+
+					return $value_including_fee / 100000000;
+				}
+
+				public function get_block_height(): int {
+
+					return $this->blockstream_transaction['status']['block_height'];
+
+					// TODO: Confirmations was returning the block height - 1. Presumably that meant mempool/0 confirmations, but I need test data to understand.
+					// Correct solution is probably to check does $blockstream_transaction['status']['block_height'] exist, else 0.
+					// Quick fix.
+				}
+			};
+
 		};
 
-		$transactions_received = array_filter(
-			$blockstream_transactions,
-			function( array $transaction ) use ( $btc_address ): bool {
-				// Determine did this transaction pay TO our Bitcoin address?
-				return array_reduce(
-					$transaction['vout'],
-					function( bool $carry, array $vout ) use ( $btc_address ): bool {
-						return $carry || $btc_address === $vout['scriptpubkey_address'];
-					},
-					false
-				);
-			}
-		);
-
-		$transactions = array_map( $blockstream_mapper, $transactions_received );
+		$transactions = array_map( $blockstream_mapper, $blockstream_transactions );
 
 		$keyed_transactions = array();
 		foreach ( $transactions as $transaction ) {
-			$keyed_transactions[ $transaction['txid'] ] = $transaction;
+			$keyed_transactions[ $transaction->get_txid() ] = $transaction;
 		}
 
 		return $keyed_transactions;

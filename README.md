@@ -1,4 +1,4 @@
-[![WordPress tested 6.2](https://img.shields.io/badge/WordPress-v6.2%20tested-0073aa.svg)](https://wordpress.org/plugins/woocommerce-gateway-bitcoin) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-bitcoin-gateway/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%208-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress) 
+[![WordPress tested 6.2](https://img.shields.io/badge/WordPress-v6.2%20tested-0073aa.svg)](https://wordpress.org/plugins/woocommerce-gateway-bitcoin) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards%20❌-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-bitcoin-gateway/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%208%20❌-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress) 
 
 # Bitcoin Gateway for WooCommerce
 
@@ -152,6 +152,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 * Read the issues and requests of other Bitcoin gateways
 * Show current exchange rate on settings page
 * Lightning network
+* Remove GMP requirement
 
 ## How You Can Help
 
@@ -185,6 +186,7 @@ I would like to acknowledge plugins similar to this one, who do not have any of 
 * Crypto Payments Woo _by Idan Neeman_ – [WordPress.org](https://wordpress.org/plugins/crypto-payments-woo/) | [GitHub](https://github.com/Idan-Neeman/Crypto-Payments-Woo)
 * Cryptocurrency Checkout _by Nimiq_ – [WordPress.org](https://wordpress.org/plugins/woo-nimiq-gateway/) | [GitHub](https://github.com/nimiq/woocommerce-gateway-nimiq) 
 * Decentralized Bitcoin CryptoDEC Payment Gateway for WooCommerce _by ITLS_ – [WordPress.org](https://wordpress.org/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce/)
+* https://github.com/gesman/bitcoin-payments-for-woocommerce
 
 WooCommerce are themselves (officially) encouraging the use of crypto (see [It’s Time to Start Accepting Cryptocurrency](https://woocommerce.com/posts/start-accepting-cryptocurrency/), woocommerce.com, 2022-11-02) but the [plugins listed on their site](https://woocommerce.com/cryptocurrency/) are all by venture-capital backed companies.
 

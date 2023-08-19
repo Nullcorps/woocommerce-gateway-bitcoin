@@ -7,6 +7,9 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -16,8 +19,6 @@ use WC_Order;
 
 /**
  * Methods in API class that are used by other classes, primarily Bitcoin_Gateway, Background_Jobs and CLI.
- *
- * @phpstan-type TransactionArray array{txid:string, time:\DateTimeInterface, value:string, confirmations:int}
  */
 interface API_Interface {
 
@@ -88,12 +89,12 @@ interface API_Interface {
 	/**
 	 * Return the current Bitcoin details for an order, optionally refresh.
 	 *
-	 * @param WC_Order $order   WooCommerce order object.
+	 * @param WC_Order $wc_order   WooCommerce order object.
 	 * @param bool     $refresh Query remote APIs to refresh the details, or just return cached data.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string}
+	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array<string, Transaction_Interface>, btc_exchange_rate:string}
 	 */
-	public function get_order_details( WC_Order $order, bool $refresh = true ): array;
+	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): Bitcoin_Order_Interface;
 
 	/**
 	 * Returns the array from `get_order_details()` with additional keys for printing in HTML/email.
@@ -147,9 +148,9 @@ interface API_Interface {
 	 *
 	 * @param Bitcoin_Address $address Address object for existing saved address (i.e. this doesn't work for arbitrary addresses).
 	 *
-	 * @return array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @return array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
 	 */
-	public function query_api_for_address_transactions( Bitcoin_Address $address ): array;
+	public function update_address_transactions( Bitcoin_Address $address ): array;
 
 	/**
 	 * Determine do we have any fresh address available for this gateway.
@@ -174,9 +175,9 @@ interface API_Interface {
 	 *
 	 * @param ?Bitcoin_Address[] $addresses Array of Bitcoin address objects, or omit the parameter to check generated addresses whose status is "unknown".
 	 *
-	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, TransactionArray>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}>
+	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>}>
 	 */
-	public function check_new_addresses_for_transactions( ?array $addresses = null ): array;
+	public function check_new_addresses_for_transactions(): array;
 
 	/**
 	 * Check does the server have the required GMP extension installed.
