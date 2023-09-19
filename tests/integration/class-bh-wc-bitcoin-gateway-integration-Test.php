@@ -24,5 +24,4 @@ class Plugin_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertInstanceOf( API::class, $GLOBALS['bh_wp_bitcoin_gateway'] );
 	}
-
 }

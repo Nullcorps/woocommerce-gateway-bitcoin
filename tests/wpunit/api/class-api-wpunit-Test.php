@@ -51,7 +51,6 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
 
 		$result = $api->generate_new_addresses_for_wallet( $test_xpub, 5 );
-
 	}
 
 	/**
@@ -86,7 +85,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$all_bitcoin_gateways = array_reduce(
 			$result,
-			function( bool $carry, \WC_Payment_Gateway $gateway ):bool {
+			function ( bool $carry, \WC_Payment_Gateway $gateway ): bool {
 				return $carry && ( $gateway instanceof Bitcoin_Gateway );
 			},
 			true
@@ -170,7 +169,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_USD';
 		add_filter(
 			"pre_transient_{$transient_name}",
-			function( $retval, $transient ) {
+			function ( $retval, $transient ) {
 				return 23567;
 			},
 			10,
@@ -292,7 +291,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				array(
 					'get_raw_address' => 'success',
 					'set_status'      => Expected::once(
-						function( $status ) {
+						function ( $status ) {
 							assert( 'assigned' === $status );
 						}
 					),
@@ -355,8 +354,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				// First time checking an address, this is null.
 				'get_blockchain_transactions' => Expected::exactly( 2, null ),
 				'set_transactions'            => Expected::once(
-					function( array $refreshed_transactions ): void {
-
+					function ( array $refreshed_transactions ): void {
 					}
 				),
 			)
@@ -369,7 +367,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			array(
 				'get_post_id_for_address' => Expected::once( 456 ),
 				'get_by_post_id'          => Expected::once(
-					function( int $post_id ) use ( $address ): Bitcoin_Address {
+					function ( int $post_id ) use ( $address ): Bitcoin_Address {
 						assert( 456 === $post_id );
 						return $address;
 					}
@@ -400,5 +398,4 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		self::assertEmpty( $result->get_address()->get_blockchain_transactions() );
 	}
-
 }

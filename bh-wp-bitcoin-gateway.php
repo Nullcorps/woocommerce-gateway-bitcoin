@@ -54,7 +54,7 @@ if ( ! defined( 'WPINC' ) ) {
 try {
 	require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 } catch ( Throwable $error ) {
-	$display_download_from_releases_error_notice = function() {
+	$display_download_from_releases_error_notice = function () {
 		echo '<div class="notice notice-error"><p><b>Bitcoin Gateway missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p></div>';
 	};
 	add_action( 'admin_notices', $display_download_from_releases_error_notice );
@@ -77,14 +77,14 @@ register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) 
 
 $container = new Container();
 
-$container->bind(API_Interface::class, API::class);
-$container->bind(Settings_Interface::class, Settings::class);
-$container->bind(LoggerInterface::class, Logger::class);
-$container->bind(Logger_Settings_Interface::class, Settings::class);
+$container->bind( API_Interface::class, API::class );
+$container->bind( Settings_Interface::class, Settings::class );
+$container->bind( LoggerInterface::class, Logger::class );
+$container->bind( Logger_Settings_Interface::class, Settings::class );
 
-$container->bind(Blockchain_API_Interface::class, Blockstream_Info_API::class);
-$container->bind(Generate_Address_API_Interface::class, BitWasp_API::class);
-$container->bind(Exchange_Rate_API_Interface::class, Bitfinex_API::class);
+$container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
+$container->bind( Generate_Address_API_Interface::class, BitWasp_API::class );
+$container->bind( Exchange_Rate_API_Interface::class, Bitfinex_API::class );
 
 $app = $container->get( BH_WP_Bitcoin_Gateway::class );
 

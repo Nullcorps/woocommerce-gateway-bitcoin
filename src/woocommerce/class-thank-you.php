@@ -20,6 +20,7 @@ use WC_Order;
  */
 class Thank_You {
 	use LoggerAwareTrait;
+
 	const TEMPLATE_NAME = 'checkout/thankyou-bitcoin-instructions-status.php';
 
 	/**
@@ -84,5 +85,4 @@ class Thank_You {
 
 		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
-
 }

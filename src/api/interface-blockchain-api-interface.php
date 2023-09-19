@@ -12,7 +12,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 interface Blockchain_API_Interface {
 
-	public function get_blockchain_height():int;
+	public function get_blockchain_height(): int;
 
 	/**
 	 * The total amount in BTC received at this address.
@@ -40,5 +40,4 @@ interface Blockchain_API_Interface {
 	 * @return array<string, Transaction_Interface> Txid, data.
 	 */
 	public function get_transactions_received( string $btc_address ): array;
-
 }

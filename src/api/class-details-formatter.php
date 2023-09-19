@@ -41,7 +41,7 @@ class Details_Formatter {
 		return wc_get_order_statuses()[ 'wc-' . $this->order->get_status() ];
 	}
 
-	public function get_last_checked_time_formatted():string {
+	public function get_last_checked_time_formatted(): string {
 		if ( is_null( $this->order->get_last_checked_time() ) ) {
 			return __( 'Never', 'bh-wp-bitcoin-gateway' );
 		}
@@ -127,5 +127,4 @@ class Details_Formatter {
 		$result['payment_status']                              = $this->get_friendly_status();
 		return $result;
 	}
-
 }

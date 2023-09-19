@@ -35,6 +35,4 @@ class Post_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertContains( 'inactive', get_available_post_statuses( 'bh-bitcoin-wallet' ) );
 	}
-
-
 }

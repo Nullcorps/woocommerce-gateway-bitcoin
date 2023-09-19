@@ -158,5 +158,4 @@ class Wallets_List_Table extends \WP_Posts_List_Table {
 
 		return $actions;
 	}
-
 }

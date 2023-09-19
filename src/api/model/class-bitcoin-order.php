@@ -62,7 +62,6 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 			// $this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new \Exception( 'Problem with order Bitcoin address.' );
 		}
-
 	}
 
 	/**

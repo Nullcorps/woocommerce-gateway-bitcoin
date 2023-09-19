@@ -48,7 +48,6 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 		$address_info = json_decode( $request_response['body'], true );
 
 		return $address_info;
-
 	}
 
 	/**
@@ -121,7 +120,6 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 			$calc = ( $address_info['chain_stats']['funded_txo_sum'] + $address_info['mempool_stats']['funded_txo_sum'] ) / 100000000;
 		}
 		return "{$calc}";
-
 	}
 
 	/**
@@ -155,7 +153,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 		 *
 		 * @return Transaction_Interface
 		 */
-		$blockstream_mapper = function( array $blockstream_transaction ): Transaction_Interface {
+		$blockstream_mapper = function ( array $blockstream_transaction ): Transaction_Interface {
 
 			return new class( $blockstream_transaction ) implements Transaction_Interface {
 
@@ -179,7 +177,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 				public function get_value( string $to_address ): float {
 					$value_including_fee = array_reduce(
 						$this->blockstream_transaction['vout'],
-						function( $carry, $out ) use ( $to_address ) {
+						function ( $carry, $out ) use ( $to_address ) {
 							if ( $out['scriptpubkey_address'] === $to_address ) {
 								return $carry + $out['value'];
 							}
@@ -200,7 +198,6 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 					// Quick fix.
 				}
 			};
-
 		};
 
 		$transactions = array_map( $blockstream_mapper, $blockstream_transactions );

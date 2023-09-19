@@ -35,7 +35,7 @@ class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -43,6 +43,5 @@ class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$result = $sut->get_exchange_rate( 'usd' );
 
 		$this->assertEquals( '40990', $result );
-
 	}
 }

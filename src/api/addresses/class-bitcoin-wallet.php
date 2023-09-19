@@ -108,7 +108,7 @@ class Bitcoin_Wallet {
 			)
 		);
 		return array_map(
-			function( WP_Post $post ) {
+			function ( WP_Post $post ) {
 				return new Bitcoin_Address( $post->ID );
 			},
 			$posts

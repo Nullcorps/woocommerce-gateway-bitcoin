@@ -94,7 +94,5 @@ class Admin_Order_UI_Unit_Test extends \Codeception\Test\Unit {
 		};
 
 		$sut->register_address_transactions_meta_box();
-
 	}
-
 }

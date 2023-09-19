@@ -39,7 +39,6 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 		$result = $sut->load_bitcoin_templates( $template, $template_name, $args, $template_path, $default_path );
 
 		$this->assertEquals( $template, $result );
-
 	}
 
 
@@ -62,7 +61,6 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 		$result = $sut->load_bitcoin_templates( $template, $template_name, $args, $template_path, $default_path );
 
 		$this->assertEquals( $template, $result );
-
 	}
 
 
@@ -93,7 +91,6 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 		$result = $sut->load_bitcoin_templates( $template, $template_name, $args, $template_path, $default_path );
 
 		$this->assertEquals( 'expected-template-file-path', $result );
-
 	}
 
 	/**
@@ -127,7 +124,5 @@ class Templates_Unit_Test extends \Codeception\Test\Unit {
 		$result = $sut->load_bitcoin_templates( $template, $template_name, $args, $template_path, $default_path );
 
 		$this->assertEquals( '/path/to/plugin/templates/bitcoin-unpaid.php', $result );
-
 	}
-
 }

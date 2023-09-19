@@ -37,6 +37,5 @@ class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$sut = new CLI( $api, $settings, $logger );
 
 		$sut->check_transactions( array( $post_id ), array() );
-
 	}
 }

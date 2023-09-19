@@ -53,5 +53,4 @@ class Register_List_Tables {
 
 		return $class_name;
 	}
-
 }

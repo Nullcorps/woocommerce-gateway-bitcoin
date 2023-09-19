@@ -22,7 +22,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_bitcoin_gateway' => Expected::once(
-					function( $gateway_id ) {
+					function ( $gateway_id ) {
 						return true;
 					}
 				),
@@ -38,7 +38,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception();
 			}
 		);
@@ -52,7 +52,6 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertNotNull( $e );
-
 	}
 
 
@@ -88,7 +87,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_bitcoin_gateway' => Expected::once(
-					function( $gateway_id ) {
+					function ( $gateway_id ) {
 						return false;
 					}
 				),
@@ -103,7 +102,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception();
 			}
 		);
@@ -117,7 +116,6 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertNull( $e );
-
 	}
 
 	/**
@@ -130,12 +128,12 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_bitcoin_gateway'          => Expected::once(
-					function( $gateway_id ) {
+					function ( $gateway_id ) {
 						return true;
 					}
 				),
 				'get_formatted_order_details' => Expected::once(
-					function( $order ) {
+					function ( $order ) {
 						throw new \Exception( 'no address exception' );
 					}
 				),
@@ -153,7 +151,5 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertTrue( $logger->hasWarningThatContains( 'no address exception' ) );
-
 	}
-
 }

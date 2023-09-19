@@ -33,9 +33,7 @@ class I18n {
 		load_plugin_textdomain(
 			'bh-wp-bitcoin-gateway',
 			false,
-			plugin_basename( dirname( __FILE__, 3 ) ) . '/languages/'
+			plugin_basename( dirname( __DIR__, 2 ) ) . '/languages/'
 		);
-
 	}
-
 }

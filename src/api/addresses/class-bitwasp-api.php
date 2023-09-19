@@ -103,5 +103,4 @@ class BitWasp_API implements Generate_Address_API_Interface {
 
 		return $child_key->getAddress( new AddressCreator() )->getAddress();
 	}
-
 }

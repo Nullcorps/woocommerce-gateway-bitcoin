@@ -47,7 +47,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -97,7 +97,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -349,7 +349,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);

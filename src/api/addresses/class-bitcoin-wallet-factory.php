@@ -96,5 +96,4 @@ class Bitcoin_Wallet_Factory {
 	public function get_by_post_id( int $post_id ): Bitcoin_Wallet {
 		return new Bitcoin_Wallet( $post_id );
 	}
-
 }

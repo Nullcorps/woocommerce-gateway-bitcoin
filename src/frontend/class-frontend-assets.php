@@ -127,7 +127,5 @@ EOD;
 			$script,
 			'before'
 		);
-
 	}
-
 }

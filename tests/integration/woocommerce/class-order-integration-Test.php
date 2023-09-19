@@ -32,5 +32,4 @@ class Order_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( as_has_scheduled_action( $hook, $args ) );
 	}
-
 }

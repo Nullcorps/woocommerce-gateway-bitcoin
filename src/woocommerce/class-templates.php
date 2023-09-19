@@ -86,5 +86,4 @@ class Templates {
 
 		return $this->settings->get_plugin_dir() . 'templates/' . $template_name;
 	}
-
 }

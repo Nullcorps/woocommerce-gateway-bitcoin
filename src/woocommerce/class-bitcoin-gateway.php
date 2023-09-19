@@ -201,7 +201,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		);
 		$products = array_filter(
 			$products,
-			function( \WC_Product $product ): bool {
+			function ( \WC_Product $product ): bool {
 				return $product->is_purchasable();
 			}
 		);

@@ -195,5 +195,4 @@ class CLI extends WP_CLI_Command {
 			WP_CLI::error( $exception->getMessage() );
 		}
 	}
-
 }

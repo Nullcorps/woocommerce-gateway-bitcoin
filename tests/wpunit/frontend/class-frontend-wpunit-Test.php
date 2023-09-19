@@ -34,7 +34,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( $order_id ) {
+					function ( $order_id ) {
 						return true;
 					}
 				),

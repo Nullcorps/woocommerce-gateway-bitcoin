@@ -117,7 +117,5 @@ class Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$sut->unschedule_check_for_transactions( $order_id, 'on-hold', 'processing' );
 
 		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
-
 	}
-
 }

@@ -114,7 +114,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			Blockchain_API_Interface::class,
 			array(
 				'get_transactions_received' => Expected::once(
-					function( string $address ) use ( $transaction ): array {
+					function ( string $address ) use ( $transaction ): array {
 						assert( 'xpub' === $address );
 						return array( $transaction );
 					}
@@ -192,7 +192,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			Exchange_Rate_API_Interface::class,
 			array(
 				'get_exchange_rate' => Expected::once(
-					function( string $currrency ): string {
+					function ( string $currrency ): string {
 						assert( 'USD' === $currrency );
 						return '54321';
 					}

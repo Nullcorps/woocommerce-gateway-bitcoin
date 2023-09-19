@@ -23,12 +23,12 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return true;
 					}
 				),
 				'get_formatted_order_details'  => Expected::once(
-					function( $order ) {
+					function ( $order ) {
 						return array();
 					}
 				),
@@ -43,7 +43,7 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception();
 			}
 		);
@@ -70,7 +70,7 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return false;
 					}
 				),
@@ -84,5 +84,4 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 
 		$sut->print_status_instructions( $order_id );
 	}
-
 }

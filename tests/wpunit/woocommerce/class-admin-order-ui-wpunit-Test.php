@@ -24,7 +24,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return true;
 					}
 				),
@@ -40,7 +40,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception( 'wc_get_template' );
 			}
 		);
@@ -55,7 +55,6 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		// Is there a better way to say wc_get_template was called?
 		$this->assertNotNull( $e );
 		$this->assertEquals( 'wc_get_template', $e->getMessage() );
-
 	}
 
 	/**
@@ -68,7 +67,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return false;
 					}
 				),
@@ -84,7 +83,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception();
 			}
 		);
@@ -98,7 +97,6 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertNull( $e );
-
 	}
 
 	/**
@@ -111,12 +109,12 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return true;
 					}
 				),
 				'get_formatted_order_details'  => Expected::once(
-					function( $order ) {
+					function ( $order ) {
 						throw new \Exception( 'no btc address exception' );
 					}
 				),
@@ -134,7 +132,5 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertTrue( $logger->hasWarningThatContains( 'no btc address exception' ) );
-
 	}
-
 }

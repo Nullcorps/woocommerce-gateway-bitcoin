@@ -30,5 +30,4 @@ interface Transaction_Interface {
 	 * Null for mempool
 	 */
 	public function get_block_height(): ?int;
-
 }

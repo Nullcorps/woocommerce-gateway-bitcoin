@@ -54,6 +54,5 @@ class Bitcoin_API_Contract_Test extends \Codeception\TestCase\WPTestCase {
 		self::assertEquals( 0.00730728, $first_transaction->get_value( $sent_to ) );
 		self::assertEquals( '686306', $first_transaction->get_block_height() );
 		self::assertEquals( 1622852486, $first_transaction->get_time()->getTimestamp() );
-
 	}
 }

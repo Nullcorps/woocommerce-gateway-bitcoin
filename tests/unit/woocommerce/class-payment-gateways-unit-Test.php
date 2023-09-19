@@ -67,5 +67,4 @@ class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
 		$sut->add_logger_to_gateways( $gateways );
 	}
-
 }

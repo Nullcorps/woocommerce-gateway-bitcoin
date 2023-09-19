@@ -38,7 +38,6 @@ class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$last_modified_time_after = $bitcoin_address_post->post_modified_gmt;
 
 		$this->assertNotEquals( $last_modified_time_before, $last_modified_time_after );
-
 	}
 
 	/**
@@ -57,7 +56,6 @@ class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$result = $sut->get_order_id();
 
 		$this->assertNull( $result );
-
 	}
 
 	/**
@@ -166,5 +164,4 @@ class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNull( $result );
 	}
-
 }

@@ -45,7 +45,7 @@ class AJAX_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'array' ), 400 ),
 				'times'  => 1,
-				'return' => function() {
+				'return' => function () {
 					throw new Exception();
 				},
 			)
@@ -81,7 +81,7 @@ class AJAX_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'array' ), 400 ),
 				'times'  => 1,
-				'return' => function() {
+				'return' => function () {
 					throw new Exception();
 				},
 			)
@@ -128,7 +128,7 @@ class AJAX_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'args'   => array( \WP_Mock\Functions::type( 'array' ), 400 ),
 				'times'  => 1,
-				'return' => function() {
+				'return' => function () {
 					throw new Exception();
 				},
 			)

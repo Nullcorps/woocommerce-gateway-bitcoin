@@ -57,7 +57,7 @@ class AJAX_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		 */
 		add_filter(
 			'wp_doing_ajax',
-			function(): bool {
+			function (): bool {
 				throw new Exception();
 				// phpcs:disable Squiz.PHP.NonExecutableCode.Unreachable
 				return false;
@@ -82,6 +82,5 @@ class AJAX_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertArrayNotHasKey( 'btc_address_derivation_path_sequence_number', $result );
 		$this->assertArrayNotHasKey( 'parent_wallet_xpub_html', $result );
 		$this->assertArrayNotHasKey( 'order', $result );
-
 	}
 }

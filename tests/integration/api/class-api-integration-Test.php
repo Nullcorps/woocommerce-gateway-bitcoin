@@ -32,9 +32,5 @@ class API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$bitcoin_address = new Bitcoin_Address( $post_id );
 
 		$result = $sut->update_address_transactions( $bitcoin_address );
-
 	}
-
 }
-
-

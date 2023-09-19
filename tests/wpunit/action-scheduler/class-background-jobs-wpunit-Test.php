@@ -64,7 +64,7 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'get_order_details' => Expected::once(
-					function( WC_Order $order ) use ( $bitcoin_order_mock ) {
+					function ( WC_Order $order ) use ( $bitcoin_order_mock ) {
 
 						$order->payment_complete();
 						$order->save();
@@ -85,7 +85,6 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$sut->check_unpaid_order( $order_id );
 
 		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
-
 	}
 
 	/**
@@ -98,7 +97,7 @@ class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'get_order_details' => Expected::once(
-					function( $order ) {
+					function ( $order ) {
 						throw new \Exception( 'Exception during updating order.' );
 					}
 				),

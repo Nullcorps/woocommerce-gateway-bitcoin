@@ -157,5 +157,4 @@ class Register_List_Tables_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertEquals( $default_class, $result );
 	}
-
 }

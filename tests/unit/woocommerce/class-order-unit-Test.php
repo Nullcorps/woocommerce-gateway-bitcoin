@@ -11,7 +11,7 @@ use Codeception\Stub\Expected;
  */
 class Order_Unit_Test extends \Codeception\Test\Unit {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		\WP_Mock::setUp();
 	}

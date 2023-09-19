@@ -121,7 +121,7 @@ class API implements API_Interface {
 		$bitcoin_gateways = $this->get_bitcoin_gateways();
 
 		$gateway_ids = array_map(
-			function( WC_Payment_Gateway $gateway ) : string {
+			function ( WC_Payment_Gateway $gateway ): string {
 				return $gateway->id;
 			},
 			$bitcoin_gateways
@@ -240,7 +240,7 @@ class API implements API_Interface {
 		}
 
 		$wallet_post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $gateway->get_xpub() )
-					   ?? $this->bitcoin_wallet_factory->save_new( $gateway->get_xpub(), $gateway->id );
+						?? $this->bitcoin_wallet_factory->save_new( $gateway->get_xpub(), $gateway->id );
 
 		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
@@ -289,7 +289,7 @@ class API implements API_Interface {
 	 *
 	 * TODO: mempool.
 	 */
-	protected function refresh_order( Bitcoin_Order_Interface $bitcoin_order ):bool {
+	protected function refresh_order( Bitcoin_Order_Interface $bitcoin_order ): bool {
 
 		$updated = false;
 
@@ -319,14 +319,14 @@ class API implements API_Interface {
 
 		$order_transactions_current_mempool = array_filter(
 			$address_transactions_current,
-			function( Transaction_Interface $transaction ) {
+			function ( Transaction_Interface $transaction ) {
 				is_null( $transaction->get_block_height() );
 			}
 		);
 
 		$order_transactions_current_blockchain = array_filter(
 			$address_transactions_current,
-			function( Transaction_Interface $transaction ) {
+			function ( Transaction_Interface $transaction ) {
 				! is_null( $transaction->get_block_height() );
 			}
 		);
@@ -633,7 +633,7 @@ class API implements API_Interface {
 		do {
 
 			// TODO: Post increment or we will never generate address 0 like this.
-			$address_index++;
+			++$address_index;
 
 			$new_address = $this->generate_address_api->generate_address( $master_public_key, $address_index );
 
@@ -644,14 +644,14 @@ class API implements API_Interface {
 			$bitcoin_address_new_post_id = $this->bitcoin_address_factory->save_new( $new_address, $address_index, $wallet );
 
 			$generated_addresses_post_ids[] = $bitcoin_address_new_post_id;
-			$generated_addresses_count++;
+			++$generated_addresses_count;
 
 		} while ( $generated_addresses_count < $generate_count );
 
 		$result['generated_addresses_count']    = $generated_addresses_count;
 		$result['generated_addresses_post_ids'] = $generated_addresses_post_ids;
 		$result['generated_addresses']          = array_map(
-			function( int $post_id ): Bitcoin_Address {
+			function ( int $post_id ): Bitcoin_Address {
 				return $this->bitcoin_address_factory->get_by_post_id( $post_id );
 			},
 			$generated_addresses_post_ids

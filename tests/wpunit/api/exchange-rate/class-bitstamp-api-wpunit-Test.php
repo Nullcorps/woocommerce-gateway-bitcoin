@@ -13,7 +13,7 @@ class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 	 * @covers ::get_exchange_rate
 	 * @covers ::__construct
 	 */
-	public function test_query_api():void {
+	public function test_query_api(): void {
 
 		$logger = new ColorLogger();
 
@@ -30,7 +30,7 @@ class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -38,6 +38,5 @@ class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$result = $sut->get_exchange_rate( 'usd' );
 
 		$this->assertEquals( '41008.81', $result );
-
 	}
 }

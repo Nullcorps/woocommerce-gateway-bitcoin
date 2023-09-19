@@ -62,6 +62,4 @@ class Bitstamp_API implements Exchange_Rate_API_Interface {
 
 		return $response['last'];
 	}
-
-
 }

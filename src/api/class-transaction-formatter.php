@@ -45,5 +45,4 @@ class Transaction_Formatter {
 			$transaction->get_block_height() ?? 'mempool'
 		);
 	}
-
 }

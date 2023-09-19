@@ -65,6 +65,4 @@ class Bitfinex_API implements Exchange_Rate_API_Interface {
 
 		return $exchange_rate;
 	}
-
-
 }

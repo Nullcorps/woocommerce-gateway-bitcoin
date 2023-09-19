@@ -38,5 +38,4 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertContains( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', $result['compatible'], wp_json_encode( $result['compatible'] ) );
 	}
-
 }

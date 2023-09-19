@@ -116,5 +116,4 @@ class Admin_Order_UI {
 
 		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
-
 }

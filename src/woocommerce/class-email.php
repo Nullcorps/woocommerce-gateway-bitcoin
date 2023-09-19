@@ -85,5 +85,4 @@ class Email {
 		// TODO: Create a plain text template.
 		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
-
 }

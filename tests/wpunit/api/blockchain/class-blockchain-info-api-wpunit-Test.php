@@ -32,7 +32,7 @@ class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -40,7 +40,6 @@ class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$result = $sut->get_received_by_address( $address, false );
 
 		$this->assertEquals( 0.0, $result );
-
 	}
 
 	/**
@@ -66,7 +65,7 @@ class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -346,7 +345,7 @@ class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function() use ( $request_response ) {
+			function () use ( $request_response ) {
 				return $request_response;
 			}
 		);
@@ -357,5 +356,4 @@ class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( 0.00047971, $first->get_value( $address ) );
 	}
-
 }

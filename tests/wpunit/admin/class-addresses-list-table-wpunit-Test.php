@@ -126,5 +126,4 @@ class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 
 		$this->assertStringContainsString( '0/22', $result );
 	}
-
 }

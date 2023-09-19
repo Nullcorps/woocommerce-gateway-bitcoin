@@ -40,7 +40,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return true;
 					}
 				),
@@ -50,7 +50,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 			Settings_Interface::class,
 			array(
 				'get_plugin_version' => Expected::once(
-					function() {
+					function () {
 						return '1.0.0';
 					}
 				),
@@ -118,7 +118,5 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 		$sut = new Frontend_Assets( $api, $settings, $logger );
 
 		$sut->enqueue_styles();
-
 	}
-
 }

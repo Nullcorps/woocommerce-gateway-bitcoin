@@ -247,7 +247,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 		if ( ! isset( $this->wallet_id_to_gateways_map[ $wallet_post_id ] ) ) {
 			$this->wallet_id_to_gateways_map[ $wallet_post_id ] = array_filter(
 				$this->api->get_bitcoin_gateways(),
-				function( Bitcoin_Gateway $gateway ) use ( $wallet_address ):bool {
+				function ( Bitcoin_Gateway $gateway ) use ( $wallet_address ): bool {
 					return $gateway->get_xpub() === $wallet_address;
 				}
 			);
@@ -311,5 +311,4 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 
 		return $actions;
 	}
-
 }

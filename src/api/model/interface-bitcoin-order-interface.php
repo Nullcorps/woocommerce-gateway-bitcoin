@@ -12,5 +12,4 @@ interface Bitcoin_Order_Interface {
 	public function get_btc_exchange_rate(): float;
 
 	public function get_address(): Bitcoin_Address;
-
 }

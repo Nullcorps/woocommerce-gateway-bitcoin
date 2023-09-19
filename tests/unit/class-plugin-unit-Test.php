@@ -15,7 +15,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
  */
 class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		\WP_Mock::setUp();
 	}
@@ -38,11 +38,11 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
 			array( BH_WP_Bitcoin_Gateway::class, '__construct' ),
-			function() {}
+			function () {}
 		);
 		\Patchwork\redefine(
 			array( Logger::class, '__construct' ),
-			function() {}
+			function () {}
 		);
 
 		global $plugin_root_dir;
@@ -102,7 +102,5 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		$this->assertArrayHasKey( 'bh_wp_bitcoin_gateway', $GLOBALS );
 
 		$this->assertInstanceOf( API_Interface::class, $GLOBALS['bh_wp_bitcoin_gateway'] );
-
 	}
-
 }

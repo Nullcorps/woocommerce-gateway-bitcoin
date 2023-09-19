@@ -77,5 +77,4 @@ class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertEquals( $_ENV['ZPUB_DERIVED_10'], $result );
 	}
-
 }

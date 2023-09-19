@@ -23,12 +23,12 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return true;
 					}
 				),
 				'get_formatted_order_details'  => Expected::once(
-					function( $order ) {
+					function ( $order ) {
 						return array();
 					}
 				),
@@ -43,7 +43,7 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function() {
+			function () {
 				throw new \Exception();
 			}
 		);
@@ -57,7 +57,6 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Is there a better way to say wc_get_template was called?
 		$this->assertNotNull( $e );
-
 	}
 
 
@@ -71,7 +70,7 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function( int $order_id ) {
+					function ( int $order_id ) {
 						return false;
 					}
 				),
@@ -85,5 +84,4 @@ class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut->print_instructions( $order_id );
 	}
-
 }

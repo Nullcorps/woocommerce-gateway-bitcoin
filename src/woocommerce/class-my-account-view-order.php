@@ -79,5 +79,4 @@ class My_Account_View_Order {
 
 		wc_get_template( self::TEMPLATE_NAME, $template_args );
 	}
-
 }

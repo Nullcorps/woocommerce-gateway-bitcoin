@@ -23,12 +23,12 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'generate_new_wallet'               => Expected::once(
-					function( string $xpub_after, string $gateway_id = null ) {
+					function ( string $xpub_after, string $gateway_id = null ) {
 						return array();
 					}
 				),
 				'generate_new_addresses_for_wallet' => Expected::once(
-					function( string $xpub, int $generate_count ): array {
+					function ( string $xpub, int $generate_count ): array {
 						assert( 2 === $generate_count );
 						return array();
 					}
@@ -78,7 +78,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
-					function( Bitcoin_Gateway $gateway ) {
+					function ( Bitcoin_Gateway $gateway ) {
 						return true;
 					}
 				),
@@ -102,7 +102,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_fresh_address_available_for_gateway' => Expected::once(
-					function( Bitcoin_Gateway $gateway ) {
+					function ( Bitcoin_Gateway $gateway ) {
 						return false;
 					}
 				),
@@ -203,7 +203,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'get_fresh_address_for_order' => Expected::once(
-					function( WC_Order $order ) {
+					function ( WC_Order $order ) {
 						throw new Exception( 'This message will not be shown!' );
 					}
 				),
@@ -225,5 +225,4 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotNull( $exception );
 		$this->assertEquals( 'Unable to find Bitcoin address to send to. Please choose another payment method.', $exception->getMessage() );
 	}
-
 }

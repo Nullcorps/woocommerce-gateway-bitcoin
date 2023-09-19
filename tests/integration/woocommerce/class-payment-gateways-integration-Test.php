@@ -39,6 +39,5 @@ class Payment_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase 
 
 		$this->assertFalse( $logger instanceof NullLogger );
 		$this->assertInstanceOf( BH_WP_PSR_Logger::class, $logger );
-
 	}
 }

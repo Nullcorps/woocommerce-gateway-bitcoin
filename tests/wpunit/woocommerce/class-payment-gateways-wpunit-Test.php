@@ -33,5 +33,4 @@ class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( Bitcoin_Gateway::class, $result[0] );
 	}
-
 }

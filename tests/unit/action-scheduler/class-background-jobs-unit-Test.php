@@ -22,7 +22,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 			API_Interface::class,
 			array(
 				'generate_new_addresses' => Expected::once(
-					function() {
+					function () {
 						return array();
 					}
 				),
@@ -32,7 +32,6 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 		$sut = new Background_Jobs( $api, $logger );
 
 		$sut->generate_new_addresses();
-
 	}
 
 	/**
@@ -45,7 +44,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 			API_Interface::class,
 			array(
 				'check_new_addresses_for_transactions' => Expected::once(
-					function() {
+					function () {
 						return array();
 					}
 				),
@@ -60,5 +59,4 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->markTestIncomplete( 'Assert the function logs a summary of the result.' );
 	}
-
 }

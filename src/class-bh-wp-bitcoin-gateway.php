@@ -153,7 +153,7 @@ class BH_WP_Bitcoin_Gateway {
 	/**
 	 * Add hooks for defining post types for the wallets and destination addresses.
 	 */
-	protected function define_custom_post_type_hooks():void {
+	protected function define_custom_post_type_hooks(): void {
 
 		$post = new Post( $this->api );
 		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
@@ -324,5 +324,4 @@ class BH_WP_Bitcoin_Gateway {
 		add_filter( 'woo_cao_gateways', array( $woo_cancel_abandoned_order, 'enable_cao_for_bitcoin' ) );
 		add_filter( 'woo_cao_before_cancel_order', array( $woo_cancel_abandoned_order, 'abort_canceling_partially_paid_order' ), 10, 3 );
 	}
-
 }
