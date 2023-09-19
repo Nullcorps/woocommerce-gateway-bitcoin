@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ac6f4b8d7fc9737e0bde941ea0a3816",
+    "content-hash": "ba8a8224340646c63e0afaf56dd9893b",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -274,9 +274,9 @@
         {
             "name": "brianhenryie/bh-php-blockchain-info",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../bh-php-blockchain-info",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BrianHenryIE/bh-php-blockchain-info",
                 "reference": "c8178a18f01c688ca270ea09da68719d1802ac0e"
             },
             "require": {
@@ -295,6 +295,7 @@
                 "phpunit/phpcov": "*",
                 "squizlabs/php_codesniffer": "*"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -321,9 +322,7 @@
                 }
             ],
             "description": "Client for blockchain.info api.",
-            "transport-options": {
-                "relative": true
-            }
+            "time": "2023-09-19T15:52:27+00:00"
         },
         {
             "name": "brianhenryie/bh-wp-logger",
