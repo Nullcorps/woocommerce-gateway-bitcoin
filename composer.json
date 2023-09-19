@@ -43,9 +43,9 @@
             "url": "https://github.com/BrianHenryIE/bh-wp-private-uploads",
             "type": "git"
         },
-        "brianhenryie/bh-php-blockchain-info":{
-            "type": "path",
-            "url":  "../bh-php-blockchain-info/"
+        "brianhenryie/brianhenryie/bh-php-blockchain-info":{
+            "url": "https://github.com/BrianHenryIE/brianhenryie/bh-php-blockchain-info",
+            "type": "git"
         },
         "bitwasp/bitcoin-php":{
             "url": "https://github.com/BrianHenryIE/bitcoin-php",
