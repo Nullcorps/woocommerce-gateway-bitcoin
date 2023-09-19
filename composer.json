@@ -136,6 +136,7 @@
         "brianhenryie/bh-wp-logger": "dev-master",
         "chillerlan/php-qrcode": "^4.3",
         "json-mapper/json-mapper": "^2.18",
+        "lucatume/di52": "^3.3",
         "phpseclib/bcmath_compat": "^2.0",
         "phpseclib/mcrypt_compat": "^2.0",
         "psr/http-client": "^1.0.0",

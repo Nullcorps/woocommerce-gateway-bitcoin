@@ -28,12 +28,21 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Generate_Address_API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Settings;
+use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Activator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Deactivator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 // If this file is called directly, abort.
@@ -66,32 +75,17 @@ define( 'BH_WP_BITCOIN_GATEWAY_URL', trailingslashit( plugins_url( plugin_basena
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
 
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function instantiate_woocommerce_gateway_bitcoin(): API_Interface {
+$container = new Container();
 
-	$settings = new Settings();
-	$logger   = Logger::instance( $settings );
+$container->bind(API_Interface::class, API::class);
+$container->bind(Settings_Interface::class, Settings::class);
+$container->bind(LoggerInterface::class, Logger::class);
+$container->bind(Logger_Settings_Interface::class, Settings::class);
 
-	$crypto_wallet_factory  = new Bitcoin_Wallet_Factory();
-	$crypto_address_factory = new Bitcoin_Address_Factory();
+$container->bind(Blockchain_API_Interface::class, Blockstream_Info_API::class);
+$container->bind(Generate_Address_API_Interface::class, BitWasp_API::class);
+$container->bind(Exchange_Rate_API_Interface::class, Bitfinex_API::class);
 
-	$api = new API( $settings, $logger, $crypto_wallet_factory, $crypto_address_factory );
+$app = $container->get( BH_WP_Bitcoin_Gateway::class );
 
-	new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
-
-	return $api;
-}
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and frontend-facing site hooks.
- */
-$GLOBALS['bh_wp_bitcoin_gateway'] = instantiate_woocommerce_gateway_bitcoin();
+$GLOBALS['bh_wp_bitcoin_gateway'] = $container->get( API_Interface::class );

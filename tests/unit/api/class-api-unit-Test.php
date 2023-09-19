@@ -38,8 +38,11 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		\Patchwork\redefine(
 			'function_exists',
@@ -69,8 +72,11 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		\Patchwork\redefine(
 			'function_exists',
@@ -116,7 +122,10 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api );
+		$generate_address_api = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api    = $this->makeEmpty( Exchange_Rate_API_Interface::class );
+
+		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$address = self::make(
 			Bitcoin_Address::class,
@@ -141,8 +150,11 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		\WP_Mock::userFunction(
 			'get_transient',

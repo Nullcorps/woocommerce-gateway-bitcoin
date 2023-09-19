@@ -88,9 +88,9 @@ class API implements API_Interface {
 		LoggerInterface $logger,
 		Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
 		Bitcoin_Address_Factory $bitcoin_address_factory,
-		?Blockchain_API_Interface $blockchain_api = null,
-		?Generate_Address_API_Interface $generate_address_api = null,
-		?Exchange_Rate_API_Interface $exchange_rate_api = null
+		Blockchain_API_Interface $blockchain_api,
+		Generate_Address_API_Interface $generate_address_api,
+		Exchange_Rate_API_Interface $exchange_rate_api
 	) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
@@ -98,9 +98,9 @@ class API implements API_Interface {
 		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
 		$this->bitcoin_address_factory = $bitcoin_address_factory;
 
-		$this->blockchain_api       = $blockchain_api ?? new Blockstream_Info_API( $logger );
-		$this->generate_address_api = $generate_address_api ?? new BitWasp_API( $logger );
-		$this->exchange_rate_api    = $exchange_rate_api ?? new Bitfinex_API( $logger );
+		$this->blockchain_api       = $blockchain_api;
+		$this->generate_address_api = $generate_address_api;
+		$this->exchange_rate_api    = $exchange_rate_api;
 	}
 
 	/**

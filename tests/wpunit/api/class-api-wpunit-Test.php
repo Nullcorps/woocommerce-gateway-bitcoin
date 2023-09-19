@@ -63,8 +63,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$wc_payment_gateways = WC_Payment_Gateways::instance();
 		$bitcoin_1           = new Bitcoin_Gateway( $api );
@@ -104,8 +107,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$wc_payment_gateways = WC_Payment_Gateways::instance();
 		$bitcoin_1           = new Bitcoin_Gateway( $api );
@@ -126,8 +132,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$wc_payment_gateways = WC_Payment_Gateways::instance();
 		$bitcoin_1           = new Bitcoin_Gateway( $api );
@@ -152,8 +161,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_USD';
 		add_filter(
@@ -203,8 +215,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$bitcoin_gateway                   = new Bitcoin_Gateway( $api );
 		$bitcoin_gateway->settings['xpub'] = 'xpub';
@@ -249,8 +264,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$bitcoin_gateway                   = new Bitcoin_Gateway( $api );
 		$bitcoin_gateway->settings['xpub'] = 'xpub';
@@ -299,8 +317,11 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$wc_payment_gateways                              = WC_Payment_Gateways::instance();
 		$bitcoin_gateway                                  = new Bitcoin_Gateway( $api );
@@ -356,7 +377,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$blockchain_api = self::makeEmpty(
+		$blockchain_api       = self::makeEmpty(
 			Blockchain_API_Interface::class,
 			array(
 				'get_blockchain_height' => Expected::once(
@@ -366,8 +387,10 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'get_transactions'      => array(),
 			)
 		);
+		$generate_address_api = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api    = $this->makeEmpty( Exchange_Rate_API_Interface::class );
 
-		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api );
+		$api = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory, $blockchain_api, $generate_address_api, $exchange_rate_api );
 
 		$order = new \WC_Order();
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, 'xpub', true );
