@@ -13,14 +13,11 @@ $GLOBALS['wordpress_root_dir'] = $project_root_dir . '/wordpress';
 
 // If there is a secrets file, load it here.
 // Unsure how to define it in codeception.yml while also not committing to GitHub.
-$env_secret = __DIR__ . '/../.env.secret';
-if ( file_exists( $env_secret ) ) {
+$env_secret_fullpath = realpath( __DIR__ . '/../.env.secret' );
+if ( file_exists( $env_secret_fullpath ) ) {
 
-	$env_secret_fullpath      = realpath( $env_secret );
-	$env_secret_relative_path = str_replace( codecept_root_dir(), '', $env_secret_fullpath );
+	$dotenv = Dotenv\Dotenv::createImmutable( codecept_root_dir(), '.env.secret' );
+	$dotenv->load();
 
-	$secret_params = new \Dotenv\Dotenv( codecept_root_dir(), $env_secret_relative_path );
-	$secret_params->load();
-
-	\Codeception\Configuration::config( $env_secret_fullpath );
+	// \Codeception\Configuration::config( $env_secret_fullpath );
 }
