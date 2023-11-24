@@ -128,7 +128,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-bcmath": "*",
         "ext-gmp": "*",
         "ext-json": "*",
@@ -148,7 +148,7 @@
     "require-dev": {
         "10up/wp_mock": "*",
         "antecedent/patchwork": "^2.1",
-        "brianhenryie/color-logger": "^1.0",
+        "brianhenryie/color-logger": "^1.2",
         "brianhenryie/composer-phpstorm": "dev-master",
         "brianhenryie/strauss": "*",
         "codeception/module-asserts": "^1.0",
