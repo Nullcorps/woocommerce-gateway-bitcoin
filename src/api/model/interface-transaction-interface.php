@@ -22,12 +22,12 @@ interface Transaction_Interface {
 	public function get_time(): \DateTimeInterface;
 
 	/**
-	 * @return string
+	 * @param string $to_address
 	 */
 	public function get_value( string $to_address ): float;
 
 	/**
-	 * Null for mempool
+	 * Returns null for mempool.
 	 */
 	public function get_block_height(): ?int;
 }

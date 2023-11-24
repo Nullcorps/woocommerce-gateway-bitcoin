@@ -1,5 +1,4 @@
 <?php
-
 /**
  * "Please limit your queries to a maximum of 1 every 10 seconds"
  *
@@ -18,6 +17,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\BlockchainInfoApi;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\TransactionOut;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -67,10 +67,7 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 
 		return new class( $result ) implements Address_Balance {
 
-			protected array $result;
-
-			public function __construct( $result ) {
-				$this->result = $result;
+			public function __construct( protected array $result ) {
 			}
 
 			public function get_confirmed_balance(): string {
@@ -106,17 +103,14 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 		$blockchain_mapper = function ( \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $blockchain_transaction ): Transaction_Interface {
 
 			return new class($blockchain_transaction) implements Transaction_Interface {
-				private \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $transaction;
-
-				public function __construct( \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $transaction ) {
-					$this->transaction = $transaction;
+				public function __construct( protected \BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction $transaction ) {
 				}
 
 				public function get_txid(): string {
 					return $this->transaction->getHash();
 				}
 
-				public function get_time(): \DateTimeInterface {
+				public function get_time(): DateTimeInterface {
 					return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
 				}
 

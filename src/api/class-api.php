@@ -532,7 +532,7 @@ class API implements API_Interface {
 
 			$generated_addresses = array_merge( $generated_addresses, $new_generated_addresses );
 
-			$check_new_addresses_result = $this->check_new_addresses_for_transactions( $generated_addresses );
+			$check_new_addresses_result = $this->check_addresses_for_transactions( $generated_addresses );
 		}
 
 		$result['existing_fresh_addresses'] = $existing_fresh_addresses;
@@ -597,8 +597,7 @@ class API implements API_Interface {
 
 			$result[ $gateway->id ]['new_addresses'] = $generated_addresses;
 
-			$this->check_new_addresses_for_transactions( $generated_addresses );
-
+			$this->check_addresses_for_transactions( $generated_addresses );
 		}
 
 		return $result;
@@ -606,7 +605,7 @@ class API implements API_Interface {
 
 	/**
 	 * @param string $master_public_key
-	 * @param int    $generate_count // TODO:  20 is the standard. cite.
+	 * @param int    $generate_count // TODO:  20 is the standard lookahead for wallets. cite.
 	 *
 	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
 	 *

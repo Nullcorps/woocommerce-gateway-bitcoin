@@ -46,7 +46,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	protected DateTimeInterface $last_checked_time;
 
 	/**
-	 * @param string $name
+	 * @param string       $name
 	 * @param array<mixed> $arguments
 	 *
 	 * @return mixed

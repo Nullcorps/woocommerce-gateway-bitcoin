@@ -41,6 +41,10 @@
     <rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
         <exclude-pattern>*</exclude-pattern>
     </rule>
+    <!-- No need for comment when the purpose is to type annotate. -->
+    <rule ref="Generic.Commenting.DocComment.MissingShort">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
 
 
 

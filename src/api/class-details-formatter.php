@@ -55,7 +55,8 @@ class Details_Formatter {
 	}
 
 	public function get_btc_address_derivation_path_sequence_number(): string {
-		return $this->order->get_address()->get_derivation_path_sequence_number();
+		$sequence_number = $this->order->get_address()->get_derivation_path_sequence_number();
+		return "{$sequence_number}";
 	}
 
 	public function get_xpub_js_span(): string {
