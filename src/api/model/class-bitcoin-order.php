@@ -82,10 +82,10 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 		return $this->address;
 	}
 
-	public function get_last_checked_time(): DateTimeInterface {
-
-		// $last_checked_time = empty( $last_checked_time ) ? null : $last_checked_time;
-		return $this->wc_order->get_meta( Order::LAST_CHECKED_META_KEY );
+	public function get_last_checked_time(): ?DateTimeInterface {
+		$last_checked_time = $this->wc_order->get_meta( Order::LAST_CHECKED_META_KEY );
+		$last_checked_time = empty( $last_checked_time ) ? null : $last_checked_time;
+		return $last_checked_time;
 	}
 
 	public function set_last_checked_time( DateTimeInterface $last_checked_time ): void {
