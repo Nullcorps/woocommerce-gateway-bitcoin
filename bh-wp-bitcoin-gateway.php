@@ -81,6 +81,13 @@ $container->bind( API_Interface::class, API::class );
 $container->bind( Settings_Interface::class, Settings::class );
 $container->bind( LoggerInterface::class, Logger::class );
 $container->bind( Logger_Settings_Interface::class, Settings::class );
+// BH WP Logger doesn't add its own hooks unless we use its singleton.
+$container->singleton(
+	LoggerInterface::class,
+	static function ( Container $container ) {
+		return Logger::instance( $container->get( Logger_Settings_Interface::class ) );
+	}
+);
 
 $container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
 $container->bind( Generate_Address_API_Interface::class, BitWasp_API::class );
