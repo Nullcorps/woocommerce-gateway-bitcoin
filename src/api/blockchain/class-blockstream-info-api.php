@@ -21,7 +21,6 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @phpstan-type Stats array{funded_txo_count:int, funded_txo_sum:int, spent_txo_count:int, spent_txo_sum:int, tx_count:int}
- * @phpstan-import-type TransactionArray from API_Interface as TransactionArray
  */
 class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInterface {
 	use LoggerAwareTrait;
@@ -56,7 +55,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 	 * @param string $btc_address
 	 * @param int    $number_of_confirmations
 	 *
-	 * @return array{confirmed_balance:string, unconfirmed_balance:string, number_of_confirmations:int}
+	 * @return Address_Balance
 	 * @throws \Exception
 	 */
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
@@ -82,10 +81,10 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 
 		$result['unconfirmed_balance'] = (string) $unconfirmed_balance;
 
-		return new class($result) implements Address_Balance {
-			protected $result;
-			public function __construct( $result ) {
-				$this->result = $result;
+		return new class( $result) implements Address_Balance {
+			public function __construct(
+				protected array $result
+			) {
 			}
 
 			public function get_confirmed_balance(): string {
@@ -157,9 +156,9 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 
 			return new class( $blockstream_transaction ) implements Transaction_Interface {
 
-				protected $blockstream_transaction;
+				protected array $blockstream_transaction;
 
-				public function __construct( $blockstream_transaction ) {
+				public function __construct( array $blockstream_transaction ) {
 					$this->blockstream_transaction = $blockstream_transaction;
 				}
 

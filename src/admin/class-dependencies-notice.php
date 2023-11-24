@@ -54,7 +54,7 @@ class Dependencies_Notice {
 			return;
 		}
 
-		if ( ! current_user_can( 'administrator' ) ) {
+		if ( ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
 

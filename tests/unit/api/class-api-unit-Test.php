@@ -46,11 +46,11 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		\Patchwork\redefine(
 			'function_exists',
-			function ( string $function ): bool {
-				if ( 'gmp_init' === $function ) {
+			function ( string $function_name ): bool {
+				if ( 'gmp_init' === $function_name ) {
 					return false;
 				}
-				return \Patchwork\relay( array( $function ) );
+				return \Patchwork\relay( array( $function_name ) );
 			}
 		);
 		$result = $sut->is_server_has_dependencies();
@@ -80,11 +80,11 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		\Patchwork\redefine(
 			'function_exists',
-			function ( string $function ): bool {
-				if ( 'gmp_init' === $function ) {
+			function ( string $function_name ): bool {
+				if ( 'gmp_init' === $function_name ) {
 					return true;
 				}
-				return \Patchwork\relay( array( $function ) );
+				return \Patchwork\relay( array( $function_name ) );
 			}
 		);
 		$result = $sut->is_server_has_dependencies();

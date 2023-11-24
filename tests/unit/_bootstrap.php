@@ -20,12 +20,11 @@ $xdebug_info = xdebug_info( 'mode' ) ?? array();
  * Do not use Patchwork if coverage is enabled.
  * There is an out of memory error occurring.
  *
+ * `WP_Mock::setUsePatchwork( ! in_array( 'coverage', $xdebug_info, true ) );`
+ *
  * @see https://patchwork2.org/
  */
-// WP_Mock::setUsePatchwork( ! in_array( 'coverage', $xdebug_info, true ) );
-// WP_Mock::setUsePatchwork( false );
 WP_Mock::setUsePatchwork( true );
-
 WP_Mock::bootstrap();
 
 global $project_root_dir;

@@ -41,7 +41,7 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 
 		$client = new HttpClient( $options );
 
-		$this->api = new BlockchainInfoApi( $client, $client, $logger );
+		$this->api = new BlockchainInfoApi( $client, $client );
 	}
 
 	/**
@@ -55,9 +55,7 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 	 * @throws \Exception
 	 */
 	public function get_received_by_address( string $btc_address, bool $confirmed ): string {
-		$minimum_confirmations = $confirmed ? 1 : 0;
-
-		return $this->api->getReceivedByAddress( $btc_address, $minimum_confirmations );
+		return $this->api->getReceivedByAddress( $btc_address, $confirmed );
 	}
 
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {

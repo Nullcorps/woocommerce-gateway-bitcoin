@@ -18,6 +18,4 @@ if ( file_exists( $env_secret_fullpath ) ) {
 
 	$dotenv = Dotenv\Dotenv::createImmutable( codecept_root_dir(), '.env.secret' );
 	$dotenv->load();
-
-	// \Codeception\Configuration::config( $env_secret_fullpath );
 }

@@ -42,8 +42,16 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * The number of confirmations the order needs for transactions.
 	 */
 	protected int $confirmations;
+	protected $amount_received;
+	protected DateTimeInterface $last_checked_time;
 
-	public function __call( $name, $arguments ) {
+	/**
+	 * @param string $name
+	 * @param array<mixed> $arguments
+	 *
+	 * @return mixed
+	 */
+	public function __call( string $name, array $arguments ): mixed {
 		if ( is_callable( array( $this->wc_order, $name ) ) ) {
 			return call_user_func_array( array( $this->wc_order, $name ), $arguments );
 		}
@@ -111,6 +119,9 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 		return $this->amount_received;
 	}
 
+	/**
+	 * @param $updated_confirmed_value
+	 */
 	public function set_amount_received( $updated_confirmed_value ): void {
 		$this->wc_order->add_meta_data( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, $updated_confirmed_value, true );
 		$this->amount_received = $updated_confirmed_value;

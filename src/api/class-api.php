@@ -244,7 +244,6 @@ class API implements API_Interface {
 
 		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
-		/** @var Bitcoin_Address[] $fresh_addresses */
 		return $wallet->get_fresh_addresses();
 	}
 
@@ -319,15 +318,15 @@ class API implements API_Interface {
 
 		$order_transactions_current_mempool = array_filter(
 			$address_transactions_current,
-			function ( Transaction_Interface $transaction ) {
-				is_null( $transaction->get_block_height() );
+			function ( Transaction_Interface $transaction ): bool {
+				return is_null( $transaction->get_block_height() );
 			}
 		);
 
 		$order_transactions_current_blockchain = array_filter(
 			$address_transactions_current,
-			function ( Transaction_Interface $transaction ) {
-				! is_null( $transaction->get_block_height() );
+			function ( Transaction_Interface $transaction ): bool {
+				return ! is_null( $transaction->get_block_height() );
 			}
 		);
 
@@ -352,7 +351,7 @@ class API implements API_Interface {
 		$unconfirmed_value_current = array_reduce(
 			$order_transactions_current_blockchain,
 			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
-				if ( $blockchain_height - $transaction->get_block_height() ?? $blockchain_height > $required_confirmations ) {
+				if ( $blockchain_height - ( $transaction->get_block_height() ?? $blockchain_height ) > $required_confirmations ) {
 					return $carry;
 				}
 				return $carry + $transaction->get_value( $raw_address );
@@ -605,7 +604,6 @@ class API implements API_Interface {
 		return $result;
 	}
 
-
 	/**
 	 * @param string $master_public_key
 	 * @param int    $generate_count // TODO:  20 is the standard. cite.
@@ -680,8 +678,6 @@ class API implements API_Interface {
 
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
-	 *
-	 * @param Bitcoin_Address[] $addresses Array of address objects to query and update.
 	 *
 	 * @return array<string, Transaction_Interface>
 	 */

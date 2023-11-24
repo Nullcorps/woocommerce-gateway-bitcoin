@@ -92,7 +92,7 @@ interface API_Interface {
 	 * @param WC_Order $wc_order   WooCommerce order object.
 	 * @param bool     $refresh Query remote APIs to refresh the details, or just return cached data.
 	 *
-	 * @return array{btc_address:string, bitcoin_total:string, btc_total_formatted:string, btc_price_at_at_order_time:string, last_checked_time_formatted:string, btc_amount_received_formatted:string, transactions:array<string, Transaction_Interface>, btc_exchange_rate:string}
+	 * @return Bitcoin_Order_Interface
 	 */
 	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): Bitcoin_Order_Interface;
 
@@ -102,7 +102,7 @@ interface API_Interface {
 	 * @param WC_Order $order The WooCommerce order.
 	 * @param bool     $refresh Should an API request be made to check for new transactions, or just use existing data.
 	 *
-	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
+	 * @return array<string, Transaction_Interface>
 	 * @throws Exception When the order has no Bitcoin address.
 	 */
 	public function get_formatted_order_details( WC_Order $order, bool $refresh = true ): array;
@@ -148,7 +148,7 @@ interface API_Interface {
 	 *
 	 * @param Bitcoin_Address $address Address object for existing saved address (i.e. this doesn't work for arbitrary addresses).
 	 *
-	 * @return array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>, updated:bool, updates:array{new_transactions:array<string, TransactionArray>, new_confirmations:array<string, TransactionArray>}, previous_transactions:array<string, TransactionArray>|null}
+	 * @return array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>, updated:bool, updates:array{new_transactions:array<string, array<Transaction_Interface>>, new_confirmations:array<string, array<Transaction_Interface>}, previous_transactions:array<string, array<Transaction_Interface>>|null}
 	 */
 	public function update_address_transactions( Bitcoin_Address $address ): array;
 
@@ -172,8 +172,6 @@ interface API_Interface {
 	 * @used-by API::generate_new_addresses_for_wallet()
 	 * @used-by API::generate_new_wallet()
 	 * @used-by CLI::generate_new_addresses()
-	 *
-	 * @param ?Bitcoin_Address[] $addresses Array of Bitcoin address objects, or omit the parameter to check generated addresses whose status is "unknown".
 	 *
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>}>
 	 */

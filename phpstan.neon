@@ -30,18 +30,18 @@ parameters:
           paths:
             - src/admin/class-wallets-list-table.php
             - src/admin/class-addresses-list-table.php
-        - # Don't check for null|false in tests
-          message: '/Parameter .* expects .*|(false|null) given/'
-          path: tests/*
+        # - Don't check for null|false in tests
+        #  message: '/Parameter .* expects .*|(false|null) given/'
+        #  path: tests/*
         # Using exceptions in filters as controlflow to avoid die().
-        - message: '/Filter callback return statement is missing./'
+        # - message: '/Filter callback return statement is missing./'
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
         # PHPStan show errors when filters have more than two parameters.
-        - '#^Function apply_filters(_ref_array)? invoked with \d parameters, 2 required\.$#'
+        # - '#^Function apply_filters(_ref_array)? invoked with \d parameters, 2 required\.$#'
         # Parameter #1 $message of method a expects b, c given, when bad PhpDoc used.
         # - '/Parameter .* of .* expects .* given\./'
         # Setting an empty array with type associative array in the PhpDoc prints this.
         - '/does not accept default value of type array.{3}$/'
         # Sometimes seems to not find the test parent class's methods.
-        - '/Call to an undefined method.*(make|assert).*/'
+        # - '/Call to an undefined method.*(make|assert).*/'

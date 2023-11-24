@@ -143,6 +143,7 @@ class Bitcoin_Address {
 			$update['post_status'] = 'used';
 		}
 
+		/** @var int|\WP_Error $result */
 		$result = wp_update_post( $update );
 		if ( ! is_wp_error( $result ) ) {
 			$this->transactions = $refreshed_transactions;
@@ -203,6 +204,7 @@ class Bitcoin_Address {
 			throw new InvalidArgumentException( "{$status} should be one of unknown|unused|assigned|used" );
 		}
 
+		/** @var int|\WP_Error $result */
 		$result = wp_update_post(
 			array(
 				'post_type'   => self::POST_TYPE,
@@ -214,7 +216,7 @@ class Bitcoin_Address {
 		if ( ! is_wp_error( $result ) ) {
 			$this->status = $status;
 		} else {
-			throw new RuntimeException( $result );
+			throw new RuntimeException( $result->get_error_message() );
 		}
 	}
 
@@ -245,6 +247,7 @@ class Bitcoin_Address {
 			$update['post_status'] = 'assigned';
 		}
 
+		/** @var int|\WP_Error $result */
 		$result = wp_update_post( $update );
 		if ( ! is_wp_error( $result ) ) {
 			$this->order_id = $order_id;

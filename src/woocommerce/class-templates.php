@@ -49,13 +49,13 @@ class Templates {
 	 *
 	 * @param string       $template The full path to the template. Usually an incorrect (!file_exists()) path before this function runs.
 	 * @param string       $template_name The template name, i.e. the relative filename from the theme or theme/woocommerce directory.
-	 * @param array<mixed> $args Array of values to be exploded and made available to the included template.
-	 * @param string       $template_path I'm not sure is there a difference between `$template` and `$template_path`.
-	 * @param string       $default_path Optional default path, which seems to be empty in WooCommerce core.
+	 * @param array<mixed> $_args Array of values to be exploded and made available to the included template.
+	 * @param string       $_template_path I'm not sure is there a difference between `$template` and `$template_path`.
+	 * @param string       $_default_path Optional default path, which seems to be empty in WooCommerce core.
 	 *
 	 * @return string
 	 */
-	public function load_bitcoin_templates( string $template, string $template_name, array $args, string $template_path, string $default_path ): string {
+	public function load_bitcoin_templates( string $template, string $template_name, array $_args, string $_template_path, string $_default_path ): string {
 
 		$templates = array(
 			self::BITCOIN_UNPAID_TEMPLATE_NAME,

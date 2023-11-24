@@ -32,6 +32,17 @@
     <rule ref="Squiz.Commenting.VariableComment.MissingVar">
         <exclude-pattern>*</exclude-pattern>
     </rule>
+    <!-- Allow unused parameters. I find it helpful to know what is available. -->
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
+
+    <!-- I'm not really sure how this is a security problem. -->
+    <rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
+
+
 
 
     <!-- Enforce fewer rules on tests -->
