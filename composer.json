@@ -20,6 +20,9 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "johnpbloch/wordpress-core-installer": true,
             "phpstan/extension-installer": true
+        },
+        "platform": {
+            "php": "8.0.30"
         }
     },
     "repositories": {
@@ -297,7 +300,7 @@
             "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
         ],
         "php-compatibility": [
-            "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 7.4-"
+            "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
         ],
         "create-plugin-archive": [
             "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",

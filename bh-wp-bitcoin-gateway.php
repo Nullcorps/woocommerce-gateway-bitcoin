@@ -14,7 +14,7 @@
  * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
  * Version:           2.0.0-beta-7
  * Requires at least: 5.9
- * Requires PHP:      7.4
+ * Requires PHP:      8.0
  * Author:            Nullcorps, BrianHenryIE
  * Author URI:        https://github.com/Nullcorps/
  * License:           GNU General Public License v3.0
