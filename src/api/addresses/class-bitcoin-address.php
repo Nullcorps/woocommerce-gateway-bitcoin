@@ -44,7 +44,7 @@ class Bitcoin_Address {
 	protected string $raw_address;
 
 	/** @var array<string,Transaction_Interface> */
-	protected ?array $transactions;
+	protected ?array $transactions = null;
 	/**
 	 * @var mixed|string|null
 	 */
@@ -145,7 +145,7 @@ class Bitcoin_Address {
 
 		$result = wp_update_post( $update );
 		if ( ! is_wp_error( $result ) ) {
-			$this->transactions = $update;
+			$this->transactions = $refreshed_transactions;
 		} else {
 			throw new RuntimeException( $result->get_error_message() );
 		}
