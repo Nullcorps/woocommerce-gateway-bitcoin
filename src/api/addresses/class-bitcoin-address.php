@@ -173,6 +173,19 @@ class Bitcoin_Address {
 		return $this->get_balance();
 	}
 
+	public function get_confirmed_balance( int $blockchain_height, int $required_confirmations ): ?string {
+		return array_reduce(
+			$this->transactions ?? array(),
+			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations ) {
+				if ( $blockchain_height - ( $transaction->get_block_height() ?? $blockchain_height ) > $required_confirmations ) {
+					return $carry + $transaction->get_value( $this->get_raw_address() );
+				}
+				return $carry;
+			},
+			0.0
+		);
+	}
+
 	/**
 	 * Return the current status of the Bitcoin address object. One of:
 	 * * unknown: probably brand new and unchecked

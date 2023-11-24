@@ -337,17 +337,10 @@ class API implements API_Interface {
 
 		$blockchain_height = $this->blockchain_api->get_blockchain_height();
 
-		$raw_address               = $bitcoin_order->get_address()->get_raw_address();
-		$confirmed_value_current   = array_reduce(
-			$order_transactions_current_blockchain,
-			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
-				if ( $blockchain_height - $transaction->get_block_height() ?? $blockchain_height > $required_confirmations ) {
-					return $carry + $transaction->get_value( $raw_address );
-				}
-				return $carry;
-			},
-			0.0
-		);
+		$raw_address = $bitcoin_order->get_address()->get_raw_address();
+
+		$confirmed_value_current = $bitcoin_order->get_address()->get_confirmed_balance( $blockchain_height, $required_confirmations );
+
 		$unconfirmed_value_current = array_reduce(
 			$order_transactions_current_blockchain,
 			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
