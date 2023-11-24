@@ -11,14 +11,18 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Email;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
@@ -37,6 +41,27 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		parent::tearDown();
 		\WP_Mock::tearDown();
 	}
+	protected function get_container(): ContainerInterface {
+
+		$container = new Container();
+
+		$container->bind(
+			API_Interface::class,
+			function () {
+				return self::makeEmpty( API_Interface::class );
+			}
+		);
+		$settings = $this->makeEmpty(
+			Settings_Interface::class,
+			array(
+				'get_plugin_basename' => 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php',
+			)
+		);
+		$container->bind( Settings_Interface::class, $settings );
+		$container->bind( LoggerInterface::class, ColorLogger::class );
+
+		return $container;
+	}
 
 	/**
 	 * @covers ::set_locale
@@ -48,11 +73,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( I18n::class ), 'load_plugin_textdomain' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -72,11 +93,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Admin::class ), 'enqueue_scripts' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 
@@ -102,16 +119,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			2
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty(
-			Settings_Interface::class,
-			array(
-				'get_plugin_basename' => 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php',
-			)
-		);
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -129,11 +137,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Frontend_Assets::class ), 'enqueue_scripts' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -148,11 +152,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -175,11 +175,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Payment_Gateways::class ), 'add_logger_to_gateways' ),
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -201,11 +197,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -223,11 +215,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Background_Jobs::class ), 'generate_new_addresses' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -240,11 +228,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Admin_Order_UI::class ), 'register_address_transactions_meta_box' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -257,11 +241,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Dependencies_Notice::class ), 'print_dependencies_notice' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -283,11 +263,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			2
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 
@@ -308,11 +284,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
 	/**
@@ -325,10 +297,6 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( HPOS::class ), 'declare_compatibility' )
 		);
 
-		$api      = $this->makeEmpty( API_Interface::class );
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$logger   = new ColorLogger();
-
-		new BH_WP_Bitcoin_Gateway( $api, $settings, $logger );
+		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 }
