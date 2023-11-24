@@ -16,12 +16,12 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
-use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Wallets_List_Table;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\AJAX;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
@@ -48,21 +48,6 @@ use WP_CLI;
 class BH_WP_Bitcoin_Gateway {
 
 	/**
-	 * A PSR logger for logging errors, events etc.
-	 */
-	protected LoggerInterface $logger;
-
-	/**
-	 * The plugin settings.
-	 */
-	protected Settings_Interface $settings;
-
-	/**
-	 * The main plugin functions.
-	 */
-	protected API_Interface $api;
-
-	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -70,16 +55,8 @@ class BH_WP_Bitcoin_Gateway {
 	 * the frontend-facing side of the site.
 	 *
 	 * @since    1.0.0
-	 *
-	 * @param API_Interface      $api The main plugin functions.
-	 * @param Settings_Interface $settings The plugin settings.
-	 * @param LoggerInterface    $logger A PSR logger.
 	 */
-	public function __construct( API_Interface $api, Settings_Interface $settings, LoggerInterface $logger ) {
-
-		$this->logger   = $logger;
-		$this->settings = $settings;
-		$this->api      = $api;
+	public function __construct( protected Container $container ) {
 
 		$this->set_locale();
 
@@ -119,7 +96,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function set_locale(): void {
 
-		$plugin_i18n = new I18n();
+		$plugin_i18n = $this->container->get( I18n::class );
 
 		add_action( 'init', array( $plugin_i18n, 'load_plugin_textdomain' ) );
 	}
@@ -130,9 +107,10 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_plugins_page_hooks(): void {
 
-		$plugins_page = new Plugins_Page( $this->api, $this->settings );
+		$plugins_page = $this->container->get( Plugins_Page::class );
 
-		$plugin_basename = $this->settings->get_plugin_basename();
+		$settings        = $this->container->get( Settings_Interface::class );
+		$plugin_basename = $settings->get_plugin_basename();
 
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_settings_action_link' ) );
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_orders_action_link' ) );
@@ -145,7 +123,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_dependencies_admin_notice_hooks(): void {
 
-		$dependencies_notices = new Dependencies_Notice( $this->api, $this->settings );
+		$dependencies_notices = $this->container->get( Dependencies_Notice::class );
 
 		add_action( 'admin_notices', array( $dependencies_notices, 'print_dependencies_notice' ) );
 	}
@@ -155,7 +133,8 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_custom_post_type_hooks(): void {
 
-		$post = new Post( $this->api );
+		$post = $this->container->get( Post::class );
+
 		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
 		add_action( 'init', array( $post, 'register_address_post_type' ) );
 	}
@@ -167,12 +146,12 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_frontend_hooks(): void {
 
-		$plugin_frontend = new Frontend_Assets( $this->api, $this->settings, $this->logger );
+		$plugin_frontend = $this->container->get( Frontend_Assets::class );
 
 		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $plugin_frontend, 'enqueue_scripts' ) );
 
-		$ajax = new AJAX( $this->api, $this->logger );
+		$ajax = $this->container->get( AJAX::class );
 
 		add_action( 'wp_ajax_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 		add_action( 'wp_ajax_nopriv_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
@@ -184,7 +163,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_template_hooks(): void {
 
-		$templates = new Templates( $this->settings );
+		$templates = $this->container->get( Templates::class );
 
 		add_filter( 'wc_get_template', array( $templates, 'load_bitcoin_templates' ), 10, 5 );
 	}
@@ -195,7 +174,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_payment_gateway_hooks(): void {
 
-		$payment_gateways = new Payment_Gateways( $this->api, $this->settings, $this->logger );
+		$payment_gateways = $this->container->get( Payment_Gateways::class );
 
 		// Register the payment gateway with WooCommerce.
 		add_filter( 'woocommerce_payment_gateways', array( $payment_gateways, 'add_to_woocommerce' ) );
@@ -211,7 +190,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_order_hooks(): void {
 
-		$order = new Order( $this->api, $this->logger );
+		$order = $this->container->get( Order::class );
 
 		add_action( 'woocommerce_order_status_changed', array( $order, 'schedule_check_for_transactions' ), 10, 3 );
 		add_action( 'woocommerce_order_status_changed', array( $order, 'unschedule_check_for_transactions' ), 10, 3 );
@@ -222,7 +201,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_thank_you_hooks(): void {
 
-		$thank_you = new Thank_You( $this->api, $this->logger );
+		$thank_you = $this->container->get( Thank_You::class );
 
 		add_action( 'woocommerce_thankyou', array( $thank_you, 'print_instructions' ), 5 );
 	}
@@ -232,7 +211,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_email_hooks(): void {
 
-		$email = new Email( $this->api, $this->logger );
+		$email = $this->container->get( Email::class );
 
 		// TODO: Before table? best place?
 		add_action( 'woocommerce_email_before_order_table', array( $email, 'print_instructions' ), 10, 3 );
@@ -243,7 +222,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_my_account_hooks(): void {
 
-		$my_account_order = new My_Account_View_Order( $this->api, $this->logger );
+		$my_account_order = $this->container->get( My_Account_View_Order::class );
 
 		add_action( 'woocommerce_view_order', array( $my_account_order, 'print_status_instructions' ), 9 );
 	}
@@ -253,7 +232,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_action_scheduler_hooks(): void {
 
-		$background_jobs = new Background_Jobs( $this->api, $this->logger );
+		$background_jobs = $this->container->get( Background_Jobs::class );
 
 		add_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK, array( $background_jobs, 'generate_new_addresses' ) );
 		add_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK, array( $background_jobs, 'check_unpaid_order' ) );
@@ -265,7 +244,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_admin_order_ui_hooks(): void {
 
-		$admin_order_ui = new Admin_Order_UI( $this->api, $this->logger );
+		$admin_order_ui = $this->container->get( Admin_Order_UI::class );
 
 		add_action( 'add_meta_boxes', array( $admin_order_ui, 'register_address_transactions_meta_box' ) );
 	}
@@ -275,7 +254,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_wp_list_page_ui_hooks(): void {
 
-		$register_list_tables = new Register_List_Tables();
+		$register_list_tables = $this->container->get( Register_List_Tables::class );
 
 		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_address_table' ), 10, 2 );
 		add_filter( 'wp_list_table_class_name', array( $register_list_tables, 'register_bitcoin_wallet_table' ), 10, 2 );
@@ -286,7 +265,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_woocommerce_features_hooks(): void {
 
-		$hpos = new HPOS( $this->settings );
+		$hpos = $this->container->get( HPOS::class );
 
 		add_action( 'before_woocommerce_init', array( $hpos, 'declare_compatibility' ) );
 	}
@@ -302,13 +281,14 @@ class BH_WP_Bitcoin_Gateway {
 			return;
 		}
 
-		$cli = new CLI( $this->api, $this->settings, $this->logger );
+		$cli = $this->container->get( CLI::class );
 
 		try {
 			WP_CLI::add_command( 'bh-bitcoin generate-new-addresses', array( $cli, 'generate_new_addresses' ) );
 			WP_CLI::add_command( 'bh-bitcoin check-transactions', array( $cli, 'check_transactions' ) );
 		} catch ( Exception $e ) {
-			$this->logger->error( 'Failed to register WP CLI commands: ' . $e->getMessage(), array( 'exception' => $e ) );
+			$logger = $this->container->get( LoggerInterface::class );
+			$logger->error( 'Failed to register WP CLI commands: ' . $e->getMessage(), array( 'exception' => $e ) );
 		}
 	}
 
@@ -319,7 +299,7 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_integration_woo_cancel_abandoned_order_hooks(): void {
 
-		$woo_cancel_abandoned_order = new Woo_Cancel_Abandoned_Order( $this->api );
+		$woo_cancel_abandoned_order = $this->container->get( Woo_Cancel_Abandoned_Order::class );
 
 		add_filter( 'woo_cao_gateways', array( $woo_cancel_abandoned_order, 'enable_cao_for_bitcoin' ) );
 		add_filter( 'woo_cao_before_cancel_order', array( $woo_cancel_abandoned_order, 'abort_canceling_partially_paid_order' ), 10, 3 );
