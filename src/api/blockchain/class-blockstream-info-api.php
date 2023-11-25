@@ -10,6 +10,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -71,27 +72,33 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 
 		$address_info = $this->get_address_data( $btc_address );
 
-		$confirmed_balance = ( $address_info['chain_stats']['funded_txo_sum'] - $address_info['chain_stats']['spent_txo_sum'] ) / 100000000;
-		$this->logger->debug( 'Confirmed balance: ' . number_format( $confirmed_balance, 8 ), array( 'address_info' => $address_info ) );
+		$confirmed_balance = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
+									->minus(
+										Money::of( $address_info['chain_stats']['spent_txo_sum'], 'btc' )
+									)->dividedBy( 100_000_000 );
+		$this->logger->debug( 'Confirmed balance: ' . number_format( $confirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
-		$result['confirmed_balance'] = (string) $confirmed_balance;
+		$result['confirmed_balance'] = $confirmed_balance;
 
-		$unconfirmed_balance = ( $address_info['mempool_stats']['funded_txo_sum'] - $address_info['mempool_stats']['spent_txo_sum'] ) / 100000000;
-		$this->logger->debug( 'Unconfirmed balance: ' . number_format( $unconfirmed_balance, 8 ), array( 'address_info' => $address_info ) );
+		$unconfirmed_balance = Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'btc' )->minus( Money::of( $address_info['mempool_stats']['spent_txo_sum'], 'btc' ) )->dividedBy( 100_000_000 );
+		$this->logger->debug( 'Unconfirmed balance: ' . number_format( $unconfirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
 		$result['unconfirmed_balance'] = (string) $unconfirmed_balance;
 
 		return new class( $result) implements Address_Balance {
+			/**
+			 * @param array{number_of_confirmations:int, unconfirmed_balance:Money, confirmed_balance:Money} $result
+			 */
 			public function __construct(
 				protected array $result
 			) {
 			}
 
-			public function get_confirmed_balance(): string {
+			public function get_confirmed_balance(): Money {
 				return $this->result['confirmed_balance'];
 			}
 
-			public function get_unconfirmed_balance(): string {
+			public function get_unconfirmed_balance(): Money {
 				return $this->result['unconfirmed_balance'];
 			}
 
@@ -106,19 +113,21 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 	 *
 	 * @param string $btc_address The Bitcoin address.
 	 *
-	 * @return string
 	 * @throws \Exception
 	 */
-	public function get_received_by_address( string $btc_address, bool $confirmed ): string {
+	public function get_received_by_address( string $btc_address, bool $confirmed ): Money {
 
 		$address_info = $this->get_address_data( $btc_address );
 
 		if ( $confirmed ) {
-			$calc = $address_info['chain_stats']['funded_txo_sum'] / 100000000;
+			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
+						->dividedBy( 100_000_000 );
 		} else {
-			$calc = ( $address_info['chain_stats']['funded_txo_sum'] + $address_info['mempool_stats']['funded_txo_sum'] ) / 100000000;
+			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
+					->plus( Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'btc' ) )
+					->dividedBy( 100_000_000 );
 		}
-		return "{$calc}";
+		return $calc;
 	}
 
 	/**
@@ -173,7 +182,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 					return new DateTimeImmutable( '@' . $block_time, new DateTimeZone( 'UTC' ) );
 				}
 
-				public function get_value( string $to_address ): float {
+				public function get_value( string $to_address ): Money {
 					$value_including_fee = array_reduce(
 						$this->blockstream_transaction['vout'],
 						function ( $carry, $out ) use ( $to_address ) {
@@ -193,7 +202,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 					return $this->blockstream_transaction['status']['block_height'];
 
 					// TODO: Confirmations was returning the block height - 1. Presumably that meant mempool/0 confirmations, but I need test data to understand.
-					// Correct solution is probably to check does $blockstream_transaction['status']['block_height'] exist, else 0.
+					// Correct solution is probably to check does $blockstream_transaction['status']['block_height'] exist, else ???
 					// Quick fix.
 				}
 			};
