@@ -22,14 +22,16 @@ class Details_Formatter {
 		$this->order = $order;
 	}
 
+	/**
+	 * ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
+	 */
 	public function get_btc_total_formatted(): string {
-		// ฿ U+0E3F THAI CURRENCY SYMBOL BAHT, decimal: 3647, HTML: &#3647;, UTF-8: 0xE0 0xB8 0xBF, block: Thai.
 		$btc_symbol = '฿';
 		return $btc_symbol . ' ' . wc_trim_zeros( $this->order->get_btc_total_price() );
 	}
 
 	public function get_btc_exchange_rate_formatted(): string {
-		return wc_price( $this->order->get_btc_exchange_rate(), array( 'currency' => $this->order->get_currency() ) );
+		return $this->order->get_currency() . ' ' . wc_price( $this->order->get_btc_exchange_rate()->toFloat(), array( 'currency' => $this->order->get_currency() ) );
 	}
 
 	/**
@@ -91,7 +93,7 @@ class Details_Formatter {
 		// TODO: An address doesn't know how many confirmations an order wants.
 		// e.g. there could be dynamic number of confirmations based on order total
 
-		return $btc_symbol . ' ' . $this->order->get_address()->get_confirmed_balance();
+		return $btc_symbol . ' ' . $this->order->get_address()->get_confirmed_balance( PHP_INT_MAX, 0 );
 	}
 
 	public function get_friendly_status(): string {
