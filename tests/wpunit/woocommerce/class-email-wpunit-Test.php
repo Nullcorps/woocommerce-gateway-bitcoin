@@ -38,7 +38,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function () {
+			function (): string {
 				throw new \Exception();
 			}
 		);
@@ -102,7 +102,7 @@ class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function () {
+			function (): string {
 				throw new \Exception();
 			}
 		);

@@ -7,6 +7,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeInterface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
@@ -19,10 +20,8 @@ interface Blockchain_API_Interface {
 	 *
 	 * @param string $btc_address The payment address to check.
 	 * @param bool   $confirmed
-	 *
-	 * @return string
 	 */
-	public function get_received_by_address( string $btc_address, bool $confirmed ): string;
+	public function get_received_by_address( string $btc_address, bool $confirmed ): Money;
 
 	/**
 	 * The current balance of the address.

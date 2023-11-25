@@ -141,6 +141,7 @@
         "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
         "brianhenryie/bh-php-blockchain-info": "dev-main",
         "brianhenryie/bh-wp-logger": "dev-master",
+        "brick/money": "^0.8.1",
         "chillerlan/php-qrcode": "^4.3",
         "json-mapper/json-mapper": "^2.18",
         "lucatume/di52": "^3.3",

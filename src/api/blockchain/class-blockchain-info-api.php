@@ -16,6 +16,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\BlockchainInfoApi;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\TransactionOut;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -51,30 +52,32 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 	 * @param string $btc_address
 	 * @param bool   $confirmed
 	 *
-	 * @return string
 	 * @throws \Exception
 	 */
-	public function get_received_by_address( string $btc_address, bool $confirmed ): string {
-		return $this->api->getReceivedByAddress( $btc_address, $confirmed );
+	public function get_received_by_address( string $btc_address, bool $confirmed ): Money {
+		return Money::of( $this->api->getReceivedByAddress( $btc_address, $confirmed ), 'btc' );
 	}
 
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
 		$result                            = array();
 		$result['number_of_confirmations'] = $number_of_confirmations;
-		$result['unconfirmed_balance']     = $this->api->getAddressBalance( $btc_address, 0 );
-		$result['confirmed_balance']       = $this->api->getAddressBalance( $btc_address, $number_of_confirmations );
+		$result['unconfirmed_balance']     = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'btc' );
+		$result['confirmed_balance']       = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'btc' );
 
 		return new class( $result ) implements Address_Balance {
 
+			/**
+			 * @param array{number_of_confirmations:int, unconfirmed_balance:Money, confirmed_balance:Money} $result
+			 */
 			public function __construct( protected array $result ) {
 			}
 
-			public function get_confirmed_balance(): string {
+			public function get_confirmed_balance(): Money {
 				return $this->result['confirmed_balance'];
 			}
 
-			public function get_unconfirmed_balance(): string {
+			public function get_unconfirmed_balance(): Money {
 				return $this->result['unconfirmed_balance'];
 			}
 
@@ -114,21 +117,21 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 					return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
 				}
 
-				public function get_value( string $to_address ): float {
+				public function get_value( string $to_address ): Money {
 
 					$value_including_fee = array_reduce(
 						$this->transaction->getOut(),
-						function ( $carry, TransactionOut $out ) use ( $to_address ) {
+						function ( Money $carry, TransactionOut $out ) use ( $to_address ) {
 
 							if ( $out->getAddr() === $to_address ) {
-								return $carry + $out->getValue();
+								return $carry->plus( $out->getValue() );
 							}
 							return $carry;
 						},
-						0
+						Money::of( 0, 'btc' )
 					);
 
-					return $value_including_fee / 100000000;
+					return $value_including_fee->dividedBy( 100_000_000 );
 				}
 
 				public function get_block_height(): int {

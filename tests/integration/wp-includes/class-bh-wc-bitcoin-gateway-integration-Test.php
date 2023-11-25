@@ -16,6 +16,9 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
  */
 class BH_WP_Bitcoin_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
+	/**
+	 * @return array{string, string, string}
+	 */
 	public function hooks(): array {
 		$hooks = array(
 			array( 'init', I18n::class, 'load_plugin_textdomain' ),

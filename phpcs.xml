@@ -46,7 +46,9 @@
         <exclude-pattern>*</exclude-pattern>
     </rule>
 
-
+    <rule ref="Universal.Operators.DisallowShortTernary.Found">
+        <exclude-pattern>*</exclude-pattern>
+    </rule>
 
 
     <!-- Enforce fewer rules on tests -->
@@ -120,6 +122,10 @@
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
     <rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
 

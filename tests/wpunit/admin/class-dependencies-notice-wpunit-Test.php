@@ -106,7 +106,7 @@ class Dependencies_Notice_WPUnit_Test extends WPTestCase {
 
 		$sut->print_dependencies_notice();
 
-		$result = ob_get_clean();
+		$result = ob_get_clean() ?: '';
 
 		$this->assertStringContainsString( 'https://www.php.net/manual/en/book.gmp.php', $result );
 	}

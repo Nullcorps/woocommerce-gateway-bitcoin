@@ -7,6 +7,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 
@@ -172,7 +173,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$result = $sut->get_exchange_rate( 'usd' );
+		$result = $sut->get_exchange_rate( Currency::of( 'usd' ) );
 
 		self::assertEquals( '65535', $result );
 	}
@@ -219,7 +220,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$result = $sut->get_exchange_rate( 'usd' );
+		$result = $sut->get_exchange_rate( Currency::of( 'usd' ) );
 
 		self::assertEquals( 54321, $result );
 	}

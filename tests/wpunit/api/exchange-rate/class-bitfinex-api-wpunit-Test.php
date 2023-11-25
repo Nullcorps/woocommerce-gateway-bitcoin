@@ -8,6 +8,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API
@@ -40,7 +41,7 @@ class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 			}
 		);
 
-		$result = $sut->get_exchange_rate( 'usd' );
+		$result = $sut->get_exchange_rate( Currency::of( 'usd' ) );
 
 		$this->assertEquals( '40990', $result );
 	}

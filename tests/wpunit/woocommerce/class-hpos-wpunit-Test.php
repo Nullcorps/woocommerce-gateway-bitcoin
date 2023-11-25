@@ -36,6 +36,6 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = FeaturesUtil::get_compatible_plugins_for_feature( 'custom_order_tables' );
 
-		$this->assertContains( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', $result['compatible'], wp_json_encode( $result['compatible'] ) );
+		$this->assertContains( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php', $result['compatible'], wp_json_encode( $result['compatible'] ) ?: '' );
 	}
 }

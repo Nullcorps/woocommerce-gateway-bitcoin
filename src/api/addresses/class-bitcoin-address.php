@@ -10,6 +10,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeInterface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table;
@@ -45,10 +46,9 @@ class Bitcoin_Address {
 
 	/** @var array<string,Transaction_Interface> */
 	protected ?array $transactions = null;
-	/**
-	 * @var mixed|string|null
-	 */
-	protected $balance;
+
+	protected ?Money $balance;
+
 	protected ?int $order_id;
 
 
@@ -72,7 +72,8 @@ class Bitcoin_Address {
 		$this->derivation_path_sequence_number = (int) get_post_meta( $post_id, self::DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY, true );
 		$this->raw_address                     = $this->post->post_excerpt;
 		$this->transactions                    = get_post_meta( $post_id, self::TRANSACTION_META_KEY, true ) ?: null;
-		$this->balance                         = get_post_meta( $post_id, self::BALANCE_META_KEY, true );
+		$balance                               = get_post_meta( $post_id, self::BALANCE_META_KEY, true );
+		$this->balance                         = empty( $balance ) ? null : Money::of( $balance, 'btc' );
 		$this->order_id                        = intval( get_post_meta( $post_id, self::ORDER_ID_META_KEY, true ) );
 	}
 
@@ -159,30 +160,29 @@ class Bitcoin_Address {
 	 *
 	 * @used-by Addresses_List_Table::print_columns()
 	 *
-	 * @return ?string Null if unknown.
+	 * @return ?Money Null if unknown.
 	 */
-	public function get_balance(): ?string {
-		$balance = empty( $this->balance ) ? '0.0' : $this->balance;
-		return 'unknown' === $this->get_status() ? null : $balance;
+	public function get_balance(): ?Money {
+		return 'unknown' === $this->get_status() ? null : $this->balance;
 	}
 
 	/**
 	 * TODO: "balance" is not an accurate term for what we need.
 	 */
-	public function get_amount_received(): ?string {
+	public function get_amount_received(): ?Money {
 		return $this->get_balance();
 	}
 
-	public function get_confirmed_balance( int $blockchain_height, int $required_confirmations ): ?string {
+	public function get_confirmed_balance( int $blockchain_height, int $required_confirmations ): ?Money {
 		return array_reduce(
 			$this->transactions ?? array(),
-			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations ) {
+			function ( Money $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations ) {
 				if ( $blockchain_height - ( $transaction->get_block_height() ?? $blockchain_height ) > $required_confirmations ) {
-					return $carry + $transaction->get_value( $this->get_raw_address() );
+					return $carry->plus( $transaction->get_value( $this->get_raw_address() ) );
 				}
 				return $carry;
 			},
-			0.0
+			Money::of( 0, 'btc' )
 		);
 	}
 

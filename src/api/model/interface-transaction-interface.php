@@ -7,6 +7,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+
 interface Transaction_Interface {
 
 	/**
@@ -24,7 +26,7 @@ interface Transaction_Interface {
 	/**
 	 * @param string $to_address
 	 */
-	public function get_value( string $to_address ): float;
+	public function get_value( string $to_address ): Money;
 
 	/**
 	 * Returns null for mempool.

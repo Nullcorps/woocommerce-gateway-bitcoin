@@ -12,6 +12,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 use BadMethodCallException;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use DateTimeInterface;
@@ -42,7 +44,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * The number of confirmations the order needs for transactions.
 	 */
 	protected int $confirmations;
-	protected $amount_received;
+	protected Money $amount_received;
 	protected DateTimeInterface $last_checked_time;
 
 	/**
@@ -53,6 +55,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 */
 	public function __call( string $name, array $arguments ): mixed {
 		if ( is_callable( array( $this->wc_order, $name ) ) ) {
+		if ( method_exists( WC_Order::class, $name ) ) {
 			return call_user_func_array( array( $this->wc_order, $name ), $arguments );
 		}
 		throw new BadMethodCallException();
@@ -66,6 +69,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 			$bitcoin_address         = $wc_order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 			$bitcoin_address_post_id = $bitcoin_address_factory->get_post_id_for_address( $bitcoin_address );
 			$this->address           = $bitcoin_address_factory->get_by_post_id( $bitcoin_address_post_id );
+			$this->address = $bitcoin_address_factory->get_by_post_id( $bitcoin_address_post_id );
 		} catch ( \Exception $exception ) {
 			// $this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new \Exception( 'Problem with order Bitcoin address.' );
@@ -75,21 +79,24 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	/**
 	 * The order price in Bitcoin at the time of purchase.
 	 */
-	public function get_btc_total_price(): int {
-		return floatval( $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY ) );
+	public function get_btc_total_price(): Money {
+		return Money::of( $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY ), 'BTC' );
 	}
 
 	/**
 	 * The Bitcoin exchange rate at the time of purchase.
 	 */
-	public function get_btc_exchange_rate(): float {
-		return floatval( $this->wc_order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY ) );
+	public function get_btc_exchange_rate(): BigNumber {
+		return BigNumber::of( $this->wc_order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY ) );
 	}
 
 	public function get_address(): Bitcoin_Address {
 		return $this->address;
 	}
 
+	/**
+	 * Null when never changed
+	 */
 	public function get_last_checked_time(): ?DateTimeInterface {
 		$last_checked_time = $this->wc_order->get_meta( Order::LAST_CHECKED_META_KEY );
 		$last_checked_time = empty( $last_checked_time ) ? null : $last_checked_time;
@@ -99,6 +106,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	public function set_last_checked_time( DateTimeInterface $last_checked_time ): void {
 		// @phpstan-ignore-next-line This works fine.
 		$this->wc_order->add_meta_data( Order::LAST_CHECKED_META_KEY, $last_checked_time, true );
+		// TODO: Save?
 		$this->last_checked_time = $last_checked_time;
 	}
 
@@ -115,14 +123,14 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	/**
 	 * Get the total value with the required number of confirmations at the last checked time.
 	 */
-	public function get_amount_received() {
+	public function get_amount_received(): Money {
 		return $this->amount_received;
 	}
 
 	/**
 	 * @param $updated_confirmed_value
 	 */
-	public function set_amount_received( $updated_confirmed_value ): void {
+	public function set_amount_received( Money $updated_confirmed_value ): void {
 		$this->wc_order->add_meta_data( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, $updated_confirmed_value, true );
 		$this->amount_received = $updated_confirmed_value;
 	}

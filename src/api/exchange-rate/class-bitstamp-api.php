@@ -10,6 +10,8 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -22,10 +24,8 @@ class Bitstamp_API implements Exchange_Rate_API_Interface {
 
 	/**
 	 * Fetch the current exchange from a remote API.
-	 *
-	 * @return string
 	 */
-	public function get_exchange_rate( string $currency ): string {
+	public function get_exchange_rate( Currency $currency ): BigNumber {
 
 		$between = strtolower( "btc{$currency}" );
 

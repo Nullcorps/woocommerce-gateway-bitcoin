@@ -8,6 +8,8 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
@@ -310,9 +312,9 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		}
 
 		// Record the exchange rate at the time the order was placed.
-		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, $api->get_exchange_rate( $order->get_currency() ) );
+		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, $api->get_exchange_rate( Currency::of( $order->get_currency() ) ) );
 
-		$btc_total = $api->convert_fiat_to_btc( $order->get_currency(), $order->get_total() );
+		$btc_total = $api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) );
 
 		$order->add_meta_data( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, $btc_total );
 

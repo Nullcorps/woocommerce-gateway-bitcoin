@@ -10,6 +10,9 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -56,23 +59,18 @@ interface API_Interface {
 	 *
 	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
-	 * @param string $currency E.g. USD|EUR|GBP.
-	 *
-	 * @return string
+	 * @param Currency $currency E.g. USD|EUR|GBP.
 	 */
-	public function get_exchange_rate( string $currency ): string;
+	public function get_exchange_rate( Currency $currency ): BigNumber;
 
 	/**
 	 * Get the Bitcoin value of a local currency amount.
 	 *
 	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
-	 * @param string $currency From which currency.
-	 * @param float  $fiat_amount The amount to convert.
-	 *
-	 * @return string
+	 * @param Money $fiat_amount The amount to convert.
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount = 1.0 ): string;
+	public function convert_fiat_to_btc( Money $fiat_amount ): Money;
 
 	/**
 	 * Return an unused address for use in an order.
@@ -148,7 +146,7 @@ interface API_Interface {
 	 *
 	 * @param Bitcoin_Address $address Address object for existing saved address (i.e. this doesn't work for arbitrary addresses).
 	 *
-	 * @return array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>, updated:bool, updates:array{new_transactions:array<string, array<Transaction_Interface>>, new_confirmations:array<string, array<Transaction_Interface>}, previous_transactions:array<string, array<Transaction_Interface>>|null}
+	 * @return array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>, updated:bool, updates:array{new_transactions:array<string, array<Transaction_Interface>>, new_confirmations:array<string, array<Transaction_Interface>>}, previous_transactions:array<string, array<Transaction_Interface>>|null}
 	 */
 	public function update_address_transactions( Bitcoin_Address $address ): array;
 

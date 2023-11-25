@@ -77,7 +77,7 @@ class AJAX_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$output = ob_get_flush();
 
-		$result = json_decode( $output, true );
+		$result = json_decode( $output, true ) ?: array();
 
 		$this->assertArrayNotHasKey( 'btc_address_derivation_path_sequence_number', $result );
 		$this->assertArrayNotHasKey( 'parent_wallet_xpub_html', $result );

@@ -43,7 +43,7 @@ class My_Account_View_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase
 
 		add_filter(
 			'wc_get_template',
-			function () {
+			function (): string {
 				throw new \Exception();
 			}
 		);

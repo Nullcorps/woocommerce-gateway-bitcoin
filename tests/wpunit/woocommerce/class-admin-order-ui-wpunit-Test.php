@@ -40,7 +40,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function () {
+			function (): string {
 				throw new \Exception( 'wc_get_template' );
 			}
 		);
@@ -83,7 +83,7 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'wc_get_template',
-			function () {
+			function (): string {
 				throw new \Exception();
 			}
 		);
@@ -109,12 +109,12 @@ class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
-					function ( int $order_id ) {
+					function ( int $order_id ): bool {
 						return true;
 					}
 				),
 				'get_formatted_order_details'  => Expected::once(
-					function ( $order ) {
+					function ( $order ): array {
 						throw new \Exception( 'no btc address exception' );
 					}
 				),

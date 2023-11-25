@@ -17,6 +17,9 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
@@ -25,8 +28,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
@@ -265,7 +266,7 @@ class API implements API_Interface {
 	 *
 	 * As a really detailed array for printing.
 	 *
-	 * `array{btc_address:string, bitcoin_total:string, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string, order_status_before:string}`
+	 * `array{btc_address:string, bitcoin_total:Money, btc_price_at_at_order_time:string, transactions:array<string, TransactionArray>, btc_exchange_rate:string, last_checked_time:DateTimeInterface, btc_amount_received:string, order_status_before:string}`
 	 *
 	 * @param WC_Order $wc_order The WooCommerce order to check.
 	 * @param bool     $refresh Should the result be returned from cache or refreshed from remote APIs.
@@ -343,13 +344,13 @@ class API implements API_Interface {
 
 		$unconfirmed_value_current = array_reduce(
 			$order_transactions_current_blockchain,
-			function ( float $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
+			function ( Money $carry, Transaction_Interface $transaction ) use ( $blockchain_height, $required_confirmations, $raw_address ) {
 				if ( $blockchain_height - ( $transaction->get_block_height() ?? $blockchain_height ) > $required_confirmations ) {
 					return $carry;
 				}
-				return $carry + $transaction->get_value( $raw_address );
+				return $carry->plus( $transaction->get_value( $raw_address ) );
 			},
-			0.0
+			Money::of( 0, 'btc' )
 		);
 
 		// Filter to transactions that have just been seen, so we can record them in notes.
@@ -381,12 +382,12 @@ class API implements API_Interface {
 			$bitcoin_order->add_order_note( $note );
 		}
 
-		if ( ! $bitcoin_order->is_paid() && $confirmed_value_current > 0 ) {
+		if ( ! $bitcoin_order->is_paid() && ! is_null( $confirmed_value_current ) && ! $confirmed_value_current->isZero() ) {
 			$expected        = $bitcoin_order->get_btc_total_price();
 			$price_margin    = $gateway->get_price_margin_percent();
-			$minimum_payment = $expected * ( 100 - $price_margin ) / 100;
+			$minimum_payment = $expected->multipliedBy( ( 100 - $price_margin ) / 100 );
 
-			if ( $confirmed_value_current > $minimum_payment ) {
+			if ( $confirmed_value_current->isGreaterThan( $minimum_payment ) ) {
 				$bitcoin_order->payment_complete( $order_transactions_current[ array_key_last( $order_transactions_current ) ]->get_txid() );
 				$this->logger->info( "`shop_order:{$bitcoin_order->get_id()}` has been marked paid.", array( 'order_id' => $bitcoin_order->get_id() ) );
 
@@ -450,13 +451,12 @@ class API implements API_Interface {
 	 *
 	 * Value of 1 BTC.
 	 *
-	 * @param string $currency
+	 * @param Currency $currency
 	 *
 	 * @throws Exception
 	 */
-	public function get_exchange_rate( string $currency ): string {
-		$currency       = strtoupper( $currency );
-		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency;
+	public function get_exchange_rate( Currency $currency ): BigNumber {
+		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency->getCurrencyCode();
 		$exchange_rate  = get_transient( $transient_name );
 
 		if ( empty( $exchange_rate ) ) {
@@ -471,24 +471,22 @@ class API implements API_Interface {
 	 * Get the BTC value of another currency amount.
 	 *
 	 * Rounds to ~6 decimal places.
+	 * Limited currency support: 'USD'|'EUR'|'GBP', maybe others.
 	 *
-	 * @param string $currency 'USD'|'EUR'|'GBP', maybe others.
-	 * @param float  $fiat_amount This is stored in the WC_Order object as a float (as a string in meta).
-	 *
-	 * @return string Bitcoin amount.
+	 * @param Money $fiat_amount This is stored in the WC_Order object as a float (as a string in meta).
 	 */
-	public function convert_fiat_to_btc( string $currency, float $fiat_amount = 1.0 ): string {
+	public function convert_fiat_to_btc( Money $fiat_amount ): Money {
 
 		// 1 BTC = xx USD.
-		$exchange_rate = $this->get_exchange_rate( $currency );
+		$exchange_rate = $this->get_exchange_rate( $fiat_amount->getCurrency() );
 
-		$float_result = $fiat_amount / floatval( $exchange_rate );
+		return $fiat_amount->convertedTo( Currency::of( 'btc' ), $exchange_rate );
 
 		// This is a good number for January 2023, 0.000001 BTC = 0.02 USD.
 		// TODO: Calculate the appropriate number of decimals on the fly.
-		$num_decimal_places = 6;
-		$string_result      = (string) wc_round_discount( $float_result, $num_decimal_places + 1 );
-		return $string_result;
+		// $num_decimal_places = 6;
+		// $string_result      = (string) wc_round_discount( $float_result, $num_decimal_places + 1 );
+		// return $string_result;
 	}
 
 	/**
@@ -671,7 +669,7 @@ class API implements API_Interface {
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 *
-	 * @return array<string, Transaction_Interface>
+	 * @return array<string, array<string, Transaction_Interface>>
 	 */
 	public function check_new_addresses_for_transactions(): array {
 
@@ -710,7 +708,7 @@ class API implements API_Interface {
 	 *
 	 * @param Bitcoin_Address[] $addresses Array of address objects to query and update.
 	 *
-	 * @return array<string, Transaction_Interface>
+	 * @return array<string, array<string, Transaction_Interface>>
 	 */
 	public function check_addresses_for_transactions( array $addresses ): array {
 

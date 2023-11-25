@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -176,7 +177,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			2
 		);
 
-		$result = $api->convert_fiat_to_btc( 'USD', 10.99 );
+		$result = $api->convert_fiat_to_btc( Money::of( '10.99', 'USD' ) );
 
 		$this->assertEquals( '0.0004663', $result );
 	}
