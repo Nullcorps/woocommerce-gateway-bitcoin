@@ -54,7 +54,6 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * @return mixed
 	 */
 	public function __call( string $name, array $arguments ): mixed {
-		if ( is_callable( array( $this->wc_order, $name ) ) ) {
 		if ( method_exists( WC_Order::class, $name ) ) {
 			return call_user_func_array( array( $this->wc_order, $name ), $arguments );
 		}
@@ -68,7 +67,9 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 		try {
 			$bitcoin_address         = $wc_order->get_meta( Order::BITCOIN_ADDRESS_META_KEY );
 			$bitcoin_address_post_id = $bitcoin_address_factory->get_post_id_for_address( $bitcoin_address );
-			$this->address           = $bitcoin_address_factory->get_by_post_id( $bitcoin_address_post_id );
+			if ( is_null( $bitcoin_address_post_id ) ) {
+				throw new \Exception( 'Problem with order Bitcoin address.' );
+			}
 			$this->address = $bitcoin_address_factory->get_by_post_id( $bitcoin_address_post_id );
 		} catch ( \Exception $exception ) {
 			// $this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
