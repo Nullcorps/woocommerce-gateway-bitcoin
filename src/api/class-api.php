@@ -762,17 +762,4 @@ class API implements API_Interface {
 
 		return $transactions;
 	}
-
-	/**
-	 * The PHP GMP extension is required to derive the payment addresses. This function
-	 * checks is it present.
-	 *
-	 * @see https://github.com/Bit-Wasp/bitcoin-php
-	 * @see https://www.php.net/manual/en/book.gmp.php
-	 *
-	 * @see gmp_init()
-	 */
-	public function is_server_has_dependencies(): bool {
-		return function_exists( 'gmp_init' );
-	}
 }

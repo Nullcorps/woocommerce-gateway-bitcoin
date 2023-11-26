@@ -10,10 +10,6 @@ _The WooCommerce Bitcoin gateway most philosophically aligned with WordPress and
 
 1. Download, install and activate the latest version from [GitHub Releases](https://github.com/BrianHenryIE/woocommerce-gateway-bitcoin/releases/). 
 
-This plugin requires PHP's [GMP extension](https://www.php.net/manual/en/book.gmp.php). If it is not installed on your server, the gateway will not be added to WooCommerce and an admin notice will be displayed explaining why.
-
-![Missing dependency admin notice](./.wordpress-org/screenshot-8.png "Admin notice when required PHP GMP library is unavailable")
-
 If all goes well, you will see a `Settings` link beside the plugin name: 
 
 ![Settings link on plugins.php](./.wordpress-org/screenshot-9.png "Settings link on plugins.php")

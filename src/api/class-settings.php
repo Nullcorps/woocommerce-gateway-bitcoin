@@ -7,7 +7,6 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
@@ -58,10 +57,9 @@ class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interf
 	}
 
 	/**
-	 * Used to add links on plugins.php, and to add "Deactivate plugin" link when GMP PHP extension is missing.
+	 * Used to add links on plugins.php.
 	 *
 	 * @used-by Plugins_Page
-	 * @used-by Dependencies_Notice::print_dependencies_notice()
 	 *
 	 * @see Logger_Settings_Interface::get_plugin_basename()
 	 *

@@ -138,7 +138,6 @@
     "ext-json": "*",
     "alleyinteractive/wordpress-autoloader": "^1.1",
     "art4/requests-psr18-adapter": "^1.0",
-    "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
     "brianhenryie/bh-php-blockchain-info": "dev-main",
     "brianhenryie/bh-wp-logger": "dev-master",
     "brick/money": "^0.8.1",

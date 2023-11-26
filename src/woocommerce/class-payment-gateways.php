@@ -57,11 +57,6 @@ class Payment_Gateways {
 	 * @see WC_Payment_Gateways::init()
 	 */
 	public function add_to_woocommerce( array $gateways ): array {
-
-		if ( ! $this->api->is_server_has_dependencies() ) {
-			return $gateways;
-		}
-
 		$gateways[] = Bitcoin_Gateway::class;
 
 		return $gateways;

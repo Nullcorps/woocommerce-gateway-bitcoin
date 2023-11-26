@@ -27,6 +27,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Nimq_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
@@ -88,7 +89,7 @@ $container->singleton(
 );
 
 $container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
-$container->bind( Generate_Address_API_Interface::class, BitWasp_API::class );
+$container->bind( Generate_Address_API_Interface::class, Nimq_API::class );
 $container->bind( Exchange_Rate_API_Interface::class, Bitfinex_API::class );
 
 $app = $container->get( BH_WP_Bitcoin_Gateway::class );

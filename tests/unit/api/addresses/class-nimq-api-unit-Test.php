@@ -7,7 +7,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API
  */
-class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
+class Nimq_API_Unit_Test extends \Codeception\Test\Unit {
 
 	/**
 	 * @covers ::generate_address
@@ -17,7 +17,7 @@ class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$sut = new BitWasp_API( $logger );
+		$sut = new Nimq_API( $logger );
 
 		$public_address = $_ENV['XPUB'];
 
@@ -34,7 +34,7 @@ class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$sut = new BitWasp_API( $logger );
+		$sut = new Nimq_API( $logger );
 
 		$public_address = $_ENV['XPUB'];
 
@@ -51,7 +51,7 @@ class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$sut = new BitWasp_API( $logger );
+		$sut = new Nimq_API( $logger );
 
 		$public_address = $_ENV['ZPUB'];
 
@@ -69,7 +69,7 @@ class BitWasp_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$sut = new BitWasp_API( $logger );
+		$sut = new Nimq_API( $logger );
 
 		$public_address = $_ENV['ZPUB'];
 

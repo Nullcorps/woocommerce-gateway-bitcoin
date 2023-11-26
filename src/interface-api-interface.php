@@ -174,9 +174,4 @@ interface API_Interface {
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>}>
 	 */
 	public function check_new_addresses_for_transactions(): array;
-
-	/**
-	 * Check does the server have the required GMP extension installed.
-	 */
-	public function is_server_has_dependencies(): bool;
 }

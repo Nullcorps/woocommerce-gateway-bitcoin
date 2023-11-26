@@ -26,12 +26,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_add_settings_action_link(): void {
 
-		$api      = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'is_server_has_dependencies' => Expected::once( true ),
-			)
-		);
+		$api      = $this->makeEmpty( API_Interface::class );
 		$settings = $this->makeEmpty( Settings_Interface::class );
 		$sut      = new Plugins_Page( $api, $settings );
 
@@ -67,60 +62,13 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 		$this->assertStringContainsString( 'Settings', $result[0] );
 	}
 
-
-	/**
-	 * @covers ::add_settings_action_link
-	 */
-	public function test_do_not_add_settings_action_link_when_missing_dependencies(): void {
-
-		$api      = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'is_server_has_dependencies' => Expected::once( false ),
-			)
-		);
-		$settings = $this->makeEmpty( Settings_Interface::class );
-		$sut      = new Plugins_Page( $api, $settings );
-
-		\WP_Mock::userFunction(
-			'is_plugin_active',
-			array(
-				'times' => 0,
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'admin_url',
-			array(
-				'times' => 0,
-			)
-		);
-
-		\WP_Mock::userFunction(
-			'__',
-			array(
-				'times' => 0,
-			)
-		);
-
-		$result = $sut->add_settings_action_link( array() );
-
-		$this->assertCount( 0, $result );
-	}
-
-
 	/**
 	 * @covers ::add_settings_action_link
 	 */
 	public function test_add_settings_action_link_woocommerce_inactive(): void {
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$api      = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'is_server_has_dependencies' => Expected::once( true ),
-			)
-		);
+		$api      = $this->makeEmpty( API_Interface::class );
 		$sut      = new Plugins_Page( $api, $settings );
 
 		\WP_Mock::userFunction(

@@ -20,30 +20,14 @@ use WC_Payment_Gateway;
  * @see \WP_Plugins_List_Table
  */
 class Plugins_Page {
-
-	/**
-	 * The plugin basename is needed when checking with plugin's row meta is being filtered.
-	 *
-	 * @var Settings_Interface
-	 */
-	protected Settings_Interface $settings;
-
-	/**
-	 * Used to conditionally print the gateway settings link only if the server dependencies are present.
-	 *
-	 * @var API_Interface
-	 */
-	protected API_Interface $api;
-
 	/**
 	 * Constructor
 	 *
-	 * @param API_Interface      $api The main plugin functions.
 	 * @param Settings_Interface $settings The plugin's settings.
 	 */
-	public function __construct( API_Interface $api, Settings_Interface $settings ) {
-		$this->settings = $settings;
-		$this->api      = $api;
+	public function __construct(
+		protected Settings_Interface $settings, // The plugin basename is needed when checking with plugin's row meta is being filtered.
+	) {
 	}
 
 	/**
@@ -57,10 +41,6 @@ class Plugins_Page {
 	 * @see \WP_Plugins_List_Table::display_rows()
 	 */
 	public function add_settings_action_link( array $links_array ): array {
-
-		if ( ! $this->api->is_server_has_dependencies() ) {
-			return $links_array;
-		}
 
 		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			return $links_array;

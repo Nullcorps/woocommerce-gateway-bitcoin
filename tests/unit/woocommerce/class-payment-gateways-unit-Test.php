@@ -20,12 +20,7 @@ class Payment_Gateways_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger   = new ColorLogger();
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$api      = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'is_server_has_dependencies' => Expected::once( true ),
-			)
-		);
+		$api      = $this->makeEmpty( API_Interface::class );
 
 		$sut = new Payment_Gateways( $api, $settings, $logger );
 

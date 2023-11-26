@@ -13,10 +13,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
-use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
@@ -62,7 +60,6 @@ class BH_WP_Bitcoin_Gateway {
 		$this->set_locale();
 
 		$this->define_plugins_page_hooks();
-		$this->define_dependencies_admin_notice_hooks();
 
 		$this->define_custom_post_type_hooks();
 
@@ -120,17 +117,6 @@ class BH_WP_Bitcoin_Gateway {
 		add_filter( "plugin_action_links_{$plugin_basename}", array( $plugins_page, 'add_orders_action_link' ) );
 
 		add_filter( 'plugin_row_meta', array( $plugins_page, 'split_author_link_into_two_links' ), 10, 2 );
-	}
-
-	/**
-	 * Add a hook to display an admin notice when the required PHP extensions are not present.
-	 */
-	protected function define_dependencies_admin_notice_hooks(): void {
-
-		/** @var Dependencies_Notice $dependencies_notices */
-		$dependencies_notices = $this->container->get( Dependencies_Notice::class );
-
-		add_action( 'admin_notices', array( $dependencies_notices, 'print_dependencies_notice' ) );
 	}
 
 	/**

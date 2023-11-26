@@ -8,10 +8,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Dependencies_Notice;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
@@ -222,19 +220,6 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		\WP_Mock::expectActionAdded(
 			'add_meta_boxes',
 			array( new AnyInstance( Admin_Order_UI::class ), 'register_address_transactions_meta_box' )
-		);
-
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
-	}
-
-	/**
-	 * @covers ::define_dependencies_admin_notice_hooks
-	 */
-	public function test_define_dependencies_admin_notice_hooks(): void {
-
-		\WP_Mock::expectActionAdded(
-			'admin_notices',
-			array( new AnyInstance( Dependencies_Notice::class ), 'print_dependencies_notice' )
 		);
 
 		new BH_WP_Bitcoin_Gateway( $this->get_container() );
