@@ -1,330 +1,338 @@
 {
-    "name": "brianhenryie/bh-wp-bitcoin-gateway",
-    "description": "This is a short description of what plugin_title does.",
-    "type": "wordpress-plugin",
-    "license": "GPL-2.0+-or-later",
-    "authors": [
-        {
-            "name": "BrianHenryIE",
-            "email": "BrianHenryIE@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "config": {
-        "process-timeout": 0,
-        "sort-packages": true,
-        "allow-plugins": {
-            "composer/installers": true,
-            "cweagans/composer-patches": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "johnpbloch/wordpress-core-installer": true,
-            "phpstan/extension-installer": true
-        },
-        "platform": {
-            "php": "8.0.30"
-        }
-    },
-    "repositories": {
-        "brianhenryie/bh-wc-logger": {
-            "url": "../bh-wc-logger",
-            "type": "path"
-        },
-        "brianhenryie/bh-wp-logger": {
-            "url": "../bh-wp-logger",
-            "type": "path"
-        },
-        "brianhenryie/bh-wp-private-uploads": {
-            "type": "path",
-            "url": "../bh-wp-private-uploads"
-        },
-        "wordpress/wordpress": {
-            "url": "https://github.com/WordPress/wordpress-develop",
-            "type": "git"
-        },
-        "brianhenryie/composer-phpstorm": {
-            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
-            "type": "git"
-        },
-        "wpackagist": {
-            "type": "composer",
-            "url": "https://wpackagist.org"
-        },
-        "brianhenryie/brianhenryie/bh-php-blockchain-info": {
-            "url": "https://github.com/BrianHenryIE/bh-php-blockchain-info",
-            "type": "git"
-        },
-        "bitwasp/bitcoin-php": {
-            "url": "https://github.com/BrianHenryIE/bitcoin-php",
-            "type": "git"
-        },
-        "impress-org/give-next-gen": {
-            "type": "package",
-            "packagist.org": false,
-            "package": {
-                "name": "impress-org/give-next-gen",
-                "type": "wordpress-plugin",
-                "version": "0.2.0",
-                "source": {
-                    "url": "https://github.com/impress-org/givewp-next-gen",
-                    "type": "git",
-                    "reference": "master"
-                },
-                "dist": {
-                    "url": "https://github.com/impress-org/givewp-next-gen/releases/download/0.2.0/givewp-next-gen-0.2.0.zip",
-                    "type": "zip"
-                },
-                "installation-source": "dist"
-            }
-        },
-        "impress-org/givewp-example-gateway": {
-            "type": "package",
-            "packagist.org": false,
-            "package": {
-                "name": "impress-org/givewp-example-gateway",
-                "type": "wordpress-plugin",
-                "version": "dev-master",
-                "source": {
-                    "url": "https://github.com/impress-org/givewp-example-gateway",
-                    "type": "git",
-                    "reference": "master"
-                },
-                "installation-source": "source"
-            }
-        },
-        "woocommerce/woocommerce": {
-            "type": "package",
-            "package": {
-                "name": "woocommerce/woocommerce",
-                "version": "dev-trunk",
-                "source": {
-                    "url": "https://github.com/woocommerce/woocommerce/",
-                    "type": "git",
-                    "reference": "trunk"
-                },
-                "installation-source": "dist"
-            }
-        },
-        "woocommerce/woocommerce-blocks": {
-            "type": "package",
-            "package": {
-                "name": "woocommerce/woocommerce-blocks",
-                "version": "dev-trunk",
-                "source": {
-                    "url": "https://github.com/woocommerce/woocommerce-blocks/",
-                    "type": "git",
-                    "reference": "trunk"
-                },
-                "installation-source": "source"
-            }
-        },
-        "woocommerce/woocommerce-gateway-dummy": {
-            "type": "package",
-            "package": {
-                "name": "woocommerce/woocommerce-gateway-dummy",
-                "version": "1.0.5",
-                "dist": {
-                    "url": "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip",
-                    "type": "zip"
-                },
-                "installation-source": "dist"
-            }
-        }
-    },
-    "require": {
-        "php": ">=8.0",
-        "ext-bcmath": "*",
-        "ext-gmp": "*",
-        "ext-json": "*",
-        "alleyinteractive/wordpress-autoloader": "^1.1",
-        "art4/requests-psr18-adapter": "^1.0",
-        "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
-        "brianhenryie/bh-php-blockchain-info": "dev-main",
-        "brianhenryie/bh-wp-logger": "dev-master",
-        "brick/money": "^0.8.1",
-        "chillerlan/php-qrcode": "^4.3",
-        "json-mapper/json-mapper": "^2.18",
-        "lucatume/di52": "^3.3",
-        "phpseclib/bcmath_compat": "^2.0",
-        "phpseclib/mcrypt_compat": "^2.0",
-        "psr/http-client": "^1.0.0",
-        "psr/http-factory": "^1.0.0"
-    },
-    "require-dev": {
-        "10up/wp_mock": "*",
-        "antecedent/patchwork": "^2.1",
-        "brianhenryie/color-logger": "^1.2",
-        "brianhenryie/composer-phpstorm": "dev-master",
-        "brianhenryie/strauss": "*",
-        "cweagans/composer-patches": "^1.7",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "impress-org/givewp-example-gateway": "dev-master",
-        "impress-org/give-next-gen": "^0.2",
-        "jaschilz/php-coverage-badger": "^2.0",
-        "johnpbloch/wordpress": "*",
-        "kporras07/composer-symlinks": "dev-master",
-        "lucatume/wp-browser": "^4.0",
-        "php-stubs/woocommerce-stubs": "*",
-        "phpcompatibility/phpcompatibility-wp": "^2.1",
-        "phpstan/extension-installer": "^1.3",
-        "phpunit/phpcov": "^8",
-        "squizlabs/php_codesniffer": "*",
-        "szepeviktor/phpstan-wordpress": "*",
-        "woocommerce/woocommerce": "dev-trunk",
-        "woocommerce/woocommerce-blocks": "dev-trunk",
-        "woocommerce/woocommerce-gateway-dummy": "^1.0",
-        "woocommerce/woocommerce-sniffs": "*",
-        "wordpress/wordpress": "*",
-        "wp-cli/dist-archive-command": "dev-main",
-        "wp-cli/wp-cli-bundle": "^2",
-        "wp-coding-standards/wpcs": "^3.0",
-        "wpackagist-plugin/bh-wc-set-gateway-by-url": "^1.2",
-        "wpackagist-plugin/checkout-fees-for-woocommerce": "^2.9",
-        "wpackagist-plugin/crypto-payments-woo": "^1.2",
-        "wpackagist-plugin/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "^2.0",
-        "wpackagist-plugin/give": "^2.25",
-        "wpackagist-plugin/woo-cancel-abandoned-order": "^2.0",
-        "wpackagist-plugin/woo-gutenberg-products-block": "*",
-        "wpackagist-plugin/woo-nimiq-gateway": "^3.4",
-        "wpackagist-plugin/woocommerce": "*",
-        "wpackagist-plugin/wp-mail-logging": "^1.10",
-        "wpackagist-theme/storefront": "*",
-        "wpackagist-theme/twentytwenty": "*"
-    },
-    "extra": {
-        "patches": {
-            "jaschilz/php-coverage-badger": {
-                "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
-            },
-            "wp-cli/dist-archive-command": {
-                "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
-            }
-        },
-        "strauss": {
-            "namespace_prefix": "BrianHenryIE\\WP_Bitcoin_Gateway\\",
-            "target_directory": "/vendor-prefixed/",
-            "classmap_prefix": "BrianHenryIE_WP_Bitcoin_Gateway_",
-            "namespace_replacement_patterns": {
-                "~BrianHenryIE\\\\(.*)~": "BrianHenryIE\\WP_Bitcoin_Gateway\\\\$1"
-            },
-            "exclude_from_copy": {
-                "packages": [
-                    "rmccue/requests",
-                    "symfony/polyfill-php73",
-                    "symfony/polyfill-php80"
-                ]
-            },
-            "exclude_from_prefix": {
-                "packages": [
-                    "phpseclib/bcmath_compat",
-                    "phpseclib/mcrypt_compat"
-                ],
-                "file_patterns": [
-                    "/^psr.*$/",
-                    "#symfony/polyfill-php80/Resources/stubs/Stringable.php#",
-                    "#myclabs/php-enum/stubs/Stringable.php#"
-                ]
-            },
-            "override_autoload": {
-                "brick/money": {
-                    "psr-4": {
-                        "Brick\\Money\\": "src/"
-                    },
-                    "files": [
-                        "data"
-                    ]
-                }
-            }
-        },
-        "symlinks": {
-            "wp-content": "wordpress/wp-content",
-            ".": "wp-content/plugins/bh-wp-bitcoin-gateway",
-            "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
-        },
-        "phpstorm": {
-            "exclude_folders": {
-                "folders": [
-                    "vendor/php-stubs/woocommerce-stubs",
-                    "vendor/wordpress/wordpress/src",
-                    "vendor/wordpress/wordpress/build",
-                    "wp-content/plugins/bh-wp-bitcoin-gateway",
-                    "wordpress/wp-content"
-                ],
-                "composer-symlinks": false
-            }
-        },
-        "enable-patching": "true"
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "strauss",
-            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-            "@setup-wordpress",
-            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
-        ],
-        "post-update-cmd": [
-            "strauss",
-            "@setup-wordpress",
-            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
-        ],
-        "setup-wordpress": [
-            "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
-            "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
-            "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw",
-            "wp user create bob bob@example.org --user_pass=password || true;",
-            "mkdir -p wordpress/wp-content/uploads"
-        ],
-        "create-databases": [
-            "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
-            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
-            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
-            "@restore-acceptance-database"
-        ],
-        "delete-databases": [
-            "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); rm -rf $DB_DIR$TEST_SITE_DB_NAME; rm -rf $DB_DIR$TEST_DB_NAME;"
-        ],
-        "save-acceptance-database": [
-            "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
-        ],
-        "restore-acceptance-database": [
-            "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
-        ],
-        "test-coverage": [
-            "rm tests/_output/*.cov || true; rm tests/_output/clover.xml || true",
-            "vendor/bin/codecept run unit --coverage unit.cov",
-            "vendor/bin/codecept run wpunit --coverage wpunit.cov",
-            "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
-            "open tests/_output/html/index.html"
-        ],
-        "cs-fix": [
-            "phpcbf || true",
-            "@cs"
-        ],
-        "cs": [
-            "phpcs || true",
-            "phpstan analyse --memory-limit 1G"
-        ],
-        "lint-changes": [
-            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
-        ],
-        "php-compatibility": [
-            "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
-        ],
-        "create-plugin-archive": [
-            "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
-            "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
-        ],
-        "github-actions": [
-            "act -P ubuntu-latest=shivammathur/node:latest"
-        ],
-        "add-btc-to-brick-money": [
-            "echo 'btc' | md5 | sed 's/[^0-9]//g'"
-        ]
-    },
-    "provide": {
-        "rmccue/requests": "*"
+  "name": "brianhenryie/bh-wp-bitcoin-gateway",
+  "description": "This is a short description of what plugin_title does.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+-or-later",
+  "authors": [
+    {
+      "name": "BrianHenryIE",
+      "email": "BrianHenryIE@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "process-timeout": 0,
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true,
+      "cweagans/composer-patches": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "johnpbloch/wordpress-core-installer": true,
+      "phpstan/extension-installer": true
+    },
+    "platform": {
+      "php": "8.0.30"
+    }
+  },
+  "repositories": {
+    "brianhenryie/bh-wc-logger": {
+      "url": "../bh-wc-logger",
+      "type": "path"
+    },
+    "brianhenryie/bh-wp-logger": {
+      "url": "../bh-wp-logger",
+      "type": "path"
+    },
+    "brianhenryie/bh-wp-private-uploads": {
+      "type": "path",
+      "url": "../bh-wp-private-uploads"
+    },
+    "wordpress/wordpress": {
+      "url": "https://github.com/WordPress/wordpress-develop",
+      "type": "git"
+    },
+    "brianhenryie/composer-phpstorm": {
+      "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+      "type": "git"
+    },
+    "wpackagist": {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    "brianhenryie/brianhenryie/bh-php-blockchain-info": {
+      "url": "https://github.com/BrianHenryIE/bh-php-blockchain-info",
+      "type": "git"
+    },
+    "bitwasp/bitcoin-php": {
+      "url": "https://github.com/BrianHenryIE/bitcoin-php",
+      "type": "git"
+    },
+    "impress-org/give-next-gen": {
+      "type": "package",
+      "packagist.org": false,
+      "package": {
+        "name": "impress-org/give-next-gen",
+        "type": "wordpress-plugin",
+        "version": "0.2.0",
+        "source": {
+          "url": "https://github.com/impress-org/givewp-next-gen",
+          "type": "git",
+          "reference": "master"
+        },
+        "dist": {
+          "url": "https://github.com/impress-org/givewp-next-gen/releases/download/0.2.0/givewp-next-gen-0.2.0.zip",
+          "type": "zip"
+        },
+        "installation-source": "dist"
+      }
+    },
+    "impress-org/givewp-example-gateway": {
+      "type": "package",
+      "packagist.org": false,
+      "package": {
+        "name": "impress-org/givewp-example-gateway",
+        "type": "wordpress-plugin",
+        "version": "dev-master",
+        "source": {
+          "url": "https://github.com/impress-org/givewp-example-gateway",
+          "type": "git",
+          "reference": "master"
+        },
+        "installation-source": "source"
+      }
+    },
+    "woocommerce/woocommerce": {
+      "type": "package",
+      "package": {
+        "name": "woocommerce/woocommerce",
+        "version": "dev-trunk",
+        "source": {
+          "url": "https://github.com/woocommerce/woocommerce/",
+          "type": "git",
+          "reference": "trunk"
+        },
+        "installation-source": "dist"
+      }
+    },
+    "woocommerce/woocommerce-blocks": {
+      "type": "package",
+      "package": {
+        "name": "woocommerce/woocommerce-blocks",
+        "version": "dev-trunk",
+        "source": {
+          "url": "https://github.com/woocommerce/woocommerce-blocks/",
+          "type": "git",
+          "reference": "trunk"
+        },
+        "installation-source": "source"
+      }
+    },
+    "woocommerce/woocommerce-gateway-dummy": {
+      "type": "package",
+      "package": {
+        "name": "woocommerce/woocommerce-gateway-dummy",
+        "version": "1.0.5",
+        "dist": {
+          "url": "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip",
+          "type": "zip"
+        },
+        "installation-source": "dist"
+      }
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-bcmath": "*",
+    "ext-gmp": "*",
+    "ext-json": "*",
+    "alleyinteractive/wordpress-autoloader": "^1.1",
+    "art4/requests-psr18-adapter": "^1.0",
+    "bitwasp/bitcoin": "dev-Allow-updating-lastguest/murmurhash-php-package-version",
+    "brianhenryie/bh-php-blockchain-info": "dev-main",
+    "brianhenryie/bh-wp-logger": "dev-master",
+    "brick/money": "^0.8.1",
+    "chillerlan/php-qrcode": "^4.3",
+    "json-mapper/json-mapper": "^2.18",
+    "lucatume/di52": "^3.3",
+    "nimiq/xpub": "^1.4",
+    "phpseclib/bcmath_compat": "^2.0",
+    "phpseclib/mcrypt_compat": "^2.0",
+    "psr/http-client": "^1.0.0",
+    "psr/http-factory": "^1.0.0"
+  },
+  "require-dev": {
+    "10up/wp_mock": "*",
+    "antecedent/patchwork": "^2.1",
+    "brianhenryie/color-logger": "^1.2",
+    "brianhenryie/composer-phpstorm": "dev-master",
+    "brianhenryie/strauss": "*",
+    "cweagans/composer-patches": "^1.7",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "impress-org/give-next-gen": "^0.2",
+    "impress-org/givewp-example-gateway": "dev-master",
+    "jaschilz/php-coverage-badger": "^2.0",
+    "johnpbloch/wordpress": "*",
+    "kporras07/composer-symlinks": "dev-master",
+    "lucatume/wp-browser": "^4.0",
+    "php-stubs/woocommerce-stubs": "*",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpstan/extension-installer": "^1.3",
+    "phpunit/phpcov": "^8",
+    "squizlabs/php_codesniffer": "*",
+    "szepeviktor/phpstan-wordpress": "*",
+    "woocommerce/woocommerce": "dev-trunk",
+    "woocommerce/woocommerce-blocks": "dev-trunk",
+    "woocommerce/woocommerce-gateway-dummy": "^1.0",
+    "woocommerce/woocommerce-sniffs": "*",
+    "wordpress/wordpress": "*",
+    "wp-cli/dist-archive-command": "dev-main",
+    "wp-cli/wp-cli-bundle": "^2",
+    "wp-coding-standards/wpcs": "^3.0",
+    "wpackagist-plugin/bh-wc-set-gateway-by-url": "^1.2",
+    "wpackagist-plugin/checkout-fees-for-woocommerce": "^2.9",
+    "wpackagist-plugin/crypto-payments-woo": "^1.2",
+    "wpackagist-plugin/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "^2.0",
+    "wpackagist-plugin/give": "^2.25",
+    "wpackagist-plugin/woo-cancel-abandoned-order": "^2.0",
+    "wpackagist-plugin/woo-gutenberg-products-block": "*",
+    "wpackagist-plugin/woo-nimiq-gateway": "^3.4",
+    "wpackagist-plugin/woocommerce": "*",
+    "wpackagist-plugin/wordpress-importer": "^0.8.1",
+    "wpackagist-plugin/wp-mail-logging": "^1.10",
+    "wpackagist-theme/storefront": "*",
+    "wpackagist-theme/twentytwenty": "*"
+  },
+  "extra": {
+    "patches": {
+      "jaschilz/php-coverage-badger": {
+        "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+      },
+      "wp-cli/dist-archive-command": {
+        "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
+      }
+    },
+    "strauss": {
+      "namespace_prefix": "BrianHenryIE\\WP_Bitcoin_Gateway\\",
+      "target_directory": "/vendor-prefixed/",
+      "classmap_prefix": "BrianHenryIE_WP_Bitcoin_Gateway_",
+      "namespace_replacement_patterns": {
+        "~BrianHenryIE\\\\(.*)~": "BrianHenryIE\\WP_Bitcoin_Gateway\\\\$1"
+      },
+      "exclude_from_copy": {
+        "packages": [
+          "rmccue/requests",
+          "symfony/polyfill-php73",
+          "symfony/polyfill-php80"
+        ]
+      },
+      "exclude_from_prefix": {
+        "packages": [
+          "phpseclib/bcmath_compat",
+          "phpseclib/mcrypt_compat"
+        ],
+        "file_patterns": [
+          "/^psr.*$/",
+          "#symfony/polyfill-php80/Resources/stubs/Stringable.php#",
+          "#myclabs/php-enum/stubs/Stringable.php#"
+        ]
+      },
+      "override_autoload": {
+        "brick/money": {
+          "psr-4": {
+            "Brick\\Money\\": "src/"
+          },
+          "files": [
+            "data"
+          ]
+        }
+      }
+    },
+    "symlinks": {
+      "wp-content": "wordpress/wp-content",
+      ".": "wp-content/plugins/bh-wp-bitcoin-gateway",
+      "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
+    },
+    "phpstorm": {
+      "exclude_folders": {
+        "folders": [
+          "vendor/php-stubs/woocommerce-stubs",
+          "vendor/wordpress/wordpress/src",
+          "vendor/wordpress/wordpress/build",
+          "wp-content/plugins/bh-wp-bitcoin-gateway",
+          "wordpress/wp-content"
+        ],
+        "composer-symlinks": false
+      }
+    },
+    "enable-patching": "true"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "strauss",
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "@setup-wordpress",
+      "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
+      "@sync-composer-wpenv"
+    ],
+    "post-update-cmd": [
+      "strauss",
+      "@setup-wordpress",
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
+      "@sync-composer-wpenv"
+    ],
+    "setup-wordpress": [
+      "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
+      "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
+      "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw",
+      "wp user create bob bob@example.org --user_pass=password || true;",
+      "mkdir -p wordpress/wp-content/uploads"
+    ],
+    "create-databases": [
+      "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
+      "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+      "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+      "@restore-acceptance-database"
+    ],
+    "delete-databases": [
+      "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); rm -rf $DB_DIR$TEST_SITE_DB_NAME; rm -rf $DB_DIR$TEST_DB_NAME;"
+    ],
+    "save-acceptance-database": [
+      "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
+    ],
+    "restore-acceptance-database": [
+      "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
+    ],
+    "test-coverage": [
+      "rm tests/_output/*.cov || true; rm tests/_output/clover.xml || true",
+      "vendor/bin/codecept run unit --coverage unit.cov",
+      "vendor/bin/codecept run wpunit --coverage wpunit.cov",
+      "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
+      "open tests/_output/html/index.html"
+    ],
+    "cs-fix": [
+      "phpcbf || true",
+      "@cs"
+    ],
+    "cs": [
+      "phpcs || true",
+      "phpstan analyse --memory-limit 1G"
+    ],
+    "lint-changes": [
+      "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
+    ],
+    "php-compatibility": [
+      "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
+    ],
+    "create-plugin-archive": [
+      "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
+      "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
+    ],
+    "github-actions": [
+      "act -P ubuntu-latest=shivammathur/node:latest"
+    ],
+    "add-btc-to-brick-money": [
+      "echo 'btc' | md5 | sed 's/[^0-9]//g'"
+    ],
+    "sync-composer-wpenv": [
+      "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;",
+      "find wp-content/plugins -type d -depth 1 ! -type l | sort -h | jq -Rn '[inputs]' | jq 'reduce .[] as $item ({}; . + {$item:$item})' | jq '.[] |= \"./\\(.)\"' | jq '. | {mappings: .}' | jq --sort-keys -s '.[] * $existing[]' --slurpfile existing .wp-env.json | sponge .wp-env.json "
+    ]
+  },
+  "provide": {
+    "rmccue/requests": "*"
+  }
 }

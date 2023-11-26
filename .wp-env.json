@@ -1,0 +1,30 @@
+{
+  "env": {
+    "development": {
+      "plugins": [
+        "."
+      ]
+    }
+  },
+  "mappings": {
+    "setup": "./tests/e2e-pw/setup",
+    "wp-cli.yml": "./wp-cli.wp-env.yml",
+    "wp-content/plugins/bh-wc-postcode-address-autofill": "./wp-content/plugins/bh-wc-postcode-address-autofill",
+    "wp-content/plugins/bh-wc-set-gateway-by-url": "./wp-content/plugins/bh-wc-set-gateway-by-url",
+    "wp-content/plugins/checkout-fees-for-woocommerce": "./wp-content/plugins/checkout-fees-for-woocommerce",
+    "wp-content/plugins/crypto-payments-woo": "./wp-content/plugins/crypto-payments-woo",
+    "wp-content/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "./wp-content/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce",
+    "wp-content/plugins/give": "./wp-content/plugins/give",
+    "wp-content/plugins/give-next-gen": "./wp-content/plugins/give-next-gen",
+    "wp-content/plugins/givewp-example-gateway": "./wp-content/plugins/givewp-example-gateway",
+    "wp-content/plugins/log-http-requests": "./wp-content/plugins/log-http-requests",
+    "wp-content/plugins/plugin-notes-plus": "./wp-content/plugins/plugin-notes-plus",
+    "wp-content/plugins/woo-cancel-abandoned-order": "./wp-content/plugins/woo-cancel-abandoned-order",
+    "wp-content/plugins/woo-gutenberg-products-block": "./wp-content/plugins/woo-gutenberg-products-block",
+    "wp-content/plugins/woo-nimiq-gateway": "./wp-content/plugins/woo-nimiq-gateway",
+    "wp-content/plugins/woocommerce": "./wp-content/plugins/woocommerce",
+    "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer",
+    "wp-content/plugins/wp-mail-logging": "./wp-content/plugins/wp-mail-logging"
+  },
+  "phpVersion": "8.0"
+}

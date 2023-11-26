@@ -75,3 +75,7 @@ tests/e2e/test-results.json
 *.min.*
 
 *.pot
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
