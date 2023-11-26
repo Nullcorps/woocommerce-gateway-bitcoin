@@ -223,6 +223,6 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		self::assertEquals( "54321", $result );
+		self::assertEquals( '54321', $result );
 	}
 }

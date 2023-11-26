@@ -8,7 +8,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post
  */
 class Post_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
-
 	protected function setUp(): void {
 		parent::setUp();
 
