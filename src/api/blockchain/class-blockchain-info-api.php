@@ -55,15 +55,15 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 	 * @throws \Exception
 	 */
 	public function get_received_by_address( string $btc_address, bool $confirmed ): Money {
-		return Money::of( $this->api->getReceivedByAddress( $btc_address, $confirmed ), 'btc' );
+		return Money::of( $this->api->getReceivedByAddress( $btc_address, $confirmed ), 'BTC' );
 	}
 
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
 		$result                            = array();
 		$result['number_of_confirmations'] = $number_of_confirmations;
-		$result['unconfirmed_balance']     = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'btc' );
-		$result['confirmed_balance']       = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'btc' );
+		$result['unconfirmed_balance']     = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'BTC' );
+		$result['confirmed_balance']       = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'BTC' );
 
 		return new class( $result ) implements Address_Balance {
 
@@ -128,7 +128,7 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 							}
 							return $carry;
 						},
-						Money::of( 0, 'btc' )
+						Money::of( 0, 'BTC' )
 					);
 
 					return $value_including_fee->dividedBy( 100_000_000 );

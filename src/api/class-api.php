@@ -17,7 +17,9 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigDecimal;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\RoundingMode;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
@@ -350,7 +352,7 @@ class API implements API_Interface {
 				}
 				return $carry->plus( $transaction->get_value( $raw_address ) );
 			},
-			Money::of( 0, 'btc' )
+			Money::of( 0, 'BTC' )
 		);
 
 		// Filter to transactions that have just been seen, so we can record them in notes.
@@ -461,7 +463,9 @@ class API implements API_Interface {
 
 		if ( empty( $exchange_rate ) ) {
 			$exchange_rate = $this->exchange_rate_api->get_exchange_rate( $currency );
-			set_transient( $transient_name, $exchange_rate, HOUR_IN_SECONDS );
+			set_transient( $transient_name, "{$exchange_rate->toFloat()}", HOUR_IN_SECONDS );
+		} else {
+			$exchange_rate = BigNumber::of( $exchange_rate );
 		}
 
 		return $exchange_rate;
@@ -478,9 +482,9 @@ class API implements API_Interface {
 	public function convert_fiat_to_btc( Money $fiat_amount ): Money {
 
 		// 1 BTC = xx USD.
-		$exchange_rate = $this->get_exchange_rate( $fiat_amount->getCurrency() );
+		$exchange_rate = BigDecimal::of( '1' )->dividedBy( $this->get_exchange_rate( $fiat_amount->getCurrency() ), 16, RoundingMode::DOWN );
 
-		return $fiat_amount->convertedTo( Currency::of( 'btc' ), $exchange_rate );
+		return $fiat_amount->convertedTo( Currency::of( 'BTC' ), $exchange_rate, null, RoundingMode::DOWN );
 
 		// This is a good number for January 2023, 0.000001 BTC = 0.02 USD.
 		// TODO: Calculate the appropriate number of decimals on the fly.

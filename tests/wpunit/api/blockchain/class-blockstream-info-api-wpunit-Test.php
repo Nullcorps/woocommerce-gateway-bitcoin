@@ -57,7 +57,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		$result = $sut->get_address_balance( $address, 1 );
 
-		$this->assertEquals( 0.00018142, $result->get_confirmed_balance() );
+		$this->assertEquals( '0.00018142', $result->get_confirmed_balance()->getAmount() );
 	}
 
 	/**
@@ -107,7 +107,7 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 
 		$result = $sut->get_received_by_address( $address, true );
 
-		$this->assertEquals( 81432.09124126, $result );
+		$this->assertEquals( '81432.09124126', $result->getAmount() );
 	}
 
 	/**
@@ -360,6 +360,6 @@ class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase 
 		assert( 0 < count( $result ) );
 		$first = array_shift( $result );
 
-		$this->assertEquals( 0.02413, $first->get_value( $address ) );
+		$this->assertEquals( '0.02413', $first->get_value( $address )->getAmount() );
 	}
 }

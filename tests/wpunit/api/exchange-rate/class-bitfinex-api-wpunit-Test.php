@@ -41,7 +41,7 @@ class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 			}
 		);
 
-		$result = $sut->get_exchange_rate( Currency::of( 'usd' ) );
+		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
 		$this->assertEquals( '40990', $result );
 	}

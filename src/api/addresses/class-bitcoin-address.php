@@ -73,7 +73,7 @@ class Bitcoin_Address {
 		$this->raw_address                     = $this->post->post_excerpt;
 		$this->transactions                    = get_post_meta( $post_id, self::TRANSACTION_META_KEY, true ) ?: null;
 		$balance                               = get_post_meta( $post_id, self::BALANCE_META_KEY, true );
-		$this->balance                         = empty( $balance ) ? null : Money::of( $balance, 'btc' );
+		$this->balance                         = empty( $balance ) ? null : Money::of( $balance, 'BTC' );
 		$this->order_id                        = intval( get_post_meta( $post_id, self::ORDER_ID_META_KEY, true ) );
 	}
 
@@ -182,7 +182,7 @@ class Bitcoin_Address {
 				}
 				return $carry;
 			},
-			Money::of( 0, 'btc' )
+			Money::of( 0, 'BTC' )
 		);
 	}
 

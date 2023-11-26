@@ -122,7 +122,7 @@ class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = $sut->get_balance();
 
-		$this->assertEquals( '1.23456789', $result );
+		$this->assertEquals( '1.23456789', $result->getAmount() );
 	}
 
 	/**
@@ -142,7 +142,7 @@ class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = $sut->get_balance();
 
-		$this->assertEquals( '0.0', $result );
+		$this->assertNull( $result );
 	}
 
 	/**

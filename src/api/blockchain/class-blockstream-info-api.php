@@ -72,15 +72,15 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 
 		$address_info = $this->get_address_data( $btc_address );
 
-		$confirmed_balance = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
+		$confirmed_balance = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'BTC' )
 									->minus(
-										Money::of( $address_info['chain_stats']['spent_txo_sum'], 'btc' )
+										Money::of( $address_info['chain_stats']['spent_txo_sum'], 'BTC' )
 									)->dividedBy( 100_000_000 );
 		$this->logger->debug( 'Confirmed balance: ' . number_format( $confirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
 		$result['confirmed_balance'] = $confirmed_balance;
 
-		$unconfirmed_balance = Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'btc' )->minus( Money::of( $address_info['mempool_stats']['spent_txo_sum'], 'btc' ) )->dividedBy( 100_000_000 );
+		$unconfirmed_balance = Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'BTC' )->minus( Money::of( $address_info['mempool_stats']['spent_txo_sum'], 'BTC' ) )->dividedBy( 100_000_000 );
 		$this->logger->debug( 'Unconfirmed balance: ' . number_format( $unconfirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
 		$result['unconfirmed_balance'] = (string) $unconfirmed_balance;
@@ -120,11 +120,11 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 		$address_info = $this->get_address_data( $btc_address );
 
 		if ( $confirmed ) {
-			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
+			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'BTC' )
 						->dividedBy( 100_000_000 );
 		} else {
-			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'btc' )
-					->plus( Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'btc' ) )
+			$calc = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'BTC' )
+					->plus( Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'BTC' ) )
 					->dividedBy( 100_000_000 );
 		}
 		return $calc;
@@ -185,16 +185,16 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 				public function get_value( string $to_address ): Money {
 					$value_including_fee = array_reduce(
 						$this->blockstream_transaction['vout'],
-						function ( $carry, $out ) use ( $to_address ) {
+						function ( Money $carry, array $out ) use ( $to_address ): Money {
 							if ( $out['scriptpubkey_address'] === $to_address ) {
-								return $carry + $out['value'];
+								return $carry->plus( Money::of( $out['value'], 'BTC' ) );
 							}
 							return $carry;
 						},
-						0
+						Money::of( 0, 'BTC' )
 					);
 
-					return $value_including_fee / 100000000;
+					return $value_including_fee->dividedBy( 100_000_000 );
 				}
 
 				public function get_block_height(): int {

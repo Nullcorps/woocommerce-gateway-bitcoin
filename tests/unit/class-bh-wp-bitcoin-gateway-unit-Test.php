@@ -76,11 +76,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		new BH_WP_Bitcoin_Gateway( $this->get_container() );
 	}
 
-	/**
-	 * @covers ::define_admin_hooks
-	 */
 	public function test_admin_hooks(): void {
-
 		$this->markTestSkipped( 'Not using Admin class right now' );
 
 		\WP_Mock::expectActionAdded(

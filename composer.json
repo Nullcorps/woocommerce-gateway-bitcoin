@@ -224,6 +224,16 @@
                     "#symfony/polyfill-php80/Resources/stubs/Stringable.php#",
                     "#myclabs/php-enum/stubs/Stringable.php#"
                 ]
+            },
+            "override_autoload": {
+                "brick/money": {
+                    "psr-4": {
+                        "Brick\\Money\\": "src/"
+                    },
+                    "files": [
+                        "data"
+                    ]
+                }
             }
         },
         "symlinks": {
@@ -309,6 +319,9 @@
         ],
         "github-actions": [
             "act -P ubuntu-latest=shivammathur/node:latest"
+        ],
+        "add-btc-to-brick-money": [
+            "echo 'btc' | md5 | sed 's/[^0-9]//g'"
         ]
     },
     "provide": {

@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitstamp_API
@@ -35,7 +36,7 @@ class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 			}
 		);
 
-		$result = $sut->get_exchange_rate( 'usd' );
+		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
 		$this->assertEquals( '41008.81', $result );
 	}

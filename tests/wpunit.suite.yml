@@ -9,6 +9,8 @@ modules:
         - \Helper\Wpunit
     config:
         WPLoader:
+            backupGlobals: false
+            backupStaticAttributes: false
             wpRootFolder: "%WP_ROOT_FOLDER%"
             dbName: "%TEST_DB_NAME%"
             dbHost: "%TEST_DB_HOST%"

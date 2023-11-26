@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Codeception\Stub\Expected;
@@ -171,7 +172,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		add_filter(
 			"pre_transient_{$transient_name}",
 			function ( $retval, $transient ) {
-				return 23567;
+				return '23567';
 			},
 			10,
 			2
@@ -179,7 +180,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = $api->convert_fiat_to_btc( Money::of( '10.99', 'USD' ) );
 
-		$this->assertEquals( '0.0004663', $result );
+		$this->assertEquals( '0.00046633', $result->getAmount() );
 	}
 
 	/**
