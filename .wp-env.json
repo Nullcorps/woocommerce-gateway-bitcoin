@@ -6,6 +6,9 @@
       ]
     }
   },
+  "lifecycleScripts": {
+    "afterStart": "./tests/e2e-pw/setup/initialize-external.sh"
+  },
   "mappings": {
     "setup": "./tests/e2e-pw/setup",
     "wp-cli.yml": "./wp-cli.wp-env.yml",
