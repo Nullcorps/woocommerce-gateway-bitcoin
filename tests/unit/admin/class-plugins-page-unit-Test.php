@@ -2,7 +2,6 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
@@ -26,9 +25,8 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_add_settings_action_link(): void {
 
-		$api      = $this->makeEmpty( API_Interface::class );
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$sut      = new Plugins_Page( $api, $settings );
+		$sut      = new Plugins_Page( $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -68,8 +66,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 	public function test_add_settings_action_link_woocommerce_inactive(): void {
 
 		$settings = $this->makeEmpty( Settings_Interface::class );
-		$api      = $this->makeEmpty( API_Interface::class );
-		$sut      = new Plugins_Page( $api, $settings );
+		$sut      = new Plugins_Page( $settings );
 
 		\WP_Mock::userFunction(
 			'is_plugin_active',
@@ -110,8 +107,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 				'get_plugin_basename' => Expected::once( 'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' ),
 			)
 		);
-		$api      = $this->makeEmpty( API_Interface::class );
-		$sut      = new Plugins_Page( $api, $settings );
+		$sut      = new Plugins_Page( $settings );
 
 		$plugin_meta     = array(
 			0 => 'Version 1.3.3',

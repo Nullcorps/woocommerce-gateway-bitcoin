@@ -26,7 +26,7 @@ class Bitcoin_API_Contract_Test extends \Codeception\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$result[] = array( new Blockchain_Info_API( $logger ) );
+		$result[] = array( new Blockchain_Info_Api( $logger ) );
 		$result[] = array( new Blockstream_Info_API( $logger ) );
 
 		return $result;

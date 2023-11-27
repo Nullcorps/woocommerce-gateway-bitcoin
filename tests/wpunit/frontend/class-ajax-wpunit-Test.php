@@ -59,8 +59,6 @@ class AJAX_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			'wp_doing_ajax',
 			function (): bool {
 				throw new Exception();
-				// phpcs:disable Squiz.PHP.NonExecutableCode.Unreachable
-				return false;
 			}
 		);
 

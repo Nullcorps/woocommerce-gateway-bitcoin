@@ -5,7 +5,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 use BrianHenryIE\ColorLogger\ColorLogger;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Nimq_API
  */
 class Nimq_API_Unit_Test extends \Codeception\Test\Unit {
 

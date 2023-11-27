@@ -47,3 +47,17 @@ parameters:
         - '/does not accept default value of type array.{3}$/'
         # Sometimes seems to not find the test parent class's methods.
         # - '/Call to an undefined method.*(make|assert).*/'
+        # WC_Data::add_meta_data works fine with non-string/array values
+        - '/Parameter #2 \$value of method WC_Data::add_meta_data\(\) expects array\|string/'
+        - #
+          message: '#Parameter \#2 \$callback of static method WP_Mock::expect(Action|Filter)Added\(\) expects \(callable\(\): mixed\)\|Mockery\\Matcher\\Type, array{WP_Mock\\Matcher\\AnyInstance, .*} given.#'
+          path: tests/unit
+        - # Where we use Exceptions for control flow in tests, the return statements are absent.
+          message: '#Filter callback return statement is missing.#'
+          path: tests
+        - # Let's not check for null|false in tests.
+          message: '#\|(false|null) given#'
+          path: tests
+        - # Let's not check for null|false in tests.
+          message: '#does not accept .*\|null.#'
+          path: tests
