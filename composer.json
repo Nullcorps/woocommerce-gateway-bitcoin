@@ -263,7 +263,8 @@
       "@setup-wordpress",
       "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
       "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
-      "@sync-composer-wpenv"
+      "@sync-composer-wpenv",
+      "@add-btc-to-brick-money"
     ],
     "post-update-cmd": [
       "strauss",
@@ -271,7 +272,8 @@
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
       "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
       "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
-      "@sync-composer-wpenv"
+      "@sync-composer-wpenv",
+      "@add-btc-to-brick-money"
     ],
     "setup-wordpress": [
       "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
@@ -324,7 +326,7 @@
       "act -P ubuntu-latest=shivammathur/node:latest"
     ],
     "add-btc-to-brick-money": [
-      "echo 'btc' | md5 | sed 's/[^0-9]//g'"
+      "sed -i '' \"s/return \\[/return \\[\\n    'BTC' => \\['BTC', 0, 'Bitcoin', 8\\],/\" vendor-prefixed/brick/money/data/iso-currencies.php"
     ],
     "sync-composer-wpenv": [
       "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;",
