@@ -19,25 +19,14 @@
       "cweagans/composer-patches": true,
       "dealerdirect/phpcodesniffer-composer-installer": true,
       "johnpbloch/wordpress-core-installer": true,
-      "phpstan/extension-installer": true
+      "phpstan/extension-installer": true,
+      "brianhenryie/composer-phpstorm": true
     },
     "platform": {
       "php": "8.0.30"
     }
   },
   "repositories": {
-    "brianhenryie/bh-wc-logger": {
-      "url": "../bh-wc-logger",
-      "type": "path"
-    },
-    "brianhenryie/bh-wp-logger": {
-      "url": "../bh-wp-logger",
-      "type": "path"
-    },
-    "brianhenryie/bh-wp-private-uploads": {
-      "type": "path",
-      "url": "../bh-wp-private-uploads"
-    },
     "wordpress/wordpress": {
       "url": "https://github.com/WordPress/wordpress-develop",
       "type": "git"
@@ -122,7 +111,7 @@
       "type": "package",
       "package": {
         "name": "woocommerce/woocommerce-gateway-dummy",
-        "version": "1.0.5",
+        "version": "1.10.0",
         "dist": {
           "url": "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/latest/download/woocommerce-gateway-dummy.zip",
           "type": "zip"
@@ -134,16 +123,15 @@
   "require": {
     "php": ">=8.0",
     "ext-bcmath": "*",
-    "ext-gmp": "*",
     "ext-json": "*",
     "alleyinteractive/wordpress-autoloader": "^1.1",
     "art4/requests-psr18-adapter": "^1.0",
     "brianhenryie/bh-php-blockchain-info": "dev-main",
-    "brianhenryie/bh-wp-logger": "dev-master",
+    "brianhenryie/bh-wp-logger": "*",
     "brick/money": "^0.8.1",
-    "chillerlan/php-qrcode": "^4.3",
+    "chillerlan/php-qrcode": "^5.0.3",
     "json-mapper/json-mapper": "^2.18",
-    "lucatume/di52": "^3.3",
+    "lucatume/di52": "^4.0.1",
     "nimiq/xpub": "^1.4",
     "phpseclib/bcmath_compat": "^2.0",
     "phpseclib/mcrypt_compat": "^2.0",
@@ -155,7 +143,7 @@
     "antecedent/patchwork": "^2.1",
     "brianhenryie/color-logger": "^1.2",
     "brianhenryie/composer-phpstorm": "dev-master",
-    "brianhenryie/strauss": "*",
+    "brianhenryie/strauss": "dev-master",
     "cweagans/composer-patches": "^1.7",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "impress-org/give-next-gen": "^0.2",
@@ -182,7 +170,7 @@
     "wpackagist-plugin/checkout-fees-for-woocommerce": "^2.9",
     "wpackagist-plugin/crypto-payments-woo": "^1.2",
     "wpackagist-plugin/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "^2.0",
-    "wpackagist-plugin/give": "^2.25",
+    "wpackagist-plugin/give": "*",
     "wpackagist-plugin/woo-cancel-abandoned-order": "^2.0",
     "wpackagist-plugin/woo-gutenberg-products-block": "*",
     "wpackagist-plugin/woo-nimiq-gateway": "^3.4",
@@ -196,9 +184,6 @@
     "patches": {
       "jaschilz/php-coverage-badger": {
         "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
-      },
-      "wp-cli/dist-archive-command": {
-        "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
       }
     },
     "strauss": {
@@ -213,6 +198,9 @@
           "rmccue/requests",
           "symfony/polyfill-php73",
           "symfony/polyfill-php80"
+        ],
+        "file_patterns": [
+          "#myclabs/php-enum/stubs/Stringable.php#"
         ]
       },
       "exclude_from_prefix": {
@@ -221,9 +209,7 @@
           "phpseclib/mcrypt_compat"
         ],
         "file_patterns": [
-          "/^psr.*$/",
-          "#symfony/polyfill-php80/Resources/stubs/Stringable.php#",
-          "#myclabs/php-enum/stubs/Stringable.php#"
+          "/^psr.*$/"
         ]
       },
       "override_autoload": {
@@ -258,20 +244,14 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "strauss",
+      "strauss --info",
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-      "@setup-wordpress",
-      "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
       "@sync-composer-wpenv",
       "@add-btc-to-brick-money"
     ],
     "post-update-cmd": [
-      "strauss",
-      "@setup-wordpress",
+      "strauss --info",
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
-      "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
       "@sync-composer-wpenv",
       "@add-btc-to-brick-money"
     ],
