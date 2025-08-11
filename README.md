@@ -148,7 +148,7 @@ Pre-select Bitcoin at checkout when sending emails to customers.
 * Read the issues and requests of other Bitcoin gateways
 * Show current exchange rate on settings page
 * Lightning network
-* Remove GMP requirement
+* ~~Remove GMP requirement~~
 
 ## How You Can Help
 
