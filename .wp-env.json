@@ -14,6 +14,7 @@
   },
   "mappings": {
     "setup": "./tests/e2e-pw/setup",
+    "wp-content/plugins/e2e-test-helper-plugin/e2e-test-helper.php":  "./tests/e2e-pw/e2e-test-helper-plugin/e2e-test-helper.php",
     "wp-cli.yml": "./wp-cli.wp-env.yml",
     "wp-content/plugins/bh-wc-postcode-address-autofill": "./wp-content/plugins/bh-wc-postcode-address-autofill",
     "wp-content/plugins/bh-wc-set-gateway-by-url": "./wp-content/plugins/bh-wc-set-gateway-by-url",
