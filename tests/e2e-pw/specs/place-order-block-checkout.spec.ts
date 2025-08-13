@@ -12,15 +12,13 @@ test.describe('Place orders on block checkout', () => {
   });
 
   test('can see Bitcoin payment option on block checkout', async ({ page }) => {
-    const baseUrl = testConfig.url;
-    
     // Go to shop and add product to cart
-    await page.goto(`${baseUrl}shop/`);
+    await page.goto('/shop/');
     await page.click(`text="${testConfig.products.simple.name}"`);
     await page.click('.single_add_to_cart_button');
     
     // Go to block checkout
-    await page.goto(`${baseUrl}blocks-checkout/`);
+    await page.goto('/blocks-checkout/');
     
     // Click Bitcoin payment option
     await page.click('.wc-block-components-payment-method-label:has-text("Bitcoin")');
@@ -30,22 +28,28 @@ test.describe('Place orders on block checkout', () => {
   });
 
   test('should successfully place order and show payment details', async ({ page }) => {
-    const baseUrl = testConfig.url;
     const billing = testConfig.addresses.customer.billing;
     
     // Go to shop and add product to cart
-    await page.goto(`${baseUrl}shop/`);
+    await page.goto('/shop/');
     await page.click(`text="${testConfig.products.simple.name}"`);
     await page.click('.single_add_to_cart_button');
     
     // Go to block checkout
-    await page.goto(`${baseUrl}blocks-checkout/`);
+    await page.goto('/blocks-checkout/');
     
     // Fill billing details
     await page.fill('#email', billing.email);
     await page.fill('#billing-first_name', billing.firstname);
     await page.fill('#billing-last_name', billing.lastname);
-    await page.fill('#billing-country', billing.country);
+    // await page.fill('#billing-country', billing.country);
+
+    await billingAddress.getByLabel('Country/Region').selectOption(billing.country);
+    // await billingAddress.getByLabel('Country/Region').click();
+    // await billingAddress.getByLabel('Country/Region').fill('united');
+    // await billingAddress.getByLabel('United States (US)', { exact: true }).click();
+    await page.waitForLoadState( 'networkidle' );
+
     await page.fill('#billing-address_1', billing.addressfirstline);
     await page.fill('#billing-address_2', billing.addresssecondline);
     await page.fill('#billing-city', billing.city);

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
 import { createSimpleProduct } from '../helpers/create-simple-product';
+import { loginAsAdmin } from '../helpers/login';
 import { testConfig } from '../config/test-config';
 
 test.describe('Generate new addresses', () => {
@@ -15,16 +16,11 @@ test.describe('Generate new addresses', () => {
   });
 
   test('should generate addresses when number available falls below 50', async ({ page }) => {
-    const baseUrl = testConfig.url;
-    
     // Login as admin
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     // Visit list of unused addresses
-    await page.goto(`${baseUrl}wp-admin/edit.php?post_type=bh-bitcoin-address&post_status=unused`);
+    await page.goto('/wp-admin/edit.php?post_type=bh-bitcoin-address&post_status=unused');
     
     // Get count of unused addresses
     const unusedCountElement = page.locator('.unused a .count');
@@ -49,13 +45,10 @@ test.describe('Generate new addresses', () => {
     await placeBitcoinOrder(page);
     
     // Login as admin again
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     // Check Action Scheduler for pending job
-    await page.goto(`${baseUrl}wp-admin/tools.php?page=action-scheduler&status=pending`);
+    await page.goto('/wp-admin/tools.php?page=action-scheduler&status=pending');
     
     const pendingJob = page.locator('td[data-colname="Hook"]:has-text("bh_wp_bitcoin_gateway_generate_new_addresses")');
     
@@ -70,7 +63,7 @@ test.describe('Generate new addresses', () => {
     }
     
     // Check addresses page
-    await page.goto(`${baseUrl}wp-admin/edit.php?post_type=bh-bitcoin-address`);
+    await page.goto('/wp-admin/edit.php?post_type=bh-bitcoin-address');
     
     // Wait for unknown addresses to be processed
     while (await page.locator('.unknown a .count').count() > 0) {
@@ -87,15 +80,10 @@ test.describe('Generate new addresses', () => {
   });
 
   test('should correctly report the all addresses count', async ({ page }) => {
-    const baseUrl = testConfig.url;
-    
     // Login as admin
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
-    await page.goto(`${baseUrl}wp-admin/edit.php?post_type=bh-bitcoin-address`);
+    await page.goto('/wp-admin/edit.php?post_type=bh-bitcoin-address');
     
     // Get all address counts
     const allCountElement = page.locator('.all a .count');

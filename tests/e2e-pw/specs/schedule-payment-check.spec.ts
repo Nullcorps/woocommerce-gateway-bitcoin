@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/create-simple-product';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
+import { loginAsAdmin } from '../helpers/login';
 import { testConfig } from '../config/test-config';
 
 test.describe('Schedule payment checks', () => {
@@ -19,14 +20,10 @@ test.describe('Schedule payment checks', () => {
   });
 
   async function deletePendingActionSchedulerPaymentChecks(page: any) {
-    const baseUrl = testConfig.url;
-    const actionSchedulerUrl = `${baseUrl}wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order`;
+    const actionSchedulerUrl = '/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
     
     // Login as admin
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     await page.goto(actionSchedulerUrl);
     
@@ -44,8 +41,7 @@ test.describe('Schedule payment checks', () => {
   }
 
   async function getActionSchedulerTableRowForOrder(page: any, orderId: string) {
-    const baseUrl = testConfig.url;
-    const actionSchedulerUrl = `${baseUrl}wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order`;
+    const actionSchedulerUrl = '/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
     await page.goto(actionSchedulerUrl);
     
     const rowSelector = `td[data-colname="Arguments"]:has-text("'order_id' => ${orderId}")`;
@@ -55,10 +51,8 @@ test.describe('Schedule payment checks', () => {
   }
 
   async function setOrderStatus(page: any, orderId: string, status: string) {
-    const baseUrl = testConfig.url;
-    
     // Navigate to edit order page
-    await page.goto(`${baseUrl}wp-admin/post.php?post=${orderId}&action=edit`);
+    await page.goto(`/wp-admin/post.php?post=${orderId}&action=edit`);
     
     // Update order status
     await page.selectOption('#order_status', status);
@@ -81,11 +75,7 @@ test.describe('Schedule payment checks', () => {
     const orderId = await placeBitcoinOrder(page);
     
     // Login as admin to check action scheduler
-    const baseUrl = testConfig.url;
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     const isScheduled = await isJobScheduledForOrder(page, orderId);
     expect(isScheduled).toBe(true);
@@ -95,11 +85,7 @@ test.describe('Schedule payment checks', () => {
     const orderId = await placeBitcoinOrder(page);
     
     // Login as admin
-    const baseUrl = testConfig.url;
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     await setOrderStatus(page, orderId, 'wc-pending');
     await deletePendingActionSchedulerPaymentChecks(page);
@@ -113,11 +99,7 @@ test.describe('Schedule payment checks', () => {
     const orderId = await placeBitcoinOrder(page);
     
     // Login as admin
-    const baseUrl = testConfig.url;
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     const isScheduledBefore = await isJobScheduledForOrder(page, orderId);
     expect(isScheduledBefore).toBe(true);
@@ -132,11 +114,7 @@ test.describe('Schedule payment checks', () => {
     const orderId = await placeBitcoinOrder(page);
     
     // Login as admin
-    const baseUrl = testConfig.url;
-    await page.goto(`${baseUrl}wp-login.php`);
-    await page.fill('#user_login', testConfig.users.admin.username);
-    await page.fill('#user_pass', testConfig.users.admin.password);
-    await page.click('#wp-submit');
+    await loginAsAdmin(page);
     
     const tableRowForOrder = await getActionSchedulerTableRowForOrder(page, orderId);
     if (tableRowForOrder) {

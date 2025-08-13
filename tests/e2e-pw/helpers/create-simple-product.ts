@@ -1,17 +1,13 @@
 import { Page } from '@playwright/test';
 import { testConfig } from '../config/test-config';
+import { loginAsAdmin, logout } from './login';
 
 export async function createSimpleProduct(page: Page) {
-  const baseUrl = testConfig.url;
-  
   // Login as admin
-  await page.goto(`${baseUrl}wp-login.php`);
-  await page.fill('#user_login', testConfig.users.admin.username);
-  await page.fill('#user_pass', testConfig.users.admin.password);
-  await page.click('#wp-submit');
+  await loginAsAdmin(page);
   
   // Navigate to products page
-  await page.goto(`${baseUrl}wp-admin/edit.php?post_type=product`);
+  await page.goto('/wp-admin/edit.php?post_type=product');
   
   // Check if simple product already exists
   const existingProduct = await page.locator(`text="${testConfig.products.simple.name}"`).first();
@@ -33,6 +29,5 @@ export async function createSimpleProduct(page: Page) {
   }
   
   // Logout
-  await page.hover('#wp-admin-bar-my-account');
-  await page.click('#wp-admin-bar-logout a');
+  await logout(page);
 }

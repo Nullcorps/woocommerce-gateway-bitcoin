@@ -1,46 +1,38 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { testConfig } from '../config/test-config';
+import { fillBilling } from './checkout';
 
 export async function placeBitcoinOrder(page: Page): Promise<string> {
-  const baseUrl = testConfig.url;
-  const billing = testConfig.addresses.customer.billing;
   
   // Go to shop
-  await page.goto(`${baseUrl}shop/`);
+  await page.goto('/shop/');
   
   // Add simple product to cart
   await page.click(`text="${testConfig.products.simple.name}"`);
   await page.click('.single_add_to_cart_button');
   
   // Go to checkout
-  await page.goto(`${baseUrl}checkout/`);
+  await page.goto('/checkout/');
   
   // Fill billing details
-  await page.fill('#billing_first_name', billing.firstname);
-  await page.fill('#billing_last_name', billing.lastname);
-  await page.fill('#billing_company', billing.company);
-  await page.selectOption('#billing_country', 'US');
-  await page.fill('#billing_address_1', billing.addressfirstline);
-  await page.fill('#billing_address_2', billing.addresssecondline);
-  await page.fill('#billing_city', billing.city);
-  await page.selectOption('#billing_state', billing.state);
-  await page.fill('#billing_postcode', billing.postcode);
-  await page.fill('#billing_phone', billing.phone);
-  await page.fill('#billing_email', billing.email);
-  
-  // Wait for page to be ready
-  await page.waitForTimeout(2000);
+  await fillBilling(page);
   
   // Select Bitcoin payment method
-  await page.click('label[for="payment_method_bitcoin_gateway"]');
-  await page.waitForTimeout(1000);
+  // await page.click('label[for="payment_method_bitcoin_gateway"]');
+  // await page.waitForTimeout(1000);
+  // radio-control-wc-payment-method-options-bitcoin_gateway
+  await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
   
   // Verify Bitcoin payment method description appears
-  await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
-  
+  // await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
+  // Pay quickly and easily with Bitcoin
+  await expect(page.getByText('Pay quickly and easily with Bitcoin')).toBeVisible();
+
+
   // Place order
-  await page.click('#place_order');
-  
+  // await page.click(''Place Order');
+  await page.getByText('Place Order').click();
+
   // Wait for order received page
   await page.waitForSelector('text=Order received', { timeout: 30000 });
   

@@ -1,5 +1,5 @@
 export const testConfig = {
-  url: "http://localhost:8889/",
+  url: "http://localhost:8888/",
   users: {
     admin: {
       username: "admin",
@@ -12,7 +12,7 @@ export const testConfig = {
   },
   products: {
     simple: {
-      name: "Simple product"
+      name: "Album"
     }
   },
   addresses: {
@@ -21,7 +21,7 @@ export const testConfig = {
         firstname: "John",
         lastname: "Doe",
         company: "Automattic",
-        country: "United States (US)",
+        country: "US",
         addressfirstline: "addr 1", 
         addresssecondline: "addr 2",
         city: "San Francisco",
