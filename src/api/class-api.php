@@ -117,7 +117,7 @@ class API implements API_Interface {
 	 * @return bool
 	 */
 	public function is_bitcoin_gateway( string $gateway_id ): bool {
-		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) || ! class_exists( WC_Payment_Gateway::class ) ) {
 			return false;
 		}
 
@@ -140,7 +140,7 @@ class API implements API_Interface {
 	 * @return array<string, Bitcoin_Gateway>
 	 */
 	public function get_bitcoin_gateways(): array {
-		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) || ! class_exists( WC_Payment_Gateways::class ) ) {
 			return array();
 		}
 
@@ -163,7 +163,7 @@ class API implements API_Interface {
 	 * @param int $order_id The id of the (presumed) WooCommerce order to check.
 	 */
 	public function is_order_has_bitcoin_gateway( int $order_id ): bool {
-		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) || ! function_exists( 'wc_get_order' ) ) {
 			return false;
 		}
 
