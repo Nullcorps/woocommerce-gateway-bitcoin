@@ -31,10 +31,6 @@
       "url": "https://github.com/WordPress/wordpress-develop",
       "type": "git"
     },
-    "brianhenryie/composer-phpstorm": {
-      "url": "https://github.com/BrianHenryIE/composer-phpstorm",
-      "type": "git"
-    },
     "wpackagist": {
       "type": "composer",
       "url": "https://wpackagist.org"
@@ -94,19 +90,6 @@
         "installation-source": "dist"
       }
     },
-    "woocommerce/woocommerce-blocks": {
-      "type": "package",
-      "package": {
-        "name": "woocommerce/woocommerce-blocks",
-        "version": "dev-trunk",
-        "source": {
-          "url": "https://github.com/woocommerce/woocommerce-blocks/",
-          "type": "git",
-          "reference": "trunk"
-        },
-        "installation-source": "source"
-      }
-    },
     "woocommerce/woocommerce-gateway-dummy": {
       "type": "package",
       "package": {
@@ -159,7 +142,6 @@
     "squizlabs/php_codesniffer": "*",
     "szepeviktor/phpstan-wordpress": "*",
     "woocommerce/woocommerce": "dev-trunk",
-    "woocommerce/woocommerce-blocks": "dev-trunk",
     "woocommerce/woocommerce-gateway-dummy": "^1.0",
     "woocommerce/woocommerce-sniffs": "*",
     "wordpress/wordpress": "*",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b83fe4a715ef2660a6c34c69306e5613",
+    "content-hash": "751bdeec3ef648534c80c7fd98622ef8",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -3301,8 +3301,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+                "url": "https://github.com/BrianHenryIE/composer-phpstorm.git",
                 "reference": "793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BrianHenryIE/composer-phpstorm/zipball/793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc",
+                "reference": "793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc",
+                "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^2.0",
@@ -3326,19 +3332,7 @@
                     "/tests/"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "BrianHenryIE\\ComposerPhpStorm\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "post-install-cmd": [
-                    "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
-                ],
-                "post-update-cmd": [
-                    "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3355,6 +3349,10 @@
                 "excludefolder",
                 "phpstorm"
             ],
+            "support": {
+                "issues": "https://github.com/BrianHenryIE/composer-phpstorm/issues",
+                "source": "https://github.com/BrianHenryIE/composer-phpstorm/tree/0.4"
+            },
             "time": "2024-06-18T19:16:34+00:00"
         },
         {
@@ -11468,17 +11466,6 @@
             "type": "library"
         },
         {
-            "name": "woocommerce/woocommerce-blocks",
-            "version": "dev-trunk",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/woocommerce/woocommerce-blocks/",
-                "reference": "trunk"
-            },
-            "type": "library",
-            "time": "2024-02-22T22:11:28+00:00"
-        },
-        {
             "name": "woocommerce/woocommerce-gateway-dummy",
             "version": "1.10.0",
             "dist": {
@@ -14138,7 +14125,6 @@
         "impress-org/givewp-example-gateway": 20,
         "kporras07/composer-symlinks": 20,
         "woocommerce/woocommerce": 20,
-        "woocommerce/woocommerce-blocks": 20,
         "wp-cli/dist-archive-command": 20
     },
     "prefer-stable": true,
