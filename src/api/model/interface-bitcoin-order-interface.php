@@ -18,4 +18,14 @@ interface Bitcoin_Order_Interface {
 	public function get_btc_exchange_rate(): BigNumber;
 
 	public function get_address(): Bitcoin_Address;
+
+	// public function get_id();
+	// public function get_status();
+	// public function get_date_created();
+	// public function add_order_note();
+	// public function payment_complete();
+	// public function is_paid();
+	// public function save();
+	// public function get_currency();
+	// public function get_date_paid();
 }

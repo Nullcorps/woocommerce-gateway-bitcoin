@@ -260,6 +260,7 @@ class API implements API_Interface {
 	 * @return bool
 	 */
 	public function is_fresh_address_available_for_gateway( Bitcoin_Gateway $gateway ): bool {
+		// TODO: cache this.
 		return count( $this->get_fresh_addresses_for_gateway( $gateway ) ) > 0;
 	}
 
