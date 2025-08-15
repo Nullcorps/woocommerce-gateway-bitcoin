@@ -273,7 +273,7 @@
       "phpcs || true",
       "phpstan analyse --memory-limit 1G"
     ],
-    "lint-changes": [
+    "cs-changes": [
       "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
     ],
     "php-compatibility": [
