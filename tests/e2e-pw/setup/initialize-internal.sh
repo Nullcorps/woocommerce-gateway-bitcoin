@@ -3,6 +3,12 @@
 # Print the script name.
 echo $(basename "$0")
 
+# Does this need to be done first?
+wp plugin activate woocommerce;
+
+# trying to avoid "'tests-wordpress.wp_lhr_log' doesn't exist", maybe if it's activated individually...
+wp plugin activate log-http-requests;
+
 echo "wp plugin activate --all"
 wp plugin activate --all
 
@@ -24,7 +30,10 @@ wp rewrite structure /%year%/%monthnum%/%postname%/ --hard;
 wp option set woocommerce_version "10.0.4"
 wp transient delete _wc_activation_redirect
 
-wp theme activate storefront;
+# TODO: Pick a block theme that supports WooCommerce.
+# wp theme install storefront --activate;
+
+
 
 echo "Creating WooCommerce Customer Account"
 wp user create customer customer@woocommercecoree2etestsuite.com \
@@ -55,11 +64,11 @@ echo "Importing WooCommerce sample products..."
 wp option get sample_products_installed
 if [ $? -ne 0 ]; then
     echo "Importing sample products..."
+    wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
     wp option add sample_products_installed 1
 else
     echo "Sample products already imported."
 fi
-wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
 
 #echo "Installing basic-auth to interact with the API..."
 #wp plugin install https://github.com/WP-API/basic-auth/archive/master.zip --activate --force
