@@ -50,6 +50,41 @@ class Order {
 	}
 
 	/**
+	 * When a new order is created, if it's a Bitcoin order, check the remaining number of unused addresses
+	 *
+	 * 20 is the standard number of addresses a wallet is expected to seek forward to monitor for payments.
+	 *
+	 * @hooked woocommerce_new_order
+	 * Some implementations of the action pass the order object too.
+	 */
+	public function todo_check_addresses_after_new_orders( int $order_id, ?WC_Order $order = null ): void {
+		if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
+			return;
+		}
+
+		/** @var WC_Order $order */
+		$order = $order ?? wc_get_order( $order_id );
+
+		$bitcoin_order = new Bitcoin_Order( $order, $bitcoin_wallet_factory );
+		// TODO: Get the order as a wc-bitcoin-order object.
+
+		$wallet_id = $bitcoin_order->get_address()->get_wallet_parent_post_id();
+		/** @var Bitcoin_Wallet $wallet */
+
+		$num_remaining_addresses = count( $wallet->get_fresh_addresses() );
+
+		// Schedule address generation if needed.
+		if ( $num_remaining_addresses < 20 ) {
+			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+			if ( ! as_has_scheduled_action( $hook ) ) {
+				$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
+				as_schedule_single_action( time(), $hook );
+			}
+		}
+	}
+
+
+	/**
 	 * When an order's status is set to "on-hold", schedule a background job to check for payments.
 	 *
 	 * @hooked woocommerce_order_status_changed
