@@ -54,7 +54,10 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * @return mixed
 	 */
 	public function __call( string $name, array $arguments ): mixed {
-		if ( method_exists( WC_Order::class, $name ) ) {
+		// if ( method_exists( WC_Order::class, $name ) ) {
+		// return call_user_func_array( array( $this->wc_order, $name ), $arguments );
+		// }
+		if ( is_callable( array( $this->wc_order, $name ) ) ) {
 			return call_user_func_array( array( $this->wc_order, $name ), $arguments );
 		}
 		throw new BadMethodCallException();
@@ -81,7 +84,10 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * The order price in Bitcoin at the time of purchase.
 	 */
 	public function get_btc_total_price(): Money {
-		return Money::of( $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY ), 'BTC' );
+		$btc_total = $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY );
+		$btc_total_numeric = preg_replace("/[^0-9.]/", "", $btc_total);
+
+		return Money::of( $btc_total_numeric, 'BTC' );
 	}
 
 	/**
@@ -129,7 +135,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	}
 
 	/**
-	 * @param $updated_confirmed_value
+	 * @param Money $updated_confirmed_value
 	 */
 	public function set_amount_received( Money $updated_confirmed_value ): void {
 		$this->wc_order->add_meta_data( Order::BITCOIN_AMOUNT_RECEIVED_META_KEY, $updated_confirmed_value, true );
