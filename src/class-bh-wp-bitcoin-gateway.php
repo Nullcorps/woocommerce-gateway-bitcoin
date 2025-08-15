@@ -25,6 +25,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Email;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\My_Account_View_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order_Confirmation;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Templates;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Thank_You;
@@ -202,6 +203,11 @@ class BH_WP_Bitcoin_Gateway {
 		$thank_you = $this->container->get( Thank_You::class );
 
 		add_action( 'woocommerce_thankyou', array( $thank_you, 'print_instructions' ), 5 );
+
+		/** @var Order_Confirmation $order_confirmation */
+		$order_confirmation = $this->container->get( Order_Confirmation::class );
+
+		add_action( 'woocommerce_loaded', array( $order_confirmation, 'init' ) );
 	}
 
 	/**
