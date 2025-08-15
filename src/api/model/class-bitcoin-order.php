@@ -85,7 +85,10 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 */
 	public function get_btc_total_price(): Money {
 		$btc_total = $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY );
-		$btc_total_numeric = preg_replace("/[^0-9.]/", "", $btc_total);
+		/**
+		 * We store the Bitcoin total in the db as a string, e.g. "0.00001234 BTC", but here we want the numeric value.
+		 */
+		$btc_total_numeric = preg_replace( '/[^0-9.]/', '', $btc_total );
 
 		return Money::of( $btc_total_numeric, 'BTC' );
 	}

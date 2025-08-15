@@ -33,16 +33,28 @@ class Details_Formatter {
 		);
 	}
 
-	protected function format_money_to_bitcoin(Money $money): string {
+	/**
+	 * Returns "฿ 0.00001234" style formatted Bitcoin amount.
+	 *
+	 * @param Money $money The amount to format.
+	 *
+	 * @return string
+	 */
+	protected function format_money_to_bitcoin( Money $money ): string {
 		$btc_symbol = '฿';
-		$pattern = '¤#,##0.000000000000000000';
+		$pattern    = '¤#,##0.000000000000000000';
 
-		$btcFormatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
-		$btcFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 8); // Bitcoin has 8 decimal places
+		$btc_formatter = new NumberFormatter( 'en_US', NumberFormatter::DECIMAL );
+		/**
+		 * "Bitcoin has 8 decimal places."
+		 *
+		 * @see https://bitcoin.stackexchange.com/a/31934
+		 */
+		$btc_formatter->setAttribute( NumberFormatter::FRACTION_DIGITS, 8 );
 
-		$formatted = $money->formatWith($btcFormatter);
+		$formatted = $money->formatWith( $btc_formatter );
 
-		return $btc_symbol . ' ' . wc_trim_zeros($formatted);
+		return $btc_symbol . ' ' . wc_trim_zeros( $formatted );
 	}
 
 	public function get_btc_exchange_rate_formatted(): string {
