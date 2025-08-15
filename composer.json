@@ -205,8 +205,6 @@
       }
     },
     "symlinks": {
-      "wp-content": "wordpress/wp-content",
-      ".": "wp-content/plugins/bh-wp-bitcoin-gateway",
       "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
     },
     "phpstorm": {
