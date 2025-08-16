@@ -86,18 +86,15 @@ class Bitcoin_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 			)
 		);
 
-		$order = self::make(
-			WC_Order::class,
-			array(
-				'is_paid' => Expected::once( true ),
-			)
-		);
+		$order = new WC_Order();
 		$order->set_payment_method( 'bitcoin' );
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, 'xpub-address', true );
 		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, 1234, true );
 		$order->add_meta_data( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, 0.01, true );
 		$order->add_meta_data( Order::LAST_CHECKED_META_KEY, new \DateTime(), true );
 		$order_id = $order->save();
+
+		add_filter('woocommerce_order_is_paid', '__return_true');
 
 		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
 

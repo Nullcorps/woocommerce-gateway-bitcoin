@@ -23,6 +23,8 @@ class I18n_WP_Unit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_load_plugin_textdomain_function(): void {
 
+		$this->markTestSkipped( 'plugin_locale filter removed between 6.6.3 6.7.0.' );
+
 		$called        = false;
 		$actual_domain = null;
 
