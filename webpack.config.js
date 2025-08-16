@@ -29,9 +29,9 @@ const myConfig = {
 	...defaultConfig,
 	entry: {
 		'frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout':
-			'/assets/js/frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout.js',
+			'./src/frontend/blocks/checkout/index.tsx',
 		'frontend/bh-wp-bitcoin-gateway':
-			'/assets/js/frontend/bh-wp-bitcoin-gateway.js',
+			'./src/frontend/index.ts',
 	},
 	output: {
 		path: path.resolve( __dirname, 'assets/js' ),

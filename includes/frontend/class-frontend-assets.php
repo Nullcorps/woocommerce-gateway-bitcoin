@@ -92,7 +92,7 @@ class Frontend_Assets {
 		$order = wc_get_order( $order_id );
 
 		try {
-			$order_details = $this->api->get_order_details( $order );
+			$order_details = $this->api->get_formatted_order_details( $order );
 		} catch ( \Exception $exception ) {
 			$this->logger->error( 'Failed to get order details when enqueuing scripts: ' . $exception->getMessage(), array( 'exception' => $exception ) );
 			return;
@@ -108,8 +108,19 @@ class Frontend_Assets {
 
 		wp_enqueue_script( 'bh-wp-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
 
-		// TODO: For security, filter array to explicit allow-list containing only the required keys.
-		$order_details_json = wp_json_encode( $order_details, JSON_PRETTY_PRINT );
+		// Filter array to explicit allow-list containing only the required keys for frontend TypeScript.
+		$filtered_order_details = array(
+			'btc_address'                  => $order_details['btc_address'] ?? '',
+			'btc_total'                    => isset( $order_details['btc_total'] ) ? $order_details['btc_total']->getAmount()->toScale( 8 ) : '',
+			'order_id'                     => (string) $order->get_id(),
+			'btc_amount_received'          => (string) ( $order_details['btc_amount_received'] ?? '' ),
+			'status'                       => $order_details['payment_status'] ?? '',
+			'amount_received'              => $order_details['btc_amount_received_formatted'] ?? '',
+			'order_status_formatted'       => $order_details['order_status_formatted'] ?? '',
+			'last_checked_time_formatted'  => $order_details['last_checked_time_formatted'] ?? '',
+		);
+		
+		$order_details_json = wp_json_encode( $filtered_order_details, JSON_PRETTY_PRINT );
 
 		$ajax_data      = array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
