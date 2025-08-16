@@ -4,6 +4,9 @@ import { testConfig } from '../config/test-config';
 export type CheckoutType = 'blocks' | 'shortcode';
 
 export async function detectCheckoutType(page: Page): Promise<CheckoutType> {
+  // Wait a moment for page to fully load
+  await page.waitForTimeout(1000);
+
   // Check for blocks checkout indicators
   const blocksCheckoutElements = [
     '.wc-block-checkout',
@@ -35,6 +38,12 @@ export async function detectCheckoutType(page: Page): Promise<CheckoutType> {
   // If we can't detect, try to infer from URL
   const url = page.url();
   if (url.includes('blocks-checkout') || url.includes('block-checkout')) {
+    return 'blocks';
+  }
+
+  // Check page content for block-specific classes
+  const bodyClasses = await page.getAttribute('body', 'class') || '';
+  if (bodyClasses.includes('wc-block') || bodyClasses.includes('wp-block')) {
     return 'blocks';
   }
 

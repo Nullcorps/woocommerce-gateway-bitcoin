@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/create-simple-product';
+import { switchToBlocksTheme, verifyThemeForCheckoutType } from '../helpers/theme-switcher';
 import { testConfig } from '../config/test-config';
 
 test.describe('Place orders on block checkout', () => {
@@ -8,10 +9,18 @@ test.describe('Place orders on block checkout', () => {
     const page = await browser.newPage();
     await configureBitcoinXpub(page);
     await createSimpleProduct(page);
+    
+    // Switch to Twenty Twenty-Five theme for block checkout testing
+    await switchToBlocksTheme(page);
+    await verifyThemeForCheckoutType(page, 'blocks');
+    
     await page.close();
   });
 
   test('can see Bitcoin payment option on block checkout', async ({ page }) => {
+    // Verify we're using the correct theme for block checkout
+    await verifyThemeForCheckoutType(page, 'blocks');
+    
     // Go to shop and add product to cart
     await page.goto('/shop/');
     await page.click(`text="${testConfig.products.simple.name}"`);
@@ -28,6 +37,9 @@ test.describe('Place orders on block checkout', () => {
   });
 
   test('should successfully place order and show payment details', async ({ page }) => {
+    // Verify we're using the correct theme for block checkout
+    await verifyThemeForCheckoutType(page, 'blocks');
+    
     const billing = testConfig.addresses.customer.billing;
     
     // Go to shop and add product to cart
