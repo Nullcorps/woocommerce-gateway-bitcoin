@@ -9,7 +9,7 @@ module.exports = {
 		'dist-archive',
 		'node_modules',
 		'scratch',
-		'src',
+		'includes',
 		'templates',
 		'vendor',
 		'vendor-prefixed',

@@ -15,7 +15,7 @@ params:
 coverage:
     enabled: true
     include:
-        - /src/*
+        - /includes/*
         - /bh-wp-bitcoin-gateway.php
         - /uninstall.php
         - /templates/*

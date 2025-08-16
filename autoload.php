@@ -21,5 +21,5 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Alley_Interactive\Autoloader\Autoloader;
 
 Autoloader::generate(
 	'BrianHenryIE\WP_Bitcoin_Gateway',
-	__DIR__ . '/src',
+	__DIR__ . '/includes',
 )->register();
