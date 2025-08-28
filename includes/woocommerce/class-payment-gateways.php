@@ -75,7 +75,7 @@ class Payment_Gateways {
 
 		foreach ( $this->api->get_bitcoin_gateways() as $gateway ) {
 
-			$support = new Bitcoin_Gateway_Blocks_Checkout_Support( $gateway, $this->settings );
+			$support = new Bitcoin_Gateway_Blocks_Checkout_Support( $gateway, $this->api, $this->settings );
 			$payment_method_registry->register( $support );
 		}
 	}
