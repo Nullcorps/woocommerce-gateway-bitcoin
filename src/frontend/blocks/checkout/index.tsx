@@ -16,6 +16,7 @@ interface BitcoinGatewaySettings {
   supports?: string[];
   currency_symbol?: string;
   exchange_rate_information?: string;
+  bitcoin_image_src?: string;
 }
 
 const bhSettings: BitcoinGatewaySettings = getSetting('bitcoin_gateway_data', {});
@@ -43,8 +44,17 @@ const BHContent: React.FC = (): React.ReactElement => {
  * @param props Props from payment API.
  */
 const BHLabel: React.FC<PaymentMethodProps> = (props): React.ReactElement => {
-  const { PaymentMethodLabel } = props.components;
-  return <PaymentMethodLabel text={bhLabel} />;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      {bhSettings.bitcoin_image_src && (
+        <img 
+          src={bhSettings.bitcoin_image_src}
+          alt={bhLabel}
+          style={{height: '24px' }}
+        />
+      )}
+    </div>
+  );
 };
 
 /**
