@@ -12,6 +12,9 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry;
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
+use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
+use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 /**
@@ -21,6 +24,11 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
  * @see IntegrationRegistry::initialize()
  */
 class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType {
+
+	/**
+	 * Used to get exchange rate.
+	 */
+	protected API_Interface $api;
 
 	/**
 	 * Used to get the plugin URL.
@@ -38,9 +46,15 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 	 * Constructor
 	 *
 	 * @param Bitcoin_Gateway    $gateway The gateway instance.
+	 * @param API_Interface      $api      The API instance.
 	 * @param Settings_Interface $plugin_settings The plugin settings.
 	 */
-	public function __construct( Bitcoin_Gateway $gateway, Settings_Interface $plugin_settings ) {
+	public function __construct(
+		Bitcoin_Gateway $gateway,
+		API_Interface $api,
+		Settings_Interface $plugin_settings
+	) {
+		$this->api             = $api;
 		$this->plugin_settings = $plugin_settings;
 		$this->gateway         = $gateway;
 		$this->name            = $gateway->id;
@@ -57,6 +71,8 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 
 	/**
 	 * Returns if this payment method should be active. If false, the scripts will not be enqueued.
+	 *
+	 * @used-by PaymentMethodRegistry::get_all_active_registered()
 	 */
 	public function is_active(): bool {
 		return $this->gateway->is_available();
@@ -94,9 +110,25 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 	 */
 	public function get_payment_method_data(): array {
 		return array(
-			'title'       => $this->get_setting( 'title' ),
-			'description' => $this->get_setting( 'description' ),
-			'supports'    => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
+			'title'                     => $this->get_setting( 'title' ),
+			'description'               => $this->get_setting( 'description' ),
+			'supports'                  => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
+			'exchange_rate_information' => sprintf(
+				'1 BTC = %s %s',
+				get_woocommerce_currency(),
+				wp_kses_decode_entities(
+					wp_strip_all_tags(
+						wc_price(
+							$this->api->get_exchange_rate(
+								Currency::of(
+									get_woocommerce_currency()
+								)
+							)->toFloat()
+						)
+					)
+				)
+			),
+			'bitcoin_image_src'         => $this->gateway->icon,
 		);
 	}
 }
