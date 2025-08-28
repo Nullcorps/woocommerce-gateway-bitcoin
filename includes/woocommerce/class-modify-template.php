@@ -25,6 +25,7 @@ class Modify_Template {
 	protected string $template_slug;
 	/**
 	 * E.g. ["core/group","woocommerce/order-confirmation-summary"]
+	 *
 	 * @var TemplatePath $path
 	 */
 	protected array $path;
@@ -32,9 +33,9 @@ class Modify_Template {
 	protected array $new_block;
 
 	/**
-	 * @param string $template_slug
+	 * @param string       $template_slug
 	 * @param TemplatePath $path
-	 * @param BlockArray $new_block
+	 * @param BlockArray   $new_block
 	 */
 	public function __construct(
 		string $template_slug,
@@ -71,7 +72,7 @@ class Modify_Template {
 		}
 
 		// $result will be null if this filter has not been used to short-circuit the query.
-		if ( in_array( $this->template_slug, $query['slug__in'], true ) ) {
+		if ( in_array( $this->template_slug, $query['slug__in'] ?? array(), true ) ) {
 			add_filter( 'get_block_templates', array( $this, 'modify_template' ), 100, 3 );
 		}
 
@@ -83,9 +84,9 @@ class Modify_Template {
 	 * @hooked get_block_templates
 	 * @see get_block_templates
 	 *
-	 * @param WP_Block_Template[]                             $query_result
-	 * @param array{slug__in: string[], slug__not_in: string} $query
-	 * @param string                                          $template_type
+	 * @param WP_Block_Template[]                                  $query_result
+	 * @param array{slug__in: string[]|null, slug__not_in: string} $query
+	 * @param string                                               $template_type
 	 *
 	 * @return WP_Block_Template[]
 	 */
@@ -129,7 +130,7 @@ class Modify_Template {
 	 *
 	 * @param BlockArray[] $blocks
 	 * @param TemplatePath $path
-	 * @param BlockArray $new_block
+	 * @param BlockArray   $new_block
 	 *
 	 * @return BlockArray[]
 	 */
