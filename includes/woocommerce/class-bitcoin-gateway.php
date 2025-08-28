@@ -98,6 +98,29 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Return the description for admin screens.
+	 *
+	 * @return string
+	 */
+	public function get_method_description() {
+		$method_description  = $this->method_description;
+		$method_description .= PHP_EOL;
+		$method_description .= PHP_EOL;
+		$method_description .= sprintf(
+			'Current exchange rate: 1 BTC = %s',
+			wc_price(
+				$this->api->get_exchange_rate(
+					Currency::of(
+						get_woocommerce_currency()
+					)
+				)->toFloat()
+			),
+		);
+
+		return apply_filters( 'woocommerce_gateway_method_description', $method_description, $this );
+	}
+
+	/**
 	 * When saving the options, if the xpub is changed, initiate a background job to generate addresses.
 	 *
 	 * @see \WC_Settings_API::process_admin_options()
