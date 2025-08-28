@@ -7,10 +7,15 @@ import { getSetting } from '@woocommerce/settings';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 
+/**
+ * @see Bitcoin_Gateway_Blocks_Checkout_Support::get_payment_method_data()
+ */
 interface BitcoinGatewaySettings {
   title?: string;
   description?: string;
   supports?: string[];
+  currency_symbol?: string;
+  exchange_rate_information?: string;
 }
 
 const bhSettings: BitcoinGatewaySettings = getSetting('bitcoin_gateway_data', {});
@@ -22,8 +27,14 @@ const bhLabel: string = decodeEntities(bhSettings.title || '') || bhDefaultLabel
 /**
  * Content component
  */
-const BHContent: React.FC = (): string => {
-  return decodeEntities(bhSettings.description || '');
+const BHContent: React.FC = (): React.ReactElement => {
+  console.log(bhSettings);
+  return (
+    <div>
+      <p className="wc-block-components-checkout-step__description">{decodeEntities(bhSettings.description || '')}</p>
+      <p className="wc-block-components-checkout-step__description">{bhSettings.exchange_rate_information || ''}</p>
+    </div>
+  );
 };
 
 /**
