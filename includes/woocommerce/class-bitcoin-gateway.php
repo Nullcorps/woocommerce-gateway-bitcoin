@@ -9,6 +9,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Exception\UnknownCurrencyException;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Exception;
@@ -103,21 +104,62 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_method_description() {
-		$method_description  = $this->method_description;
+		$method_description = $this->method_description . PHP_EOL;
+
 		$method_description .= PHP_EOL;
 		$method_description .= PHP_EOL;
-		$method_description .= sprintf(
-			'Current exchange rate: 1 BTC = %s',
-			wc_price(
-				$this->api->get_exchange_rate(
-					Currency::of(
-						get_woocommerce_currency()
-					)
-				)->toFloat()
-			),
-		);
+		$method_description .= $this->get_formatted_exchange_rate_string();
+
+		if ( $this->is_site_using_full_site_editing() ) {
+			$method_description .= PHP_EOL;
+			$method_description .= PHP_EOL;
+			$method_description .= $this->get_formatted_link_to_order_confirmation_edit();
+		}
 
 		return apply_filters( 'woocommerce_gateway_method_description', $method_description, $this );
+	}
+
+	/**
+	 * Returns the exchange rate in a string, e.g. 'Current exchange rate: 1 BTC = $100,000'.
+	 *
+	 * @throws UnknownCurrencyException
+	 */
+	protected function get_formatted_exchange_rate_string(): string {
+		try {
+			$currency = Currency::of( get_woocommerce_currency() );
+		} catch ( UnknownCurrencyException $e ) {
+			$currency = Currency::of( 'USD' );
+		}
+		return sprintf(
+			'Current exchange rate: 1 BTC = %s',
+			wc_price(
+				$this->api->get_exchange_rate( $currency )->toFloat()
+			),
+		);
+	}
+
+	/**
+	 * Determine if the site is using a full site editing theme.
+	 */
+	protected function is_site_using_full_site_editing(): bool {
+		return function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
+	}
+
+	/**
+	 * Get an anchor link for the full site editing page for the order confirmation template.
+	 */
+	protected function get_formatted_link_to_order_confirmation_edit(): string {
+		return sprintf(
+			'<a href="%s" target="_blank">Edit the order confirmation page</a>.',
+			add_query_arg(
+				array(
+					'postType' => 'wp_template',
+					'postId'   => 'woocommerce/woocommerce//order-confirmation',
+					'canvas'   => 'edit',
+				),
+				admin_url( 'site-editor.php' )
+			)
+		);
 	}
 
 	/**
