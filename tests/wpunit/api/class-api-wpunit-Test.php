@@ -4,6 +4,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Codeception\Stub\Expected;
@@ -172,7 +173,7 @@ class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		add_filter(
 			"pre_transient_{$transient_name}",
 			function ( $retval, $transient ) {
-				return '23567';
+				return Money::of( '23567', Currency::of( 'USD' ) )->jsonSerialize();
 			},
 			10,
 			2

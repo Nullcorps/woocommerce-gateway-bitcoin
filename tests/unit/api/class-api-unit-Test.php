@@ -7,8 +7,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigDecimal;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 
@@ -96,7 +96,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'times'  => 1,
 				'args'   => array( 'bh_wp_bitcoin_gateway_exchange_rate_USD' ),
-				'return' => '65535',
+				'return' => Money::of( '65535', Currency::of( 'USD' ) )->jsonSerialize(),
 			)
 		);
 
@@ -109,7 +109,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		self::assertEquals( '65535', $result );
+		self::assertEquals( '65535', $result->abs()->getAmount()->toFloat() );
 	}
 
 	/**
@@ -127,9 +127,9 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			Exchange_Rate_API_Interface::class,
 			array(
 				'get_exchange_rate' => Expected::once(
-					function ( Currency $currency ): BigDecimal {
+					function ( Currency $currency ): Money {
 						assert( 'USD' === $currency->getCurrencyCode() );
-						return BigDecimal::of( '54321' );
+						return Money::of( '54321', Currency::of( 'USD' ) );
 					}
 				),
 			)
@@ -150,12 +150,19 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			'set_transient',
 			array(
 				'times' => 1,
-				'args'  => array( 'bh_wp_bitcoin_gateway_exchange_rate_USD', '54321', 3600 ),
+				'args'  => array(
+					'bh_wp_bitcoin_gateway_exchange_rate_USD',
+					array(
+						'amount'   => '54321',
+						'currency' => 'USD',
+					),
+					3600,
+				),
 			)
 		);
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		self::assertEquals( '54321', $result );
+		self::assertEquals( '54321', $result->abs()->getAmount()->toFloat() );
 	}
 }

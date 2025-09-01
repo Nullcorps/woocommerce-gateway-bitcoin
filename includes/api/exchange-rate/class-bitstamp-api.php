@@ -10,7 +10,6 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Psr\Log\LoggerAwareTrait;
@@ -26,7 +25,7 @@ class Bitstamp_API implements Exchange_Rate_API_Interface {
 	/**
 	 * Fetch the current exchange from a remote API.
 	 */
-	public function get_exchange_rate( Currency $currency ): BigNumber {
+	public function get_exchange_rate( Currency $currency ): Money {
 
 		$between = strtolower( "btc{$currency}" );
 
@@ -61,6 +60,6 @@ class Bitstamp_API implements Exchange_Rate_API_Interface {
 		 */
 		$response = json_decode( $request_response['body'], true );
 
-		return BigNumber::of( $response['last'] );
+		return Money::of( $response['last'], $currency );
 	}
 }

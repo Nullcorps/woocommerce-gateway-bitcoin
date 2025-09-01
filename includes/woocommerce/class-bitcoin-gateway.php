@@ -130,10 +130,14 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		} catch ( UnknownCurrencyException $e ) {
 			$currency = Currency::of( 'USD' );
 		}
+		$exchange_rate = $this->api->get_exchange_rate( $currency );
 		return sprintf(
 			'Current exchange rate: 1 BTC = %s',
 			wc_price(
-				$this->api->get_exchange_rate( $currency )->toFloat()
+				$exchange_rate->getAmount()->toFloat(),
+				array(
+					'currency' => $exchange_rate->getCurrency()->getCurrencyCode(),
+				)
 			),
 		);
 	}
@@ -377,11 +381,16 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		}
 
 		// Record the exchange rate at the time the order was placed.
-		$order->add_meta_data( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY, $api->get_exchange_rate( Currency::of( $order->get_currency() ) ) );
+		$order->add_meta_data(
+			Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY,
+			$api->get_exchange_rate( Currency::of( $order->get_currency() ) )->jsonSerialize()
+		);
 
-		$btc_total = $api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) );
-
-		$order->add_meta_data( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY, $btc_total );
+		// Record the amount the customer has been asked to pay in BTC.
+		$order->add_meta_data(
+			Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY,
+			$api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) )->jsonSerialize()
+		);
 
 		// Mark as on-hold (we're awaiting the payment).
 		/* translators: %F: The order total in BTC */

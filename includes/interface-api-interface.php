@@ -10,7 +10,6 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Exception;
@@ -61,7 +60,7 @@ interface API_Interface {
 	 *
 	 * @param Currency $currency E.g. USD|EUR|GBP.
 	 */
-	public function get_exchange_rate( Currency $currency ): BigNumber;
+	public function get_exchange_rate( Currency $currency ): Money;
 
 	/**
 	 * Get the Bitcoin value of a local currency amount.

@@ -11,8 +11,8 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +26,7 @@ class Bitfinex_API implements Exchange_Rate_API_Interface {
 	/**
 	 * Fetch the current exchange from a remote API.
 	 */
-	public function get_exchange_rate( Currency $currency ): BigNumber {
+	public function get_exchange_rate( Currency $currency ): Money {
 
 		$trading_pair = 'tBTC' . strtoupper( $currency );
 
@@ -63,6 +63,6 @@ class Bitfinex_API implements Exchange_Rate_API_Interface {
 
 		$exchange_rate = $trading_pair_response[7];
 
-		return BigNumber::of( $exchange_rate );
+		return Money::of( $exchange_rate, $currency );
 	}
 }

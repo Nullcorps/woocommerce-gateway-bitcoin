@@ -84,20 +84,20 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * The order price in Bitcoin at the time of purchase.
 	 */
 	public function get_btc_total_price(): Money {
+		/** @var array{amount:string, currency:string} $btc_total */
 		$btc_total = $this->wc_order->get_meta( Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY );
-		/**
-		 * We store the Bitcoin total in the db as a string, e.g. "0.00001234 BTC", but here we want the numeric value.
-		 */
-		$btc_total_numeric = preg_replace( '/[^0-9.]/', '', $btc_total );
 
-		return Money::of( $btc_total_numeric, 'BTC' );
+		return Money::of( $btc_total['amount'], $btc_total['currency'] );
 	}
 
 	/**
 	 * The Bitcoin exchange rate at the time of purchase.
 	 */
 	public function get_btc_exchange_rate(): BigNumber {
-		return BigNumber::of( $this->wc_order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY ) );
+		/** @var array{amount:string, currency:string} $btc_total */
+		$rate_meta = $this->wc_order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY );
+
+		return BigNumber::of( $rate_meta['amount'] );
 	}
 
 	public function get_address(): Bitcoin_Address {

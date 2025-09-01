@@ -38,6 +38,6 @@ class Bitstamp_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		$this->assertEquals( '41008.81', $result );
+		$this->assertEquals( '41008.81', $result->getAmount() );
 	}
 }
