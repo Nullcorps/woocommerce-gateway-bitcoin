@@ -7,7 +7,7 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WP_Block_Type_Registry;
@@ -28,8 +28,8 @@ class Bitcoin_Order_Confirmation_Block {
 	public function register_block(): void {
 
 		wp_register_script(
-			'bh-wp-bitcoin-gateway-bitcoin-order-block-editor',
-			$this->settings->get_plugin_url() . 'assets/js/frontend/blocks/order-confirmation/bitcoin-order/bh-wp-bitcoin-gateway-bitcoin-order.min.js',
+			'bh-wp-bitcoin-gateway-bitcoin-order-block',
+			$this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group.min.js',
 			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
 			// $this->settings->get_plugin_version(),
 			time(), // TODO: do we need to bust cache now the `...min.asset.php` file has a version?
@@ -40,7 +40,7 @@ class Bitcoin_Order_Confirmation_Block {
 			// TODO: rename to be explicitly a block for WooCommerce.
 			'bh-wp-bitcoin-gateway/bitcoin-order',
 			array(
-				'editor_script'    => 'bh-wp-bitcoin-gateway-bitcoin-order-block-editor',
+				'editor_script'    => 'bh-wp-bitcoin-gateway-bitcoin-order-block',
 				'attributes'       => array(
 					'orderId' => array(
 						'type'    => 'number',
@@ -54,6 +54,7 @@ class Bitcoin_Order_Confirmation_Block {
 			)
 		);
 
+		// TODO: move out of here for legibility.
 		add_filter(
 			'render_block_context',
 			array( $this, 'add_order_id_context' ),

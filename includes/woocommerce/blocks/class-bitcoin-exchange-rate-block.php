@@ -5,9 +5,8 @@
  * Displays the Bitcoin exchange rate from order meta key.
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WC_Order;
@@ -26,8 +25,8 @@ class Bitcoin_Exchange_Rate_Block {
 	public function register_block(): void {
 
 		wp_register_script(
-			'bh-wp-bitcoin-gateway-exchange-rate-block-editor',
-			$this->settings->get_plugin_url() . 'assets/js/frontend/blocks/order-confirmation/exchange-rate/bh-wp-bitcoin-gateway-exchange-rate.min.js',
+			'bh-wp-bitcoin-gateway-exchange-rate-block',
+			$this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate.min.js',
 			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
 			$this->settings->get_plugin_version(),
 			true
@@ -36,7 +35,7 @@ class Bitcoin_Exchange_Rate_Block {
 		register_block_type(
 			'bh-wp-bitcoin-gateway/exchange-rate',
 			array(
-				'editor_script'   => 'bh-wp-bitcoin-gateway-exchange-rate-block-editor',
+				'editor_script'   => 'bh-wp-bitcoin-gateway-exchange-rate-block',
 				'attributes'      => array(
 					'orderId'   => array(
 						'type'    => 'number',
@@ -47,7 +46,7 @@ class Bitcoin_Exchange_Rate_Block {
 						'default' => true,
 					),
 				),
-//				'render_callback' => array( $this, 'render_block' ),
+				'render_callback' => array( $this, 'render_block' ),
 				'uses_context'    => array( 'bh-wp-bitcoin-gateway/orderId' ),
 			)
 		);

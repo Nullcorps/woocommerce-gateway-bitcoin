@@ -28,16 +28,14 @@ const requestToHandle = ( request ) => {
 const myConfig = {
 	...defaultConfig,
 	entry: {
-		'frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout':
-			'./src/frontend/blocks/checkout/index.tsx',
-		'frontend/blocks/order-confirmation/exchange-rate/bh-wp-bitcoin-gateway-exchange-rate':
-			'./src/frontend/blocks/order-confirmation/exchange-rate/index.tsx',
-		'frontend/blocks/order-confirmation/bitcoin-order/bh-wp-bitcoin-gateway-bitcoin-order':
-			'./src/frontend/blocks/order-confirmation/bitcoin-order/index.tsx',
-    'frontend/blocks/order-confirmation/core-group/brianhenryie-group':
-			'./src/frontend/blocks/order-confirmation/core-group/index.tsx',
-		'frontend/bh-wp-bitcoin-gateway':
-			'./src/frontend/index.ts',
+		'frontend/woocommerce/blocks/checkout/gateway/gateway':
+			'./src/frontend/woocommerce/blocks/checkout/gateway/index.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate':
+			'./src/frontend/woocommerce/blocks/order-confirmation/exchange-rate/index.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group':
+			'./src/frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/index.tsx',
+		'frontend/woocommerce/shortcode/thank-you/thank-you':
+			'./src/frontend/woocommerce/shortcode/thank-you/index.ts'
 	},
 	output: {
 		path: path.resolve( __dirname, 'assets/js' ),

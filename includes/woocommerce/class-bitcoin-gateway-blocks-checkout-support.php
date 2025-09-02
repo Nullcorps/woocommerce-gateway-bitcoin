@@ -87,7 +87,7 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 
 		$handle = 'bh-wp-bitcoin-gateway-blocks';
 
-		$script_url = $this->plugin_settings->get_plugin_url() . 'assets/js/frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout.min.js';
+		$script_url = $this->plugin_settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/checkout/gateway/gateway.min.js';
 
 		$dependencies = array( 'wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-html-entities', 'wp-i18n' );
 		$version      = $this->plugin_settings->get_plugin_version();

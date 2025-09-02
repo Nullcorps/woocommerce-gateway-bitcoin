@@ -15,6 +15,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Bitcoin_Exchange_Rate_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
@@ -25,8 +26,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Email;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\My_Account_View_Order;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Exchange_Rate_Block;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Order_Confirmation_Block;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Bitcoin_Order_Confirmation_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Templates;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Thank_You;
