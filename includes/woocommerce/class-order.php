@@ -65,11 +65,11 @@ class Order {
 		/** @var WC_Order $order */
 		$order = $order ?? wc_get_order( $order_id );
 
-		$bitcoin_order = new Bitcoin_Order( $order, $bitcoin_wallet_factory );
-		// TODO: Get the order as a wc-bitcoin-order object.
+		$bitcoin_order = $this->api->get_order_details( $order );
 
 		$wallet_id = $bitcoin_order->get_address()->get_wallet_parent_post_id();
 		/** @var Bitcoin_Wallet $wallet */
+		$wallet = new Bitcoin_Wallet( $wallet_id );
 
 		$num_remaining_addresses = count( $wallet->get_fresh_addresses() );
 
