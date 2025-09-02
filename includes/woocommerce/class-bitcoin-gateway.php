@@ -56,16 +56,9 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	protected Settings_Interface $plugin_settings;
 
 	/**
-	 * Is this gateway enabled and has a payment address available.
-	 *
-	 * Previously we were using a static value in a method to store this, but that caused problems with tests, and
-	 * would be an issue with Duplicate Payment Gateways.
-	 *
-	 * @used-by Bitcoin_Gateway::is_available()
-	 *
-	 * @var ?bool
+	 * A cache so {@see Bitcoin_Gateway::is_available()} only runs once.
 	 */
-	protected ?bool $is_available = null;
+	protected ?bool $is_available_cache = null;
 
 	/**
 	 * Constructor for the gateway.
@@ -317,26 +310,36 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 
 
 	/**
-	 * Returns false when the gateway is not configured / has no addresses to use.
+	 * Returns false when the gateway is not configured / has no addresses to use / has no exchange rate available.
 	 *
 	 * @see WC_Payment_Gateways::get_available_payment_gateways()
+	 * @overrides {@see WC_Payment_Gateway::is_available()}
 	 *
 	 * @return bool
 	 */
 	public function is_available() {
 
+		if ( ! is_null( $this->is_available_cache ) ) {
+			return $this->is_available_cache;
+		}
+
 		if ( is_null( $this->api ) ) {
+			$this->is_available_cache = false;
 			return false;
 		}
 
-		if ( is_null( $this->is_available ) ) {
-			$result             = parent::is_available() && $this->api->is_fresh_address_available_for_gateway( $this );
-			$this->is_available = $result;
-		} else {
-			$result = $this->is_available;
+		if ( ! $this->api->is_fresh_address_available_for_gateway( $this ) ) {
+			$this->is_available_cache = false;
+			return false;
 		}
 
-		return $result;
+		if ( is_null( $this->api->get_exchange_rate( Currency::of( get_woocommerce_currency() ) ) ) ) {
+			$this->is_available_cache = false;
+			return false;
+		}
+
+		$this->is_available_cache = parent::is_available();
+		return $this->is_available_cache;
 	}
 
 	/**

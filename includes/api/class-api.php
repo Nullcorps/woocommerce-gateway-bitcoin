@@ -458,13 +458,18 @@ class API implements API_Interface {
 	 *
 	 * @throws Exception
 	 */
-	public function get_exchange_rate( Currency $currency ): Money {
+	public function get_exchange_rate( Currency $currency ): ?Money {
 		$transient_name = 'bh_wp_bitcoin_gateway_exchange_rate_' . $currency->getCurrencyCode();
 		/** @var false|array{amount:string,currency:string} $exchange_rate_stored_transient */
 		$exchange_rate_stored_transient = get_transient( $transient_name );
 
 		if ( empty( $exchange_rate_stored_transient ) ) {
-			$exchange_rate = $this->exchange_rate_api->get_exchange_rate( $currency );
+			try {
+				$exchange_rate = $this->exchange_rate_api->get_exchange_rate( $currency );
+			} catch ( Exception $e ) {
+				// TODO: rate limit.
+				return null;
+			}
 			set_transient( $transient_name, $exchange_rate->jsonSerialize(), HOUR_IN_SECONDS );
 		} else {
 			$exchange_rate = Money::of( $exchange_rate_stored_transient['amount'], $exchange_rate_stored_transient['currency'] );

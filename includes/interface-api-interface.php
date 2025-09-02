@@ -59,8 +59,10 @@ interface API_Interface {
 	 * @used-by Bitcoin_Gateway::process_payment()
 	 *
 	 * @param Currency $currency E.g. USD|EUR|GBP.
+	 *
+	 * @return ?Money `null` when unavailable, e.g. offline and requests fail.
 	 */
-	public function get_exchange_rate( Currency $currency ): Money;
+	public function get_exchange_rate( Currency $currency ): ?Money;
 
 	/**
 	 * Get the Bitcoin value of a local currency amount.

@@ -2,6 +2,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
+use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Codeception\Stub\Expected;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
@@ -71,6 +73,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::is_available
+	 * @see API_Interface::is_fresh_address_available_for_gateway()
 	 */
 	public function test_checks_for_available_address_for_availability_true(): void {
 
@@ -80,6 +83,11 @@ class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'is_fresh_address_available_for_gateway' => Expected::once(
 					function ( Bitcoin_Gateway $gateway ) {
 						return true;
+					}
+				),
+				'get_exchange_rate'                      => Expected::once(
+					function ( Currency $currency ) {
+						return Money::of( '0.0', Currency::of( 'USD' ) );
 					}
 				),
 			)
