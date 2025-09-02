@@ -124,6 +124,10 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			$currency = Currency::of( 'USD' );
 		}
 		$exchange_rate = $this->api->get_exchange_rate( $currency );
+		if ( is_null( $exchange_rate ) ) {
+			// TODO: Also display an admin notice with instruction to configure / retry.
+			return 'Error fetching exchange rate. Gateway will be unavailable to customers until an exchange rate is available.';
+		}
 		return sprintf(
 			'Current exchange rate: 1 BTC = %s',
 			wc_price(
