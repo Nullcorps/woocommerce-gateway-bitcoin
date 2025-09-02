@@ -102,24 +102,20 @@ class Frontend_Assets {
 
 		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/bh-wp-bitcoin-gateway.min.js';
 
-		if ( defined( 'SCRIPT_DEBUG' ) && constant( 'SCRIPT_DEBUG' ) ) {
-			$script_url = str_replace( '.min', '', $script_url );
-		}
-
 		wp_enqueue_script( 'bh-wp-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
 
 		// Filter array to explicit allow-list containing only the required keys for frontend TypeScript.
 		$filtered_order_details = array(
-			'btc_address'                  => $order_details['btc_address'] ?? '',
-			'btc_total'                    => isset( $order_details['btc_total'] ) ? $order_details['btc_total']->getAmount()->toScale( 8 ) : '',
-			'order_id'                     => (string) $order->get_id(),
-			'btc_amount_received'          => (string) ( $order_details['btc_amount_received'] ?? '' ),
-			'status'                       => $order_details['payment_status'] ?? '',
-			'amount_received'              => $order_details['btc_amount_received_formatted'] ?? '',
-			'order_status_formatted'       => $order_details['order_status_formatted'] ?? '',
-			'last_checked_time_formatted'  => $order_details['last_checked_time_formatted'] ?? '',
+			'btc_address'                 => $order_details['btc_address'] ?? '',
+			'btc_total'                   => isset( $order_details['btc_total'] ) ? $order_details['btc_total']->getAmount()->toScale( 8 ) : '',
+			'order_id'                    => (string) $order->get_id(),
+			'btc_amount_received'         => (string) ( $order_details['btc_amount_received'] ?? '' ),
+			'status'                      => $order_details['payment_status'] ?? '',
+			'amount_received'             => $order_details['btc_amount_received_formatted'] ?? '',
+			'order_status_formatted'      => $order_details['order_status_formatted'] ?? '',
+			'last_checked_time_formatted' => $order_details['last_checked_time_formatted'] ?? '',
 		);
-		
+
 		$order_details_json = wp_json_encode( $filtered_order_details, JSON_PRETTY_PRINT );
 
 		$ajax_data      = array(
