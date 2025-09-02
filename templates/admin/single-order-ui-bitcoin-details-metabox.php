@@ -2,6 +2,8 @@
 /**
  * Friendly info table to display on the admin order ui.
  *
+ * TODO: ensure it is placed at the top of the metaboxes;
+ *
  * @see \BrianHenryIE\WP_Bitcoin_Gateway\API_Interface::get_order_details()
  * @see \BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter
  *
