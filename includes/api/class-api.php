@@ -339,7 +339,12 @@ class API implements API_Interface {
 		// $confirmations = $gateway->get_confirmations();
 		$required_confirmations = 3;
 
-		$blockchain_height = $this->blockchain_api->get_blockchain_height();
+		try {
+			$blockchain_height = $this->blockchain_api->get_blockchain_height();
+		} catch ( Exception $e ) {
+			// TODO: log, notify, rate limit
+			return false;
+		}
 
 		$raw_address = $bitcoin_order->get_address()->get_raw_address();
 
@@ -761,12 +766,16 @@ class API implements API_Interface {
 	public function update_address_transactions( Bitcoin_Address $address ): array {
 
 		$btc_xpub_address_string = $address->get_raw_address();
-
 		// TODO: retry on rate limit.
-		$transactions = $this->blockchain_api->get_transactions_received( $btc_xpub_address_string );
-
-		$address->set_transactions( $transactions );
-
-		return $transactions;
+		try {
+			$updated_transactions = $this->blockchain_api->get_transactions_received( $btc_xpub_address_string );
+			$address->set_transactions( $updated_transactions );
+			return $updated_transactions;
+		} catch ( Exception $exception ) {
+			// API is offline.
+			// TODO: log, rate limit, notify.
+			// TODO: is empty array ok here?
+			return $address->get_blockchain_transactions() ?? array();
+		}
 	}
 }
