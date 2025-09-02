@@ -30,6 +30,12 @@ const myConfig = {
 	entry: {
 		'frontend/blocks/checkout/bh-wp-bitcoin-gateway-blocks-checkout':
 			'./src/frontend/blocks/checkout/index.tsx',
+		'frontend/blocks/order-confirmation/exchange-rate/bh-wp-bitcoin-gateway-exchange-rate':
+			'./src/frontend/blocks/order-confirmation/exchange-rate/index.tsx',
+		'frontend/blocks/order-confirmation/bitcoin-order/bh-wp-bitcoin-gateway-bitcoin-order':
+			'./src/frontend/blocks/order-confirmation/bitcoin-order/index.tsx',
+    'frontend/blocks/order-confirmation/core-group/brianhenryie-group':
+			'./src/frontend/blocks/order-confirmation/core-group/index.tsx',
 		'frontend/bh-wp-bitcoin-gateway':
 			'./src/frontend/index.ts',
 	},

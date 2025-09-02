@@ -6,6 +6,8 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { getSetting } from '@woocommerce/settings';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
+// TODO: Is there a more correct way to import this than via Composer/PHP?
+import PaymentMethodConfig from '../../../../vendor/woocommerce/woocommerce/plugins/woocommerce/client/blocks/assets/js/blocks-registry/payment-methods/payment-method-config';
 
 /**
  * @see Bitcoin_Gateway_Blocks_Checkout_Support::get_payment_method_data()

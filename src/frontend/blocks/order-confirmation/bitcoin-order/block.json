@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "bh-wp-bitcoin-gateway/bitcoin-order",
+	"version": "1.0.0",
+	"title": "Bitcoin Order Container",
+	"category": "woocommerce",
+	"description": "A container block that provides order context to inner blocks on WooCommerce Thank You pages.",
+	"keywords": ["bitcoin", "order", "container", "woocommerce"],
+	"textdomain": "bh-wp-bitcoin-gateway",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"color": {
+			"text": false,
+			"background": false
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"__experimentalLayout": {
+			"allowSwitching": false,
+			"allowInheriting": false,
+			"default": {
+				"type": "default"
+			}
+		}
+	},
+    "attributes": {
+      "orderId": {
+        "type": "number"
+      }
+    },
+	"providesContext": {
+		"bh-wp-bitcoin-gateway/orderId": "orderId"
+	}
+}
