@@ -7,11 +7,12 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * @coversNothing
  */
-class API_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class API_Integration_Test extends WPTestCase {
 
 	public function test_update_address(): void {
 
