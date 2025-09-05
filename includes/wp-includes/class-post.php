@@ -22,6 +22,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use WP_Query;
 
 /**
  * Register the custom post types with WordPress.
@@ -178,5 +179,23 @@ class Post {
 				'label_count'               => _n_noop( 'Used <span class="count">(%s)</span>', 'Used <span class="count">(%s)</span>' ),
 			)
 		);
+	}
+
+	/**
+	 * If the query is for bh-bitcoin-address posts, set post_status to all statuses, unless another is specified.
+	 *
+	 * Otherwise, `get_posts()` and the REST API return no posts.
+	 *
+	 * @see get_posts()
+	 * @hooked parse_query
+	 * @see WP_Query::get_posts()
+	 */
+	public function add_post_statuses( WP_Query $query ): void {
+
+		if ( 'bh-bitcoin-address' === ( $query->query['post_type'] ?? false )
+			&& 'publish' === ( $query->query['post_status'] ?? false )
+			) {
+				$query->query_vars['post_status'] = 'all';
+		}
 	}
 }

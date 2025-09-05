@@ -130,6 +130,8 @@ class BH_WP_Bitcoin_Gateway {
 		$post = $this->container->get( Post::class );
 
 		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
+		add_action( 'parse_query', array( $post, 'add_post_statuses' ) );
+
 		add_action( 'init', array( $post, 'register_address_post_type' ) );
 	}
 
