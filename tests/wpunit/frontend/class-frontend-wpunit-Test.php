@@ -18,8 +18,8 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_enqueue_scripts(): void {
 
-		$logger             = new ColorLogger();
-		$settings           = $this->makeEmpty(
+		$logger   = new ColorLogger();
+		$settings = $this->makeEmpty(
 			Settings_Interface::class,
 			array(
 				'get_plugin_version' => Expected::once(
@@ -29,8 +29,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				),
 			)
 		);
-		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
-		$api                = $this->makeEmpty(
+		$api      = $this->makeEmpty(
 			API_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
@@ -38,7 +37,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 						return true;
 					}
 				),
-				'get_order_details'            => Expected::once( $bitcoin_order_mock ),
+				'get_formatted_order_details'  => Expected::once( array() ),
 			)
 		);
 
@@ -51,7 +50,7 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$sut->enqueue_scripts();
 
-		$this->assertTrue( wp_script_is( 'bh-wp-bitcoin-gateway' ) );
+		$this->assertTrue( wp_script_is( 'bh-wp-bitcoin-gateway-shortcode-thank-you' ) );
 
 		// TODO: check the inline script is enqueued.
 	}

@@ -100,9 +100,20 @@ class Frontend_Assets {
 
 		$version = $this->settings->get_plugin_version();
 
-		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/bh-wp-bitcoin-gateway.min.js';
+		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.js';
 
-		wp_enqueue_script( 'bh-wp-bitcoin-gateway', $script_url, array( 'jquery' ), $version, true );
+		/** @var array{dependencies: array<string>, version:string} $webpack_dep_version */
+		$webpack_dep_version = include 'assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.asset.php';
+
+		wp_register_script(
+			'bh-wp-bitcoin-gateway-shortcode-thank-you',
+			$script_url,
+			$webpack_dep_version['dependencies'] ?? array( 'jquery' ),
+			$webpack_dep_version['version'] ?? $this->settings->get_plugin_version(),
+			array( 'in_footer' => true )
+		);
+
+		wp_enqueue_script( 'bh-wp-bitcoin-gateway-shortcode-thank-you' );
 
 		// Filter array to explicit allow-list containing only the required keys for frontend TypeScript.
 		$filtered_order_details = array(
@@ -130,7 +141,7 @@ var bh_wp_bitcoin_gateway_order_details = $order_details_json;
 EOD;
 
 		wp_add_inline_script(
-			'bh-wp-bitcoin-gateway',
+			'bh-wp-bitcoin-gateway-shortcode-thank-you',
 			$script,
 			'before'
 		);
