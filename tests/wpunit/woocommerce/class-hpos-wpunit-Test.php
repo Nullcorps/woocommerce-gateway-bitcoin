@@ -30,6 +30,19 @@ class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 		global $wp_current_filter;
 		$wp_current_filter[] = 'before_woocommerce_init';
 
+		wp_cache_init();
+
+		// because the plugin is not in the wp-content/plugins/ directory, we need to mock the plugins cache.
+		$cache_plugins = array(
+			'' => array(
+				'bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' =>
+					array(
+						'Name' => 'Bitcoin Gateway',
+					),
+			),
+		);
+		wp_cache_set( 'plugins', $cache_plugins, 'plugins', 10 );
+
 		$sut = new HPOS( $settings );
 
 		$sut->declare_compatibility();
