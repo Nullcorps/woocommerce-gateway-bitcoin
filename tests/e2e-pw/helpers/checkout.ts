@@ -1,6 +1,8 @@
 import { Page } from '@playwright/test';
 import { testConfig } from '../config/test-config';
 import config from "../../../playwright.config";
+import * as fs from 'fs';
+import * as path from 'path';
 
 export type CheckoutType = 'blocks' | 'shortcode';
 
@@ -41,11 +43,11 @@ async function setPageContent(postId: number, postContent: string) {
   });
 }
 
-export async function useBlocksCheckout(page: Page) {
+export async function useBlocksCheckout() {
   const page_id = await getCheckoutPostId();
-  const postContent = ''; //
+  const contentPath = path.join(__dirname, '../setup/blocks-checkout-post-content.txt');
+  const postContent = fs.readFileSync(contentPath, 'utf8');
   await setPageContent(page_id, postContent);
-
 }
 
 export async function useShortcodeCheckout(page: Page) {
