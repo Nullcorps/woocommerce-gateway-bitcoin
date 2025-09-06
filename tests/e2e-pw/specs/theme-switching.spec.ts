@@ -3,55 +3,55 @@ import {
   switchToShortcodeTheme, 
   switchToBlocksTheme, 
   getCurrentTheme, 
-  verifyThemeForCheckoutType 
+  verifyTheme
 } from '../helpers/theme-switcher';
 
 test.describe('Theme Switching for Checkout Types', () => {
   test('should switch to Twenty Twelve for shortcode checkout', async ({ page }) => {
-    await switchToShortcodeTheme(page);
+    await switchToShortcodeTheme();
     
-    const currentTheme = await getCurrentTheme(page);
+    const currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwelve');
 
     // Verify theme validation works
-    await verifyThemeForCheckoutType(page, 'shortcode');
+    await verifyTheme('shortcode');
   });
 
   test('should switch to Twenty Twenty-Five for blocks checkout', async ({ page }) => {
-    await switchToBlocksTheme(page);
+    await switchToBlocksTheme();
     
-    const currentTheme = await getCurrentTheme(page);
+    const currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwentyfive');
 
     // Verify theme validation works
-    await verifyThemeForCheckoutType(page, 'blocks');
+    await verifyTheme('blocks');
   });
 
   test('should be able to switch between themes multiple times', async ({ page }) => {
     // Switch to shortcode theme
-    await switchToShortcodeTheme(page);
-    let currentTheme = await getCurrentTheme(page);
+    await switchToShortcodeTheme();
+    let currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwelve');
     
     // Switch to blocks theme
-    await switchToBlocksTheme(page);
-    currentTheme = await getCurrentTheme(page);
+    await switchToBlocksTheme();
+    currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwentyfive');
     
     // Switch back to shortcode theme
-    await switchToShortcodeTheme(page);
-    currentTheme = await getCurrentTheme(page);
+    await switchToShortcodeTheme();
+    currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwelve');
   });
 
   test('should handle theme already being active', async ({ page }) => {
     // Switch to shortcode theme
-    await switchToShortcodeTheme(page);
+    await switchToShortcodeTheme();
     
     // Switch to the same theme again (should not fail)
-    await switchToShortcodeTheme(page);
+    await switchToShortcodeTheme();
     
-    const currentTheme = await getCurrentTheme(page);
+    const currentTheme = await getCurrentTheme();
     expect(currentTheme.slug).toBe('twentytwelve');
   });
 });

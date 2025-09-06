@@ -32,7 +32,7 @@ async function setPageContent(postId: number, postContent: string) {
 
   const baseURL: string = config.use.baseURL;
   const fullUrl = baseURL + '/wp-json/wp/v2/pages/' + postId;
-  await fetch(fullUrl, {
+  const response = await fetch(fullUrl, {
     method: "POST",
     body: JSON.stringify( {
       "content": postContent
@@ -50,7 +50,7 @@ export async function useBlocksCheckout() {
   await setPageContent(page_id, postContent);
 }
 
-export async function useShortcodeCheckout(page: Page) {
+export async function useShortcodeCheckout() {
   const page_id = await getCheckoutPostId();
   const postContent = '<!-- wp:shortcode -->[woocommerce_checkout]<!-- /wp:shortcode -->';
   await setPageContent(page_id, postContent);
@@ -136,7 +136,9 @@ export async function fillBilling(page: Page): Promise<void> {
     // Shortcode checkout field selectors
     await page.fill('#billing_first_name', billing.firstname);
     await page.fill('#billing_last_name', billing.lastname);
-    await page.fill('#billing_company', billing.company);
+    if(await page.isVisible('#billing_company')){
+      await page.fill('#billing_company', billing.company);
+    }
     await page.selectOption('#billing_country', 'US');
     await page.fill('#billing_address_1', billing.addressfirstline);
     await page.fill('#billing_address_2', billing.addresssecondline);

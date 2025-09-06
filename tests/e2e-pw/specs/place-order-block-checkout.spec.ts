@@ -1,25 +1,31 @@
 import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/create-simple-product';
-import { switchToBlocksTheme, verifyThemeForCheckoutType } from '../helpers/theme-switcher';
+import { switchToBlocksTheme, verifyTheme } from '../helpers/theme-switcher';
 import { testConfig } from '../config/test-config';
+import { useBlocksCheckout } from "../helpers/checkout";
 
 test.describe('Place orders on block checkout', () => {
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     await configureBitcoinXpub(page);
     await createSimpleProduct(page);
-    
+
+    await useBlocksCheckout();
+
     // Switch to Twenty Twenty-Five theme for block checkout testing
-    await switchToBlocksTheme(page);
-    await verifyThemeForCheckoutType(page, 'blocks');
+    await switchToBlocksTheme();
+
+    await useBlocksCheckout();
+
+    await verifyTheme('blocks');
     
     await page.close();
   });
 
   test('can see Bitcoin payment option on block checkout', async ({ page }) => {
     // Verify we're using the correct theme for block checkout
-    await verifyThemeForCheckoutType(page, 'blocks');
+    await verifyTheme('blocks');
     
     // Go to shop and add product to cart
     await page.goto('/shop/');
@@ -43,7 +49,7 @@ test.describe('Place orders on block checkout', () => {
 
   test('should successfully place order and show payment details', async ({ page }) => {
     // Verify we're using the correct theme for block checkout
-    await verifyThemeForCheckoutType(page, 'blocks');
+    await verifyTheme('blocks');
     
     const billing = testConfig.addresses.customer.billing;
     
@@ -93,6 +99,8 @@ test.describe('Place orders on block checkout', () => {
     // Place order
     await page.locator('.wc-block-components-checkout-place-order-button').isEnabled();
     await page.click('.wc-block-components-checkout-place-order-button');
+
+    await page.waitForLoadState('networkidle');
 
     // Wait for order received page
     await page.waitForSelector('text=Your order has been received', { timeout: 30000 });

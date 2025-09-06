@@ -1,4 +1,3 @@
-import { Page } from "@playwright/test";
 import config from "../../../playwright.config.ts"
 
 export type ThemeType = 'shortcode' | 'blocks';
@@ -19,7 +18,7 @@ const THEME_CONFIG = {
 /**
  * Switch to a theme appropriate for the checkout type
  */
-export async function switchToTheme(page: Page, themeType: ThemeType ): Promise<void> {
+export async function switchToTheme(themeType: ThemeType ): Promise<void> {
   console.log('switchToTheme type: ' + themeType);
 
   const theme = THEME_CONFIG[themeType];
@@ -41,23 +40,23 @@ export async function switchToTheme(page: Page, themeType: ThemeType ): Promise<
 /**
  * Switch to shortcode-compatible theme (Twenty Twelve)
  */
-export async function switchToShortcodeTheme(page: Page): Promise<void> {
+export async function switchToShortcodeTheme(): Promise<void> {
   console.log('switchToShortcodeTheme');
-  await switchToTheme(page, 'shortcode');
+  await switchToTheme('shortcode');
 }
 
 /**
  * Switch to blocks-compatible theme (Twenty Twenty-Five)
  */
-export async function switchToBlocksTheme(page: Page): Promise<void> {
+export async function switchToBlocksTheme(): Promise<void> {
   console.log('switchToBlocksTheme');
-  await switchToTheme(page, 'blocks');
+  await switchToTheme('blocks');
 }
 
 /**
  * Get the current active theme information
  */
-export async function getCurrentTheme(page: Page): Promise<{ slug: string }> {
+export async function getCurrentTheme(): Promise<{ slug: string }> {
   console.log('getCurrentTheme');
 
   // const baseURL: string = config?.use?.baseURL!;
@@ -80,22 +79,21 @@ export async function getCurrentTheme(page: Page): Promise<{ slug: string }> {
 /**
  * Verify that the correct theme is active for the checkout type
  */
-export async function verifyThemeForCheckoutType(page: Page, expectedType: ThemeType): Promise<void> {
-  console.log('verifyThemeForCheckoutType');
+export async function verifyTheme(expectedType: ThemeType): Promise<void> {
+  console.log('verifyTheme');
 
-  const currentTheme1 = await getCurrentTheme(page);
-  const currentTheme = await getCurrentTheme(page);
+  const currentTheme = await getCurrentTheme();
 
   const expectedTheme = THEME_CONFIG[expectedType];
   
   if (currentTheme.slug !== expectedTheme.slug) {
-    console.log(`Expected ${expectedTheme.name} (${expectedTheme.slug}) for ${expectedType} checkout, ` +
+    console.log(`Expected ${expectedTheme.name} (${expectedTheme.slug}) for ${expectedType} theme, ` +
       `but found ${currentTheme.slug}`);
     throw new Error(
-      `Expected ${expectedTheme.name} (${expectedTheme.slug}) for ${expectedType} checkout, ` +
+      `Expected ${expectedTheme.name} (${expectedTheme.slug}) for ${expectedType} theme, ` +
       `but found ${currentTheme.slug}`
     );
   }
   
-  console.log(`✓ Verified ${currentTheme.slug} theme is active for ${expectedType} checkout`);
+  console.log(`✓ Verified ${currentTheme.slug} theme is active for ${expectedType} theme`);
 }
