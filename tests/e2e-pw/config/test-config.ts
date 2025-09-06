@@ -12,7 +12,7 @@ export const testConfig = {
   },
   products: {
     simple: {
-      name: "Album"
+      name: "Beanie"
     }
   },
   addresses: {

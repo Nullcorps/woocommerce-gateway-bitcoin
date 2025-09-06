@@ -9,38 +9,21 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   }
 
   // Navigate to login page
-  await page.goto('/wp-login.php');
-  
-  // Wait for login form to be visible
-  await page.waitForSelector('#loginform', { timeout: 10000 });
-  
-  // Check if there are any error messages from previous failed attempts
-  const errorMessage = page.locator('#login_error');
-  if (await errorMessage.count() > 0) {
-    const errorText = await errorMessage.textContent();
-    console.warn('Previous login error detected:', errorText);
-  }
-
-  // Fill in credentials
-  await page.fill('#user_login', testConfig.users.admin.username);
-  await page.fill('#user_pass', testConfig.users.admin.password);
-
-  // Ensure submit button is enabled
-  const submitButton = page.locator('#wp-submit');
-  await expect(submitButton).toBeEnabled();
-
-  // Click login and wait for navigation
-  await Promise.all([
-    // Wait for navigation to complete (either to dashboard or back to login with error)
-    page.waitForNavigation({ timeout: 15000 }),
-    submitButton.click()
-  ]);
+  await page.goto('/?login_as_user=admin');
 
   // Check if login was successful
   await verifyLoginSuccess(page);
 }
 
 async function verifyLoginSuccess(page: Page): Promise<void> {
+
+  // #wp-admin-bar-my-account
+  if(await page.isVisible('#wp-admin-bar-my-account')) {
+    // console.log('✓ Successfully logged in as admin');
+    return
+  }
+
+
   const currentUrl = page.url();
   
   // If we're still on the login page, check for errors
@@ -122,17 +105,18 @@ export async function logout(page: Page): Promise<void> {
     console.log('✓ Already logged out');
     return;
   }
+  await logoutViaCookies(page);
 
-  try {
-    // Try the UI logout method first (more realistic)
-    await logoutViaUI(page);
-    console.log('✓ Logged out via UI');
-  } catch (error) {
-    console.warn('UI logout failed, falling back to cookie clearing:', error);
-    // Fallback to cookie clearing method
-    await logoutViaCookies(page);
-    console.log('✓ Logged out via cookie clearing');
-  }
+  // try {
+  //   // Try the UI logout method first (more realistic)
+  //   await logoutViaUI(page);
+  //   console.log('✓ Logged out via UI');
+  // } catch (error) {
+  //   console.warn('UI logout failed, falling back to cookie clearing:', error);
+  //   // Fallback to cookie clearing method
+  //   await logoutViaCookies(page);
+  //   console.log('✓ Logged out via cookie clearing');
+  // }
 
   // Verify logout was successful
   if (await isLoggedIn(page)) {

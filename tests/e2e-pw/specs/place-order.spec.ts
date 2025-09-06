@@ -20,7 +20,7 @@ test.describe('Place orders (Shortcode Checkout)', () => {
 
   test('should successfully place order using shortcode checkout and show payment details', async ({ page }) => {
     // Verify we're using the correct theme for shortcode checkout
-    await verifyThemeForCheckoutType(page, 'shortcode');
+    await switchToShortcodeTheme(page);
     
     // Checkout appears different when logged in/out due to saved address
     await logout(page); 

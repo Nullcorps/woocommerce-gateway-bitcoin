@@ -2,8 +2,9 @@ import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
 import { createSimpleProduct } from '../helpers/create-simple-product';
-import { loginAsAdmin } from '../helpers/login';
+import { loginAsAdmin, logout } from "../helpers/login";
 import { testConfig } from '../config/test-config';
+import { getBitcoinAddressCount, deleteBitcoinAddresses } from "../helpers/bitcoin-address";
 
 test.describe('Generate new addresses', () => {
   test.setTimeout(60000);
@@ -16,30 +17,16 @@ test.describe('Generate new addresses', () => {
   });
 
   test('should generate addresses when number available falls below 50', async ({ page }) => {
-    // Login as admin
-    await loginAsAdmin(page);
-    
-    // Visit list of unused addresses
-    await page.goto('/wp-admin/edit.php?post_type=bh-bitcoin-address&post_status=unused');
-    
-    // Get count of unused addresses
-    const unusedCountElement = page.locator('.unused a .count');
-    let unusedCountText = await unusedCountElement.textContent();
-    let unusedCount = parseInt(unusedCountText?.replace(/[^\d]/g, '') || '0');
-    
-    // Delete addresses until we have fewer than 50
-    while (unusedCount >= 50) {
-      await page.check('#cb-select-all-1');
-      await page.selectOption('#bulk-action-selector-top', 'trash');
-      await page.click('#doaction');
-      
-      // Wait for the bulk action to complete
-      await page.waitForSelector('.updated.notice', { timeout: 10000 });
-      
-      // Refresh count
-      unusedCountText = await unusedCountElement.textContent();
-      unusedCount = parseInt(unusedCountText?.replace(/[^\d]/g, '') || '0');
+
+    // 50 is the threshold to trigger generation
+    // Delete all but 49 unused addresses to test the generation
+    var unusedCount = await getBitcoinAddressCount('unused');
+    const toDelete = unusedCount - 49;
+    if(unusedCount > 0) {
+      await deleteBitcoinAddresses(toDelete, 'unused');
     }
+    unusedCount = await getBitcoinAddressCount('unused');
+
     
     // Place an order to trigger address generation
     await placeBitcoinOrder(page);

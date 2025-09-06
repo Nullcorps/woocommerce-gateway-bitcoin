@@ -2,19 +2,28 @@ import { test, expect } from '@playwright/test';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/create-simple-product';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
+import { switchToShortcodeTheme } from "../helpers/theme-switcher";
+import { useBlocksCheckout, useShortcodeCheckout } from "../helpers/checkout";
 
 test.describe('Refresh order details', () => {
   let orderId: string;
 
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
+
+    await useShortcodeCheckout(page);
+
+    await switchToShortcodeTheme(page);
     await configureBitcoinXpub(page);
     await createSimpleProduct(page);
+    console.log('placeBitcoinOrder');
     orderId = await placeBitcoinOrder(page);
     await page.close();
   });
 
   test('should successfully refresh the details for logged out user', async ({ page }) => {
+
+
     // Ensure we're on the order received page
     await expect(page.locator('text=Thank you. Your order has been received.')).toBeVisible();
     
@@ -47,6 +56,10 @@ test.describe('Refresh order details', () => {
   });
 
   test('should successfully refresh the details twice', async ({ page }) => {
+
+    await switchToShortcodeTheme(page);
+    await placeBitcoinOrder(page);
+
     // Ensure we're on the order received page
     await expect(page.locator('text=Thank you. Your order has been received.')).toBeVisible();
     

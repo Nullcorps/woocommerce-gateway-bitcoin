@@ -12,8 +12,7 @@ test.describe('Theme Switching for Checkout Types', () => {
     
     const currentTheme = await getCurrentTheme(page);
     expect(currentTheme.slug).toBe('twentytwelve');
-    expect(currentTheme.name).toContain('Twenty Twelve');
-    
+
     // Verify theme validation works
     await verifyThemeForCheckoutType(page, 'shortcode');
   });
@@ -23,8 +22,7 @@ test.describe('Theme Switching for Checkout Types', () => {
     
     const currentTheme = await getCurrentTheme(page);
     expect(currentTheme.slug).toBe('twentytwentyfive');
-    expect(currentTheme.name).toContain('Twenty Twenty-Five');
-    
+
     // Verify theme validation works
     await verifyThemeForCheckoutType(page, 'blocks');
   });

@@ -1,7 +1,58 @@
 import { Page } from '@playwright/test';
 import { testConfig } from '../config/test-config';
+import config from "../../../playwright.config";
 
 export type CheckoutType = 'blocks' | 'shortcode';
+
+// returns json object of settings
+async function getSettings(): Promise<object> {
+  const baseURL: string = config.use.baseURL;
+  var fullUrl = `${baseURL}/wp-json/wp/v2/settings`;
+
+  const response: Response = await fetch(fullUrl);
+
+  return await response.json();
+}
+
+async function getSetting(name: String): Promise<Response> {
+  const settings = await getSettings();
+
+  return settings[name];
+}
+
+async function getCheckoutPostId(): Promise<number> {
+  // woocommerce_checkout_page_id
+  const postId = await getSetting('woocommerce_checkout_page_id');
+  return parseInt(postId);
+}
+
+async function setPageContent(postId: number, postContent: string) {
+
+  const baseURL: string = config.use.baseURL;
+  const fullUrl = baseURL + '/wp-json/wp/v2/pages/' + postId;
+  await fetch(fullUrl, {
+    method: "POST",
+    body: JSON.stringify( {
+      "content": postContent
+    }),
+    headers:{
+      "Content-Type": "application/json",
+    }
+  });
+}
+
+export async function useBlocksCheckout(page: Page) {
+  const page_id = await getCheckoutPostId();
+  const postContent = ''; //
+  await setPageContent(page_id, postContent);
+
+}
+
+export async function useShortcodeCheckout(page: Page) {
+  const page_id = await getCheckoutPostId();
+  const postContent = '<!-- wp:shortcode -->[woocommerce_checkout]<!-- /wp:shortcode -->';
+  await setPageContent(page_id, postContent);
+}
 
 export async function detectCheckoutType(page: Page): Promise<CheckoutType> {
   // Wait a moment for page to fully load
@@ -33,12 +84,6 @@ export async function detectCheckoutType(page: Page): Promise<CheckoutType> {
     if (await page.locator(selector).count() > 0) {
       return 'shortcode';
     }
-  }
-
-  // If we can't detect, try to infer from URL
-  const url = page.url();
-  if (url.includes('blocks-checkout') || url.includes('block-checkout')) {
-    return 'blocks';
   }
 
   // Check page content for block-specific classes
