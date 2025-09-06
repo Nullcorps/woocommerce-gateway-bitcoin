@@ -124,7 +124,6 @@ class Post {
 			'show_in_menu'   => false,
 			'plugin_objects' => $this->plugin_objects,
 			'show_in_rest'   => true,
-			'rest_namespace' => 'bh-wp-bitcoin-gateway/v1',
 		);
 		register_post_type( BITCOIN_ADDRESS::POST_TYPE, $args );
 
