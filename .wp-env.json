@@ -21,7 +21,6 @@
     "wp-content/plugins/checkout-fees-for-woocommerce": "./wp-content/plugins/checkout-fees-for-woocommerce",
     "wp-content/plugins/crypto-payments-woo": "./wp-content/plugins/crypto-payments-woo",
     "wp-content/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce": "./wp-content/plugins/decentralized-bitcoin-cryptodec-payment-gateway-for-woocommerce",
-    "wp-content/plugins/e2e-test-helper": "./wp-content/plugins/e2e-test-helper",
     "wp-content/plugins/e2e-test-helper-plugin/e2e-test-helper.php": "./tests/e2e-pw/e2e-test-helper-plugin/e2e-test-helper.php",
     "wp-content/plugins/give": "./wp-content/plugins/give",
     "wp-content/plugins/give-next-gen": "./wp-content/plugins/give-next-gen",
