@@ -4,6 +4,7 @@ import { createSimpleProduct } from '../helpers/create-simple-product';
 import { switchToBlocksTheme, verifyTheme } from '../helpers/theme-switcher';
 import { testConfig } from '../config/test-config';
 import { fillBilling, useBlocksCheckout } from "../helpers/checkout";
+import { placeBitcoinOrder } from "../helpers/place-bitcoin-order";
 
 test.describe('Place orders on block checkout', () => {
   test.beforeAll(async ({ browser }) => {
@@ -48,30 +49,8 @@ test.describe('Place orders on block checkout', () => {
   test('should successfully place order and show payment details', async ({ page }) => {
     // Verify we're using the correct theme for block checkout
     await verifyTheme('blocks');
-    
-    // const billing = testConfig.addresses.customer.billing;
 
-    // Go to shop and add product to cart
-    await page.goto('/shop/');
-    await page.click(`text="${testConfig.products.simple.name}"`);
-    await page.click('.single_add_to_cart_button');
-    
-    // Go to block checkout
-    await page.goto('/checkout/');
-
-    await fillBilling(page);
-
-    // Select Bitcoin payment method
-    // await page.click('.wc-block-components-payment-method-label:has-text("Bitcoin")');
-    await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
-    await page.waitForTimeout(1000);
-    
-    // Wait for place order button to be enabled
-    await page.waitForSelector('.wc-block-components-checkout-place-order-button:not([disabled])');
-    
-    // Place order
-    await page.locator('.wc-block-components-checkout-place-order-button').isEnabled();
-    await page.click('.wc-block-components-checkout-place-order-button');
+    await placeBitcoinOrder(page);
 
     await page.waitForLoadState('networkidle');
 

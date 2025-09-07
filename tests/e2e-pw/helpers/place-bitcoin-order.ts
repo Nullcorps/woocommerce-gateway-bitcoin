@@ -41,6 +41,8 @@ export async function placeBitcoinOrder(page: Page): Promise<string> {
   // Place order
   // await page.click(''Place Order');
   await page.getByText('Place Order').click();
+  // await page.locator('.wc-block-components-checkout-place-order-button').isEnabled();
+  // await page.click('.wc-block-components-checkout-place-order-button');
 
   // Wait for order received page
   await page.waitForSelector('text=Order received', { timeout: 30000 });

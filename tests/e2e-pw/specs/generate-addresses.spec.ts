@@ -23,12 +23,14 @@ test.describe('Generate new addresses', () => {
      * 20 is the threshold to trigger generation
      * @see API::generate_new_addresses_for_wallet()
      */
-    var unusedCount = await getBitcoinAddressCount('unused');
-    const toDelete = unusedCount - 49;
-    if(unusedCount > 0) {
+    var beforeUnusedCount = await getBitcoinAddressCount('unused');
+    const toDelete = beforeUnusedCount - 49;
+    if(toDelete > 0) {
       await deleteBitcoinAddresses(toDelete, 'unused');
+      const afterUnusedCount = await getBitcoinAddressCount('unused');
+    } else {
+      const afterUnusedCount = beforeUnusedCount;
     }
-    unusedCount = await getBitcoinAddressCount('unused');
 
     
     // Place an order to trigger address generation
