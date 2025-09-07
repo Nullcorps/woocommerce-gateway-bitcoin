@@ -39,7 +39,7 @@ add_filter(
 /**
  * @see \Automattic\WooCommerce\StoreApi\Routes\V1\AbstractCartRoute::check_nonce()
  */
-add_filter('woocommerce_store_api_disable_nonce_check', '__return_true' );
+add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
 
 /**
  * @see WP_REST_Server::check_authentication()
