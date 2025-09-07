@@ -16,10 +16,13 @@ test.describe('Generate new addresses', () => {
     await page.close();
   });
 
-  test('should generate addresses when number available falls below 50', async ({ page }) => {
+  test('should generate addresses when number available falls below 20', async ({ page }) => {
 
-    // 50 is the threshold to trigger generation
-    // Delete all but 49 unused addresses to test the generation
+    /**
+     * Delete all but 19 unused addresses to test the generation
+     * 20 is the threshold to trigger generation
+     * @see API::generate_new_addresses_for_wallet()
+     */
     var unusedCount = await getBitcoinAddressCount('unused');
     const toDelete = unusedCount - 49;
     if(unusedCount > 0) {
@@ -58,12 +61,12 @@ test.describe('Generate new addresses', () => {
       await page.reload();
     }
     
-    // Verify we have at least 50 unused addresses
+    // Verify we have at least 20 unused addresses
     const finalUnusedCountElement = page.locator('.unused a .count');
     const finalUnusedCountText = await finalUnusedCountElement.textContent();
     const finalUnusedCount = parseInt(finalUnusedCountText?.replace(/[^\d]/g, '') || '0');
     
-    expect(finalUnusedCount).toBeGreaterThanOrEqual(50);
+    expect(finalUnusedCount).toBeGreaterThanOrEqual(20);
   });
 
   test('should correctly report the all addresses count', async ({ page }) => {
