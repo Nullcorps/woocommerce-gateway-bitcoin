@@ -43,57 +43,74 @@ async function setPageContent(postId: number, postContent: string) {
   });
 }
 
-export async function useBlocksCheckout() {
+async function getPostContentRendered(postType: string, postId: number): Promise<string> {
+
+  const baseURL: string = config.use.baseURL;
+  const fullUrl = baseURL + '/wp-json/wp/v2/'+postType+'s/' + postId;
+
+  const response: Response = await fetch(fullUrl);
+
+  const result = await response.json();
+
+  return result.content.rendered;
+}
+
+async function getCheckoutPageContent(): Promise<string> {
+  const pageId = await getCheckoutPostId();
+  return await getPostContentRendered('page', pageId);
+}
+
+
+async function setCheckoutPageContent(postContent:string) {
   const page_id = await getCheckoutPostId();
+  await setPageContent(page_id, postContent);
+}
+
+export async function useBlocksCheckout() {
   const contentPath = path.join(__dirname, '../setup/blocks-checkout-post-content.txt');
   const postContent = fs.readFileSync(contentPath, 'utf8');
-  await setPageContent(page_id, postContent);
+  await setCheckoutPageContent(postContent);
 }
 
 export async function useShortcodeCheckout() {
-  const page_id = await getCheckoutPostId();
   const postContent = '<!-- wp:shortcode -->[woocommerce_checkout]<!-- /wp:shortcode -->';
-  await setPageContent(page_id, postContent);
+  await setCheckoutPageContent(postContent);
 }
 
 export async function detectCheckoutType(page: Page): Promise<CheckoutType> {
-  // Wait a moment for page to fully load
-  await page.waitForTimeout(1000);
+
+  const postContent = await getCheckoutPageContent();
 
   // Check for blocks checkout indicators
-  const blocksCheckoutElements = [
-    '.wc-block-checkout',
-    '.wp-block-woocommerce-checkout',
-    '.wc-block-components-checkout-place-order-button'
+  const blocksCheckoutStrings = [
+    'wc-block-checkout',
+    'wp-block-woocommerce-checkout',
+    'wc-block-components-checkout-place-order-button'
   ];
+
+  // Test for blocks checkout
+  for (const htmlString of blocksCheckoutStrings) {
+    if ( postContent.includes(htmlString) ) {
+      return 'blocks';
+    }
+  }
 
   // Check for shortcode checkout indicators
   const shortcodeCheckoutElements = [
+    '[woocommerce_checkout]',
     '.woocommerce-checkout',
     '#place_order',
     'form[name="checkout"]'
   ];
 
-  // Test for blocks checkout
-  for (const selector of blocksCheckoutElements) {
-    if (await page.locator(selector).count() > 0) {
-      return 'blocks';
-    }
-  }
-
   // Test for shortcode checkout
-  for (const selector of shortcodeCheckoutElements) {
-    if (await page.locator(selector).count() > 0) {
+  for (const htmlString of shortcodeCheckoutElements) {
+    if ( postContent.includes(htmlString) ) {
       return 'shortcode';
     }
   }
 
-  // Check page content for block-specific classes
-  const bodyClasses = await page.getAttribute('body', 'class') || '';
-  if (bodyClasses.includes('wc-block') || bodyClasses.includes('wp-block')) {
-    return 'blocks';
-  }
-
+  // TODO: Maybe throw error if neither detected?
   // Default to shortcode if uncertain
   return 'shortcode';
 }
@@ -122,7 +139,9 @@ export async function fillBilling(page: Page): Promise<void> {
     // await billingAddress.getByLabel('Country/Region').click();
     // await billingAddress.getByLabel('Country/Region').fill('united');
     // await billingAddress.getByLabel('United States (US)', { exact: true }).click();
-    await page.waitForLoadState( 'networkidle' );
+
+
+    // await page.waitForLoadState( 'networkidle' );
 
     await page.fill('#billing-address_1', billing.addressfirstline);
     await page.fill('#billing-address_2', billing.addresssecondline);
