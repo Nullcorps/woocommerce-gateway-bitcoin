@@ -19,3 +19,14 @@ if ( file_exists( $env_secret_fullpath ) ) {
 	$dotenv = Dotenv\Dotenv::createImmutable( codecept_root_dir(), '.env.secret' );
 	$dotenv->load();
 }
+
+
+$is_integration_test = array_reduce(
+	$_SERVER['argv'],
+	fn( $carry, $arg ) => $carry || 'integration' === $arg,
+	false
+);
+if ( $is_integration_test ) {
+	global $arbitrary_plugins;
+	$arbitrary_plugins = array( '/Users/brianhenry/Sites/bh-wp-bitcoin-gateway/bh-wp-bitcoin-gateway.php' );
+}
