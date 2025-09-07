@@ -5,7 +5,7 @@
  * @wordpress-plugin
  * Plugin Name:       Bitcoin Gateway E2E Test Helper
  * Plugin URI:        http://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/
- * Description:       Actions and fitlers to help with E2E tests.
+ * Description:       Actions and filters to help with E2E tests.
  */
 
 
