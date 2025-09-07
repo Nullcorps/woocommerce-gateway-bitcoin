@@ -159,7 +159,8 @@
     "wpackagist-plugin/wordpress-importer": ">=0.8.1",
     "wpackagist-plugin/wp-mail-logging": ">=1.10",
     "wpackagist-theme/storefront": "*",
-    "wpackagist-theme/twentytwenty": "*"
+    "wpackagist-theme/twentytwenty": "*",
+    "wpackagist-theme/twentytwentyfive": "*"
   },
   "extra": {
     "patches": {
