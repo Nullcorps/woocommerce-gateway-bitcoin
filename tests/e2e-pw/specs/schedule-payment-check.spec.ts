@@ -56,7 +56,7 @@ test.describe('Schedule payment checks', () => {
     
     // Update order status
     await page.selectOption('#order_status', status);
-    await page.click('#publish');
+    await page.click('#woocommerce-order-actions .save_order');
     await page.waitForSelector('.notice-success', { timeout: 10000 });
   }
 
