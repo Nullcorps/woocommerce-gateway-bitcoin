@@ -3,6 +3,21 @@ import { testConfig } from '../config/test-config';
 import { detectCheckoutType, fillBilling } from "./checkout";
 import { logout } from './login';
 
+async function selectBitcoinPaymentMethod(page: Page, checkoutType?: string) {
+  if (checkoutType === 'blocks') {
+    await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
+  }else{
+    await page.click('label[for="payment_method_bitcoin_gateway"]');
+  }
+
+  // Verify Bitcoin payment method description appears
+  // await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
+  // Pay quickly and easily with Bitcoin
+  await expect(page.getByText('Pay quickly and easily with Bitcoin')).toBeVisible();
+
+  // TODO: else throw error.
+}
+
 export async function placeBitcoinOrder(page: Page): Promise<string> {
 
   await logout(page);
@@ -26,17 +41,7 @@ export async function placeBitcoinOrder(page: Page): Promise<string> {
   // radio-control-wc-payment-method-options-bitcoin_gateway
   const checkoutType = await detectCheckoutType(page);
 
-  if (checkoutType === 'blocks') {
-    await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
-  }else{
-    await page.click('label[for="payment_method_bitcoin_gateway"]');
-  }
-
-  // Verify Bitcoin payment method description appears
-  // await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
-  // Pay quickly and easily with Bitcoin
-  await expect(page.getByText('Pay quickly and easily with Bitcoin')).toBeVisible();
-
+  await selectBitcoinPaymentMethod(page, checkoutType);
 
   // Place order
   // await page.click(''Place Order');
