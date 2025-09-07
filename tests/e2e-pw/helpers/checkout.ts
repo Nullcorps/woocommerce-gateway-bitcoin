@@ -169,5 +169,6 @@ export async function fillBilling(page: Page): Promise<void> {
   }
 
   // Wait for form to update
-  await page.waitForTimeout(2000);
+  // await page.waitForTimeout(2000);
+  await page.waitForLoadState('networkidle');
 }
