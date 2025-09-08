@@ -155,7 +155,7 @@ class BH_WP_Bitcoin_Gateway {
 		add_action( 'wp_ajax_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 		add_action( 'wp_ajax_nopriv_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 
-		/** @var Bitcoin_Image_Block $ajax */
+		/** @var Bitcoin_Image_Block $bitcoin_image_block */
 		$bitcoin_image_block = $this->container->get( Bitcoin_Image_Block::class );
 		add_filter( 'get_block_type_variations', array( $bitcoin_image_block, 'add_bitcoin_image_variation' ), 10, 2 );
 	}
