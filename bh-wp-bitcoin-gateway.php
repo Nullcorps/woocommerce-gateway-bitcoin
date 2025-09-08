@@ -89,11 +89,14 @@ $container->singleton(
 	static function ( Container $container ) {
 		return new WC_PSR_Logger(
 			new class() implements WC_Logger_Settings_Interface {
-				public function get_plugin_slug() {
+				public function get_plugin_slug(): string {
 					return 'bh-wp-bitcoin-gateway';
 				}
 
-				public function get_log_level() {
+				/**
+				 * Record all logs from this level and above.
+				 */
+				public function get_log_level(): string {
 					return LogLevel::DEBUG;
 				}
 			}
