@@ -102,14 +102,18 @@ class Frontend_Assets {
 
 		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.js';
 
-		/** @var array{dependencies: array<string>, version:string} $webpack_dep_version */
-		$webpack_dep_version = include 'assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.asset.php';
+		$webpack_manifest_path = WP_PLUGIN_DIR . '/'.
+			dirname( $this->settings->get_plugin_basename() )
+			. '/assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.asset.php';
+
+		/** @var array{dependencies: array<string>, version:string} $webpack_manifest */
+		$webpack_manifest = include $webpack_manifest_path;
 
 		wp_register_script(
 			'bh-wp-bitcoin-gateway-shortcode-thank-you',
 			$script_url,
-			$webpack_dep_version['dependencies'] ?? array( 'jquery' ),
-			$webpack_dep_version['version'] ?? $this->settings->get_plugin_version(),
+			$webpack_manifest['dependencies'] ?? array( 'jquery' ),
+			$webpack_manifest['version'] ?? $this->settings->get_plugin_version(),
 			array( 'in_footer' => true )
 		);
 
