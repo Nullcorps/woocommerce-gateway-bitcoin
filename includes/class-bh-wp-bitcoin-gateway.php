@@ -14,6 +14,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Blocks\Bitcoin_Image_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Bitcoin_Exchange_Rate_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
@@ -153,6 +154,10 @@ class BH_WP_Bitcoin_Gateway {
 
 		add_action( 'wp_ajax_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
 		add_action( 'wp_ajax_nopriv_bh_wp_bitcoin_gateway_refresh_order_details', array( $ajax, 'get_order_details' ) );
+
+		/** @var Bitcoin_Image_Block $ajax */
+		$bitcoin_image_block = $this->container->get( Bitcoin_Image_Block::class );
+		add_filter( 'get_block_type_variations', array( $bitcoin_image_block, 'add_bitcoin_image_variation' ), 10, 2 );
 	}
 
 	/**
