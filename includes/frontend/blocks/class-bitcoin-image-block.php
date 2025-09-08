@@ -39,12 +39,12 @@ class Bitcoin_Image_Block {
 		$image_url = plugins_url( 'assets/bitcoin.png', $this->settings->get_plugin_basename() );
 
 		$variations[] = array(
-			'name'        => 'bh-bitcoin-image',
-			'title'       => __( 'Bitcoin image', 'bh-wp-bitcoin-gateway' ),
-			'description' => __( 'The Bitcoin logo', 'bh-wp-bitcoin-gateway' ),
-//			'scope'       => array( 'inserter' ),
-			'isDefault'   => false,
-			'attributes'  => array(
+			'name'                      => 'bh-bitcoin-image',
+			'title'                     => __( 'Bitcoin image', 'bh-wp-bitcoin-gateway' ),
+			'description'               => __( 'The Bitcoin logo', 'bh-wp-bitcoin-gateway' ),
+			// 'scope'       => array( 'inserter' ),
+							'isDefault' => false,
+			'attributes'                => array(
 				'url' => $image_url,
 			),
 		);
