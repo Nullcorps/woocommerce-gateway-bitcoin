@@ -1,18 +1,18 @@
 <?php
 /**
- * WordPress block for Bitcoin Gateway exchange rate display.
+ * WordPress block for displaying the payment status of the WooCommerce order on the order confirmation page.
  *
- * Displays the Bitcoin exchange rate from order meta key.
+ * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WC_Order;
 
-class Bitcoin_Exchange_Rate_Block {
+class Bitcoin_Payment_Status_Block {
 
 	public function __construct(
 		protected API_Interface $api,
@@ -25,18 +25,25 @@ class Bitcoin_Exchange_Rate_Block {
 	 */
 	public function register_block(): void {
 
+		$webpack_manifest_path = WP_PLUGIN_DIR . '/' . dirname( $this->settings->get_plugin_basename() ) . '/assets/js/frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status.min.asset.php';
+
+		/** @var array{dependencies: array<string>, version:string} $webpack_manifest */
+		$webpack_manifest = include $webpack_manifest_path;
+
+		$script_src = $this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status.min.js';
+
 		wp_register_script(
-			'bh-wp-bitcoin-gateway-exchange-rate-block',
-			$this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate.min.js',
-			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
-			$this->settings->get_plugin_version(),
+			'bh-wp-bitcoin-gateway-payment-status-block',
+			$script_src,
+			$webpack_manifest['dependencies'],
+			$webpack_manifest['version'],
 			true
 		);
 
 		register_block_type(
-			'bh-wp-bitcoin-gateway/exchange-rate',
+			'bh-wp-bitcoin-gateway/payment-status',
 			array(
-				'editor_script'   => 'bh-wp-bitcoin-gateway-exchange-rate-block',
+				'editor_script'   => 'bh-wp-bitcoin-gateway-payment-status-block',
 				'attributes'      => array(
 					'orderId'   => array(
 						'type'    => 'number',
@@ -85,7 +92,7 @@ class Bitcoin_Exchange_Rate_Block {
 		$formatted     = new Details_Formatter( $bitcoin_order );
 
 		// TODO: How to render here using the JS?!
-		$rate = '<span>' . $formatted->get_btc_exchange_rate_formatted() . '</span>';
+		$rate = '<span>' . $formatted->get_friendly_status() . '</span>';
 
 		return $content . $rate;
 	}
