@@ -24,7 +24,7 @@ class Post_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 
 		$api = $this->makeEmpty( API_Interface::class );
 
-		$sut = new Post( $api );
+		$sut = new Post_BH_Bitcoin_Wallet( $api );
 
 		assert( ! post_type_exists( 'bh-bitcoin-wallet' ) );
 

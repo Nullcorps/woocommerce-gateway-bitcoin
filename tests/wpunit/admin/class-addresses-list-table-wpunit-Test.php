@@ -7,6 +7,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Wallet;
 use Codeception\TestCase\WPTestCase;
 use WP_Post;
 
@@ -49,9 +51,10 @@ class Addresses_List_Table_WPUnit_Test extends WPTestCase {
 		\WC_Payment_Gateways::instance()->payment_gateways['bitcoin_gateway'] = $bitcoin_gateway;
 
 		// Hopefully this is reset between tests?
-		$plugin_post_types = new Post( $api );
-		$plugin_post_types->register_address_post_type();
-		$plugin_post_types->register_wallet_post_type();
+		$plugin_post_address_type = new Post_BH_Bitcoin_Address( $api );
+		$plugin_post_address_type->register_address_post_type();
+		$plugin_post_wallet_type = new Post_BH_Bitcoin_Wallet( $api );
+		$plugin_post_wallet_type->register_wallet_post_type();
 
 		$address       = 'bc1qnlz39q0r40xnv200s9wjutj0fdxex6x8abcdef';
 		$address_index = 22;

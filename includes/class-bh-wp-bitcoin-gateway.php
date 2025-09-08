@@ -21,6 +21,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoi
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Order_Payment_Status_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Wallet;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
@@ -129,13 +131,14 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_custom_post_type_hooks(): void {
 
-		/** @var Post $post */
-		$post = $this->container->get( Post::class );
+		/** @var Post_BH_Bitcoin_Wallet $post */
+		$wallet = $this->container->get( Post_BH_Bitcoin_Wallet::class );
+		add_action( 'init', array( $wallet, 'register_wallet_post_type' ) );
 
-		add_action( 'init', array( $post, 'register_wallet_post_type' ) );
-		add_action( 'parse_query', array( $post, 'add_post_statuses' ) );
-
-		add_action( 'init', array( $post, 'register_address_post_type' ) );
+		/** @var Post_BH_Bitcoin_Address $post */
+		$address = $this->container->get( Post_BH_Bitcoin_Address::class );
+		add_action( 'init', array( $address, 'register_address_post_type' ) );
+		add_action( 'parse_query', array( $address, 'add_post_statuses' ) );
 	}
 
 	/**
