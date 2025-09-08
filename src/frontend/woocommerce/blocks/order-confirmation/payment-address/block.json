@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "bh-wp-bitcoin-gateway/payment-address",
+	"version": "1.0.0",
+	"title": "Bitcoin Order Payment Address",
+	"category": "woocommerce",
+	"description": "Prints a string to show the Bitcoin address to pay for the order.",
+	"keywords": ["bitcoin", "address", "order"],
+	"textdomain": "bh-wp-bitcoin-gateway",
+	"supports": {
+		"html": false,
+		"align": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"fontFamily": true
+		}
+	},
+	"usesContext": ["bh-wp-bitcoin-gateway/orderId"],
+	"attributes": {
+		"orderId": {
+			"type": "number",
+			"default": 0
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		}
+	}
+}

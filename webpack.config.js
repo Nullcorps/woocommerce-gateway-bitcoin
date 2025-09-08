@@ -32,6 +32,8 @@ const myConfig = {
 			'./src/frontend/woocommerce/blocks/checkout/gateway/index.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate':
 			'./src/frontend/woocommerce/blocks/order-confirmation/exchange-rate/index.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/payment-address/payment-address':
+			'./src/frontend/woocommerce/blocks/order-confirmation/payment-address/index.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status':
 			'./src/frontend/woocommerce/blocks/order-confirmation/payment-status/index.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group':
