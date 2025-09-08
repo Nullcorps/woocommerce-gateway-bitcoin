@@ -102,7 +102,7 @@ class Frontend_Assets {
 
 		$script_url = $this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.js';
 
-		$webpack_manifest_path = WP_PLUGIN_DIR . '/'.
+		$webpack_manifest_path = WP_PLUGIN_DIR . '/' .
 			dirname( $this->settings->get_plugin_basename() )
 			. '/assets/js/frontend/woocommerce/shortcode/thank-you/thank-you.min.asset.php';
 
