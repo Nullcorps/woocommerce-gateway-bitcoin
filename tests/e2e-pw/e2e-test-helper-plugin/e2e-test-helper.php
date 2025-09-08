@@ -8,7 +8,6 @@
  * Description:       Actions and filters to help with E2E tests.
  */
 
-
 /**
  * Expose settings through the REST API.
  *
@@ -23,7 +22,7 @@ add_filter(
 	function ( $val ) {
 		global $wp_registered_settings;
 
-		if ( ! in_array( 'woocommerce_checkout_page_id', $wp_registered_settings ) ) {
+		if ( ! in_array( 'woocommerce_checkout_page_id', $wp_registered_settings, true ) ) {
 			$wp_registered_settings['woocommerce_checkout_page_id'] = array(
 				'show_in_rest'      => true,
 				'type'              => 'integer',
@@ -44,12 +43,14 @@ add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
 /**
  * @see WP_REST_Server::check_authentication()
  * @hooked rest_authentication_errors
+ *
+ * @param WP_Error|null|true $errors WP_Error if authentication error, null if authentication method wasn't used, true if authentication succeeded.
  */
-function set_rest_user_admin( $val ) {
+function set_rest_user_admin( $errors ) {
 
 	wp_set_current_user( 1 );
 
-	return $val;
+	return $errors;
 }
 add_filter( 'rest_authentication_errors', 'set_rest_user_admin' );
 
@@ -74,7 +75,7 @@ add_action(
 );
 
 
-function activate_custom_theme_callback( WP_REST_Request $request ) {
+function activate_custom_theme_callback( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
 	$json = json_decode( $request->get_body(), true );
 
@@ -84,12 +85,12 @@ function activate_custom_theme_callback( WP_REST_Request $request ) {
 		return new WP_Error( 'rest_missing_param', 'Missing theme_slug parameter: ' . $request->get_body(), array( 'status' => 400 ) );
 	}
 
-	// Check if the theme exists
+	// Check if the theme exists.
 	if ( ! wp_get_theme( $theme_slug )->exists() ) {
 		return new WP_Error( 'rest_theme_not_found', 'Theme not found.', array( 'status' => 404 ) );
 	}
 
-	// Activate the theme
+	// Activate the theme.
 	switch_theme( $theme_slug );
 
 	return new WP_REST_Response(
@@ -101,62 +102,70 @@ function activate_custom_theme_callback( WP_REST_Request $request ) {
 	);
 }
 
-add_action(
-	'rest_api_init',
-	function () {
-		register_rest_route(
-			'e2e-test-helper/v1',
-			'/activate',
-			array(
-				'methods'             => 'POST',
-				'callback'            => 'activate_custom_theme_callback',
-				'permission_callback' => '__return_true',
-			)
-		);
-	}
-);
+/**
+ * Register `e2e-test-helper/v1/activate` route.
+ */
+function bh_activate_theme() {
+	register_rest_route(
+		'e2e-test-helper/v1',
+		'/activate',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'activate_custom_theme_callback',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', 'bh_activate_theme' );
 
+/**
+ * Register `e2e-test-helper/v1/get-theme-list` route.
+ */
+function register_get_theme_list_route(): void {
+	register_rest_route(
+		'e2e-test-helper/v1',
+		'/get-theme-list',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'theme_list_function',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', 'register_get_theme_list_route' );
 
-add_action(
-	'rest_api_init',
-	function () {
-		// Path to rest endpoint
-		register_rest_route(
-			'e2e-test-helper/v1',
-			'/get_theme_list',
-			array(
-				'methods'             => 'GET',
-				'callback'            => 'theme_list_function',
-				'permission_callback' => '__return_true',
-			)
-		);
-	}
-);
-// Our function to get the themes
-function theme_list_function() {
-	// Get a list of themes
+/**
+ * Get a list of themes
+ *
+ * @return string[] The theme slugs.
+ */
+function theme_list_function(): array {
 	$list = wp_get_themes();
 
-	// Return the value
 	return array_keys( $list );
 }
 
-add_action(
-	'rest_api_init',
-	function () {
-		// Path to rest endpoint
-		register_rest_route(
-			'e2e-test-helper/v1',
-			'/active_theme',
-			array(
-				'methods'             => 'GET',
-				'callback'            => 'active_theme',
-				'permission_callback' => '__return_true',
-			)
-		);
-	}
-);
-// Our function to get the themes
-function active_theme() {
+/**
+ * Path to rest endpoint.
+ */
+function register_test_helper_rest_active_theme_route(): void {
+	register_rest_route(
+		'e2e-test-helper/v1',
+		'/active_theme',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'active_theme',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', 'register_test_helper_rest_active_theme_route' );
+
+/**
+ * Get the theme.
+ *
+ * @return array{slug: string} The currently active theme.
+ */
+function active_theme(): array {
 	return array( 'slug' => get_template() );
 }
