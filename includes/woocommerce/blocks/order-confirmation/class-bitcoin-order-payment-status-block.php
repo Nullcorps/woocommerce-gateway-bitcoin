@@ -25,15 +25,17 @@ class Bitcoin_Order_Payment_Status_Block {
 	 */
 	public function register_block(): void {
 
-		$webpack_manifest_path = WP_PLUGIN_DIR . '/' . dirname( $this->settings->get_plugin_basename() ) . '/assets/js/frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status.min.asset.php';
+		$block = 'payment-status';
+
+		$webpack_manifest_path = WP_PLUGIN_DIR . '/' . dirname( $this->settings->get_plugin_basename() ) . "/assets/js/frontend/woocommerce/blocks/order-confirmation/{$block}/{$block}.min.asset.php";
 
 		/** @var array{dependencies: array<string>, version:string} $webpack_manifest */
 		$webpack_manifest = include $webpack_manifest_path;
 
-		$script_src = $this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status.min.js';
+		$script_src = $this->settings->get_plugin_url() . "assets/js/frontend/woocommerce/blocks/order-confirmation/{$block}/{$block}.min.js";
 
 		wp_register_script(
-			'bh-wp-bitcoin-gateway-payment-status-block',
+			"bh-wp-bitcoin-gateway-{$block}-block",
 			$script_src,
 			$webpack_manifest['dependencies'],
 			$webpack_manifest['version'],
@@ -41,9 +43,9 @@ class Bitcoin_Order_Payment_Status_Block {
 		);
 
 		register_block_type(
-			'bh-wp-bitcoin-gateway/payment-status',
+			"bh-wp-bitcoin-gateway/{$block}",
 			array(
-				'editor_script'   => 'bh-wp-bitcoin-gateway-payment-status-block',
+				'editor_script'   => "bh-wp-bitcoin-gateway-{$block}-block",
 				'attributes'      => array(
 					'orderId'   => array(
 						'type'    => 'number',
