@@ -17,6 +17,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Blocks\Bitcoin_Image_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Bitcoin_Exchange_Rate_Block;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Bitcoin_Payment_Status_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
 use Exception;
@@ -218,6 +219,10 @@ class BH_WP_Bitcoin_Gateway {
 		/** @var Bitcoin_Order_Confirmation_Block $bitcoin_order_confirmation_block */
 		$bitcoin_order_confirmation_block = $this->container->get( Bitcoin_Order_Confirmation_Block::class );
 		add_action( 'init', array( $bitcoin_order_confirmation_block, 'register_block' ) );
+
+		/** @var Bitcoin_Payment_Status_Block $bitcoin_payment_status_block */
+		$bitcoin_payment_status_block = $this->container->get( Bitcoin_Payment_Status_Block::class );
+		add_action( 'init', array( $bitcoin_payment_status_block, 'register_block' ) );
 	}
 
 	/**
