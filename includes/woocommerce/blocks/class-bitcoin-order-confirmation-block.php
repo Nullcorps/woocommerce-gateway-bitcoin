@@ -139,7 +139,7 @@ class Bitcoin_Order_Confirmation_Block {
 	/**
 	 * Filter block context to add the order id.
 	 *
-	 * @hooked add_order_id_context
+	 * @hooked render_block_context
 	 * @see render_block()
 	 *
 	 * @param array{postId:int,postType:string}                                                             $context
