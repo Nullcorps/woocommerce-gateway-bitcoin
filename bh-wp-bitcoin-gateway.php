@@ -9,19 +9,20 @@
  * @package           brianhenryie/bh-wp-bitcoin-gateway
  *
  * @wordpress-plugin
- * Plugin Name:       Bitcoin Gateway
- * Plugin URI:        http://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/
- * Description:       Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
- * Version:           2.0.0-beta-7
- * Requires at least: 5.9
- * Requires PHP:      8.0
- * Author:            Nullcorps, BrianHenryIE
- * Author URI:        https://github.com/Nullcorps/
- * License:           GNU General Public License v3.0
- * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       bh-wp-bitcoin-gateway
- * Domain Path:       /languages
- * WC tested up to:   7.3.0
+ * Plugin Name:            Bitcoin Gateway
+ * Plugin URI:             http://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/
+ * Description:            Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
+ * Version:                2.0.0-beta-8
+ * Requires at least:      5.9
+ * Requires PHP:           8.0
+ * Author:                 Nullcorps, BrianHenryIE
+ * Author URI:             https://github.com/Nullcorps/
+ * License:                GNU General Public License v3.0
+ * License URI:            http://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain:            bh-wp-bitcoin-gateway
+ * Domain Path:            /languages
+ * WC requires at least:   10.1.2
+ * WC tested up to:        10.1.2
  */
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
