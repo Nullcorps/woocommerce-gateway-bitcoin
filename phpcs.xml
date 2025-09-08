@@ -128,6 +128,9 @@
     <rule ref="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.Found">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
 
 
 </ruleset>
