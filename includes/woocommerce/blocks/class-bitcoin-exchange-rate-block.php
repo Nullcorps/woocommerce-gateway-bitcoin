@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WC_Order;
@@ -81,9 +82,10 @@ class Bitcoin_Exchange_Rate_Block {
 		}
 
 		$bitcoin_order = $this->api->get_order_details( $wc_order );
+		$formatted     = new Details_Formatter( $bitcoin_order );
 
 		// TODO: How to render here using the JS?!
-		$rate = '<span>' . $bitcoin_order->get_btc_exchange_rate() . '</span>';
+		$rate = '<span>' . $formatted->get_btc_exchange_rate_formatted() . '</span>';
 
 		return $content . $rate;
 	}
