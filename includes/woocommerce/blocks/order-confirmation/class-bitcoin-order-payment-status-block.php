@@ -12,7 +12,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WC_Order;
 
-class Bitcoin_Payment_Status_Block {
+class Bitcoin_Order_Payment_Status_Block {
 
 	public function __construct(
 		protected API_Interface $api,
