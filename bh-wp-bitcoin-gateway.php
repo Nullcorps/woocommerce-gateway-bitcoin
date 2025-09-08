@@ -27,7 +27,6 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\BitWasp_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Nimq_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
@@ -37,12 +36,15 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate_API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Generate_Address_API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Settings;
 use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
+use BrianHenryIE\WP_Bitcoin_Gateway\WC_Logger\WC_Logger_Settings_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\WC_Logger\WC_PSR_Logger;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Activator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Deactivator;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger_Settings_Interface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Throwable;
 
 // If this file is called directly, abort.
@@ -85,7 +87,17 @@ $container->bind( Logger_Settings_Interface::class, Settings::class );
 $container->singleton(
 	LoggerInterface::class,
 	static function ( Container $container ) {
-		return Logger::instance( $container->get( Logger_Settings_Interface::class ) );
+		return new WC_PSR_Logger(
+			new class() implements WC_Logger_Settings_Interface {
+				public function get_plugin_slug() {
+					return 'bh-wp-bitcoin-gateway';
+				}
+
+				public function get_log_level() {
+					return LogLevel::DEBUG;
+				}
+			}
+		);
 	}
 );
 
