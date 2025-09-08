@@ -511,18 +511,18 @@ class API implements API_Interface {
 	 *
 	 * TODO: refactor this so it can handle 429 rate limiting.
 	 *
-	 * @param string  $xpub
+	 * @param string  $master_public_key Xpub/ypub/zpub string.
 	 * @param ?string $gateway_id
 	 *
 	 * @return array{wallet: Bitcoin_Wallet, wallet_post_id: int, existing_fresh_addresses:array<Bitcoin_Address>, generated_addresses:array<Bitcoin_Address>}
 	 * @throws Exception
 	 */
-	public function generate_new_wallet( string $xpub, string $gateway_id = null ): array {
+	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): array {
 
 		$result = array();
 
-		$post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $xpub )
-			?? $this->bitcoin_wallet_factory->save_new( $xpub, $gateway_id );
+		$post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key )
+			?? $this->bitcoin_wallet_factory->save_new( $master_public_key, $gateway_id );
 
 		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $post_id );
 
@@ -534,7 +534,7 @@ class API implements API_Interface {
 
 		while ( count( $wallet->get_fresh_addresses() ) < 20 ) {
 
-			$generate_addresses_result = $this->generate_new_addresses_for_wallet( $xpub );
+			$generate_addresses_result = $this->generate_new_addresses_for_wallet( $master_public_key );
 			$new_generated_addresses   = $generate_addresses_result['generated_addresses'];
 
 			$generated_addresses = array_merge( $generated_addresses, $new_generated_addresses );
