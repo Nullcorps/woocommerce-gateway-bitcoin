@@ -9,6 +9,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
+// TODO: hook into post_status changes (+count) to decide to scheulde
+
 use ActionScheduler;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
