@@ -3,24 +3,10 @@ import { testConfig } from '../config/test-config';
 import config from "../../../playwright.config";
 import * as fs from 'fs';
 import * as path from 'path';
+import {getSetting} from "./settings";
+import {getPostContentRendered, setPageContent} from "./wp-post";
 
 export type CheckoutType = 'blocks' | 'shortcode';
-
-// returns json object of settings
-async function getSettings(): Promise<object> {
-  const baseURL: string = config.use.baseURL;
-  var fullUrl = `${baseURL}/wp-json/wp/v2/settings`;
-
-  const response: Response = await fetch(fullUrl);
-
-  return await response.json();
-}
-
-async function getSetting(name: String): Promise<Response> {
-  const settings = await getSettings();
-
-  return settings[name];
-}
 
 async function getCheckoutPostId(): Promise<number> {
   // woocommerce_checkout_page_id
@@ -28,38 +14,10 @@ async function getCheckoutPostId(): Promise<number> {
   return parseInt(postId);
 }
 
-async function setPageContent(postId: number, postContent: string) {
-
-  const baseURL: string = config.use.baseURL;
-  const fullUrl = baseURL + '/wp-json/wp/v2/pages/' + postId;
-  const response = await fetch(fullUrl, {
-    method: "POST",
-    body: JSON.stringify( {
-      "content": postContent
-    }),
-    headers:{
-      "Content-Type": "application/json",
-    }
-  });
-}
-
-async function getPostContentRendered(postType: string, postId: number): Promise<string> {
-
-  const baseURL: string = config.use.baseURL;
-  const fullUrl = baseURL + '/wp-json/wp/v2/'+postType+'s/' + postId;
-
-  const response: Response = await fetch(fullUrl);
-
-  const result = await response.json();
-
-  return result.content.rendered;
-}
-
 async function getCheckoutPageContent(): Promise<string> {
   const pageId = await getCheckoutPostId();
   return await getPostContentRendered('page', pageId);
 }
-
 
 async function setCheckoutPageContent(postContent:string) {
   const page_id = await getCheckoutPostId();
@@ -170,5 +128,16 @@ export async function fillBilling(page: Page): Promise<void> {
 
   // Wait for form to update
   // await page.waitForTimeout(2000);
-  await page.waitForLoadState('networkidle');
+  // await page.waitForLoadState('networkidle');
+}
+
+export async function selectPaymentGateway(page: Page, gatewayId: string): Promise<void> {
+    const checkoutType = await detectCheckoutType(page);
+    if (checkoutType === 'blocks') {
+        // await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
+        await page.click('#radio-control-wc-payment-method-options-'+gatewayId+'__label');
+    }else{
+        await page.click('label[for="payment_method_'+gatewayId+'"]');
+    }
+    // await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
 }

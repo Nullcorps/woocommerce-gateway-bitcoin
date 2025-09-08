@@ -23,13 +23,13 @@ test.describe('Generate new addresses', () => {
      * 20 is the threshold to trigger generation
      * @see API::generate_new_addresses_for_wallet()
      */
-    var beforeUnusedCount = await getBitcoinAddressCount('unused');
-    const toDelete = beforeUnusedCount - 49;
+    var beforeDeletingUnusedCount = await getBitcoinAddressCount('unused');
+    const toDelete = beforeDeletingUnusedCount - 49;
     if(toDelete > 0) {
       await deleteBitcoinAddresses(toDelete, 'unused');
-      const afterUnusedCount = await getBitcoinAddressCount('unused');
+      const afterDeletingUnusedCount = await getBitcoinAddressCount('unused');
     } else {
-      const afterUnusedCount = beforeUnusedCount;
+      const afterDeletingUnusedCount = beforeDeletingUnusedCount;
     }
 
     
@@ -53,21 +53,9 @@ test.describe('Generate new addresses', () => {
         await page.waitForLoadState('networkidle');
       }
     }
-    
-    // Check addresses page
-    await page.goto('/wp-admin/edit.php?post_type=bh-bitcoin-address');
-    
-    // Wait for unknown addresses to be processed
-    while (await page.locator('.unknown a .count').count() > 0) {
-      await page.waitForTimeout(1000);
-      await page.reload();
-    }
-    
-    // Verify we have at least 20 unused addresses
-    const finalUnusedCountElement = page.locator('.unused a .count');
-    const finalUnusedCountText = await finalUnusedCountElement.textContent();
-    const finalUnusedCount = parseInt(finalUnusedCountText?.replace(/[^\d]/g, '') || '0');
-    
+
+    const finalUnusedCount = await getBitcoinAddressCount('unused');
+
     expect(finalUnusedCount).toBeGreaterThanOrEqual(20);
   });
 

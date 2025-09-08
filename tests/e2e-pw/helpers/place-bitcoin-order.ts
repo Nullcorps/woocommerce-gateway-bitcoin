@@ -1,21 +1,14 @@
 import { Page, expect } from '@playwright/test';
 import { testConfig } from '../config/test-config';
-import { detectCheckoutType, fillBilling } from "./checkout";
+import { fillBilling, selectPaymentGateway } from "./checkout";
 import { logout } from './login';
 
-async function selectBitcoinPaymentMethod(page: Page, checkoutType?: string) {
-  if (checkoutType === 'blocks') {
-    await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
-  }else{
-    await page.click('label[for="payment_method_bitcoin_gateway"]');
-  }
+async function selectBitcoinPaymentMethod(page: Page) {
+
+  await selectPaymentGateway(page, 'bitcoin_gateway');
 
   // Verify Bitcoin payment method description appears
-  // await page.waitForSelector('.payment_method_bitcoin_gateway', { state: 'visible' });
-  // Pay quickly and easily with Bitcoin
   await expect(page.getByText('Pay quickly and easily with Bitcoin')).toBeVisible();
-
-  // TODO: else throw error.
 }
 
 export async function placeBitcoinOrder(page: Page): Promise<string> {
@@ -35,13 +28,7 @@ export async function placeBitcoinOrder(page: Page): Promise<string> {
   // Fill billing details
   await fillBilling(page);
   
-  // Select Bitcoin payment method
-  // await page.click('label[for="payment_method_bitcoin_gateway"]');
-  // await page.waitForTimeout(1000);
-  // radio-control-wc-payment-method-options-bitcoin_gateway
-  const checkoutType = await detectCheckoutType(page);
-
-  await selectBitcoinPaymentMethod(page, checkoutType);
+  await selectBitcoinPaymentMethod(page);
 
   // Place order
   // await page.click(''Place Order');
