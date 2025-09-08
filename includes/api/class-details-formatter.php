@@ -124,6 +124,9 @@ class Details_Formatter {
 		);
 	}
 
+	/**
+	 * @return string 'Awaiting Payment'|'Partly Paid'|'Paid'
+	 */
 	public function get_friendly_status(): string {
 
 		// If the order is not marked paid, but has transactions, it is partly-paid.
