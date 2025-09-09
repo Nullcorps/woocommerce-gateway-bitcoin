@@ -61,3 +61,6 @@ parameters:
         - # Let's not check for null|false in tests.
           message: '#does not accept .*\|null.#'
           path: tests
+        - # Don't report skipped tests
+          identifier: deadCode.unreachable
+          path: tests
