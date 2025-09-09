@@ -158,7 +158,7 @@ class Bitcoin_Order_Confirmation_Block {
 		}
 
 		// Check if the block uses our context.
-		$block_uses_context = WP_Block_Type_Registry::get_instance()->get_registered( $blockName )->get_uses_context();
+		$block_uses_context = WP_Block_Type_Registry::get_instance()->get_registered( $blockName )?->get_uses_context() ?? [];
 
 		if ( ! in_array( 'bh-wp-bitcoin-gateway/orderId', $block_uses_context, true ) ) {
 			return $context;
