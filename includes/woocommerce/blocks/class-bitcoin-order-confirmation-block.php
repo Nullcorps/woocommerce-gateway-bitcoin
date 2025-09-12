@@ -10,6 +10,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use WP_Block;
 use WP_Block_Type_Registry;
 
 class Bitcoin_Order_Confirmation_Block {
@@ -66,9 +67,9 @@ class Bitcoin_Order_Confirmation_Block {
 	/**
 	 * Render callback for the bitcoin-order block.
 	 *
-	 * @param array     $attributes Block attributes.
-	 * @param string    $content    Block content.
-	 * @param \WP_Block $block      Block instance.
+	 * @param array    $attributes Block attributes.
+	 * @param string   $content    Block content.
+	 * @param WP_Block $block      Block instance.
 	 * @return string Rendered block content.
 	 */
 	public function render_block( array $attributes, string $content, $block ): string {
@@ -84,13 +85,15 @@ class Bitcoin_Order_Confirmation_Block {
 			$block->context['bh-wp-bitcoin-gateway/orderId'] = $order_id;
 		}
 
-		// Return the inner blocks content wrapped in our container.
-		$wrapper_attributes = get_block_wrapper_attributes(
-			array(
-				'class'         => 'bh-wp-bitcoin-gateway-bitcoin-order-container',
-				'data-order-id' => $order_id,
-			)
+		$wrapper_attributes = array(
+			'class' => 'bh-wp-bitcoin-gateway-bitcoin-order-container',
 		);
+		foreach ( $block->context as $key => $value ) {
+			$sanitized_key = str_replace( array( ':', '/' ), '-', $key );
+			$wrapper_attributes[ 'data-context-' . $sanitized_key ] = esc_attr( (string) $value );
+		}
+		// Return the inner blocks content wrapped in our container.
+		$wrapper_attributes_string = get_block_wrapper_attributes( $wrapper_attributes );
 
 		// TODO: I thought this would re-render the inner blocks, which were rendered before this block determined the order id it was wrapping them with.
 		// $block->refresh_parsed_block_dependents();
@@ -98,7 +101,7 @@ class Bitcoin_Order_Confirmation_Block {
 
 		return sprintf(
 			'<div %1$s><div class="wp-block-group"><div class="wp-block-group__inner-container">%2$s</div></div></div>',
-			$wrapper_attributes,
+			$wrapper_attributes_string,
 			// $block->render() // TODO: This resulted in an infinite loop that didn't use the context as expected anyway.
 			$content
 		);
@@ -123,18 +126,8 @@ class Bitcoin_Order_Confirmation_Block {
 			}
 		}
 
-		// Try to get from current WooCommerce page context
-		global $wp_query;
-		if ( isset( $wp_query->query_vars['order-received'] ) ) {
-			$order_id = absint( $wp_query->query_vars['order-received'] );
-			if ( $order_id > 0 ) {
-				return $order_id;
-			}
-		}
-
 		return 0;
 	}
-
 
 	/**
 	 * Filter block context to add the order id.
@@ -144,21 +137,21 @@ class Bitcoin_Order_Confirmation_Block {
 	 *
 	 * @param array{postId:int,postType:string}                                                             $context
 	 * @param array{blockName:string, attrs:array, innerBlocks:array, innerHTML:string, innerContent:array} $parsed_block
-	 * @param \WP_Block|null                                                                                $parent_block
+	 * @param ?WP_Block                                                                                     $parent_block
 	 *
 	 * @return array
 	 */
-	public function add_order_id_context( array $context, array $parsed_block, \WP_Block|null $parent_block ): array {
+	public function add_order_id_context( array $context, array $parsed_block, ?WP_Block $parent_block ): array {
 
-		$blockName = $parsed_block['blockName'];
+		$block_name = $parsed_block['blockName'];
 
 		// No need to check plain HTML or ourself.
-		if ( is_null( $blockName ) || 'bh-wp-bitcoin-gateway/bitcoin-order' === $blockName ) {
+		if ( is_null( $block_name ) || 'bh-wp-bitcoin-gateway/bitcoin-order' === $block_name ) {
 			return $context;
 		}
 
 		// Check if the block uses our context.
-		$block_uses_context = WP_Block_Type_Registry::get_instance()->get_registered( $blockName )?->get_uses_context() ?? [];
+		$block_uses_context = WP_Block_Type_Registry::get_instance()->get_registered( $block_name )?->get_uses_context() ?? array();
 
 		if ( ! in_array( 'bh-wp-bitcoin-gateway/orderId', $block_uses_context, true ) ) {
 			return $context;

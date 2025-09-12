@@ -1,4 +1,4 @@
-const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
+const defaultConfig                                = require( '@wordpress/scripts/config/webpack.config' );
 const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );
 const path = require( 'path' );
 
@@ -30,8 +30,10 @@ const myConfig = {
 	entry: {
 		'frontend/woocommerce/blocks/checkout/gateway/gateway':
 			'./src/frontend/woocommerce/blocks/checkout/gateway/index.tsx',
-		'frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate':
+		'frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate-admin':
 			'./src/frontend/woocommerce/blocks/order-confirmation/exchange-rate/index.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/exchange-rate/exchange-rate-block':
+			'./src/frontend/woocommerce/blocks/order-confirmation/exchange-rate/view.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/payment-address/payment-address':
 			'./src/frontend/woocommerce/blocks/order-confirmation/payment-address/index.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/payment-status/payment-status':
@@ -48,14 +50,16 @@ const myConfig = {
 	plugins: [
 		...defaultConfig.plugins.filter(
 			( plugin ) =>
-				plugin.constructor.name !==
+			plugin.constructor.name !==
 					'DependencyExtractionWebpackPlugin' &&
 				plugin.constructor.name !== 'CleanWebpackPlugin'
 		),
-		new WooCommerceDependencyExtractionWebpackPlugin( {
-			requestToExternal,
-			requestToHandle,
-		} ),
+		new WooCommerceDependencyExtractionWebpackPlugin(
+			{
+					requestToExternal,
+					requestToHandle,
+			}
+		),
 	],
 };
 

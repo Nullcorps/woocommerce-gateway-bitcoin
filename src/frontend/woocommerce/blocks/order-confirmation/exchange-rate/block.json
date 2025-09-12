@@ -34,5 +34,6 @@
 			"type": "boolean",
 			"default": true
 		}
-	}
+	},
+    "viewScript": "bh-wp-bitcoin-gateway-exchange-rate-block"
 }
