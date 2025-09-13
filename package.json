@@ -1,57 +1,92 @@
 {
-  "name": "bh-wp-bitcoin-gateway",
-  "version": "2.0.0",
-  "description": "Bitcoin payment gateway",
-  "main": "index.js",
-  "scripts": {
-    "docker:down": "npx wc-e2e docker:down",
-    "docker:ssh": "npx wc-e2e docker:ssh",
-    "docker:up": "npx wc-e2e docker:up",
-    "test:e2e": "npx wc-e2e test:e2e",
-    "test:e2e-debug": "npx wc-e2e test:e2e-debug",
-    "test:e2e-dev": "npx wc-e2e test:e2e-dev",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --watchAll=false",
-    "start": "wp-scripts start",
-    "build": "wp-scripts build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway.git"
-  },
-  "author": "BrianHenryIE",
-  "license": "GPL-2.0+",
-  "bugs": {
-    "url": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/issues"
-  },
-  "homepage": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway#readme",
-  "devDependencies": {
-    "@playwright/test": "^1.54.2",
-    "@testing-library/jest-dom": "^6.7.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "^30.0.0",
-    "@types/jquery": "^3.5.32",
-    "@types/node": "^24.2.1",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@types/wordpress__block-editor": "^11.5.17",
-    "@woocommerce/dependency-extraction-webpack-plugin": "^4.0.0",
-    "@wordpress/block-editor": "^15.2.0",
-    "@wordpress/e2e-test-utils": "^11.28.0",
-    "@wordpress/e2e-test-utils-playwright": "^1.28.0",
-    "@wordpress/env": "^10.28.0",
-    "@wordpress/scripts": "^30.21.0",
-    "dotenv": "^17.2.1",
-    "jest": "^30.0.5",
-    "jest-environment-jsdom": "^30.0.5",
-    "ts-jest": "^29.4.1",
-    "typescript": "^5.3"
-  },
-  "dependencies": {
-    "@woocommerce/e2e-utils": "^0.2.0",
-    "config": "^4.1.0"
-  }
+	"name": "bh-wp-bitcoin-gateway",
+	"version": "2.0.0",
+	"description": "Bitcoin payment gateway",
+	"main": "index.js",
+	"scripts": {
+		"docker:down": "npx wc-e2e docker:down",
+		"docker:ssh": "npx wc-e2e docker:ssh",
+		"docker:up": "npx wc-e2e docker:up",
+		"test:e2e": "npx wc-e2e test:e2e",
+		"test:e2e-debug": "npx wc-e2e test:e2e-debug",
+		"test:e2e-dev": "npx wc-e2e test:e2e-dev",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"test:ci": "jest --ci --coverage --watchAll=false",
+		"start": "wp-scripts start",
+		"build": "wp-scripts build",
+		"lint": "npm run lint:js && npm run lint:css",
+		"lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
+		"lint:js": "wp-scripts lint-js",
+		"lint:js:fix": "wp-scripts lint-js -- --fix",
+		"lint:css": "wp-scripts lint-style",
+		"lint:css:fix": "wp-scripts lint-style -- --fix",
+		"format": "wp-scripts format",
+		"format:js": "wp-scripts format-js",
+		"check-engines": "wp-scripts check-engines",
+		"check-licenses": "wp-scripts check-licenses",
+		"lint:staged": "lint-staged"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway.git"
+	},
+	"author": "BrianHenryIE",
+	"license": "GPL-2.0+",
+	"bugs": {
+		"url": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/issues"
+	},
+	"homepage": "https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway#readme",
+	"devDependencies": {
+		"@babel/eslint-parser": "^7.24.7",
+		"@playwright/test": "^1.54.2",
+		"@testing-library/jest-dom": "^6.7.0",
+		"@testing-library/react": "^16.3.0",
+		"@testing-library/user-event": "^14.6.1",
+		"@types/jest": "^30.0.0",
+		"@types/jquery": "^3.5.32",
+		"@types/node": "^24.2.1",
+		"@types/react": "^19.1.10",
+		"@types/react-dom": "^19.1.7",
+		"@types/wordpress__block-editor": "^11.5.17",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
+		"@woocommerce/dependency-extraction-webpack-plugin": "^4.0.0",
+		"@wordpress/block-editor": "^15.2.0",
+		"@wordpress/e2e-test-utils": "^11.28.0",
+		"@wordpress/e2e-test-utils-playwright": "^1.28.0",
+		"@wordpress/env": "^10.28.0",
+		"@wordpress/scripts": "^30.21.0",
+		"@wordpress/stylelint-config": "^23.21.0",
+		"dotenv": "^17.2.1",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-jest": "^27.9.0",
+		"eslint-plugin-jsx-a11y": "^6.8.0",
+		"eslint-plugin-react": "^7.34.2",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"jest": "^30.0.5",
+		"jest-environment-jsdom": "^30.0.5",
+		"lint-staged": "^15.5.2",
+		"stylelint": "^16.6.1",
+		"stylelint-scss": "^6.3.1",
+		"ts-jest": "^29.4.1",
+		"typescript": "^5.3"
+	},
+	"dependencies": {
+		"@woocommerce/e2e-utils": "^0.2.0",
+		"config": "^4.1.0"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"wp-scripts lint-js --fix",
+			"wp-scripts format-js"
+		],
+		"*.{css,scss,sass}": [
+			"wp-scripts lint-style --fix"
+		],
+		"*.{json,yml,yaml,md}": [
+			"wp-scripts format"
+		]
+	}
 }
