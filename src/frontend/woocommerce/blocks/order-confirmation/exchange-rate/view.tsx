@@ -4,11 +4,17 @@
 /**
  * React dependencies
  */
+/**
+ * External dependencies
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 /**
  * WordPress dependencies?
+ */
+/**
+ * Internal dependencies
  */
 import metadata from './block.json';
 
@@ -17,111 +23,133 @@ import metadata from './block.json';
  */
 import { ExchangeRateDisplay } from './exchange-rate-display';
 
-console.log('Exchange Rate View');
+console.log( 'Exchange Rate View' );
 
-window.addEventListener('DOMContentLoaded', function() {
-  console.log('DOMContentLoaded (Exchange Rate View)');
-  function getClassNameFromNamespacedName(namespacedName: string): string {
-    return namespacedName.replace(/\//g, '-');
-  }
+window.addEventListener( 'DOMContentLoaded', function () {
+	console.log( 'DOMContentLoaded (Exchange Rate View)' );
+	function getClassNameFromNamespacedName( namespacedName: string ): string {
+		return namespacedName.replace( /\//g, '-' );
+	}
 
-  function getLocalNameFromNamespacedName(namespacedName: string): string {
-    return namespacedName.split('\/')[1];
-  }
+	function getLocalNameFromNamespacedName( namespacedName: string ): string {
+		return namespacedName.split( '/' )[ 1 ];
+	}
 
-  const contextItemNames: string[] = metadata.usesContext
-  const attributes = metadata.attributes
+	const contextItemNames: string[] = metadata.usesContext;
+	const attributes = metadata.attributes;
 
-  function getAttributes(element: Element): { [key: string]: string | boolean | number }  {
+	function getAttributes( element: Element ): {
+		[ key: string ]: string | boolean | number;
+	} {
+		const attributeValues = {};
 
-    var attributeValues = {};
+		console.log( 'Getting attributes for element: ', element );
 
-    console.log("Getting attributes for element: ", element);
+		Object.entries( attributes ).forEach( ( [ name, v ] ) => {
+			console.log( 'The key: ', name );
+			console.log( 'The value: ', v );
 
-    Object.entries(attributes).forEach(([name,v]) => {
-      console.log("The key: ", name)
-      console.log("The value: ", v)
+			const dataAttr = 'data-attribute-' + name.toLowerCase();
+			console.log( 'searching for : ', dataAttr );
+			const attrValue = element.getAttribute( dataAttr );
+			console.log( 'found : ', attrValue );
+			if ( attrValue ) {
+				console.log( name + ':' + attrValue );
+				if ( attributes[ name ].type === 'boolean' ) {
+					attributeValues[ name ] = attrValue === 'true';
+				} else if ( attributes[ name ].type === 'numeric' ) {
+					attributeValues[ name ] = parseFloat( attrValue );
+				} else {
+					attributeValues[ name ] = attrValue;
+				}
+			} else {
+				attributeValues[ name ] = attributes[ name ].default;
+			}
+		} );
 
-      const dataAttr = 'data-attribute-' + name.toLowerCase();
-      console.log("searching for : ", dataAttr);
-      const attrValue = element.getAttribute(dataAttr);
-      console.log("found : ", attrValue);
-      if (attrValue) {
-        console.log(name + ':' + attrValue)
-        if(attributes[name].type === 'boolean') {
-          attributeValues[name] = attrValue === 'true';
-        }else if(attributes[name].type === 'numeric') {
-          attributeValues[name] = parseFloat(attrValue);
-        }else{
-          attributeValues[name] = attrValue;
-        }
-      } else {
-        attributeValues[name] = attributes[name].default;
-      }
-    });
+		return attributeValues;
+	}
+	function getContext( element: Element ): {
+		[ key: string ]: string | boolean | number;
+	} {
+		const context: { [ key: string ]: string | boolean | number } = {};
 
-    return attributeValues;
-  }
-  function getContext(element: Element): { [key: string]: string | boolean | number }  {
-    var context: { [key: string]: string | boolean | number } = {};
+		// Get context from ancestor data attributes
+		contextItemNames.forEach( ( name: string ) => {
+			let parent = element.parentElement;
+			while ( parent ) {
+				const dataAttr =
+					'data-context-' + getClassNameFromNamespacedName( name );
+				const attrValue = parent.getAttribute( dataAttr );
+				if ( attrValue ) {
+					context[ getLocalNameFromNamespacedName( name ) ] =
+						attrValue;
+					console.log(
+						getLocalNameFromNamespacedName( name ) + ':' + attrValue
+					);
+					break;
+				}
+				parent = parent.parentElement;
+			}
+			if ( ! context[ 'bh-wp-bitcoin-gateway/' + name ] ) {
+				console.log(
+					`Context attribute ${ name } not found in ancestors of`,
+					element
+				);
+				console.warn(
+					`Context attribute ${ name } not found in ancestors of`,
+					element
+				);
+			} else {
+				console.log(
+					`Context attribute ${ name } found: ${ context[ name ] }`
+				);
+			}
+		} );
+		return context;
+	}
 
-    // Get context from ancestor data attributes
-    contextItemNames.forEach((name: string) => {
+	// block.json metadata.name
+	// bh-wp-bitcoin-gateway/exchange-rate-block
+	// 'bh-wp-bitcoin-gateway-exchange-rate-block';
+	const blockClassName = getClassNameFromNamespacedName( metadata.name );
 
-      var parent = element.parentElement;
-      while (parent) {
-        const dataAttr = 'data-context-' + getClassNameFromNamespacedName(name);
-        const attrValue = parent.getAttribute(dataAttr);
-        if (attrValue) {
-          context[getLocalNameFromNamespacedName(name)] = attrValue;
-          console.log(getLocalNameFromNamespacedName(name) + ':' + attrValue)
-          break;
-        }
-        parent = parent.parentElement;
-      }
-      if (!context['bh-wp-bitcoin-gateway/' + name]) {
-        console.log(`Context attribute ${name} not found in ancestors of`, element);
-        console.warn(`Context attribute ${name} not found in ancestors of`, element);
-      } else {
-        console.log(`Context attribute ${name} found: ${context[name]}`);
-      }
-    });
-    return context;
-  }
+	const elements: HTMLCollectionOf< Element > =
+		document.getElementsByClassName( blockClassName );
 
-// block.json metadata.name
-// bh-wp-bitcoin-gateway/exchange-rate-block
-// 'bh-wp-bitcoin-gateway-exchange-rate-block';
-  const blockClassName = getClassNameFromNamespacedName(metadata.name);
+	console.log(
+		elements.length + ' elements found with class ' + blockClassName
+	);
 
-  const elements: HTMLCollectionOf<Element> = document.getElementsByClassName(blockClassName);
+	for ( let i = 0; i < elements.length; i++ ) {
+		const element: Element = elements.item( i )!;
 
-  console.log(elements.length + ' elements found with class ' + blockClassName);
+		const context = getContext( element );
+		const attributes = getAttributes( element );
 
-  for (var i = 0; i < elements.length; i++) {
-    const element: Element = elements.item(i)!;
+		const exchangeRate = context.btc_exchange_rate_formatted;
+		const exchangeRateUrl = context.exchange_rate_url;
 
-    const context = getContext(element);
-    const attributes = getAttributes(element);
+		const { showLabel, useUrl } = attributes;
 
-    const exchangeRate = context.btc_exchange_rate_formatted;
-    const exchangeRateUrl = context.exchange_rate_url;
+		console.log( `Context exchangeRate is ${ exchangeRate }` );
+		console.log( `attribute showLabel is ${ showLabel }` );
+		console.log( `attribute useUrl is ${ useUrl }` );
+		console.log( `Context exchangeRateUrl is ${ exchangeRateUrl }` );
 
-    const { showLabel, useUrl } = attributes;
+		// TODO: Remove class from element to prevent duplicate rendering?
 
-    console.log(`Context exchangeRate is ${exchangeRate}`);
-    console.log(`attribute showLabel is ${showLabel}`);
-    console.log(`attribute useUrl is ${useUrl}`);
-    console.log(`Context exchangeRateUrl is ${exchangeRateUrl}`);
+		const root = ReactDOM.createRoot( element );
 
-    // TODO: Remove class from element to prevent duplicate rendering?
-
-    const root = ReactDOM.createRoot(element);
-
-    root.render(
-      <React.StrictMode>
-        <ExchangeRateDisplay exchangeRate={exchangeRate} showLabel={showLabel} useUrl={useUrl} exchangeRateUrl={exchangeRateUrl} />
-      </React.StrictMode>
-    );
-  }
-});
+		root.render(
+			<React.StrictMode>
+				<ExchangeRateDisplay
+					exchangeRate={ exchangeRate }
+					showLabel={ showLabel }
+					useUrl={ useUrl }
+					exchangeRateUrl={ exchangeRateUrl }
+				/>
+			</React.StrictMode>
+		);
+	}
+} );

@@ -1,8 +1,12 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
+/**
+ * External dependencies
+ */
 import React from 'react';
+
+import { useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -15,16 +19,16 @@ interface SaveProps {
 	};
 }
 
-export const Save: React.FC<SaveProps> = ({ attributes }) => {
+export const Save: React.FC< SaveProps > = ( { attributes } ) => {
 	const { showLabel } = attributes;
-	
-	const blockProps = useBlockProps.save({
+
+	const blockProps = useBlockProps.save( {
 		className: 'bh-wp-bitcoin-gateway-payment-address-block',
-	});
+	} );
 
 	return (
-		<div {...blockProps}>
-			<PaymentAddressDisplay showLabel={showLabel} />
+		<div { ...blockProps }>
+			<PaymentAddressDisplay showLabel={ showLabel } />
 		</div>
 	);
 };

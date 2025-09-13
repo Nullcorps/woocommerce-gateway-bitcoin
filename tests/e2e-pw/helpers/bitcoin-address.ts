@@ -1,48 +1,60 @@
-import config from "../../../playwright.config";
-import { Response } from "node/globals";
+/**
+ * Internal dependencies
+ */
+/**
+ * External dependencies
+ */
+import { Response } from 'node/globals';
 
-async function fetchBitcoinAddresses(status?: String): Promise<Response> {
-  const baseURL: string = config.use.baseURL;
-  var fullUrl = `${baseURL}/wp-json/wp/v2/bh-bitcoin-address`;
-  if(status) {
-    fullUrl += `?status=${status}`;
-  }
-  return await fetch(fullUrl);
+import config from '../../../playwright.config';
+
+/**
+ * External dependencies
+ */
+
+async function fetchBitcoinAddresses( status?: string ): Promise< Response > {
+	const baseURL: string = config.use.baseURL;
+	let fullUrl = `${ baseURL }/wp-json/wp/v2/bh-bitcoin-address`;
+	if ( status ) {
+		fullUrl += `?status=${ status }`;
+	}
+	return await fetch( fullUrl );
 }
 
-export async function getBitcoinAddressCount(status?: String): Promise<number> {
+export async function getBitcoinAddressCount(
+	status?: string
+): Promise< number > {
+	const response = await fetchBitcoinAddresses( status );
 
-  const response = await fetchBitcoinAddresses(status);
-
-  return parseInt(response.headers.get('X-WP-Total'));
+	return parseInt( response.headers.get( 'X-WP-Total' ) );
 }
 
+export async function deleteBitcoinAddresses(
+	deleteCount: number,
+	status?: string
+) {
+	const response = await fetchBitcoinAddresses( status );
 
-export async function deleteBitcoinAddresses(deleteCount: number, status?: String) {
+	const items = await response.json();
+	const existingCount = parseInt( response.headers.get( 'X-WP-Total' ) );
 
-  const response = await fetchBitcoinAddresses(status);
+	const baseURL: string = config.use.baseURL;
 
-  const items = await response.json();
-  const existingCount = parseInt(response.headers.get('X-WP-Total'));
+	let fullUrl = `${ baseURL }/wp-json/wp/v2/bh-bitcoin-address`;
 
-  const baseURL: string = config.use.baseURL;
+	let post_id;
+	for ( let i = 0; i < deleteCount && i < existingCount; i++ ) {
+		// iterate over response to get post_id
 
-  var fullUrl = `${baseURL}/wp-json/wp/v2/bh-bitcoin-address`;
+		post_id = items[ i ].id;
 
-  var post_id;
-  for (var i = 0; i < deleteCount && i < existingCount; i++) {
+		fullUrl += `/${ post_id }`;
 
-    // iterate over response to get post_id
-
-    post_id = items[i].id
-
-    fullUrl += `/${post_id}`;
-
-    await fetch(fullUrl, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  }
+		await fetch( fullUrl, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		} );
+	}
 }

@@ -4,6 +4,12 @@
 build/
 assets/js/**/*.min.js
 
+# "hidden" directories
+.github
+.claude
+.wordpress-org
+.idea
+
 # Vendor directories
 node_modules/
 vendor/
@@ -32,3 +38,6 @@ jest.config.js
 
 # Generated files from @wordpress/scripts
 build/
+
+playwright-report/
+test-results/

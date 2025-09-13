@@ -11,12 +11,12 @@ import metadata from './block.json';
 import { Edit } from './edit';
 import { Save } from './save';
 
-registerBlockType(metadata.name, {
+registerBlockType( metadata.name, {
 	...metadata,
-  // icon:
+	// icon:
 	edit: Edit,
 	// save: Save,
-  // script: PaymentStatusDisplay,
-  // parent: [ 'bh-wp-bitcoin-gateway/order-confirmation' ],
-  save: () => null,
-});
+	// script: PaymentStatusDisplay,
+	// parent: [ 'bh-wp-bitcoin-gateway/order-confirmation' ],
+	save: () => null,
+} );

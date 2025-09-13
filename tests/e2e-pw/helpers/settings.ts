@@ -1,20 +1,20 @@
-
-
-
 // returns json object of settings
-import config from "../../../playwright.config";
+/**
+ * Internal dependencies
+ */
+import config from '../../../playwright.config';
 
-async function getSettings(): Promise<object> {
-  const baseURL: string = config.use.baseURL;
-  var fullUrl = `${baseURL}/wp-json/wp/v2/settings`;
+async function getSettings(): Promise< object > {
+	const baseURL: string = config.use.baseURL;
+	const fullUrl = `${ baseURL }/wp-json/wp/v2/settings`;
 
-  const response: Response = await fetch(fullUrl);
+	const response: Response = await fetch( fullUrl );
 
-  return await response.json();
+	return await response.json();
 }
 
-export async function getSetting(name: String): Promise<any> {
-  const settings = await getSettings();
+export async function getSetting( name: string ): Promise< any > {
+	const settings = await getSettings();
 
-  return settings[name];
+	return settings[ name ];
 }

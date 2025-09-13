@@ -1,7 +1,5 @@
 module.exports = {
-	extends: [
-		'plugin:@wordpress/eslint-plugin/recommended',
-	],
+	extends: [ 'plugin:@wordpress/eslint-plugin/recommended' ],
 	env: {
 		browser: true,
 		es6: true,
@@ -30,9 +28,7 @@ module.exports = {
 		{
 			files: [ '**/*.ts', '**/*.tsx' ],
 			parser: '@typescript-eslint/parser',
-			extends: [
-				'plugin:@typescript-eslint/recommended',
-			],
+			extends: [ 'plugin:@typescript-eslint/recommended' ],
 			rules: {
 				'@typescript-eslint/no-unused-vars': [
 					'error',
@@ -75,7 +71,7 @@ module.exports = {
 		'@wordpress/valid-sprintf': 'warn',
 		'@wordpress/no-unsafe-wp-apis': 'warn',
 		'@wordpress/dependency-group': 'error',
-		
+
 		// JSDoc rules
 		'jsdoc/check-tag-names': [
 			'error',
@@ -83,7 +79,7 @@ module.exports = {
 		],
 		'jsdoc/require-param-description': 'off',
 		'jsdoc/require-returns-description': 'off',
-		
+
 		// General code quality rules
 		'no-console': 'warn',
 		'no-debugger': 'error',
@@ -94,7 +90,7 @@ module.exports = {
 				varsIgnorePattern: '^_',
 			},
 		],
-		
+
 		// Import rules
 		'import/order': [
 			'error',
@@ -115,7 +111,7 @@ module.exports = {
 			},
 		],
 		'import/no-unresolved': 'off', // TypeScript handles this
-		
+
 		// React specific rules for JSX files
 		'react/prop-types': 'off', // Using TypeScript for prop validation
 		'react/react-in-jsx-scope': 'off', // Not needed with new JSX transform

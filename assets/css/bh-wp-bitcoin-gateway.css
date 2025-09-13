@@ -11,7 +11,7 @@
     display: block;
 }
 
-.bh_wp_bitcoin_gateway_total:after, .bh_wp_bitcoin_gateway_address:after {
+.bh_wp_bitcoin_gateway_total::after, .bh_wp_bitcoin_gateway_address::after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f481";
@@ -25,12 +25,13 @@
 .bh_wp_bitcoin_gateway_logo_qr {
     text-align:center;
 }
+
 .bh_wp_bitcoin_gateway_logo_qr img {
     margin-left:auto;
     margin-right:auto;
 }
 
-.bh_wp_bitcoin_gateway_last_checked_time:after {
+.bh_wp_bitcoin_gateway_last_checked_time::after {
     padding-left: 5px;
     font-family: Dashicons;
     content: "\f463";

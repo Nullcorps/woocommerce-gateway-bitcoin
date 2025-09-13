@@ -1,10 +1,18 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
+/**
+ * External dependencies
+ */
+import React, { useEffect } from 'react';
+
+import {
+	useBlockProps,
+	InnerBlocks,
+	InspectorControls,
+} from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import React, { useEffect } from 'react';
 
 /**
  * Internal dependencies
@@ -15,35 +23,37 @@ interface EditProps {
 	attributes: {
 		orderId: number;
 	};
-	setAttributes: (attributes: Partial<{ orderId: number }>) => void;
-	context: Record<string, any>;
+	setAttributes: ( attributes: Partial< { orderId: number } > ) => void;
+	context: Record< string, any >;
 }
 
-export const Edit: React.FC<EditProps> = ({ attributes, setAttributes }) => {
+export const Edit: React.FC< EditProps > = ( {
+	attributes,
+	setAttributes,
+} ) => {
 	const { orderId } = attributes;
-	
-	const blockProps = useBlockProps({
+
+	const blockProps = useBlockProps( {
 		className: 'bh-wp-bitcoin-gateway-bitcoin-order-container',
-	});
+	} );
 
-
-    return (
-      // <div { ...blockProps }>
-      //   <InnerBlocks defaultBlock={['core/paragraph', {placeholder: "Lorem ipsum..."}]} directInsert />
-      // </div>
-      <div {...blockProps}>
-        <div className="wp-block-group">
-          <div className="wp-block-group__inner-container">
-            <InnerBlocks
-              templateLock={false}
-              renderAppender={InnerBlocks.DefaultBlockAppender}
-              // defaultBlock={['core/paragraph', {placeholder: "Lorem ipsum..."}]}
-              // directInsert
-            />
-          </div>
-        </div>
-      </div>
-    );
+	return (
+		// <div { ...blockProps }>
+		//   <InnerBlocks defaultBlock={['core/paragraph', {placeholder: "Lorem ipsum..."}]} directInsert />
+		// </div>
+		<div { ...blockProps }>
+			<div className="wp-block-group">
+				<div className="wp-block-group__inner-container">
+					<InnerBlocks
+						templateLock={ false }
+						renderAppender={ InnerBlocks.DefaultBlockAppender }
+						// defaultBlock={['core/paragraph', {placeholder: "Lorem ipsum..."}]}
+						// directInsert
+					/>
+				</div>
+			</div>
+		</div>
+	);
 	//
 	// 		<div {...blockProps}>
 	// 			<div className="wp-block-group">
