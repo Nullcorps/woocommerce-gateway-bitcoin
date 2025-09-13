@@ -24,16 +24,19 @@
 			"fontFamily": true
 		}
 	},
-	"usesContext": ["bh-wp-bitcoin-gateway/orderId"],
+	"usesContext": [
+      "bh-wp-bitcoin-gateway/btc_exchange_rate_formatted",
+      "bh-wp-bitcoin-gateway/exchange_rate_url"
+    ],
 	"attributes": {
-		"orderId": {
-			"type": "number",
-			"default": 0
+		"useUrl": {
+			"type": "boolean",
+			"default": true
 		},
 		"showLabel": {
 			"type": "boolean",
 			"default": true
 		}
 	},
-    "viewScript": "bh-wp-bitcoin-gateway-exchange-rate-block"
+    "viewScript": "file:./exchange-rate-block.min.js"
 }

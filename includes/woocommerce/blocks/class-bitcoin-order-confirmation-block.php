@@ -9,14 +9,19 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use WC_Order;
 use WP_Block;
 use WP_Block_Type_Registry;
 
 class Bitcoin_Order_Confirmation_Block {
 
 	public function __construct(
-		protected Settings_Interface $settings
+		protected Settings_Interface $settings,
+		protected Bitcoin_Address_Factory $bitcoin_address_factory,
 	) {
 	}
 
@@ -28,14 +33,25 @@ class Bitcoin_Order_Confirmation_Block {
 	 */
 	public function register_block(): void {
 
+		/** @var array{dependencies:array<string>, version:string} $webpack_asset */
+		$webpack_asset = include $this->settings->get_plugin_dir() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group.min.asset.php';
+
 		wp_register_script(
 			'bh-wp-bitcoin-gateway-bitcoin-order-block',
 			$this->settings->get_plugin_url() . 'assets/js/frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group.min.js',
-			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
-			// $this->settings->get_plugin_version(),
-			time(), // TODO: do we need to bust cache now the `...min.asset.php` file has a version?
+			$webpack_asset['dependencies'],
+			$webpack_asset['version'],
 			array( 'in_footer' => true )
 		);
+
+		$order_details = $this->get_order_details_formatted();
+
+		$provides_context = array(
+			'bh-wp-bitcoin-gateway/orderId' => 'orderId',
+		);
+		foreach ( (array) $order_details?->to_array() as $key => $value ) {
+			$provides_context[ "bh-wp-bitcoin-gateway/$key" ] = $value;
+		}
 
 		register_block_type(
 			// TODO: rename to be explicitly a block for WooCommerce.
@@ -48,9 +64,7 @@ class Bitcoin_Order_Confirmation_Block {
 						'default' => 0,
 					),
 				),
-				'provides_context' => array(
-					'bh-wp-bitcoin-gateway/orderId' => 'orderId',
-				),
+				'provides_context' => $provides_context,
 				'render_callback'  => array( $this, 'render_block' ),
 			)
 		);
@@ -85,6 +99,11 @@ class Bitcoin_Order_Confirmation_Block {
 			$block->context['bh-wp-bitcoin-gateway/orderId'] = $order_id;
 		}
 
+		$order_details_formatted = $this->get_order_details_formatted()->to_array();
+		foreach ( $order_details_formatted as $key => $value ) {
+			$block->context[ "bh-wp-bitcoin-gateway/$key" ] = $value;
+		}
+
 		$wrapper_attributes = array(
 			'class' => 'bh-wp-bitcoin-gateway-bitcoin-order-container',
 		);
@@ -102,9 +121,30 @@ class Bitcoin_Order_Confirmation_Block {
 		return sprintf(
 			'<div %1$s><div class="wp-block-group"><div class="wp-block-group__inner-container">%2$s</div></div></div>',
 			$wrapper_attributes_string,
-			// $block->render() // TODO: This resulted in an infinite loop that didn't use the context as expected anyway.
 			$content
 		);
+	}
+
+
+	protected function get_order_details_formatted(): ?Details_Formatter {
+		$order = $this->get_order();
+
+		if ( is_null( $order ) ) {
+			return null;
+		}
+
+		return new Details_Formatter(
+			new Bitcoin_Order(
+				$order,
+				$this->bitcoin_address_factory,
+			)
+		);
+	}
+
+	protected function get_order(): ?WC_Order {
+		return wc_get_order(
+			$this->detect_order_id()
+		) ?: null;
 	}
 
 	/**

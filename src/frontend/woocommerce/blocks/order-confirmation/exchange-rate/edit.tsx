@@ -13,28 +13,31 @@ import { ExchangeRateDisplay } from './exchange-rate-display';
 
 interface EditProps {
 	attributes: {
-		orderId: number;
+		exchangeRate: string;
 		showLabel: boolean;
+		useUrl: boolean;
+		exchangeRateUrl?: string;
 	};
-	setAttributes: (attributes: Partial<{ orderId: number; showLabel: boolean }>) => void;
+	setAttributes: (attributes: Partial<{ showLabel: boolean; useUrl: boolean; }>) => void;
 	context: {
-		'bh-wp-bitcoin-gateway/orderId'?: number;
+		'bh-wp-bitcoin-gateway/exchangeRate': string;
+		'bh-wp-bitcoin-gateway/exchangeRateUrl': string;
 	};
 }
 
 export const Edit: React.FC<EditProps> = ({ attributes, setAttributes, context }) => {
 
-  const { showLabel, orderId } = attributes;
-	const contextOrderId = context['bh-wp-bitcoin-gateway/orderId'];
-	
-	// Use context order ID if available, otherwise fall back to attribute
-	const effectiveOrderId = contextOrderId || orderId || 123;
-	
+  const { showLabel, useUrl } = attributes;
+
+  const contextExchangeRate: string|undefined = context['bh-wp-bitcoin-gateway/exchangeRate'];
+  const contextExchangeRateUrl: string|undefined = context['bh-wp-bitcoin-gateway/exchangeRateUrl'];
+
 	const blockProps = useBlockProps({
-		className: 'bh-wp-bitcoin-gateway-exchange-rate-block',
+		className: 'bh-wp-bitcoin-gateway-exchange-rate',
 	});
 
-  console.log('(edit)orderId' + orderId);
+  const exchangeRate = "$123,456";
+  const exchangeRateUrl = "https://blockchain.com";
 
 	return (
 		<>
@@ -45,17 +48,16 @@ export const Edit: React.FC<EditProps> = ({ attributes, setAttributes, context }
 						checked={showLabel}
 						onChange={(value) => setAttributes({ showLabel: value })}
 					/>
-					{effectiveOrderId > 0 && (
-						<p><strong>{__('Order ID:', 'bh-wp-bitcoin-gateway')} {effectiveOrderId}</strong></p>
-					)}
-					{contextOrderId && (
-						<p><em>{__('(Using order ID from container block)', 'bh-wp-bitcoin-gateway')}</em></p>
-					)}
+          <ToggleControl
+						label={__('Link exchange rate to blockchain.com', 'bh-wp-bitcoin-gateway')}
+						checked={useUrl}
+						onChange={(value) => setAttributes({ useUrl: value })}
+					/>
 				</PanelBody>
 			</InspectorControls>
 			
 			<div {...blockProps}>
-				<ExchangeRateDisplay showLabel={showLabel} isPreview={true} orderId={effectiveOrderId} />
+				<ExchangeRateDisplay exchangeRate={exchangeRate} showLabel={showLabel} useUrl={useUrl} exchangeRateUrl={exchangeRateUrl} />
 				<p className="description" style={{ fontSize: '12px', opacity: 0.7, marginTop: '4px' }}>
 					{__('Preview - actual rate will display on order confirmation pages', 'bh-wp-bitcoin-gateway')}
 				</p>

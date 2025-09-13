@@ -233,7 +233,7 @@ describe('ExchangeRateDisplay', () => {
     render(<ExchangeRateDisplay isPreview={true} />);
     
     const container = screen.getByText('1 BTC = $45,000.00 USD').closest('div');
-    expect(container).toHaveClass('bh-wp-bitcoin-gateway-exchange-rate-block');
+    expect(container).toHaveClass('bh-wp-bitcoin-gateway-exchange-rate');
     
     expect(screen.getByText('Exchange rate at time of order:')).toHaveClass('exchange-rate-label');
     expect(screen.getByText('1 BTC = $45,000.00 USD')).toHaveClass('exchange-rate-value');
