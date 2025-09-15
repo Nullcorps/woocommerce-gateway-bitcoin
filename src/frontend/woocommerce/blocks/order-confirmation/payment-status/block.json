@@ -24,11 +24,10 @@
 			"fontFamily": true
 		}
 	},
-	"usesContext": ["bh-wp-bitcoin-gateway/orderId"],
+	"usesContext": ["bh-wp-bitcoin-gateway/paymentStatus"],
 	"attributes": {
-		"orderId": {
-			"type": "number",
-			"default": 0
+		"paymentStatus": {
+			"type": "string"
 		},
 		"showLabel": {
 			"type": "boolean",

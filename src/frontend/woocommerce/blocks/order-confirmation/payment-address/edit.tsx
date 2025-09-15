@@ -34,23 +34,17 @@ export const Edit: React.FC< EditProps > = ( {
 	context,
 } ) => {
 	const { showLabel, orderId } = attributes;
-	const contextOrderId = context[ 'bh-wp-bitcoin-gateway/orderId' ];
-
-	// Use context order ID if available, otherwise fall back to attribute
-	const effectiveOrderId = contextOrderId || orderId || 123;
 
 	const blockProps = useBlockProps( {
 		className: 'bh-wp-bitcoin-gateway-payment-address-block',
 	} );
-
-	console.log( '(edit)orderId' + orderId );
 
 	return (
 		<>
 			<InspectorControls>
 				<PanelBody
 					title={ __(
-						'Payment Address Settings',
+						'Payment Addres settings',
 						'bh-wp-bitcoin-gateway'
 					) }
 				>
@@ -61,24 +55,6 @@ export const Edit: React.FC< EditProps > = ( {
 							setAttributes( { showLabel: value } )
 						}
 					/>
-					{ effectiveOrderId > 0 && (
-						<p>
-							<strong>
-								{ __( 'Order ID:', 'bh-wp-bitcoin-gateway' ) }{ ' ' }
-								{ effectiveOrderId }
-							</strong>
-						</p>
-					) }
-					{ contextOrderId && (
-						<p>
-							<em>
-								{ __(
-									'(Using order ID from container block)',
-									'bh-wp-bitcoin-gateway'
-								) }
-							</em>
-						</p>
-					) }
 				</PanelBody>
 			</InspectorControls>
 
@@ -86,7 +62,6 @@ export const Edit: React.FC< EditProps > = ( {
 				<PaymentAddressDisplay
 					showLabel={ showLabel }
 					isPreview={ true }
-					orderId={ effectiveOrderId }
 				/>
 				<p
 					className="description"

@@ -9,24 +9,27 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 
 interface PaymentStatusDisplayProps {
+	paymentStatus?: string;
 	showLabel?: boolean;
 	isPreview?: boolean;
-	orderId?: number;
 }
 
 export const PaymentStatusDisplay: React.FC< PaymentStatusDisplayProps > = ( {
+	paymentStatus,
 	showLabel = true,
 	isPreview = false,
 } ) => {
-	const [ paymentStatus, setPaymentStatus ] = useState< string >( '' );
+	const [ displayPaymentStatus, setPaymentStatus ] = useState< string >( '' );
 
 	useEffect( () => {
 		if ( isPreview ) {
 			setPaymentStatus( 'Awaiting payment' );
 		}
+		if ( paymentStatus ) {
+			setPaymentStatus( paymentStatus );
+		}
 	}, [] );
 
-	// This isn't really being used.
 	return (
 		<div className="bh-wp-bitcoin-gateway-payment-status-block">
 			{ showLabel && (
@@ -34,7 +37,9 @@ export const PaymentStatusDisplay: React.FC< PaymentStatusDisplayProps > = ( {
 					{ __( 'Payment status:', 'bh-wp-bitcoin-gateway' ) }
 				</span>
 			) }
-			<span className="payment-status-value">{ paymentStatus }</span>
+			<span className="payment-status-value">
+				{ displayPaymentStatus }
+			</span>
 		</div>
 	);
 };

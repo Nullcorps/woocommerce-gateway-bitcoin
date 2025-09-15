@@ -44,7 +44,6 @@ const bhLabel: string =
  * Content component
  */
 const BHContent: React.FC = (): React.ReactElement => {
-	console.log( bhSettings );
 	return (
 		<div>
 			<p className="wc-block-components-checkout-step__description">

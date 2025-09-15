@@ -17,14 +17,14 @@ import { PaymentStatusDisplay } from './payment-status-display';
 
 interface EditProps {
 	attributes: {
-		orderId: number;
+		paymentStatus: string;
 		showLabel: boolean;
 	};
 	setAttributes: (
-		attributes: Partial< { orderId: number; showLabel: boolean } >
+		attributes: Partial< { paymentStatus: string; showLabel: boolean } >
 	) => void;
 	context: {
-		'bh-wp-bitcoin-gateway/orderId'?: number;
+		'bh-wp-bitcoin-gateway/paymentStatus'?: string;
 	};
 }
 
@@ -33,14 +33,11 @@ export const Edit: React.FC< EditProps > = ( {
 	setAttributes,
 	context,
 } ) => {
-	const { showLabel, orderId } = attributes;
-	const contextOrderId = context[ 'bh-wp-bitcoin-gateway/orderId' ];
+	const { showLabel, paymentStatus } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'bh-wp-bitcoin-gateway-payment-status-block',
 	} );
-
-	console.log( '(edit)orderId' + orderId );
 
 	return (
 		<>
@@ -63,6 +60,7 @@ export const Edit: React.FC< EditProps > = ( {
 
 			<div { ...blockProps }>
 				<PaymentStatusDisplay
+					paymentStatus={ paymentStatus }
 					showLabel={ showLabel }
 					isPreview={ true }
 				/>

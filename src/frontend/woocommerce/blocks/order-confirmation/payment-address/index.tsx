@@ -13,6 +13,6 @@ registerBlockType( metadata.name, {
 	...metadata,
 	// icon:
 	edit: Edit,
-	// parent: [ 'bh-wp-bitcoin-gateway/order-confirmation' ],
+	// ancestor: [ 'bh-wp-bitcoin-gateway/order-confirmation' ], // I think this should be in block.json
 	save: () => null,
 } );

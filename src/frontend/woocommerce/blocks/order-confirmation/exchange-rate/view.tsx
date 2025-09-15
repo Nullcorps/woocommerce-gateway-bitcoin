@@ -10,13 +10,26 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import metadata from './block.json';
+import { getAttributes, getContext } from '../../dataattributes';
+import { getClassNameFromNamespacedName } from '../../names';
+
+import blockJsonData from './block.json';
 import { ExchangeRateDisplay } from './exchange-rate-display';
-import { getClassNameFromNamespacedName } from "../../names";
-import { getAttributes, getContext } from "../../dataattributes";
+
+interface BlockMetadata {
+	name: string;
+	usesContext: string[];
+	attributes: {
+		[ key: string ]: {
+			type: string;
+			default: string | boolean | number;
+		};
+	};
+}
+
+const metadata = blockJsonData as BlockMetadata;
 
 window.addEventListener( 'DOMContentLoaded', function () {
-
 	const blockClassName = getClassNameFromNamespacedName( metadata.name );
 
 	const elements: HTMLCollectionOf< Element > =
