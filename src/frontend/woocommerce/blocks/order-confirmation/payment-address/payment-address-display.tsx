@@ -17,12 +17,8 @@ interface PaymentAddressDisplayProps {
 export const PaymentAddressDisplay: React.FC< PaymentAddressDisplayProps > = ( {
 	showLabel = true,
 	isPreview = false,
-	orderId = null,
 } ) => {
 	const [ paymentAddress, setPaymentAddress ] = useState< string >( '' );
-	const [ loading, setLoading ] = useState( ! isPreview );
-
-	console.log( 'orderId' + orderId );
 
 	useEffect( () => {
 		if ( isPreview ) {

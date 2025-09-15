@@ -1,11 +1,11 @@
 /**
- * WordPress dependencies
- */
-/**
  * External dependencies
  */
 import React from 'react';
 
+/**
+ * WordPress dependencies
+ */
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -36,9 +36,6 @@ export const Edit: React.FC< EditProps > = ( {
 	const { showLabel, orderId } = attributes;
 	const contextOrderId = context[ 'bh-wp-bitcoin-gateway/orderId' ];
 
-	// Use context order ID if available, otherwise fall back to attribute
-	const effectiveOrderId = contextOrderId || orderId || 123;
-
 	const blockProps = useBlockProps( {
 		className: 'bh-wp-bitcoin-gateway-payment-status-block',
 	} );
@@ -61,24 +58,6 @@ export const Edit: React.FC< EditProps > = ( {
 							setAttributes( { showLabel: value } )
 						}
 					/>
-					{ effectiveOrderId > 0 && (
-						<p>
-							<strong>
-								{ __( 'Order ID:', 'bh-wp-bitcoin-gateway' ) }{ ' ' }
-								{ effectiveOrderId }
-							</strong>
-						</p>
-					) }
-					{ contextOrderId && (
-						<p>
-							<em>
-								{ __(
-									'(Using order ID from container block)',
-									'bh-wp-bitcoin-gateway'
-								) }
-							</em>
-						</p>
-					) }
 				</PanelBody>
 			</InspectorControls>
 
@@ -86,7 +65,6 @@ export const Edit: React.FC< EditProps > = ( {
 				<PaymentStatusDisplay
 					showLabel={ showLabel }
 					isPreview={ true }
-					orderId={ effectiveOrderId }
 				/>
 				<p
 					className="description"

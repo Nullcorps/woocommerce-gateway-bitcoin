@@ -17,12 +17,8 @@ interface PaymentStatusDisplayProps {
 export const PaymentStatusDisplay: React.FC< PaymentStatusDisplayProps > = ( {
 	showLabel = true,
 	isPreview = false,
-	orderId = null,
 } ) => {
 	const [ paymentStatus, setPaymentStatus ] = useState< string >( '' );
-	const [ loading, setLoading ] = useState( ! isPreview );
-
-	console.log( 'orderId' + orderId );
 
 	useEffect( () => {
 		if ( isPreview ) {

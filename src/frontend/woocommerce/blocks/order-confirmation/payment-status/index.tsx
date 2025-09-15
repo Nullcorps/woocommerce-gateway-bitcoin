@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
  */
 import metadata from './block.json';
 import { Edit } from './edit';
-import { Save } from './save';
+import { Save } from './save'1
 
 registerBlockType( metadata.name, {
 	...metadata,
