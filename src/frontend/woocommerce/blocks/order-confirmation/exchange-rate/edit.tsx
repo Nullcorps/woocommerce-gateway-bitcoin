@@ -38,9 +38,9 @@ export const Edit: React.FC< EditProps > = ( {
 } ) => {
 	const { showLabel, useUrl } = attributes;
 
-	const contextExchangeRate: string | undefined =
+	const _contextExchangeRate: string | undefined =
 		context[ 'bh-wp-bitcoin-gateway/exchangeRate' ];
-	const contextExchangeRateUrl: string | undefined =
+	const _contextExchangeRateUrl: string | undefined =
 		context[ 'bh-wp-bitcoin-gateway/exchangeRateUrl' ];
 
 	const blockProps = useBlockProps( {
@@ -62,7 +62,7 @@ export const Edit: React.FC< EditProps > = ( {
 					<ToggleControl
 						label={ __( 'Show label', 'bh-wp-bitcoin-gateway' ) }
 						checked={ showLabel }
-						onChange={ ( value ) =>
+						onChange={ ( value: boolean ) =>
 							setAttributes( { showLabel: value } )
 						}
 					/>
@@ -72,7 +72,7 @@ export const Edit: React.FC< EditProps > = ( {
 							'bh-wp-bitcoin-gateway'
 						) }
 						checked={ useUrl }
-						onChange={ ( value ) =>
+						onChange={ ( value: boolean ) =>
 							setAttributes( { useUrl: value } )
 						}
 					/>

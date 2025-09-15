@@ -2,31 +2,18 @@
 //       src/frontend/woocommerce/blocks/order-confirmation/exchange-rate/view.tsx
 
 /**
- * React dependencies
- */
-/**
  * External dependencies
  */
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 
-/**
- * WordPress dependencies?
- */
 /**
  * Internal dependencies
  */
 import metadata from './block.json';
-
-/**
- * Internal dependencies
- */
 import { ExchangeRateDisplay } from './exchange-rate-display';
 
-console.log( 'Exchange Rate View' );
-
 window.addEventListener( 'DOMContentLoaded', function () {
-	console.log( 'DOMContentLoaded (Exchange Rate View)' );
 	function getClassNameFromNamespacedName( namespacedName: string ): string {
 		return namespacedName.replace( /\//g, '-' );
 	}
@@ -36,25 +23,24 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	}
 
 	const contextItemNames: string[] = metadata.usesContext;
-	const attributes = metadata.attributes;
+	const attributes = metadata.attributes as {
+		[ key: string ]: {
+			type: string;
+			default: string | boolean | number;
+		};
+	};
 
 	function getAttributes( element: Element ): {
 		[ key: string ]: string | boolean | number;
 	} {
-		const attributeValues = {};
+		const attributeValues: { [ key: string ]: string | boolean | number } =
+			{};
 
-		console.log( 'Getting attributes for element: ', element );
-
+		// Cast numbers and bools to their proper types.
 		Object.entries( attributes ).forEach( ( [ name, v ] ) => {
-			console.log( 'The key: ', name );
-			console.log( 'The value: ', v );
-
 			const dataAttr = 'data-attribute-' + name.toLowerCase();
-			console.log( 'searching for : ', dataAttr );
 			const attrValue = element.getAttribute( dataAttr );
-			console.log( 'found : ', attrValue );
 			if ( attrValue ) {
-				console.log( name + ':' + attrValue );
 				if ( attributes[ name ].type === 'boolean' ) {
 					attributeValues[ name ] = attrValue === 'true';
 				} else if ( attributes[ name ].type === 'numeric' ) {
@@ -82,11 +68,7 @@ window.addEventListener( 'DOMContentLoaded', function () {
 					'data-context-' + getClassNameFromNamespacedName( name );
 				const attrValue = parent.getAttribute( dataAttr );
 				if ( attrValue ) {
-					context[ getLocalNameFromNamespacedName( name ) ] =
-						attrValue;
-					console.log(
-						getLocalNameFromNamespacedName( name ) + ':' + attrValue
-					);
+					context[ getLocalNameFromNamespacedName( name ) ] = attrValue;
 					break;
 				}
 				parent = parent.parentElement;
@@ -117,37 +99,28 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	const elements: HTMLCollectionOf< Element > =
 		document.getElementsByClassName( blockClassName );
 
-	console.log(
-		elements.length + ' elements found with class ' + blockClassName
-	);
-
 	for ( let i = 0; i < elements.length; i++ ) {
 		const element: Element = elements.item( i )!;
 
 		const context = getContext( element );
-		const attributes = getAttributes( element );
+		const elementAttributes = getAttributes( element );
 
 		const exchangeRate = context.btc_exchange_rate_formatted;
 		const exchangeRateUrl = context.exchange_rate_url;
 
-		const { showLabel, useUrl } = attributes;
-
-		console.log( `Context exchangeRate is ${ exchangeRate }` );
-		console.log( `attribute showLabel is ${ showLabel }` );
-		console.log( `attribute useUrl is ${ useUrl }` );
-		console.log( `Context exchangeRateUrl is ${ exchangeRateUrl }` );
+		const { showLabel, useUrl } = elementAttributes;
 
 		// TODO: Remove class from element to prevent duplicate rendering?
 
-		const root = ReactDOM.createRoot( element );
+		const root = createRoot( element );
 
 		root.render(
 			<React.StrictMode>
 				<ExchangeRateDisplay
-					exchangeRate={ exchangeRate }
-					showLabel={ showLabel }
-					useUrl={ useUrl }
-					exchangeRateUrl={ exchangeRateUrl }
+					exchangeRate={ exchangeRate as string }
+					showLabel={ showLabel as boolean }
+					useUrl={ useUrl as boolean }
+					exchangeRateUrl={ exchangeRateUrl as string }
 				/>
 			</React.StrictMode>
 		);
