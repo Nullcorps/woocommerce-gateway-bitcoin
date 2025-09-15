@@ -17,18 +17,6 @@ import { getAttributes, getContext } from "../../dataattributes";
 
 window.addEventListener( 'DOMContentLoaded', function () {
 
-
-	const contextItemNames: string[] = metadata.usesContext;
-	const attributes = metadata.attributes as {
-		[ key: string ]: {
-			type: string;
-			default: string | boolean | number;
-		};
-	};
-
-	// block.json metadata.name
-	// bh-wp-bitcoin-gateway/exchange-rate-block
-	// 'bh-wp-bitcoin-gateway-exchange-rate-block';
 	const blockClassName = getClassNameFromNamespacedName( metadata.name );
 
 	const elements: HTMLCollectionOf< Element > =
@@ -37,13 +25,10 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	for ( let i = 0; i < elements.length; i++ ) {
 		const element: Element = elements.item( i )!;
 
-		const context = getContext( element, contextItemNames );
-		const elementAttributes = getAttributes( element, attributes );
+		const context = getContext( element, metadata.usesContext );
+		const elementAttributes = getAttributes( element, metadata.attributes );
 
-    // TODO: pass the variables using CamleCase from the PHP side.
-		const exchangeRate = context.btc_exchange_rate_formatted;
-		const exchangeRateUrl = context.exchange_rate_url;
-
+		const { btcExchangeRateFormatted, exchangeRateUrl } = context;
 		const { showLabel, useUrl } = elementAttributes;
 
 		// TODO: Remove class from element to prevent duplicate rendering?
@@ -53,7 +38,7 @@ window.addEventListener( 'DOMContentLoaded', function () {
 		root.render(
 			<React.StrictMode>
 				<ExchangeRateDisplay
-					exchangeRate={ exchangeRate as string }
+					exchangeRate={ btcExchangeRateFormatted as string }
 					showLabel={ showLabel as boolean }
 					useUrl={ useUrl as boolean }
 					exchangeRateUrl={ exchangeRateUrl as string }

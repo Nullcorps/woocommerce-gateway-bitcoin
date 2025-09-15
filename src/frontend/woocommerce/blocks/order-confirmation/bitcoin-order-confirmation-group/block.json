@@ -40,7 +40,7 @@
     },
 	"providesContext": {
 		"bh-wp-bitcoin-gateway/orderId": "orderId",
-		"bh-wp-bitcoin-gateway/btc_exchange_rate_formatted": "btc_exchange_rate_formatted",
-		"bh-wp-bitcoin-gateway/exchange_rate_url": "exchange_rate_url"
+		"bh-wp-bitcoin-gateway/btcExchangeRateFrmatted": "btc_exchange_rate_formatted",
+		"bh-wp-bitcoin-gateway/exchangeRateUrl": "exchange_rate_url"
 	}
 }

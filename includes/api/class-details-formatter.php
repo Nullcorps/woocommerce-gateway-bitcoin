@@ -147,7 +147,7 @@ class Details_Formatter {
 	/**
 	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
 	 */
-	public function to_array(): array {
+	public function to_array( bool $asCamelCase = false ): array {
 
 		$result                                  = array();
 		$result['btc_total_formatted']           = $this->get_btc_total_formatted();
@@ -159,6 +159,19 @@ class Details_Formatter {
 		$result['parent_wallet_xpub_html']                     = $this->get_xpub_js_span();
 		$result['exchange_rate_url']                           = $this->get_exchange_rate_url();
 		$result['payment_status']                              = $this->get_friendly_status();
+
+		if ( $asCamelCase ) {
+			foreach ( $result as $key => $value ) {
+				$newKey            = $this->asCamelCase( $key );
+				$result[ $newKey ] = $value;
+				unset( $result[ $key ] );
+			}
+		}
+
 		return $result;
+	}
+
+	protected function asCamelCase( string $var ): string {
+		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $var ) ) ) );
 	}
 }

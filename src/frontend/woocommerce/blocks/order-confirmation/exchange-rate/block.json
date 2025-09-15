@@ -25,8 +25,8 @@
 		}
 	},
 	"usesContext": [
-      "bh-wp-bitcoin-gateway/btc_exchange_rate_formatted",
-      "bh-wp-bitcoin-gateway/exchange_rate_url"
+      "bh-wp-bitcoin-gateway/btcExchangeRateFormatted",
+      "bh-wp-bitcoin-gateway/exchangeRateUrl"
     ],
 	"attributes": {
 		"useUrl": {
