@@ -8,7 +8,12 @@ import {
 
 export function getAttributes(
 	element: Element,
-	attributes: string[]
+	attributes: {
+		[ key: string ]: {
+			type: string;
+			default: string | boolean | number;
+		};
+	}
 ): {
 	[ key: string ]: string | boolean | number;
 } {
