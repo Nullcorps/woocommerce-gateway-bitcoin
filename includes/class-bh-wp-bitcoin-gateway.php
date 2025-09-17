@@ -134,11 +134,11 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_custom_post_type_hooks(): void {
 
-		/** @var Post_BH_Bitcoin_Wallet $post */
+		/** @var Post_BH_Bitcoin_Wallet $wallet */
 		$wallet = $this->container->get( Post_BH_Bitcoin_Wallet::class );
 		add_action( 'init', array( $wallet, 'register_wallet_post_type' ) );
 
-		/** @var Post_BH_Bitcoin_Address $post */
+		/** @var Post_BH_Bitcoin_Address $address */
 		$address = $this->container->get( Post_BH_Bitcoin_Address::class );
 		add_action( 'init', array( $address, 'register_address_post_type' ) );
 		add_action( 'parse_query', array( $address, 'add_post_statuses' ) );
