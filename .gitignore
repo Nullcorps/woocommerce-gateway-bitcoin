@@ -84,3 +84,4 @@ tests/e2e/test-results.json
 /blob-report/
 /playwright/.cache/
 
+.claude/settings.local.json
