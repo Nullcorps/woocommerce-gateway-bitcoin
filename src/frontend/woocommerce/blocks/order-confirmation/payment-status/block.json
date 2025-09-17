@@ -28,14 +28,11 @@
       "bh-wp-bitcoin-gateway/paymentStatus"
     ],
 	"attributes": {
-		"paymentStatus": {
-			"type": "string"
-		},
 		"showLabel": {
 			"type": "boolean",
 			"default": true
 		}
 	},
-  "editorScript": "file:./payment-status-admin.min.js",
-  "viewScript": "file:./payment-status-block.min.js"
+    "editorScript": "file:./payment-status-admin.min.js",
+    "viewScript": "file:./payment-status-block.min.js"
 }

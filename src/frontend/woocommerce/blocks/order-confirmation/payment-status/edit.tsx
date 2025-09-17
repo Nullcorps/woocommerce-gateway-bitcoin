@@ -31,7 +31,6 @@ interface EditProps {
 export const Edit: React.FC< EditProps > = ( {
 	attributes,
 	setAttributes,
-	context,
 } ) => {
 	const { showLabel, paymentStatus } = attributes;
 

@@ -28,10 +28,6 @@
       "bh-wp-bitcoin-gateway/paymentAddress"
     ],
 	"attributes": {
-		"orderId": {
-			"type": "number",
-			"default": 0
-		},
 		"showLabel": {
 			"type": "boolean",
 			"default": true
