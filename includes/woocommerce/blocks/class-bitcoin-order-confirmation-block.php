@@ -49,7 +49,7 @@ class Bitcoin_Order_Confirmation_Block {
 		$provides_context = array(
 			'bh-wp-bitcoin-gateway/orderId' => 'orderId',
 		);
-		foreach ( (array) $order_details?->to_array(asCamelCase: true) as $key => $value ) {
+		foreach ( (array) $order_details?->to_array( asCamelCase: true ) as $key => $value ) {
 			$provides_context[ "bh-wp-bitcoin-gateway/$key" ] = $value;
 		}
 
@@ -99,7 +99,7 @@ class Bitcoin_Order_Confirmation_Block {
 			$block->context['bh-wp-bitcoin-gateway/orderId'] = $order_id;
 		}
 
-		$order_details_formatted = $this->get_order_details_formatted()->to_array(asCamelCase: true);
+		$order_details_formatted = $this->get_order_details_formatted()->to_array( asCamelCase: true );
 		foreach ( $order_details_formatted as $key => $value ) {
 			$block->context[ "bh-wp-bitcoin-gateway/$key" ] = $value;
 		}
