@@ -7,7 +7,7 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry;

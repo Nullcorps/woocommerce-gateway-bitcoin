@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
@@ -12,7 +12,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway
  */
 class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

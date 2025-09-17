@@ -16,7 +16,7 @@ use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 use WC_Order;
 
 /**

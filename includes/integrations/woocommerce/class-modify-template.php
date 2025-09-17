@@ -5,7 +5,7 @@
  * TODO: This needs a better definition of the path to allow inserting after a specific block rather than the first found.
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use WP_Block_Template;
 

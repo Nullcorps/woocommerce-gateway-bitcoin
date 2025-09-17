@@ -5,7 +5,7 @@
  * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Blocks\Order_Confirmation;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 

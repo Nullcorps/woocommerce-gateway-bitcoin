@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Admin_Order_UI
  */
 class Admin_Order_UI_Unit_Test extends \Codeception\Test\Unit {
 

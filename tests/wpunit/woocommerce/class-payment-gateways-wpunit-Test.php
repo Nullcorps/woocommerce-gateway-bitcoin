@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -9,7 +9,7 @@ use Codeception\Stub\Expected;
 use WC_Gateway_BACS;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Payment_Gateways
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Payment_Gateways
  */
 class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

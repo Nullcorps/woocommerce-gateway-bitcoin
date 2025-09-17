@@ -14,7 +14,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeInterface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 use RuntimeException;
 use InvalidArgumentException;
 use WP_Post;

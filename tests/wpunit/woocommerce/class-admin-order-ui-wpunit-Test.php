@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use Codeception\Stub\Expected;
@@ -9,7 +9,7 @@ use WC_Order;
 use WP_Post;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Admin_Order_UI
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Admin_Order_UI
  */
 class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

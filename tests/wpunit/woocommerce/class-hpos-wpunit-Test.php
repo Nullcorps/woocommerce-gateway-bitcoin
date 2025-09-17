@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Codeception\Stub\Expected;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\HPOS
  */
 class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 

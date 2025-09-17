@@ -10,7 +10,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Bitcoin_Gateway;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 
 /**
  * Adds items to the plugin's row on plugins.php.

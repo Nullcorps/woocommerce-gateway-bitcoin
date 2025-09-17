@@ -7,7 +7,7 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Blocks;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter;

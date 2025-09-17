@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\API\BH_WP_PSR_Logger;
 use Psr\Log\NullLogger;

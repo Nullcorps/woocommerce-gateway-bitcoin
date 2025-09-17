@@ -3,9 +3,9 @@
  * The thank you page for blocks.
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Modify_Template;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Modify_Template;
 
 class Order_Confirmation {
 

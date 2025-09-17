@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
-use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
 use Codeception\Stub\Expected;
 use DateTimeImmutable;
 use WC_Order;
