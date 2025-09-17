@@ -48,7 +48,7 @@ window.addEventListener( 'DOMContentLoaded', function () {
 		root.render(
 			<React.StrictMode>
 				<PaymentTotalDisplay
-          btcTotalFormatted={ btcTotalFormatted as string }
+					btcTotalFormatted={ btcTotalFormatted as string }
 					showLabel={ showLabel as boolean }
 				/>
 			</React.StrictMode>
