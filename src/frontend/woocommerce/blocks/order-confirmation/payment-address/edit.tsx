@@ -17,14 +17,11 @@ import { PaymentAddressDisplay } from './payment-address-display';
 
 interface EditProps {
 	attributes: {
-		orderId: number;
 		showLabel: boolean;
 	};
-	setAttributes: (
-		attributes: Partial< { orderId: number; showLabel: boolean } >
-	) => void;
+	setAttributes: ( attributes: Partial< { showLabel: boolean } > ) => void;
 	context: {
-		'bh-wp-bitcoin-gateway/orderId'?: number;
+		'bh-wp-bitcoin-gateway/paymentAddress': string;
 	};
 }
 
@@ -33,7 +30,7 @@ export const Edit: React.FC< EditProps > = ( {
 	setAttributes,
 	context,
 } ) => {
-	const { showLabel, orderId } = attributes;
+	const { showLabel } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'bh-wp-bitcoin-gateway-payment-address-block',
