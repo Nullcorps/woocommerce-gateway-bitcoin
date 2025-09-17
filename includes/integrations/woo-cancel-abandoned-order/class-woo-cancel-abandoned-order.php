@@ -11,7 +11,7 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Exception;
