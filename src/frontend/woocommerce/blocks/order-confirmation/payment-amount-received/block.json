@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "bh-wp-bitcoin-gateway/payment-amount-received",
+	"version": "1.0.0",
+	"title": "Bitcoin Order Payment Amount Received",
+	"category": "woocommerce",
+	"description": "Prints a string to show the Bitcoin received paying for the order.",
+	"keywords": ["bitcoin", "received", "order"],
+	"textdomain": "bh-wp-bitcoin-gateway",
+	"supports": {
+		"html": false,
+		"align": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"fontFamily": true
+		}
+	},
+	"usesContext": [
+      "bh-wp-bitcoin-gateway/btcAmountReceivedFormatted"
+    ],
+	"attributes": {
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+    "editorScript": "file:./payment-amount-received-admin.min.js",
+    "viewScript": "file:./payment-amount-received-block.min.js"
+}

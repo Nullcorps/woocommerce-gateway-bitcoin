@@ -18,6 +18,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Blocks\Bitcoin_Image_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Exchange_Rate_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Order_Payment_Address_Block;
+use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Order_Payment_Amount_Received_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Order_Payment_Status_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\Blocks\Order_Confirmation\Bitcoin_Order_Payment_Total_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\WooCommerce\HPOS;
@@ -236,6 +237,10 @@ class BH_WP_Bitcoin_Gateway {
 		/** @var Bitcoin_Order_Payment_Total_Block $bitcoin_payment_total_block */
 		$bitcoin_payment_total_block = $this->container->get( Bitcoin_Order_Payment_Total_Block::class );
 		add_action( 'init', array( $bitcoin_payment_total_block, 'register_block' ) );
+
+		/** @var Bitcoin_Order_Payment_Amount_Received_Block $bitcoin_payment_amount_received_block */
+		$bitcoin_payment_amount_received_block = $this->container->get( Bitcoin_Order_Payment_Amount_Received_Block::class );
+		add_action( 'init', array( $bitcoin_payment_amount_received_block, 'register_block' ) );
 	}
 
 	/**
