@@ -159,6 +159,7 @@ class Details_Formatter {
 		$result['parent_wallet_xpub_html']                     = $this->get_xpub_js_span();
 		$result['exchange_rate_url']                           = $this->get_exchange_rate_url();
 		$result['payment_status']                              = $this->get_friendly_status();
+		$result['payment_address']                             = $this->order->get_address()->get_raw_address();
 
 		if ( $asCamelCase ) {
 			foreach ( $result as $key => $value ) {

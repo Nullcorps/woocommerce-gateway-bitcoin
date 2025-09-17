@@ -24,7 +24,9 @@
 			"fontFamily": true
 		}
 	},
-	"usesContext": ["bh-wp-bitcoin-gateway/orderId"],
+	"usesContext": [
+      "bh-wp-bitcoin-gateway/paymentAddress"
+    ],
 	"attributes": {
 		"orderId": {
 			"type": "number",
@@ -34,5 +36,7 @@
 			"type": "boolean",
 			"default": true
 		}
-	}
+	},
+    "editorScript": "file:./payment-address-admin.min.js",
+    "viewScript": "file:./payment-address-block.min.js"
 }
