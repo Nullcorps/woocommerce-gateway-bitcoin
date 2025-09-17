@@ -50,6 +50,10 @@ const myConfig = {
 			'./src/frontend/woocommerce/blocks/order-confirmation/payment-amount-received/index.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/payment-amount-received/payment-amount-received-block':
 			'./src/frontend/woocommerce/blocks/order-confirmation/payment-amount-received/view.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/payment-last-checked/payment-last-checked-admin':
+			'./src/frontend/woocommerce/blocks/order-confirmation/payment-last-checked/index.tsx',
+		'frontend/woocommerce/blocks/order-confirmation/payment-last-checked/payment-last-checked-block':
+			'./src/frontend/woocommerce/blocks/order-confirmation/payment-last-checked/view.tsx',
 		'frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/bitcoin-order-confirmation-group':
 			'./src/frontend/woocommerce/blocks/order-confirmation/bitcoin-order-confirmation-group/index.tsx',
 		'frontend/woocommerce/shortcode/thank-you/thank-you':
