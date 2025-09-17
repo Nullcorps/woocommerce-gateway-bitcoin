@@ -38,8 +38,6 @@ window.addEventListener( 'DOMContentLoaded', function () {
 		const context = getContext( element, metadata.usesContext );
 		const elementAttributes = getAttributes( element, metadata.attributes );
 
-		console.log( context );
-
 		const { paymentAddress } = context;
 		const { showLabel } = elementAttributes;
 
