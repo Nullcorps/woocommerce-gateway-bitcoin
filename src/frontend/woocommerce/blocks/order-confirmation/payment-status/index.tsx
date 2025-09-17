@@ -11,9 +11,17 @@ import { Edit } from './edit';
 
 registerBlockType( metadata.name, {
 	...metadata,
-	// icon:
 	edit: Edit,
-	// save: Save,
-	// ancestor: [ 'bh-wp-bitcoin-gateway/order-confirmation' ], // -> .json
-	save: () => null,
+	save: ( { attributes } ) => {
+		const { showLabel } = attributes;
+
+		return (
+			<>
+				<span
+					className="bh-wp-bitcoin-gateway-payment-status"
+					data-attribute-showLabel={ showLabel }
+				/>
+			</>
+		);
+	},
 } );
