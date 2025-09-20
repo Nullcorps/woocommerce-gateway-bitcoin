@@ -8,6 +8,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\WC_Logger\WC_PSR_Logger;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\Logger;
 
 /**
@@ -87,6 +88,16 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::userFunction(
 			'register_deactivation_hook'
+		);
+
+		/**
+		 * Just for {@see WC_PSR_Logger}. Once we go back to BH_WP_Logger we can remove this.
+		 */
+		\WP_Mock::userFunction(
+			'did_action',
+			array(
+				'return' => false,
+			)
 		);
 
 		ob_start();
