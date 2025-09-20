@@ -8,6 +8,8 @@ use Codeception\Stub\Expected;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WC_Order;
 
@@ -26,7 +28,8 @@ class Bitcoin_Gateway_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			array(
 				'generate_new_wallet'               => Expected::once(
 					function ( string $xpub_after, string $gateway_id = null ) {
-						return array();
+						$mock_wallet = \Codeception\Stub::makeEmpty( Bitcoin_Wallet::class );
+						return new Wallet_Generation_Result( $mock_wallet, array(), array() );
 					}
 				),
 				'generate_new_addresses_for_wallet' => Expected::once(

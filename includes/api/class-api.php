@@ -17,6 +17,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigDecimal;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\RoundingMode;
@@ -514,19 +515,15 @@ class API implements API_Interface {
 	 * @param string  $master_public_key Xpub/ypub/zpub string.
 	 * @param ?string $gateway_id
 	 *
-	 * @return array{wallet: Bitcoin_Wallet, wallet_post_id: int, existing_fresh_addresses:array<Bitcoin_Address>, generated_addresses:array<Bitcoin_Address>}
+	 * @return Wallet_Generation_Result
 	 * @throws Exception
 	 */
-	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): array {
-
-		$result = array();
+	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): Wallet_Generation_Result {
 
 		$post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key )
 			?? $this->bitcoin_wallet_factory->save_new( $master_public_key, $gateway_id );
 
 		$wallet = $this->bitcoin_wallet_factory->get_by_post_id( $post_id );
-
-		$result['wallet'] = $wallet;
 
 		$existing_fresh_addresses = $wallet->get_fresh_addresses();
 
@@ -542,14 +539,13 @@ class API implements API_Interface {
 			$check_new_addresses_result = $this->check_addresses_for_transactions( $generated_addresses );
 		}
 
-		$result['existing_fresh_addresses'] = $existing_fresh_addresses;
-
 		// TODO: Only return / distinguish which generated addresses are fresh.
-		$result['generated_addresses'] = $generated_addresses;
 
-		$result['wallet_post_id'] = $post_id;
-
-		return $result;
+		return new Wallet_Generation_Result(
+			$wallet,
+			$existing_fresh_addresses,
+			$generated_addresses
+		);
 	}
 
 

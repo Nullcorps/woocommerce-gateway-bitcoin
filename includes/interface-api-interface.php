@@ -10,6 +10,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Exception;
@@ -115,9 +116,9 @@ interface API_Interface {
 	 * @param string  $master_public_key The wallet address to save as a wallet object cpt.
 	 * @param ?string $gateway_id The Bitcoin gateway (it is presumably linked to one).
 	 *
-	 * @return array{wallet:Bitcoin_Wallet, wallet_post_id:int, existing_fresh_addresses:array<Bitcoin_Address>, generated_addresses:array<Bitcoin_Address>}
+	 * @return Wallet_Generation_Result
 	 */
-	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): array;
+	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): Wallet_Generation_Result;
 
 	/**
 	 * For each Bitcoin gateway, calls `generate_new_addresses_for_wallet()`.
