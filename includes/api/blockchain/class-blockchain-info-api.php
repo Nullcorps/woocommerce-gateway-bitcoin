@@ -55,17 +55,20 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 	 * @throws Exception
 	 */
 	public function get_received_by_address( string $btc_address, bool $confirmed ): Money {
-		return Money::of( $this->api->getReceivedByAddress( $btc_address, $confirmed ), 'BTC' );
+		$value = Money::of( $this->api->getReceivedByAddress( $btc_address, $confirmed ), 'BTC' );
+		return $value->dividedBy( pow( 10, 8 ) ); // Convert from Satoshis to BTC.
 	}
 
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
-		$result                            = array();
-		$result['number_of_confirmations'] = $number_of_confirmations;
-		$result['unconfirmed_balance']     = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'BTC' );
-		$result['confirmed_balance']       = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'BTC' );
+		$unconfirmed_balance = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'BTC' );
+		$confirmed_balance   = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'BTC' );
 
-		return new Blockchain_Info_Api_Address_Balance( $result );
+		return new Blockchain_Info_Api_Address_Balance(
+			$number_of_confirmations,
+			$unconfirmed_balance->dividedBy( pow( 10, 8 ) ), // Convert from Satoshis to BTC.
+			$confirmed_balance->dividedBy( pow( 10, 8 ) )
+		);
 	}
 
 	/**

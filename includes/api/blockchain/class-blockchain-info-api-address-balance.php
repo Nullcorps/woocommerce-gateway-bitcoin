@@ -7,21 +7,22 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 
 class Blockchain_Info_Api_Address_Balance implements Address_Balance {
 
-	/**
-	 * @param array{number_of_confirmations:int, unconfirmed_balance:Money, confirmed_balance:Money} $result
-	 */
-	public function __construct( protected array $result ) {
+	public function __construct(
+		protected int $number_of_confirmations,
+		protected Money $unconfirmed_balance,
+		protected Money $confirmed_balance,
+	) {
 	}
 
 	public function get_confirmed_balance(): Money {
-		return $this->result['confirmed_balance'];
+		return $this->confirmed_balance;
 	}
 
 	public function get_unconfirmed_balance(): Money {
-		return $this->result['unconfirmed_balance'];
+		return $this->unconfirmed_balance;
 	}
 
 	public function get_number_of_confirmations(): int {
-		return $this->result['number_of_confirmations'];
+		return $this->number_of_confirmations;
 	}
 }
