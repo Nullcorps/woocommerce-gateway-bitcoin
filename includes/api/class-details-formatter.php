@@ -147,7 +147,7 @@ class Details_Formatter {
 	/**
 	 * @return array{btc_total_formatted:string, btc_exchange_rate_formatted:string, order_status_before_formatted:string, order_status_formatted:string, btc_amount_received_formatted:string, last_checked_time_formatted:string}
 	 */
-	public function to_array( bool $asCamelCase = false ): array {
+	public function to_array( bool $as_camel_case = false ): array {
 
 		$result                                  = array();
 		$result['btc_total_formatted']           = $this->get_btc_total_formatted();
@@ -161,10 +161,10 @@ class Details_Formatter {
 		$result['payment_status']                              = $this->get_friendly_status();
 		$result['payment_address']                             = $this->order->get_address()->get_raw_address();
 
-		if ( $asCamelCase ) {
+		if ( $as_camel_case ) {
 			foreach ( $result as $key => $value ) {
-				$newKey            = $this->asCamelCase( $key );
-				$result[ $newKey ] = $value;
+				$new_key            = $this->as_camel_case( $key );
+				$result[ $new_key ] = $value;
 				unset( $result[ $key ] );
 			}
 		}
@@ -172,7 +172,7 @@ class Details_Formatter {
 		return $result;
 	}
 
-	protected function asCamelCase( string $var ): string {
+	protected function as_camel_case( string $var ): string {
 		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $var ) ) ) );
 	}
 }

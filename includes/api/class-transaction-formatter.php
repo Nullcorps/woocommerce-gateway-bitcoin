@@ -6,7 +6,9 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 
 class Transaction_Formatter {
 
-
+	/**
+	 * URL to the transaction details on blockchain.com.
+	 */
 	public function get_url( Transaction_Interface $transaction ): string {
 		return sprintf(
 			'https://blockchain.com/explorer/transactions/btc/%s',
@@ -14,14 +16,15 @@ class Transaction_Formatter {
 		);
 	}
 
+	/**
+	 * Given a long string, return a short version with ellipses in the middle.
+	 */
 	public function get_ellipses( Transaction_Interface $transaction ): string {
 		return substr( $transaction->get_txid(), 0, 3 ) . '...' . substr( $transaction->get_txid(), - 3 );
 	}
 
 	/**
 	 * @param Transaction_Interface[] $new_order_transactions
-	 *
-	 * @return string
 	 */
 	public function get_order_note( array $new_order_transactions ): string {
 
