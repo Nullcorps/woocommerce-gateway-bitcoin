@@ -529,7 +529,8 @@ class API implements API_Interface {
 
 		$generated_addresses = array();
 
-		while ( count( $wallet->get_fresh_addresses() ) < 20 ) {
+		$count = count( $wallet->get_fresh_addresses() );
+		while ( $count < 20 ) {
 
 			$generate_addresses_result = $this->generate_new_addresses_for_wallet( $master_public_key );
 			$new_generated_addresses   = $generate_addresses_result['generated_addresses'];
@@ -537,6 +538,8 @@ class API implements API_Interface {
 			$generated_addresses = array_merge( $generated_addresses, $new_generated_addresses );
 
 			$check_new_addresses_result = $this->check_addresses_for_transactions( $generated_addresses );
+
+			++$count;
 		}
 
 		// TODO: Only return / distinguish which generated addresses are fresh.
