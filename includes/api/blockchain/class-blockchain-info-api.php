@@ -64,7 +64,7 @@ class Blockchain_Info_Api implements Blockchain_API_Interface, LoggerAwareInterf
 		$unconfirmed_balance = Money::of( $this->api->getAddressBalance( $btc_address, 0 ), 'BTC' );
 		$confirmed_balance   = Money::of( $this->api->getAddressBalance( $btc_address, $number_of_confirmations ), 'BTC' );
 
-		return new Blockchain_Info_Api_Address_Balance(
+		return new Blockchain_Address_Balance(
 			$number_of_confirmations,
 			$unconfirmed_balance->dividedBy( pow( 10, 8 ) ), // Convert from Satoshis to BTC.
 			$confirmed_balance->dividedBy( pow( 10, 8 ) )

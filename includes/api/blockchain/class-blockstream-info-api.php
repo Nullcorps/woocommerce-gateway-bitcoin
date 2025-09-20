@@ -64,9 +64,6 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 			// Maybe `number_of_confirmations` should be block_height and the client can decide is that enough.
 		}
 
-		$result                            = array();
-		$result['number_of_confirmations'] = $number_of_confirmations;
-
 		$address_info = $this->get_address_data( $btc_address );
 
 		$confirmed_balance = Money::of( $address_info['chain_stats']['funded_txo_sum'], 'BTC' )
@@ -75,34 +72,14 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 									)->dividedBy( 100_000_000 );
 		$this->logger->debug( 'Confirmed balance: ' . number_format( $confirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
-		$result['confirmed_balance'] = $confirmed_balance;
-
 		$unconfirmed_balance = Money::of( $address_info['mempool_stats']['funded_txo_sum'], 'BTC' )->minus( Money::of( $address_info['mempool_stats']['spent_txo_sum'], 'BTC' ) )->dividedBy( 100_000_000 );
 		$this->logger->debug( 'Unconfirmed balance: ' . number_format( $unconfirmed_balance->getAmount()->toFloat(), 8 ), array( 'address_info' => $address_info ) );
 
-		$result['unconfirmed_balance'] = (string) $unconfirmed_balance;
-
-		return new class( $result) implements Address_Balance {
-			/**
-			 * @param array{number_of_confirmations:int, unconfirmed_balance:Money, confirmed_balance:Money} $result
-			 */
-			public function __construct(
-				protected array $result
-			) {
-			}
-
-			public function get_confirmed_balance(): Money {
-				return $this->result['confirmed_balance'];
-			}
-
-			public function get_unconfirmed_balance(): Money {
-				return $this->result['unconfirmed_balance'];
-			}
-
-			public function get_number_of_confirmations(): int {
-				return $this->result['number_of_confirmations'];
-			}
-		};
+		return new Blockchain_Address_Balance(
+			$number_of_confirmations,
+			$unconfirmed_balance,
+			$confirmed_balance,
+		);
 	}
 
 	/**

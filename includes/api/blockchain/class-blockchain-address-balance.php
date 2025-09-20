@@ -5,7 +5,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 
-class Blockchain_Info_Api_Address_Balance implements Address_Balance {
+class Blockchain_Address_Balance implements Address_Balance {
 
 	public function __construct(
 		protected int $number_of_confirmations,

@@ -57,7 +57,7 @@ class Blockstream_Info_API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTe
 
 		$result = $sut->get_address_balance( $address, 1 );
 
-		$this->assertEquals( '0.00018142', $result->get_confirmed_balance()->getAmount() );
+		$this->assertEquals( '0.00018142', (string) $result->get_confirmed_balance()->getAmount() );
 	}
 
 	/**
