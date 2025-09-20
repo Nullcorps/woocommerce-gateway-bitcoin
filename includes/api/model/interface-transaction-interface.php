@@ -8,6 +8,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use DateTimeInterface;
 
 interface Transaction_Interface {
 
@@ -18,10 +19,8 @@ interface Transaction_Interface {
 
 	/**
 	 * Used to filter transactions to only those between the time the order was placed, and paid.
-	 *
-	 * @return \DateTimeInterface
 	 */
-	public function get_time(): \DateTimeInterface;
+	public function get_time(): DateTimeInterface;
 
 	/**
 	 * @param string $to_address
