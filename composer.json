@@ -26,6 +26,16 @@
       "php": "8.0.30"
     }
   },
+  "autoload-dev": {
+      "psr-4": {
+        "BrianHenryIE\\WP_Bitcoin_Gateway\\": [
+          "tests/contract",
+          "tests/integration",
+          "tests/wpunit",
+          "tests/unit"
+        ]
+      }
+  },
   "repositories": {
     "wordpress/wordpress": {
       "url": "https://github.com/WordPress/wordpress-develop",
