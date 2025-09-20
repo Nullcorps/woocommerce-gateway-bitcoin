@@ -13,6 +13,12 @@ use Mockery;
  */
 class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		Mockery::close();
+	}
+
 	/**
 	 * @covers ::get_received_by_address
 	 * @covers ::__construct
@@ -43,7 +49,7 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 		$logger = new ColorLogger();
 
 		$mock_api = Mockery::mock( BlockchainInfoApi::class );
-		$mock_api->expects( 'getAddressBalance' )->andReturn( '18142' );
+		$mock_api->expects( 'getAddressBalance' )->twice()->andReturn( '18142' );
 
 		$sut = new Blockchain_Info_API( $logger, $mock_api );
 
