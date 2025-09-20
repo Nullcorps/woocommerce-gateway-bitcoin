@@ -3,15 +3,15 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets
  */
-class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Frontend_WPUnit_Test extends WPTestCase {
 
 	/**
 	 * @covers ::enqueue_scripts
@@ -25,6 +25,11 @@ class Frontend_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
 				'get_plugin_version' => Expected::once(
 					function () {
 						return '1.0.0';
+					}
+				),
+				'get_plugin_dir'     => Expected::once(
+					function () {
+						return codecept_root_dir();
 					}
 				),
 			)
