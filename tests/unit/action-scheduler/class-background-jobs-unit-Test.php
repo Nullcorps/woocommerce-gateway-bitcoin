@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 
@@ -24,6 +25,8 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 				'generate_new_addresses' => Expected::once(
 					function () {
 						return array();
+						return $this->createMock( Addresses_Generation_Result::class );
+						// return new Addresses_Generation_Result();
 					}
 				),
 			)

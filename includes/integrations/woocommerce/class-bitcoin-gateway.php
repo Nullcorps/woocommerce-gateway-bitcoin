@@ -189,8 +189,8 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			);
 
 			if ( ! is_null( $this->api ) ) {
-				$this->api->generate_new_wallet( $xpub_after, $this->id );
-				$this->api->generate_new_addresses_for_wallet( $xpub_after, 2 );
+				$generate_wallet_result = $this->api->generate_new_wallet( $xpub_after, $this->id );
+				$this->api->generate_new_addresses_for_wallet( $generate_wallet_result->get_wallet(), 2 );
 			}
 
 			// TODO: maybe mark the previous xpub's wallet as "inactive". (although it could be in use in another instance of the gateway).
@@ -421,11 +421,14 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Returns the configured xpub for the gateway, so new addresses can be generated.
 	 *
+	 * TODO: rename to get_master_public_key() ?
+	 *
 	 * @used-by API::generate_new_addresses_for_wallet()
 	 *
 	 * @return string
 	 */
 	public function get_xpub(): string {
+		// TODO: validate xpub format.
 		return $this->settings['xpub'];
 	}
 

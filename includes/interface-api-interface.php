@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
@@ -123,7 +124,7 @@ interface API_Interface {
 	/**
 	 * For each Bitcoin gateway, calls `generate_new_addresses_for_wallet()`.
 	 *
-	 * @return array<string, array{}|array{wallet_post_id:int, new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}}>
+	 * @return Addresses_Generation_Result[]
 	 */
 	public function generate_new_addresses(): array;
 
@@ -134,12 +135,10 @@ interface API_Interface {
 	 * that wallet, checks the new addresses for transactions, queues a new background job to generate more if
 	 * total is still below threshold.
 	 *
-	 * @param string $master_public_key The main wallet address (xpub/ypub/zpub).
-	 * @param int    $generate_count The number of sub-addresses to derive.
-	 *
-	 * @return array{xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
+	 * @param Bitcoin_Wallet $wallet The wallet to generate addresses for.
+	 * @param int            $generate_count The number of sub-addresses to derive.
 	 */
-	public function generate_new_addresses_for_wallet( string $master_public_key, int $generate_count = 25 ): array;
+	public function generate_new_addresses_for_wallet( Bitcoin_Wallet $wallet, int $generate_count = 20 ): Addresses_Generation_Result;
 
 	/**
 	 * Get transactions for an address object, with number of confirmations for each, and show which are new or updated.

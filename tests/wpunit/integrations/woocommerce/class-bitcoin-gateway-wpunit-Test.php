@@ -2,6 +2,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Codeception\Stub\Expected;
@@ -33,9 +34,9 @@ class Bitcoin_Gateway_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 					}
 				),
 				'generate_new_addresses_for_wallet' => Expected::once(
-					function ( string $xpub, int $generate_count ): array {
+					function ( $wallet, int $generate_count ): Addresses_Generation_Result {
 						assert( 2 === $generate_count );
-						return array();
+						return $this->createMock( Addresses_Generation_Result::class );
 					}
 				),
 			)
