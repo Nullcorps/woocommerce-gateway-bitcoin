@@ -11,10 +11,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain_API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Address_Balance;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
-use DateTimeImmutable;
-use DateTimeInterface;
-use DateTimeZone;
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use Exception;
 use JsonException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -42,7 +39,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 		$request_response = wp_remote_get( $address_info_url );
 
 		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
+			throw new Exception();
 		}
 
 		$address_info = json_decode( $request_response['body'], true );
@@ -57,7 +54,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 	 * @param int    $number_of_confirmations
 	 *
 	 * @return Address_Balance
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function get_address_balance( string $btc_address, int $number_of_confirmations ): Address_Balance {
 
@@ -113,7 +110,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 	 *
 	 * @param string $btc_address The Bitcoin address.
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function get_received_by_address( string $btc_address, bool $confirmed ): Money {
 
@@ -133,7 +130,7 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 	/**
 	 * @param string $btc_address
 	 *
-	 * @return array<string, Transaction_Interface>
+	 * @return array<string, Transaction_Interface> Transactions keyed by txid.
 	 *
 	 * @throws JsonException
 	 */
@@ -146,69 +143,25 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 		$request_response = wp_remote_get( $address_info_url_bs );
 
 		if ( is_wp_error( $request_response ) ) {
-			throw new \Exception( $request_response->get_error_message() );
+			throw new Exception( $request_response->get_error_message() );
 		}
 		if ( 200 !== $request_response['response']['code'] ) {
-			throw new \Exception( 'Unexpected response received.' );
+			throw new Exception( 'Unexpected response received.' );
 		}
 
 		$blockstream_transactions = json_decode( $request_response['body'], true, 512, JSON_THROW_ON_ERROR );
 
 		/**
-		 * block_time is in unixtime.
+		 * `block_time` is in unix-time.
 		 *
 		 * @param array{txid:string, version:int, locktime:int, vin:array, vout:array, size:int, weight:int, fee:int, status:array{confirmed:bool, block_height:int, block_hash:string, block_time:int}} $blockstream_transaction
 		 *
-		 * @return Transaction_Interface
+		 * @var Transaction_Interface[] $transactions
 		 */
-		$blockstream_mapper = function ( array $blockstream_transaction ): Transaction_Interface {
-
-			return new class( $blockstream_transaction ) implements Transaction_Interface {
-
-				protected array $blockstream_transaction;
-
-				public function __construct( array $blockstream_transaction ) {
-					$this->blockstream_transaction = $blockstream_transaction;
-				}
-
-				public function get_txid(): string {
-					return (string) $this->blockstream_transaction['txid'];
-				}
-
-				public function get_time(): \DateTimeInterface {
-
-					$block_time = (int) $this->blockstream_transaction['status']['block_time'];
-
-					return new DateTimeImmutable( '@' . $block_time, new DateTimeZone( 'UTC' ) );
-				}
-
-				public function get_value( string $to_address ): Money {
-					$value_including_fee = array_reduce(
-						$this->blockstream_transaction['vout'],
-						function ( Money $carry, array $out ) use ( $to_address ): Money {
-							if ( $out['scriptpubkey_address'] === $to_address ) {
-								return $carry->plus( Money::of( $out['value'], 'BTC' ) );
-							}
-							return $carry;
-						},
-						Money::of( 0, 'BTC' )
-					);
-
-					return $value_including_fee->dividedBy( 100_000_000 );
-				}
-
-				public function get_block_height(): int {
-
-					return $this->blockstream_transaction['status']['block_height'];
-
-					// TODO: Confirmations was returning the block height - 1. Presumably that meant mempool/0 confirmations, but I need test data to understand.
-					// Correct solution is probably to check does $blockstream_transaction['status']['block_height'] exist, else ???
-					// Quick fix.
-				}
-			};
-		};
-
-		$transactions = array_map( $blockstream_mapper, $blockstream_transactions );
+		$transactions = array_map(
+			fn( array $blockstream_transaction ) => new BlockStream_Info_API_Transaction( $blockstream_transaction ),
+			$blockstream_transactions
+		);
 
 		$keyed_transactions = array();
 		foreach ( $transactions as $transaction ) {
@@ -220,13 +173,13 @@ class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInter
 
 	/**
 	 * @return int
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function get_blockchain_height(): int {
 		$blocks_url_bs    = 'https://blockstream.info/api/blocks/tip/height';
 		$request_response = wp_remote_get( $blocks_url_bs );
 		if ( is_wp_error( $request_response ) || 200 !== $request_response['response']['code'] ) {
-			throw new \Exception();
+			throw new Exception();
 		}
 		return intval( $request_response['body'] );
 	}
