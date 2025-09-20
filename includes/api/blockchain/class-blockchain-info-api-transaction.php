@@ -6,6 +6,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\TransactionOut;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use DateTimeImmutable;
 use DateTimeZone;
 
 class Blockchain_Info_Api_Transaction implements Transaction_Interface {
@@ -20,7 +21,7 @@ class Blockchain_Info_Api_Transaction implements Transaction_Interface {
 	}
 
 	public function get_time(): \DateTimeInterface {
-		return new \DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
+		return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
 	}
 
 	public function get_value( string $to_address ): Money {
