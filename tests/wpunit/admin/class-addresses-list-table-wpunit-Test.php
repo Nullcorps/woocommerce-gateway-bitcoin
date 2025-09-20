@@ -6,16 +6,14 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
-use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Wallet;
-use Codeception\TestCase\WPTestCase;
 use WP_Post;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Admin\Addresses_List_Table
  */
-class Addresses_List_Table_WPUnit_Test extends WPTestCase {
+class Addresses_List_Table_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * The `$args` array used when constructing the Addresses_List_Table sut.

@@ -11,7 +11,7 @@ use WC_Gateway_BACS;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Payment_Gateways
  */
-class Payment_Gateways_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Payment_Gateways_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::add_to_woocommerce

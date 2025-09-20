@@ -13,7 +13,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Exchange_Rate\Bitfinex_API
  */
-class Bitfinex_API_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class Bitfinex_API_Integration_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_exchange_rate

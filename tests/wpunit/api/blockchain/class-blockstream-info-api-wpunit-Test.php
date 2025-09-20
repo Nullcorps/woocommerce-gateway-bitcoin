@@ -7,7 +7,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API
  */
-class Blockstream_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Blockstream_Info_API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_address_balance

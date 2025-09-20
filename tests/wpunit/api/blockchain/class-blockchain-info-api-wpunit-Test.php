@@ -7,7 +7,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API
  */
-class Blockchain_Info_API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Blockchain_Info_API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_received_by_address

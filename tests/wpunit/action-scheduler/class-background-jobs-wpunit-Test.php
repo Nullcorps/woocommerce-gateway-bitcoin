@@ -11,7 +11,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs
  */
-class Background_Jobs_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::check_unpaid_order

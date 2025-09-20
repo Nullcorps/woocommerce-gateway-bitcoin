@@ -5,7 +5,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address
  */
-class Bitcoin_Address_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * When using `update_post_meta()` the last modified time of the post does not change. This

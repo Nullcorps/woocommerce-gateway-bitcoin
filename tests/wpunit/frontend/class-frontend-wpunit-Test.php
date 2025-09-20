@@ -11,7 +11,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets
  */
-class Frontend_WPUnit_Test extends WPTestCase {
+class Frontend_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::enqueue_scripts

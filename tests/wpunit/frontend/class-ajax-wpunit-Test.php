@@ -11,7 +11,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Frontend\AJAX
  */
-class AJAX_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class AJAX_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_order_details

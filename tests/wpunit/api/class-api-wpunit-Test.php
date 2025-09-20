@@ -19,7 +19,7 @@ use WC_Payment_Gateways;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\API
  */
-class API_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::generate_new_addresses_for_wallet

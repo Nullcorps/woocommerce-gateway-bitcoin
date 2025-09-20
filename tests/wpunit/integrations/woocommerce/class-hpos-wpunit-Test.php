@@ -9,7 +9,7 @@ use Codeception\Stub\Expected;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\HPOS
  */
-class HPOS_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class HPOS_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::declare_compatibility

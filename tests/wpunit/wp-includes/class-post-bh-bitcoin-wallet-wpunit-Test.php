@@ -7,7 +7,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Wallet
  */
-class Post_BH_Bitcoin_Wallet_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Post_BH_Bitcoin_Wallet_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

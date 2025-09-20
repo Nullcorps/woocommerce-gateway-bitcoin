@@ -12,7 +12,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order
  */
-class Bitcoin_Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::__construct

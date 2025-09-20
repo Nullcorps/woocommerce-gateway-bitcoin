@@ -6,14 +6,13 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
-use Codeception\TestCase\WPTestCase;
 use stdClass;
 use WC_Order;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order\Woo_Cancel_Abandoned_Order
  */
-class Woo_Cancel_Abandoned_Order_Unit_Test extends WPTestCase {
+class Woo_Cancel_Abandoned_Order_Unit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::enable_cao_for_bitcoin

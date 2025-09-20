@@ -13,7 +13,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\CLI
  */
-class CLI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class CLI_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::check_transactions

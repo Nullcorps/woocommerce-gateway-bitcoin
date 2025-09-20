@@ -14,7 +14,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway
  */
-class Bitcoin_Gateway_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Bitcoin_Gateway_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::process_admin_options

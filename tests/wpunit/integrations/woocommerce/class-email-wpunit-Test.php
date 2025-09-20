@@ -10,7 +10,7 @@ use WC_Order;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Email
  */
-class Email_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Email_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::print_instructions

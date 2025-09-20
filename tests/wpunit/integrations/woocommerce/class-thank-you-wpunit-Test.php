@@ -10,7 +10,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Thank_You
  */
-class Thank_You_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Thank_You_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::print_instructions

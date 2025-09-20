@@ -11,7 +11,7 @@ use WP_Post;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Admin_Order_UI
  */
-class Admin_Order_UI_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Admin_Order_UI_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::print_address_transactions_metabox

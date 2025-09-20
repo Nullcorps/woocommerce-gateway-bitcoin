@@ -9,7 +9,7 @@ use WC_Order;
 /**
  * @coversDefaultClass  \BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter
  */
-class Details_Formatter_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Details_Formatter_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::get_wc_order_status_formatted

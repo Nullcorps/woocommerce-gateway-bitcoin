@@ -10,7 +10,7 @@ use Codeception\Stub\Expected;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order
  */
-class Order_WPUnit_Test extends \Codeception\TestCase\WPTestCase {
+class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::schedule_check_for_transactions
