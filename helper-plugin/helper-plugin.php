@@ -7,7 +7,26 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Helper_Plugin;
 
 // Add a "Customer Order Link" to the order admin page.
 
+/**
+ * @hooked admin_footer
+ */
 function order_link(): void {
+	global $pagenow;
+	if ( 'post.php' !== $pagenow ) {
+		return;
+	}
+	if( ! isset($_GET['post'])){
+		return;
+	}
+	$post_id = absint( $_GET['post'] );
+
+	$post_type = get_post_type( $post_id );
+
+	if ( 'shop_order' !== $post_type ) {
+		return;
+	}
+
+
 	/** @var \WC_Order $wc_order */
 	$wc_order = wc_get_order( absint( $_GET['post'] ) );
 	$link     = $wc_order->get_checkout_order_received_url();
@@ -45,21 +64,4 @@ EOT;
 	echo '<script>' . $script . '</script>';
 	echo '<style>' . $style . '</style>';
 }
-add_action(
-	'init',
-	function (): void {
-		global $pagenow;
-		if ( 'post.php' !== $pagenow ) {
-			return;
-		}
-		$post_id = absint( $_GET['post'] );
-
-		$post_type = get_post_type( $post_id );
-
-		if ( 'shop_order' !== $post_type ) {
-			return;
-		}
-
-		add_action( 'admin_footer', __NAMESPACE__ . '\order_link' );
-	}
-);
+add_action( 'admin_footer', __NAMESPACE__ . '\order_link' );
