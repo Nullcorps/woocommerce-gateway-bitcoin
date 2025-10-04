@@ -111,6 +111,22 @@
         },
         "installation-source": "dist"
       }
+    },
+    "wp-api/basic-auth":{
+      "type": "package",
+      "package": {
+        "name": "wp-api/basic-auth",
+        "type": "wordpress-plugin",
+        "version": "1.0.0",
+        "dist": {
+          "url": "https://github.com/WP-API/Basic-Auth/archive/master.zip",
+          "type": "zip"
+        },
+        "installation-source": "dist"
+      },
+      "only": [
+        "wp-api/basic-auth"
+      ]
     }
   },
   "require": {
@@ -156,6 +172,7 @@
     "woocommerce/woocommerce-gateway-dummy": "^1.0",
     "woocommerce/woocommerce-sniffs": "*",
     "wordpress/wordpress": "*",
+    "wp-api/basic-auth": "^1.0",
     "wp-cli/dist-archive-command": "dev-main",
     "wp-cli/wp-cli-bundle": "^2",
     "wp-coding-standards/wpcs": "^3.0",

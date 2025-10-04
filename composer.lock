@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b8eec48364f18d0d29e2f71e12b51ca",
+    "content-hash": "5829d8181d0d56a51222b3d13a2e71e1",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -11590,6 +11590,15 @@
                 "issues": "https://core.trac.wordpress.org/"
             },
             "time": "2025-07-15T15:13:50+00:00"
+        },
+        {
+            "name": "wp-api/basic-auth",
+            "version": "1.0.0",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/WP-API/Basic-Auth/archive/master.zip"
+            },
+            "type": "wordpress-plugin"
         },
         {
             "name": "wp-cli/cache-command",
