@@ -393,15 +393,19 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			$api->get_exchange_rate( Currency::of( $order->get_currency() ) )->jsonSerialize()
 		);
 
+		$btc_total = $api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) );
+
 		// Record the amount the customer has been asked to pay in BTC.
 		$order->add_meta_data(
 			Order::ORDER_TOTAL_BITCOIN_AT_TIME_OF_PURCHASE_META_KEY,
-			$api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) )->jsonSerialize()
+			$btc_total->jsonSerialize()
 		);
+
+		$btc_total_display = $btc_total->getAmount()->toFloat();
 
 		// Mark as on-hold (we're awaiting the payment).
 		/* translators: %F: The order total in BTC */
-		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wp-bitcoin-gateway' ), $btc_total ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
+		$order->update_status( 'on-hold', sprintf( __( 'Awaiting Bitcoin payment of %F to address: ', 'bh-wp-bitcoin-gateway' ), $btc_total_display ) . '<a target="_blank" href="https://www.blockchain.com/btc/address/' . $btc_address->get_raw_address() . "\">{$btc_address->get_raw_address()}</a>.\n\n" );
 
 		$order->save();
 
