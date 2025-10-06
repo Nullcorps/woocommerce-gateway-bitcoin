@@ -9,14 +9,16 @@ import { test, expect } from '@playwright/test';
 import {
 	deleteUnpaidOrderActions,
 	fetchActions,
+} from '../helpers/rest/action-scheduler';
+import {
 	runActionInRow,
-} from '../helpers/action-scheduler';
-import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
-import { createSimpleProduct } from '../helpers/create-simple-product';
-import { loginAsAdmin } from '../helpers/login';
-import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
-import { switchToShortcodeTheme } from '../helpers/theme-switcher';
-import { setOrderStatus } from '../helpers/wc-order';
+} from '../helpers/ui/action-scheduler';
+import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
+import { createSimpleProduct } from '../helpers/ui/create-simple-product';
+import { loginAsAdmin } from '../helpers/ui/login';
+import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
+import { switchToShortcodeTheme } from '../helpers/rest/theme-switcher';
+import { setOrderStatus } from '../helpers/ui/wc-order';
 
 test.describe( 'Schedule payment checks', () => {
 	test.beforeAll( async ( { browser } ) => {

@@ -1,12 +1,7 @@
 /**
  * External dependencies
  */
-import { Page, expect } from '@playwright/test';
-
-/**
- * Internal dependencies
- */
-import { testConfig } from '../config/test-config';
+import { Page } from '@playwright/test';
 
 export async function loginAsAdmin( page: Page ): Promise< void > {
 	// Check if already logged in

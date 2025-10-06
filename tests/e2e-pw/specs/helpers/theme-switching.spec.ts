@@ -11,7 +11,7 @@ import {
 	switchToBlocksTheme,
 	getCurrentTheme,
 	verifyTheme,
-} from '../helpers/theme-switcher';
+} from '../../helpers/rest/theme-switcher';
 
 test.describe( 'Theme Switching for Checkout Types', () => {
 	test( 'should switch to Twenty Twelve for shortcode checkout', async ( {

@@ -6,12 +6,12 @@ import { test, expect } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { useShortcodeCheckout } from '../helpers/checkout';
-import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
-import { createSimpleProduct } from '../helpers/create-simple-product';
-import { logout } from '../helpers/login';
-import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
-import { switchToShortcodeTheme, verifyTheme } from '../helpers/theme-switcher';
+import { useShortcodeCheckout } from '../helpers/ui/checkout';
+import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
+import { createSimpleProduct } from '../helpers/ui/create-simple-product';
+import { logout } from '../helpers/ui/login';
+import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
+import { switchToShortcodeTheme, verifyTheme } from '../helpers/rest/theme-switcher';
 
 test.describe( 'Place orders (Shortcode Checkout)', () => {
 	test.beforeAll( async ( { browser } ) => {

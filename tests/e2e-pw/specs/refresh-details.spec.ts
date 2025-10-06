@@ -6,11 +6,11 @@ import { test, expect } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { useShortcodeCheckout } from '../helpers/checkout';
-import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
-import { createSimpleProduct } from '../helpers/create-simple-product';
-import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
-import { switchToShortcodeTheme } from '../helpers/theme-switcher';
+import { useShortcodeCheckout } from '../helpers/ui/checkout';
+import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
+import { createSimpleProduct } from '../helpers/ui/create-simple-product';
+import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
+import { switchToShortcodeTheme } from '../helpers/rest/theme-switcher';
 
 test.describe( 'Refresh order details', () => {
 	let orderId: string;

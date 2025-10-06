@@ -11,7 +11,7 @@ import {
 	logout,
 	isLoggedIn,
 	loginAsAdminWithRetry,
-} from '../helpers/login';
+} from '../../helpers/ui/login';
 
 test.describe( 'Login Helper Robustness', () => {
 	test.beforeEach( async ( { page } ) => {

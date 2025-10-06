@@ -6,7 +6,7 @@ import { Page } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { testConfig } from '../config/test-config';
+import { testConfig } from '../../config/test-config';
 
 import { loginAsAdmin, logout } from './login';
 

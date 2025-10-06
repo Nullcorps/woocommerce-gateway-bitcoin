@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import config from '../../../playwright.config';
+import config from '../../../../playwright.config';
 
 export async function setPageContent( postId: number, postContent: string ) {
 	const baseURL: string = config.use.baseURL;

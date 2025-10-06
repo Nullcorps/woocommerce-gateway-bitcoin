@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import config from '../../../playwright.config.ts';
+import config from '../../../../playwright.config';
 
 export type ThemeType = 'shortcode' | 'blocks';
 
@@ -29,7 +29,7 @@ export async function switchToTheme( themeType: ThemeType ): Promise< void > {
 
 	console.log( 'switchToTheme slug: ' + theme.slug );
 
-	const baseURL: string = config.use.baseURL;
+	const baseURL: string = config.use.baseURL!;
 	const response = await fetch(
 		baseURL + '/wp-json/e2e-test-helper/v1/activate',
 		{
@@ -67,7 +67,7 @@ export async function getCurrentTheme(): Promise< { slug: string } > {
 	console.log( 'getCurrentTheme' );
 
 	// const baseURL: string = config?.use?.baseURL!;
-	const baseURL: string = config.use.baseURL;
+	const baseURL: string = config.use.baseURL!;
 
 	const url = baseURL + '/wp-json/e2e-test-helper/v1/active_theme';
 

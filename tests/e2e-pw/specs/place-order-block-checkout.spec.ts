@@ -7,11 +7,11 @@ import { test, expect } from '@playwright/test';
  * Internal dependencies
  */
 import { testConfig } from '../config/test-config';
-import { fillBilling, useBlocksCheckout } from '../helpers/checkout';
-import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
-import { createSimpleProduct } from '../helpers/create-simple-product';
-import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
-import { switchToBlocksTheme, verifyTheme } from '../helpers/theme-switcher';
+import { fillBilling, useBlocksCheckout } from '../helpers/ui/checkout';
+import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
+import { createSimpleProduct } from '../helpers/ui/create-simple-product';
+import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
+import { switchToBlocksTheme, verifyTheme } from '../helpers/rest/theme-switcher';
 
 test.describe( 'Place orders on block checkout', () => {
 	test.beforeAll( async ( { browser } ) => {

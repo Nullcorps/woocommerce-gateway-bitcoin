@@ -9,11 +9,10 @@ import { Page } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import config from '../../../playwright.config';
-import { testConfig } from '../config/test-config';
+import { testConfig } from '../../config/test-config';
 
-import { getSetting } from './settings';
-import { getPostContentRendered, setPageContent } from './wp-post';
+import { getSetting } from '../rest/settings';
+import { getPostContentRendered, setPageContent } from '../rest/wp-post';
 
 export type CheckoutType = 'blocks' | 'shortcode';
 
@@ -36,7 +35,7 @@ async function setCheckoutPageContent( postContent: string ) {
 export async function useBlocksCheckout() {
 	const contentPath = path.join(
 		__dirname,
-		'../setup/blocks-checkout-post-content.txt'
+		'../../setup/blocks-checkout-post-content.txt'
 	);
 	const postContent = fs.readFileSync( contentPath, 'utf8' );
 	await setCheckoutPageContent( postContent );
@@ -48,9 +47,7 @@ export async function useShortcodeCheckout() {
 	await setCheckoutPageContent( postContent );
 }
 
-export async function detectCheckoutType(
-	page: Page
-): Promise< CheckoutType > {
+export async function detectCheckoutType(): Promise< CheckoutType > {
 	const postContent = await getCheckoutPageContent();
 
 	// Check for blocks checkout indicators
@@ -87,17 +84,17 @@ export async function detectCheckoutType(
 	return 'shortcode';
 }
 
-export async function isBlocksCheckout( page: Page ): Promise< boolean > {
-	return ( await detectCheckoutType( page ) ) === 'blocks';
+export async function isBlocksCheckout(): Promise< boolean > {
+	return ( await detectCheckoutType() ) === 'blocks';
 }
 
-export async function isShortcodeCheckout( page: Page ): Promise< boolean > {
-	return ( await detectCheckoutType( page ) ) === 'shortcode';
+export async function isShortcodeCheckout(): Promise< boolean > {
+	return ( await detectCheckoutType() ) === 'shortcode';
 }
 
 export async function fillBilling( page: Page ): Promise< void > {
 	const billing = testConfig.addresses.customer.billing;
-	const checkoutType = await detectCheckoutType( page );
+	const checkoutType = await detectCheckoutType();
 
 	if ( checkoutType === 'blocks' ) {
 		// Blocks checkout field selectors
@@ -152,7 +149,7 @@ export async function selectPaymentGateway(
 	page: Page,
 	gatewayId: string
 ): Promise< void > {
-	const checkoutType = await detectCheckoutType( page );
+	const checkoutType = await detectCheckoutType();
 	if ( checkoutType === 'blocks' ) {
 		// await page.click('#radio-control-wc-payment-method-options-bitcoin_gateway');
 		await page.click(

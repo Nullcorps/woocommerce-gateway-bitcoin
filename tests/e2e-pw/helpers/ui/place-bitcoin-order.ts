@@ -6,7 +6,7 @@ import { Page, expect } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { testConfig } from '../config/test-config';
+import { testConfig } from '../../config/test-config';
 
 import { fillBilling, selectPaymentGateway } from './checkout';
 import { logout } from './login';

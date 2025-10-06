@@ -1,19 +1,7 @@
-/**
- * Internal dependencies
- */
-/**
- * External dependencies
- */
-import { Response } from 'node/globals';
-
-import config from '../../../playwright.config';
-
-/**
- * External dependencies
- */
+import config from '../../../../playwright.config';
 
 async function fetchBitcoinAddresses( status?: string ): Promise< Response > {
-	const baseURL: string = config.use.baseURL;
+	const baseURL: string = config.use.baseURL!;
 	let fullUrl = `${ baseURL }/wp-json/wp/v2/bh-bitcoin-address`;
 	if ( status ) {
 		fullUrl += `?status=${ status }`;
@@ -26,7 +14,7 @@ export async function getBitcoinAddressCount(
 ): Promise< number > {
 	const response = await fetchBitcoinAddresses( status );
 
-	return parseInt( response.headers.get( 'X-WP-Total' ) );
+	return parseInt( response.headers.get( 'X-WP-Total' )! );
 }
 
 export async function deleteBitcoinAddresses(
@@ -36,9 +24,9 @@ export async function deleteBitcoinAddresses(
 	const response = await fetchBitcoinAddresses( status );
 
 	const items = await response.json();
-	const existingCount = parseInt( response.headers.get( 'X-WP-Total' ) );
+	const existingCount = parseInt( response.headers.get( 'X-WP-Total' )! );
 
-	const baseURL: string = config.use.baseURL;
+	const baseURL: string = config.use.baseURL!;
 
 	let fullUrl = `${ baseURL }/wp-json/wp/v2/bh-bitcoin-address`;
 

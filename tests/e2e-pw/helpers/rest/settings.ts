@@ -2,10 +2,10 @@
 /**
  * Internal dependencies
  */
-import config from '../../../playwright.config';
+import config from '../../../../playwright.config';
 
 async function getSettings(): Promise< object > {
-	const baseURL: string = config.use.baseURL;
+	const baseURL: string = config.use.baseURL!;
 	const fullUrl = `${ baseURL }/wp-json/wp/v2/settings`;
 
 	const response: Response = await fetch( fullUrl );

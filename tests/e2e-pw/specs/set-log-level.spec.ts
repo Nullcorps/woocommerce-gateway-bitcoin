@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
  * Internal dependencies
  */
 import config from '../../../playwright.config';
-import { loginAsAdmin } from '../helpers/login';
+import { loginAsAdmin } from '../helpers/ui/login';
 
 test.describe( 'Set log level', () => {
 	test( 'should respect the log level that is saved on the gateway settings page', async ( {
@@ -31,7 +31,7 @@ test.describe( 'Set log level', () => {
 		await page.click( '.woocommerce-save-button' );
 		await page.waitForSelector( '.notice-success' );
 
-		const baseURL: string = config.use.baseURL;
+		const baseURL: string = config.use.baseURL!;
 		// Navigate to logs page
 		await page.goto(
 			baseURL + '/wp-admin/admin.php?page=bh-wp-bitcoin-gateway-logs'

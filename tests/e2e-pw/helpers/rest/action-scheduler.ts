@@ -1,19 +1,19 @@
 /**
  * External dependencies
  */
-import { Response } from 'node/globals';
+// import { Response } from 'node/globals';
 
 /**
  * Internal dependencies
  */
-import { debugFetch } from './fetch';
+import { debugFetch } from '../fetch';
 
 // GET /wp-json/e2e-test-helper/v1/action_scheduler/search?hook={$hook}
 
 export async function fetchActions(
 	hook: string,
 	future: boolean = true
-): Promise< Response > {
+): Promise< Object > {
 	let path = `/wp-json/e2e-test-helper/v1/action_scheduler/search?hook=${ hook }`;
 	if ( future ) {
 		path += `&date_compare=>=&date=${ new Date().toISOString() }`;
@@ -25,7 +25,7 @@ export async function fetchActions(
 export async function fetchActionsWithArgs(
 	hook: string,
 	args?: object
-): Promise< Response > {
+): Promise< Object > {
 	const results = await fetchActions( hook );
 
 	if ( args ) {
@@ -36,7 +36,7 @@ export async function fetchActionsWithArgs(
 	}
 }
 
-async function deleteActions( hook: string ): Promise< Response > {
+async function deleteActions( hook: string ): Promise< void > {
 	const actions = await fetchActions( hook );
 
 	const numberOfActions = Object.keys( actions ).length;
@@ -75,20 +75,4 @@ export async function deleteUnpaidOrderActions(): Promise< number > {
 	await deleteActions( 'bh_wp_bitcoin_gateway_check_unpaid_order' );
 
 	return 1;
-}
-
-export async function runActionInRow(
-	page: any,
-	actionSchedulerTableRow: any
-) {
-	const hookColumn = actionSchedulerTableRow.locator(
-		'td[data-colname="Hook"]'
-	);
-	await hookColumn.hover();
-
-	const runLink = hookColumn.locator( '.run a' );
-	if ( ( await runLink.count() ) > 0 ) {
-		await runLink.click();
-		await page.waitForLoadState( 'networkidle' );
-	}
 }
