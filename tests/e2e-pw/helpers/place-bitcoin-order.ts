@@ -20,7 +20,7 @@ async function selectBitcoinPaymentMethod( page: Page ) {
 	).toBeVisible();
 }
 
-export async function placeBitcoinOrder( page: Page ): Promise< string > {
+export async function placeBitcoinOrder( page: Page ): Promise< number > {
 	await logout( page );
 
 	// Go to shop
@@ -49,8 +49,6 @@ export async function placeBitcoinOrder( page: Page ): Promise< string > {
 
 	// Extract order ID from URL
 	const url = page.url();
-	const orderIdMatch = url.match( /order-received\/(\d+)\// );
-	const orderId = orderIdMatch ? orderIdMatch[ 1 ] : '';
-
-	return orderId;
+	const orderIdMatch = url.match( /order-received\/(\d+)\// )!;
+	return parseInt( orderIdMatch[ 1 ] );
 }

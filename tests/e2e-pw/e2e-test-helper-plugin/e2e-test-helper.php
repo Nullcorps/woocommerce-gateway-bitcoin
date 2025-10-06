@@ -10,6 +10,10 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use ActionScheduler;
+use ActionScheduler_Abstract_RecurringSchedule;
+use ActionScheduler_Action;
+use Exception;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -222,23 +226,32 @@ class E2E_Test_Helper_Plugin {
 		// }
 
 		/**
-		 * @see ActionScheduler_DB::get_query_actions_sql()
+		 * @see ActionScheduler_DBStore::get_query_actions_sql()
 		 */
 		$results = as_get_scheduled_actions( $search );
+
+
+		$store = ActionScheduler::store();
 
 		/**
 		 * @see \ActionScheduler_ListTable::prepare_items()
 		 */
-		$action_scheduler_action_to_array = function ( \ActionScheduler_Action $action ) {
+		$action_scheduler_action_to_array = function ( ActionScheduler_Action $action, int $index ) use ( $store ) {
+			$schedule   = $action->get_schedule();
+			$recurrence = $schedule instanceof ActionScheduler_Abstract_RecurringSchedule
+				? $schedule->get_recurrence()
+				: null;
+
 			return array(
+				'id'                           => $index,
 				'hook'                         => $action->get_hook(),
-				// 'status' =>
+				'status'                       => $store->get_status( $index ),
 				'args'                         => $action->get_args(),
 				'group'                        => $action->get_group(),
 				/**
 				 * Might be nice to use @see ActionScheduler_ListTable::human_interval()
 				 */
-				'recurrence'                   => $action->get_schedule()?->get_recurrence(),
+				'recurrence'                   => $recurrence,
 				'scheduled_date'               => $action->get_schedule()?->next(),
 				// 'log'
 									'schedule' => $action->get_schedule(),
@@ -247,7 +260,7 @@ class E2E_Test_Helper_Plugin {
 		};
 
 		foreach ( $results as $index => $result ) {
-			$results[ $index ] = $action_scheduler_action_to_array( $result );
+			$results[ $index ] = $action_scheduler_action_to_array( $result, $index );
 		}
 
 		return new WP_REST_Response(
@@ -291,20 +304,27 @@ class E2E_Test_Helper_Plugin {
 			return new WP_Error( 'rest_missing_param', 'Missing id parameter.', array( 'status' => 400 ) );
 		}
 
-		$store = \ActionScheduler::store();
+		$store = ActionScheduler::store();
 
 		$claim_id = $store->get_claim_id( $id );
 
-		if ( ! $claim_id ) {
-			return new WP_Error( 'rest_invalid_param', 'Invalid id.', array( 'status' => 400 ) );
+		$as = $store->fetch_action( $id );
+
+		if ( ! ( $as instanceof ActionScheduler_Action ) ) {
+			return new WP_Error( 'rest_invalid_param', 'Invalid id: ' . $id, array( 'status' => 400 ) );
 		}
 
-		$store->delete_action( $id );
+		try {
+			$store->delete_action( $id );
+		} catch ( Exception $exception ) {
+			return new WP_Error( 'rest_error', 'Invalid id: ' . $id . ' – ' . $exception->getMessage(), array( 'status' => 500 ) );
+		}
 		$claim_id_after = $store->get_claim_id( $id );
 
 		return new WP_REST_Response(
 			array(
 				'message' => 'Action Scheduler delete ' . $id,
+				'result'  => $claim_id !== $claim_id_after ? 'deleted' : 'not found',
 				'success' => ! $claim_id_after,
 			),
 			200

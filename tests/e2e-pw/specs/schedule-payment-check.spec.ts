@@ -6,57 +6,64 @@ import { test, expect } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { testConfig } from '../config/test-config';
+import {
+	deleteUnpaidOrderActions,
+	fetchActions,
+	runActionInRow,
+} from '../helpers/action-scheduler';
 import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/create-simple-product';
 import { loginAsAdmin } from '../helpers/login';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
+import { switchToShortcodeTheme } from '../helpers/theme-switcher';
+import { setOrderStatus } from '../helpers/wc-order';
 
 test.describe( 'Schedule payment checks', () => {
-	test.setTimeout( 60000 );
-
 	test.beforeAll( async ( { browser } ) => {
 		const page = await browser.newPage();
 		await configureBitcoinXpub( page );
 		await createSimpleProduct( page );
-		await page.close();
+		// await page.close();
 	} );
 
-	test.beforeEach( async ( { page } ) => {
-		await deletePendingActionSchedulerPaymentChecks( page );
+	// PlaywrightTestArgs & PlaywrightTestOptions & PlaywrightWorkerArgs & PlaywrightWorkerOptions'
+	test.beforeEach( async () => {
+		await deleteUnpaidOrderActions();
 	} );
 
-	async function deletePendingActionSchedulerPaymentChecks( page: any ) {
-		const actionSchedulerUrl =
-			'/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
-
-		// Login as admin
-		await loginAsAdmin( page );
-
-		await page.goto( actionSchedulerUrl );
-
-		const bulkSelector = page.locator( '#bulk-action-selector-top' );
-		if ( ( await bulkSelector.count() ) > 0 ) {
-			await page.check( '#cb-select-all-1' );
-			await page.selectOption( '#bulk-action-selector-top', 'delete' );
-			await page.click( '#doaction' );
-		}
-	}
-
-	async function isJobScheduledForOrder(
-		page: any,
-		orderId: string
+	async function hasPendingUnpaidOrderActionForOrder(
+		orderId: number
 	): Promise< boolean > {
-		const tableRow = await getActionSchedulerTableRowForOrder(
-			page,
-			orderId
+		const unpaidOrderActions = await fetchActions(
+			'bh_wp_bitcoin_gateway_check_unpaid_order'
 		);
-		return tableRow !== null;
+
+		const count = Object.entries( unpaidOrderActions ).reduce( function (
+			total,
+			actionIterated: Array< any >
+		) {
+			const action: Object = actionIterated[ 1 ];
+			const args: Object = action.args;
+			const argsOrderId: number = args.order_id;
+
+			const status: string = action.status;
+
+			if (
+				argsOrderId > 0 &&
+				argsOrderId === orderId &&
+				status === 'pending'
+			) {
+				return total + 1;
+			}
+			return total;
+		}, 0 );
+
+		return count > 0; // !== null;
 	}
 
 	async function getActionSchedulerTableRowForOrder(
 		page: any,
-		orderId: string
+		orderId: number
 	) {
 		const actionSchedulerUrl =
 			'/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
@@ -68,43 +75,23 @@ test.describe( 'Schedule payment checks', () => {
 		return ( await tableRow.count() ) > 0 ? tableRow : null;
 	}
 
-	async function setOrderStatus(
-		page: any,
-		orderId: string,
-		status: string
-	) {
-		// Navigate to edit order page
-		await page.goto( `/wp-admin/post.php?post=${ orderId }&action=edit` );
-
-		// Update order status
-		await page.selectOption( '#order_status', status );
-		await page.click( '#woocommerce-order-actions .save_order' );
-		await page.waitForSelector( '.notice-success', { timeout: 10000 } );
-	}
-
-	async function runActionInRow( page: any, actionSchedulerTableRow: any ) {
-		const hookColumn = actionSchedulerTableRow.locator(
-			'td[data-colname="Hook"]'
-		);
-		await hookColumn.hover();
-
-		const runLink = hookColumn.locator( '.run a' );
-		if ( ( await runLink.count() ) > 0 ) {
-			await runLink.click();
-			await page.waitForLoadState( 'networkidle' );
-		}
-	}
-
 	test( 'should schedule a payment check when a Bitcoin order is placed', async ( {
 		page,
 	} ) => {
+		await switchToShortcodeTheme();
+		await deleteUnpaidOrderActions();
+
 		const orderId = await placeBitcoinOrder( page );
 
 		// Login as admin to check action scheduler
 		await loginAsAdmin( page );
 
-		const isScheduled = await isJobScheduledForOrder( page, orderId );
-		expect( isScheduled ).toBe( true );
+		const isScheduled =
+			await hasPendingUnpaidOrderActionForOrder( orderId );
+		expect(
+			isScheduled,
+			`Expected bh_wp_bitcoin_gateway_check_unpaid_order Action Scheduler job for order_id:  ${ orderId }`
+		).toBe( true );
 	} );
 
 	test( 'should schedule a payment check when a Bitcoin orders status is set to on-hold', async ( {
@@ -116,10 +103,11 @@ test.describe( 'Schedule payment checks', () => {
 		await loginAsAdmin( page );
 
 		await setOrderStatus( page, orderId, 'wc-pending' );
-		await deletePendingActionSchedulerPaymentChecks( page );
+		await deleteUnpaidOrderActions();
 		await setOrderStatus( page, orderId, 'wc-on-hold' );
 
-		const isScheduled = await isJobScheduledForOrder( page, orderId );
+		const isScheduled =
+			await hasPendingUnpaidOrderActionForOrder( orderId );
 		expect( isScheduled ).toBe( true );
 	} );
 
@@ -128,15 +116,15 @@ test.describe( 'Schedule payment checks', () => {
 	} ) => {
 		const orderId = await placeBitcoinOrder( page );
 
-		// Login as admin
-		await loginAsAdmin( page );
-
-		const isScheduledBefore = await isJobScheduledForOrder( page, orderId );
+		const isScheduledBefore =
+			await hasPendingUnpaidOrderActionForOrder( orderId );
 		expect( isScheduledBefore ).toBe( true );
 
+		await loginAsAdmin( page );
 		await setOrderStatus( page, orderId, 'wc-processing' );
 
-		const isScheduledAfter = await isJobScheduledForOrder( page, orderId );
+		const isScheduledAfter =
+			await hasPendingUnpaidOrderActionForOrder( orderId );
 		expect( isScheduledAfter ).toBe( false );
 	} );
 
@@ -156,7 +144,8 @@ test.describe( 'Schedule payment checks', () => {
 			await runActionInRow( page, tableRowForOrder );
 		}
 
-		const isScheduled = await isJobScheduledForOrder( page, orderId );
+		const isScheduled =
+			await hasPendingUnpaidOrderActionForOrder( orderId );
 		expect( isScheduled ).toBe( true );
 	} );
 } );
