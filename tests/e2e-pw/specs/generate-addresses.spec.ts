@@ -6,7 +6,6 @@ import { test, expect } from '@playwright/test';
 /**
  * Internal dependencies
  */
-import { testConfig } from '../config/test-config';
 import {
 	getBitcoinAddressCount,
 	deleteBitcoinAddresses,
@@ -17,8 +16,6 @@ import { loginAsAdmin, logout } from '../helpers/login';
 import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
 
 test.describe( 'Generate new addresses', () => {
-	test.setTimeout( 60000 );
-
 	test.beforeAll( async ( { browser } ) => {
 		const page = await browser.newPage();
 		await configureBitcoinXpub( page );

@@ -29,7 +29,7 @@ test.describe( 'Set log level', () => {
 
 		// Save changes
 		await page.click( '.woocommerce-save-button' );
-		await page.waitForSelector( '.notice-success', { timeout: 10000 } );
+		await page.waitForSelector( '.notice-success' );
 
 		const baseURL: string = config.use.baseURL;
 		// Navigate to logs page

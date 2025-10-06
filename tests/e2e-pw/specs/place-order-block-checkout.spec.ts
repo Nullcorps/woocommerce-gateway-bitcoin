@@ -78,9 +78,7 @@ test.describe( 'Place orders on block checkout', () => {
 		await page.waitForLoadState( 'networkidle' );
 
 		// Wait for order received page
-		await page.waitForSelector( 'text=Your order has been received', {
-			timeout: 30000,
-		} );
+		await page.waitForSelector( 'text=Your order has been received' );
 
 		// Verify payment details are shown
 		await expect( page.locator( 'text=Order received' ) ).toBeVisible();

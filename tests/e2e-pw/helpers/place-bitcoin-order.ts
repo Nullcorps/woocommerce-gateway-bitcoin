@@ -45,7 +45,7 @@ export async function placeBitcoinOrder( page: Page ): Promise< number > {
 	// await page.click('.wc-block-components-checkout-place-order-button');
 
 	// Wait for order received page
-	await page.waitForSelector( 'text=Order received', { timeout: 30000 } );
+	await page.waitForSelector( 'text=Order received' );
 
 	// Extract order ID from URL
 	const url = page.url();

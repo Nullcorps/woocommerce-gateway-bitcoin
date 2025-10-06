@@ -35,7 +35,7 @@ export async function createSimpleProduct( page: Page ) {
 
 		// Publish product
 		await page.click( '#publish' );
-		await page.waitForSelector( '.notice-success', { timeout: 10000 } );
+		await page.waitForSelector( '.notice-success' );
 	}
 
 	// Logout
