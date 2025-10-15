@@ -5,6 +5,9 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Helper_Plugin;
 
+// TODO check for stray requests
+// https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD
+
 // wp-env cron fix.
 
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
@@ -52,7 +55,7 @@ function order_link(): void {
 	if ( 'post.php' !== $pagenow ) {
 		return;
 	}
-	if( ! isset($_GET['post'])){
+	if ( ! isset( $_GET['post'] ) ) {
 		return;
 	}
 	$post_id = absint( $_GET['post'] );
@@ -62,7 +65,6 @@ function order_link(): void {
 	if ( 'shop_order' !== $post_type ) {
 		return;
 	}
-
 
 	/** @var \WC_Order $wc_order */
 	$wc_order = wc_get_order( absint( $_GET['post'] ) );
