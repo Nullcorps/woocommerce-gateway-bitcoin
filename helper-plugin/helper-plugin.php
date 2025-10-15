@@ -5,6 +5,43 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Helper_Plugin;
 
+// wp-env cron fix.
+
+if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+	$hostname = gethostname();
+	update_option( 'wp_env_cron_hostname', $hostname );
+}
+
+/**
+ * @see WP_Http::request()
+ */
+add_filter(
+	'http_request_args',
+	function ( $a ) {
+		return $a;
+	}
+);
+
+/**
+ * @see get_site_url()
+ * @see cron.php:957
+ */
+add_filter(
+	'site_url',
+	function ( $url, $path, ) {
+		if ( 'wp-cron.php' === $path ) {
+			return 'http://' . get_option( 'wp_env_cron_hostname' ) . '/wp-cron.php';
+		}
+		if ( defined( 'WP_CLI' ) && constant( 'WP_CLI' ) ) {
+			return 'http://' . get_option( 'wp_env_cron_hostname' );
+		}
+		return $url;
+	},
+	10,
+	2
+);
+
+
 // Add a "Customer Order Link" to the order admin page.
 
 /**
