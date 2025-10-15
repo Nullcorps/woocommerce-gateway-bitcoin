@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/tests/e2e-pw/helpers-tests'],
   testMatch: [
     '**/__tests__/**/*.+(ts|tsx|js)',
     '**/*.(test|spec).+(ts|tsx|js)'
@@ -18,6 +18,6 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/assets/',
-    '/tests/', // PHP tests directory
+    '/tests/php/', // PHP tests directory
   ],
 };
