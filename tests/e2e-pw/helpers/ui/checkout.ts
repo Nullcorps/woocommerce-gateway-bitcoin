@@ -10,7 +10,6 @@ import { Page } from '@playwright/test';
  * Internal dependencies
  */
 import { testConfig } from '../../config/test-config';
-
 import { getSetting } from '../rest/settings';
 import { getPostContentRendered, setPageContent } from '../rest/wp-post';
 

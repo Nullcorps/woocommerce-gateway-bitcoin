@@ -7,8 +7,8 @@ export async function setOrderStatus(
 	// Navigate to edit order page
 	await page.goto( `/wp-admin/post.php?post=${ orderId }&action=edit` );
 
-  await page.waitForLoadState( 'networkidle' );
-  
+	await page.waitForLoadState( 'networkidle' );
+
 	// Update order status
 	await page.selectOption( '#order_status', status );
 	await page.click( '#woocommerce-order-actions .save_order' );

@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import config from '../../../../playwright.config';
 
 async function fetchBitcoinAddresses( status?: string ): Promise< Response > {
