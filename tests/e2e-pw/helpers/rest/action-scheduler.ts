@@ -1,78 +1,80 @@
 /**
- * External dependencies
- */
-// import { Response } from 'node/globals';
-
-/**
  * Internal dependencies
  */
 import { debugFetch } from '../fetch';
 
 // GET /wp-json/e2e-test-helper/v1/action_scheduler/search?hook={$hook}
 
+export interface ActionSchedulerItem {
+	id: number;
+	hook: string;
+	status: string;
+	args: {
+		order_id?: number;
+		[ key: string ]: any;
+	};
+	group: string;
+	recurrence: number;
+	scheduled_date: {
+		date: string;
+		timezone_type: number;
+		timezone: string;
+	};
+	schedule: Record< string, any >;
+	hook_priority: number;
+}
+
 export async function fetchActions(
 	hook: string,
 	future: boolean = true
-): Promise< Object > {
+): Promise< Record< string, ActionSchedulerItem >[] > {
 	let path = `/wp-json/e2e-test-helper/v1/action_scheduler/search?hook=${ hook }`;
 	if ( future ) {
 		path += `&date_compare=>=&date=${ new Date().toISOString() }`;
 	}
 	const response = await debugFetch( path );
 	const json = await response.json();
-	return json.data;
+
+	return Object.entries( json.data ); //as [Record<string, ActionSchedulerItem>];
 }
+
 export async function fetchActionsWithArgs(
 	hook: string,
-	args?: object
-): Promise< Object > {
+	searchArgs?: object
+): Promise< Record< string, ActionSchedulerItem >[] > {
 	const results = await fetchActions( hook );
 
-	if ( args ) {
-		// filter results to only those that match args
-		// results.data.args
-	} else {
-		return results.data;
+	if ( ! searchArgs ) {
+		return results;
 	}
+
+	const filteredResults: Record< string, ActionSchedulerItem >[] = [];
+
+	for ( const [ _key, action ] of Object.entries( results ) ) {
+		let matches = true;
+		for ( const [ k, v ] of Object.entries( searchArgs ) ) {
+			if ( action[ 1 ].args[ k ] !== v ) {
+				matches = false;
+				break;
+			}
+		}
+		if ( matches ) {
+			filteredResults.push( action );
+		}
+	}
+
+	return filteredResults;
 }
 
-async function deleteActions( hook: string ): Promise< void > {
-	const actions = await fetchActions( hook );
-
-	const numberOfActions = Object.keys( actions ).length;
-
-	if ( numberOfActions === 0 ) {
-		console.log( `No actions found for hook: ${ hook }` );
-		return;
-	}
-	console.log(
-		`Deleting ${ numberOfActions } actions found for hook: ${ hook }`
-	);
-
-	Object.keys( actions ).forEach( async ( key ) => {
-		const path = `/wp-json/e2e-test-helper/v1/action_scheduler/${ key }`;
-		const response = await debugFetch( path, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		} );
-
-		const body = await response.text();
-
-		console.log( body );
+export async function deleteAction( actionId: number ): Promise< void > {
+	const path = `/wp-json/e2e-test-helper/v1/action_scheduler/${ actionId }`;
+	const response = await debugFetch( path, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+		},
 	} );
-}
 
-// bh_wp_bitcoin_gateway_check_unpaid_order
-export async function hasUnpaidOrderActions(): Promise< boolean > {
-	const actions = await fetchActions(
-		'bh_wp_bitcoin_gateway_check_unpaid_order'
-	);
-	return actions.count > 0;
-}
-export async function deleteUnpaidOrderActions(): Promise< number > {
-	await deleteActions( 'bh_wp_bitcoin_gateway_check_unpaid_order' );
-
-	return 1;
+	const body = await response.text();
+	console.log( body );
 }

@@ -7,17 +7,19 @@ import { test, expect } from '@playwright/test';
  * Internal dependencies
  */
 import {
-	deleteUnpaidOrderActions,
-	fetchActions,
+	ActionSchedulerItem,
+	deleteAction,
+	fetchActionsWithArgs,
 } from '../helpers/rest/action-scheduler';
+import { switchToShortcodeTheme } from '../helpers/rest/theme-switcher';
 import {
+	getActionSchedulerTableRowForOrder,
 	runActionInRow,
 } from '../helpers/ui/action-scheduler';
 import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
 import { createSimpleProduct } from '../helpers/ui/create-simple-product';
 import { loginAsAdmin } from '../helpers/ui/login';
 import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
-import { switchToShortcodeTheme } from '../helpers/rest/theme-switcher';
 import { setOrderStatus } from '../helpers/ui/wc-order';
 
 test.describe( 'Schedule payment checks', () => {
@@ -25,63 +27,41 @@ test.describe( 'Schedule payment checks', () => {
 		const page = await browser.newPage();
 		await configureBitcoinXpub( page );
 		await createSimpleProduct( page );
-		// await page.close();
+		await page.close();
 	} );
 
-	// PlaywrightTestArgs & PlaywrightTestOptions & PlaywrightWorkerArgs & PlaywrightWorkerOptions'
-	test.beforeEach( async () => {
-		await deleteUnpaidOrderActions();
-	} );
+	async function getPendingUnpaidOrderActionForOrder(
+		orderId: number
+	): Promise< [ Record< string, ActionSchedulerItem > ] > {
+		return await fetchActionsWithArgs(
+			'bh_wp_bitcoin_gateway_check_unpaid_order',
+			{ order_id: orderId }
+		);
+	}
 
 	async function hasPendingUnpaidOrderActionForOrder(
 		orderId: number
 	): Promise< boolean > {
-		const unpaidOrderActions = await fetchActions(
-			'bh_wp_bitcoin_gateway_check_unpaid_order'
-		);
+		const actionsForOrder =
+			await getPendingUnpaidOrderActionForOrder( orderId );
 
-		const count = Object.entries( unpaidOrderActions ).reduce( function (
-			total,
-			actionIterated: Array< any >
-		) {
-			const action: Object = actionIterated[ 1 ];
-			const args: Object = action.args;
-			const argsOrderId: number = args.order_id;
-
-			const status: string = action.status;
-
-			if (
-				argsOrderId > 0 &&
-				argsOrderId === orderId &&
-				status === 'pending'
-			) {
-				return total + 1;
-			}
-			return total;
-		}, 0 );
-
-		return count > 0; // !== null;
+		return Object.entries( actionsForOrder ).length > 0;
 	}
 
-	async function getActionSchedulerTableRowForOrder(
-		page: any,
+	async function deleteUnpaidOrderActions(
 		orderId: number
-	) {
-		const actionSchedulerUrl =
-			'/wp-admin/tools.php?page=action-scheduler&status=pending&s=bh_wp_bitcoin_gateway_check_unpaid_order';
-		await page.goto( actionSchedulerUrl );
-
-		const rowSelector = `td[data-colname="Arguments"]:has-text("'order_id' => ${ orderId }")`;
-		const tableRow = page.locator( rowSelector ).locator( '..' ).first();
-
-		return ( await tableRow.count() ) > 0 ? tableRow : null;
+	): Promise< void > {
+		const actionsForOrder =
+			await getPendingUnpaidOrderActionForOrder( orderId );
+		for ( const key of Object.keys( actionsForOrder ) ) {
+			await deleteAction( parseInt( key ) );
+		}
 	}
 
 	test( 'should schedule a payment check when a Bitcoin order is placed', async ( {
 		page,
 	} ) => {
 		await switchToShortcodeTheme();
-		await deleteUnpaidOrderActions();
 
 		const orderId = await placeBitcoinOrder( page );
 
@@ -105,7 +85,7 @@ test.describe( 'Schedule payment checks', () => {
 		await loginAsAdmin( page );
 
 		await setOrderStatus( page, orderId, 'wc-pending' );
-		await deleteUnpaidOrderActions();
+		await deleteUnpaidOrderActions( orderId );
 		await setOrderStatus( page, orderId, 'wc-on-hold' );
 
 		const isScheduled =
@@ -125,9 +105,15 @@ test.describe( 'Schedule payment checks', () => {
 		await loginAsAdmin( page );
 		await setOrderStatus( page, orderId, 'wc-processing' );
 
-		const isScheduledAfter =
-			await hasPendingUnpaidOrderActionForOrder( orderId );
-		expect( isScheduledAfter ).toBe( false );
+		await page.waitForLoadState( 'networkidle' );
+
+		const unpaidOrders =
+			await getPendingUnpaidOrderActionForOrder( orderId );
+		const isScheduledAfter = unpaidOrders.length === 0;
+		expect(
+			isScheduledAfter,
+			`Expected bh_wp_bitcoin_gateway_check_unpaid_order Action Scheduler job to be deleted for order_id:  ${ orderId }`
+		).toBe( false );
 	} );
 
 	test( 'should schedule new payment check after each check that does not have payment', async ( {
