@@ -93,7 +93,7 @@ class Background_Jobs {
 			add_action(
 				'action_scheduler_after_process_queue',
 				function () use ( $query, $action_id, $order ) {
-					$this->logger->info( "Cancellilng future update checks for `shop_order:{$order->get_id()}`, status: {$order->get_status()}." );
+					$this->logger->info( "Cancelling future update checks for `shop_order:{$order->get_id()}`, status: {$order->get_status()}." );
 					try {
 						as_unschedule_all_actions( $query['hook'], $query['args'] );
 					} catch ( \InvalidArgumentException $exception ) {
