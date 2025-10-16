@@ -124,11 +124,11 @@ class Order {
 	 * @hooked woocommerce_order_status_changed
 	 * @see WC_Order::status_transition()
 	 *
-	 * @param int    $order_id The id of the order whose status has changed.
-	 * @param string $status_from The old status.
-	 * @param string $status_to The new status.
+	 * @param int|numeric-string $order_id The id of the order whose status has changed.
+	 * @param string             $status_from The old status.
+	 * @param string             $status_to The new status.
 	 */
-	public function unschedule_check_for_transactions( int $order_id, string $status_from, string $status_to ): void {
+	public function unschedule_check_for_transactions( int|string $order_id, string $status_from, string $status_to ): void {
 
 		if ( in_array( $status_to, array( 'pending', 'on-hold' ), true ) ) {
 			return;

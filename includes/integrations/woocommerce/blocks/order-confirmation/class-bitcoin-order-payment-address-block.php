@@ -12,8 +12,12 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 class Bitcoin_Order_Payment_Address_Block {
 
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface $settings Plugin settings, used to determine the plugin dir.
+	 */
 	public function __construct(
-		protected API_Interface $api,
 		protected Settings_Interface $settings,
 	) {
 	}

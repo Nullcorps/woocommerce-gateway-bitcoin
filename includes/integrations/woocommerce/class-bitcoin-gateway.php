@@ -123,7 +123,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		} catch ( UnknownCurrencyException $e ) {
 			$currency = Currency::of( 'USD' );
 		}
-		$exchange_rate = $this->api->get_exchange_rate( $currency );
+		$exchange_rate = $this->api?->get_exchange_rate( $currency );
 		if ( is_null( $exchange_rate ) ) {
 			// TODO: Also display an admin notice with instruction to configure / retry.
 			return 'Error fetching exchange rate. Gateway will be unavailable to customers until an exchange rate is available.';
@@ -387,10 +387,15 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 			throw new Exception( 'Unable to find Bitcoin address to send to. Please choose another payment method.' );
 		}
 
-		// Record the exchange rate at the time the order was placed.
+		/**
+		 * Record the exchange rate at the time the order was placed.
+		 *
+		 * Although we're allowing for `::get_exchange_rate()` = `null` here, that should never happen since it was
+		 * checked before the gateway was offered as a payment option.
+		 */
 		$order->add_meta_data(
 			Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY,
-			$api->get_exchange_rate( Currency::of( $order->get_currency() ) )->jsonSerialize()
+			$api->get_exchange_rate( Currency::of( $order->get_currency() ) )?->jsonSerialize()
 		);
 
 		$btc_total = $api->convert_fiat_to_btc( Money::of( $order->get_total(), $order->get_currency() ) );

@@ -9,11 +9,11 @@ import { test, expect } from '@playwright/test';
 import {
 	getBitcoinAddressCount,
 	deleteBitcoinAddresses,
-} from '../helpers/bitcoin-address';
-import { configureBitcoinXpub } from '../helpers/configure-bitcoin-xpub';
-import { createSimpleProduct } from '../helpers/create-simple-product';
-import { loginAsAdmin, logout } from '../helpers/login';
-import { placeBitcoinOrder } from '../helpers/place-bitcoin-order';
+} from '../helpers/rest/bitcoin-address';
+import { configureBitcoinXpub } from '../helpers/ui/configure-bitcoin-xpub';
+import { createSimpleProduct } from '../helpers/ui/create-simple-product';
+import { loginAsAdmin } from '../helpers/ui/login';
+import { placeBitcoinOrder } from '../helpers/ui/place-bitcoin-order';
 
 test.describe( 'Generate new addresses', () => {
 	test.beforeAll( async ( { browser } ) => {
@@ -84,7 +84,7 @@ test.describe( 'Generate new addresses', () => {
 		const allCountElement = page.locator( '.all a .count' );
 		const allCountText = await allCountElement.textContent();
 		const allCount = parseInt(
-			allCountText?.replace( /[^\d]/g, '' ) || '0'
+			allCountText?.replace( /\D/g, '' ) || '0'
 		);
 
 		expect( allCount ).not.toEqual( 0 );
@@ -92,7 +92,7 @@ test.describe( 'Generate new addresses', () => {
 		const unusedCountElement = page.locator( '.unused a .count' );
 		const unusedCountText = await unusedCountElement.textContent();
 		const unusedCount = parseInt(
-			unusedCountText?.replace( /[^\d]/g, '' ) || '0'
+			unusedCountText?.replace( /\D/g, '' ) || '0'
 		);
 
 		let assignedCount = 0;
@@ -100,7 +100,7 @@ test.describe( 'Generate new addresses', () => {
 		if ( ( await assignedCountElement.count() ) > 0 ) {
 			const assignedCountText = await assignedCountElement.textContent();
 			assignedCount = parseInt(
-				assignedCountText?.replace( /[^\d]/g, '' ) || '0'
+				assignedCountText?.replace( /\D/g, '' ) || '0'
 			);
 		}
 

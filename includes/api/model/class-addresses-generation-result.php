@@ -9,6 +9,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 
 /**
@@ -20,7 +21,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 class Addresses_Generation_Result {
 
 	/**
-	 * @param $new_addresses: array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int}
+	 * @param array{gateway_id:string, xpub:string, generated_addresses:array<Bitcoin_Address>, generated_addresses_count:int, generated_addresses_post_ids:array<int>, address_index:int} $new_addresses
 	 */
 	public function __construct(
 		public Bitcoin_Wallet $wallet,

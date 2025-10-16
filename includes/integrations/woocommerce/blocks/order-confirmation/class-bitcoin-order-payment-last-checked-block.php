@@ -10,6 +10,12 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Blocks\Order_
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
 class Bitcoin_Order_Payment_Last_Checked_Block {
+
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface $settings Plugin settings, used to determine the plugin dir.
+	 */
 	public function __construct(
 		protected Settings_Interface $settings,
 	) {

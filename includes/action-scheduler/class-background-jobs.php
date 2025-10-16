@@ -9,7 +9,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
-// TODO: hook into post_status changes (+count) to decide to scheulde
+// TODO: hook into post_status changes (+count) to decide to schedule.
 
 use ActionScheduler;
 use Exception;

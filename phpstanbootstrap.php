@@ -7,4 +7,4 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );
+// define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );

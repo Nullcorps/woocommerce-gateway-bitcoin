@@ -10,6 +10,9 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use WP_Post;
+use WP_Post_Type;
+use WP_Posts_List_Table;
+use WP_Screen;
 
 /**
  * Hooks into standard WP_List_Table actions and filters.
@@ -17,7 +20,7 @@ use WP_Post;
  * @see wp-admin/edit.php?post_type=bh-bitcoin-wallet
  * @see WP_Posts_List_Table
  */
-class Wallets_List_Table extends \WP_Posts_List_Table {
+class Wallets_List_Table extends WP_Posts_List_Table {
 
 	/**
 	 * The main plugin functions.
@@ -31,7 +34,7 @@ class Wallets_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @see _get_list_table()
 	 *
-	 * @param array{screen?:\WP_Screen} $args The data passed by WordPress.
+	 * @param array{screen?:WP_Screen} $args The data passed by WordPress.
 	 */
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
@@ -42,7 +45,7 @@ class Wallets_List_Table extends \WP_Posts_List_Table {
 		 * Since this object is instantiated because it was defined when registering the post type, it's
 		 * extremely unlikely the post type will not exist.
 		 *
-		 * @var \WP_Post_Type $post_type_object
+		 * @var WP_Post_Type $post_type_object
 		 */
 		$post_type_object = get_post_type_object( $post_type_name );
 		$this->api        = $post_type_object->plugin_objects['api'];
@@ -109,6 +112,7 @@ class Wallets_List_Table extends \WP_Posts_List_Table {
 	 * One of active|inactive.
 	 *
 	 * @see Post::register_wallet_post_type()
+	 * @used-by WP_List_Table::single_row_columns()
 	 *
 	 * @param WP_Post $post The post this row is being rendered for.
 	 */
@@ -122,6 +126,8 @@ class Wallets_List_Table extends \WP_Posts_List_Table {
 	 * Print the total Bitcoin received by this wallet.
 	 *
 	 * TODO: Not yet implemented.
+	 *
+	 * @used-by WP_List_Table::single_row_columns()
 	 *
 	 * @param WP_Post $post The post this row is being rendered for.
 	 */

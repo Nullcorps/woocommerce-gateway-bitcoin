@@ -14,6 +14,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
+use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 
 /**
@@ -82,13 +83,14 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$wc_payment_gateways->payment_gateways['bitcoin_2'] = $bitcoin_2;
 
+		/** @var array<WC_Payment_Gateway> $result */
 		$result = $api->get_bitcoin_gateways();
 
 		$this->assertCount( 2, $result );
 
 		$all_bitcoin_gateways = array_reduce(
 			$result,
-			function ( bool $carry, \WC_Payment_Gateway $gateway ): bool {
+			function ( bool $carry, WC_Payment_Gateway $gateway ): bool {
 				return $carry && ( $gateway instanceof Bitcoin_Gateway );
 			},
 			true
@@ -228,6 +230,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$result = $api->get_fresh_addresses_for_gateway( $bitcoin_gateway );
 
+		/** @var Bitcoin_Address $address */
 		$address = array_pop( $result );
 
 		self::assertEquals( 'success', $address->get_raw_address() );

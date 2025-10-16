@@ -20,9 +20,10 @@ class Register_List_Tables {
 	 * Use the `Wallets_List_Table` class on the `wp-admin/edit.php?post_type=bh-bitcoin-wallet` screen.
 	 *
 	 * @see _get_list_table()
+	 * @hooked wp_list_table_class_name
 	 *
-	 * @param string                   $class_name Default WP_Posts_List_Table class to instantiate.
-	 * @param array{screen?:WP_Screen} $args An array containing _get_list_table() arguments, which is seemingly just 'screen'.
+	 * @param string                         $class_name Default WP_Posts_List_Table class to instantiate.
+	 * @param array{screen?:WP_Screen|mixed} $args An array containing _get_list_table() arguments, which is seemingly just 'screen'.
 	 *
 	 * @return string
 	 */
@@ -39,9 +40,10 @@ class Register_List_Tables {
 	 * Use the `Addresses_List_Table` class on the `wp-admin/edit.php?post_type=bh-bitcoin-address` screen.
 	 *
 	 * @see _get_list_table()
+	 * @hooked wp_list_table_class_name
 	 *
-	 * @param string                   $class_name Default WP_Posts_List_Table class to instantiate.
-	 * @param array{screen?:WP_Screen} $args An array containing _get_list_table() arguments, which is seemingly just 'screen'.
+	 * @param string                         $class_name Default WP_Posts_List_Table class to instantiate.
+	 * @param array{screen?:WP_Screen|mixed} $args An array containing _get_list_table() arguments, which is seemingly just 'screen'.
 	 *
 	 * @return string
 	 */

@@ -1,15 +1,18 @@
 <?php
 /**
  * Plugin Name:       Bitcoin Gateway Test Helper
+ *
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Helper_Plugin;
 
-// TODO check for stray requests
+// TODO check for stray requests: exchange rate query seems to be happening too frequently.
 // https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD
 
 // wp-env cron fix.
 
+// Do not run inside the WP-CLI container.
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	$hostname = gethostname();
 	update_option( 'wp_env_cron_hostname', $hostname );

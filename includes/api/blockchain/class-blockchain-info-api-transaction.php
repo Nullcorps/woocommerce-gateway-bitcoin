@@ -7,7 +7,9 @@ use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\Transaction;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\TransactionOut;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 
 class Blockchain_Info_Api_Transaction implements Transaction_Interface {
 
@@ -20,8 +22,11 @@ class Blockchain_Info_Api_Transaction implements Transaction_Interface {
 		return $this->transaction->getHash();
 	}
 
-	public function get_time(): \DateTimeInterface {
-		return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
+	/**
+	 * @throws Exception In the unlikely event that the timestamp is invalid.
+	 */
+	public function get_time(): DateTimeInterface {
+		return new DateTimeImmutable( '@' . $this->transaction->getTime(), DateTimeZone::UTC );
 	}
 
 	public function get_value( string $to_address ): Money {

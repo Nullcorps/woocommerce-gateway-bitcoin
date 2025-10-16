@@ -61,7 +61,7 @@ class Wallet_Generation_Result {
 	/**
 	 * Convert to array format for backward compatibility.
 	 *
-	 * @return array{wallet: Bitcoin_Wallet, wallet_post_id: int, existing_fresh_addresses: array<Bitcoin_Address>, generated_addresses: array<Bitcoin_Address>}
+	 * @return array{wallet: Bitcoin_Wallet, existing_fresh_addresses: array<Bitcoin_Address>, generated_addresses: array<Bitcoin_Address>}
 	 */
 	public function to_array(): array {
 		return array(

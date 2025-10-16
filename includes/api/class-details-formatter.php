@@ -62,12 +62,10 @@ class Details_Formatter {
 	}
 
 	/**
-	 * @param $order_status
-	 *
-	 * @return mixed
+	 * Get the pretty formatted WooCommerce order status.
 	 */
-	public function get_wc_order_status_formatted() {
-		return wc_get_order_statuses()[ 'wc-' . $this->order->get_status() ];
+	public function get_wc_order_status_formatted(): ?string {
+		return wc_get_order_statuses()[ 'wc-' . $this->order->get_status() ] ?? null;
 	}
 
 	public function get_last_checked_time_formatted(): string {
@@ -172,7 +170,14 @@ class Details_Formatter {
 		return $result;
 	}
 
-	protected function as_camel_case( string $var ): string {
-		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $var ) ) ) );
+	/**
+	 * Map the array keys to camelCase for JavaScript use.
+	 *
+	 * @param string $variable_name Snake_case variable name.
+	 *
+	 * @return string CamelCase variable name.
+	 */
+	protected function as_camel_case( string $variable_name ): string {
+		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $variable_name ) ) ) );
 	}
 }

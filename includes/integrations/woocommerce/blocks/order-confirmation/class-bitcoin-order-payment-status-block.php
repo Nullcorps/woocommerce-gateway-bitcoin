@@ -14,8 +14,12 @@ use WC_Order;
 
 class Bitcoin_Order_Payment_Status_Block {
 
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface $settings Plugin settings, used to determine the plugin dir.
+	 */
 	public function __construct(
-		protected API_Interface $api,
 		protected Settings_Interface $settings,
 	) {
 	}

@@ -5,19 +5,13 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\BlockchainInfoApi;
 use BrianHenryIE\WP_Bitcoin_Gateway\BlockchainInfo\Model\RawAddress;
+use Codeception\Stub\Expected;
 use JsonMapper\JsonMapperFactory;
-use Mockery;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockchain_Info_API
  */
 class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
-
-	protected function tearDown(): void {
-		parent::tearDown();
-
-		Mockery::close();
-	}
 
 	/**
 	 * @covers ::get_received_by_address
@@ -27,11 +21,14 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$mock_api = Mockery::mock( BlockchainInfoApi::class );
+		$mock_api = $this->make(
+			BlockchainInfoApi::class,
+			array(
+				'getReceivedByAddress' => Expected::once( '10432394445' ),
+			)
+		);
 
-		$sut = new Blockchain_Info_API( $logger, $mock_api );
-
-		$mock_api->expects( 'getReceivedByAddress' )->andReturn( '10432394445' );
+		$sut = new Blockchain_Info_Api( $logger, $mock_api );
 
 		// Satoshi Nakamoto's address.
 		$address = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
@@ -48,10 +45,14 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$mock_api = Mockery::mock( BlockchainInfoApi::class );
-		$mock_api->expects( 'getAddressBalance' )->twice()->andReturn( '18142' );
+		$mock_api = $this->make(
+			BlockchainInfoApi::class,
+			array(
+				'getAddressBalance' => 18142,
+			)
+		);
 
-		$sut = new Blockchain_Info_API( $logger, $mock_api );
+		$sut = new Blockchain_Info_Api( $logger, $mock_api );
 
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
@@ -72,12 +73,9 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 
-		$mock_api = Mockery::mock( BlockchainInfoApi::class );
-
 		$mapper = ( new JsonMapperFactory() )->bestFit();
 		// $mapper->push( new CaseConversion( TextNotation::UNDERSCORE(), TextNotation::CAMEL_CASE() ) );
-
-		$body = json_encode(
+		$body        = json_encode(
 			(object) array(
 				'hash160'        => '05bf3a3aea6335a3949c0a351ff3afcba884e125',
 				'address'        => '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4',
@@ -325,12 +323,16 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 					),
 			)
 		);
-
 		$raw_address = $mapper->mapToClassFromString( $body, RawAddress::class );
 
-		$mock_api->expects( 'getRawAddr' )->andReturn( $raw_address );
+		$mock_api = $this->make(
+			BlockchainInfoApi::class,
+			array(
+				'getRawAddr' => $raw_address,
+			)
+		);
 
-		$sut = new Blockchain_Info_API( $logger, $mock_api );
+		$sut = new Blockchain_Info_Api( $logger, $mock_api );
 
 		// The pizza address.
 		$address = '1XPTgDRhN8RFnzniWCddobD9iKZatrvH4';
@@ -339,7 +341,7 @@ class Blockchain_Info_API_Unit_Test extends \Codeception\Test\Unit {
 
 		$first = array_shift( $result );
 
-		$this->assertEquals( '0.00002613', (string) $first->get_value( $address )->getAmount() );
+		$this->assertEquals( '0.00002613', (string) $first?->get_value( $address )->getAmount() );
 		// $this->assertEquals( '0.00047971', (string) $first->get_value( $address )->getAmount() );
 	}
 }

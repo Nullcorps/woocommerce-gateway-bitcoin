@@ -122,7 +122,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 
 		$result = $sut->get_balance();
 
-		$this->assertEquals( '1.23456789', $result->getAmount() );
+		$this->assertEquals( '1.23456789', $result?->getAmount() );
 	}
 
 	/**

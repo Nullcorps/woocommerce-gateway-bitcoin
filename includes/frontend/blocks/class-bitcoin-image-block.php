@@ -12,6 +12,11 @@ use WP_Block_Type;
 
 class Bitcoin_Image_Block {
 
+	/**
+	 * Constructor
+	 *
+	 * @param Settings_Interface $settings Plugin settings, used to determine the plugin url.
+	 */
 	public function __construct(
 		protected Settings_Interface $settings,
 	) {

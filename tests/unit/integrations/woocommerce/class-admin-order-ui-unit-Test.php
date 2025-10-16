@@ -51,8 +51,8 @@ class Admin_Order_UI_Unit_Test extends \Codeception\Test\Unit {
 
 		global $post;
 		$post = new class() {
-			public $ID        = 123;
-			public $post_type = 'shop_order';
+			public int $ID           = 123;
+			public string $post_type = 'shop_order';
 		};
 
 		$sut->register_address_transactions_meta_box();
@@ -89,8 +89,8 @@ class Admin_Order_UI_Unit_Test extends \Codeception\Test\Unit {
 
 		global $post;
 		$post = new class() {
-			public $post_type = 'shop_order';
-			public $ID        = 123;
+			public string $post_type = 'shop_order';
+			public int $ID           = 123;
 		};
 
 		$sut->register_address_transactions_meta_box();

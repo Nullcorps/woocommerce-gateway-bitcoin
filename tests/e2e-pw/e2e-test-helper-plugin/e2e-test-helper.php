@@ -51,11 +51,16 @@ class E2E_Test_Helper_Plugin {
 	 *
 	 * `woocommerce_checkout_page_id`
 	 *
-	 * @see WP_REST_Settings_Controller
+	 * @hooked rest_pre_dispatch
+	 *
+	 * @param null|mixed $short_circuit The value to return.
+	 *
 	 * @see get_registered_settings
 	 * /wp-json/wp/v2/settings
+	 *
+	 * @see WP_REST_Settings_Controller
 	 */
-	function show_settings_in_rest( $val ) {
+	public function show_settings_in_rest( $short_circuit ) {
 		global $wp_registered_settings;
 
 		if ( ! in_array( 'woocommerce_checkout_page_id', $wp_registered_settings, true ) ) {
@@ -67,7 +72,7 @@ class E2E_Test_Helper_Plugin {
 			);
 		}
 
-		return $val;
+		return $short_circuit;
 	}
 
 	/**
@@ -229,9 +234,9 @@ class E2E_Test_Helper_Plugin {
 		 * @see ActionScheduler_DBStore::get_query_actions_sql()
 		 */
 		$search['per_page'] = $search['per_page'] ?? 200;
-		$search['orderby'] = $search['orderby'] ?? 'date';
-		$search['order'] = $search['order'] ?? 'ASC';
-		$results = as_get_scheduled_actions( $search );
+		$search['orderby']  = $search['orderby'] ?? 'date';
+		$search['order']    = $search['order'] ?? 'ASC';
+		$results            = as_get_scheduled_actions( $search );
 
 		$store = ActionScheduler::store();
 

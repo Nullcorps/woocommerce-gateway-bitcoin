@@ -40,7 +40,7 @@ export const Edit: React.FC< EditProps > = ( {
 			<InspectorControls>
 				<PanelBody
 					title={ __(
-						'Payment Addres settings',
+						'Payment Address settings',
 						'bh-wp-bitcoin-gateway'
 					) }
 				>

@@ -16,7 +16,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 	 * @covers ::generate_new_addresses
 	 * @covers ::__construct
 	 */
-	public function test_generate_new_adresses(): void {
+	public function test_generate_new_adresses_hooked_action(): void {
 
 		$logger = new ColorLogger();
 		$api    = $this->makeEmpty(
@@ -24,9 +24,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'generate_new_addresses' => Expected::once(
 					function () {
-						return array();
-						return $this->createMock( Addresses_Generation_Result::class );
-						// return new Addresses_Generation_Result();
+						return array( $this->createMock( Addresses_Generation_Result::class ) );
 					}
 				),
 			)

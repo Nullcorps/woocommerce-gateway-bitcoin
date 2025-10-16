@@ -73,7 +73,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$result       = $sut->update_address_transactions( $address );
 		$result_first = array_shift( $result );
 
-		$this->assertEquals( 'transaction', $result_first->get_txid() );
+		$this->assertEquals( 'transaction', $result_first?->get_txid() );
 	}
 
 	/**
@@ -109,7 +109,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		self::assertEquals( '65535', $result->abs()->getAmount()->toFloat() );
+		self::assertEquals( '65535', $result?->abs()->getAmount()->toFloat() );
 	}
 
 	/**
@@ -163,6 +163,6 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->get_exchange_rate( Currency::of( 'USD' ) );
 
-		self::assertEquals( '54321', $result->abs()->getAmount()->toFloat() );
+		self::assertEquals( '54321', $result?->abs()->getAmount()->toFloat() );
 	}
 }

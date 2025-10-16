@@ -21,16 +21,7 @@ use WC_Order;
 use WC_Payment_Gateways;
 
 /**
- *
- * @method get_id()
- * @method get_status()
- * @method get_date_created()
- * @method add_order_note()
- * @method payment_complete()
- * @method is_paid()
- * @method save()
- * @method get_currency()
- * @method get_date_paid()
+ * @mixin WC_Order
  */
 class Bitcoin_Order implements Bitcoin_Order_Interface {
 
@@ -94,7 +85,7 @@ class Bitcoin_Order implements Bitcoin_Order_Interface {
 	 * The Bitcoin exchange rate at the time of purchase.
 	 */
 	public function get_btc_exchange_rate(): BigNumber {
-		/** @var array{amount:string, currency:string} $btc_total */
+		/** @var array{amount:string, currency:string} $rate_meta */
 		$rate_meta = $this->wc_order->get_meta( Order::EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY );
 
 		return BigNumber::of( $rate_meta['amount'] );

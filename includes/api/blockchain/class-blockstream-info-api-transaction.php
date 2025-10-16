@@ -7,9 +7,13 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 
 class BlockStream_Info_API_Transaction implements Transaction_Interface {
 
+	/**
+	 * @param array{txid:string,status:array{block_time:int,block_height:int},vout:array<array{value:numeric,scriptpubkey_address:string}>} $blockstream_transaction The transaction data as returned by Blockstream.info API.
+	 */
 	public function __construct(
 		protected array $blockstream_transaction
 	) {
@@ -19,6 +23,9 @@ class BlockStream_Info_API_Transaction implements Transaction_Interface {
 		return (string) $this->blockstream_transaction['txid'];
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function get_time(): DateTimeInterface {
 
 		$block_time = (int) $this->blockstream_transaction['status']['block_time'];

@@ -19,11 +19,17 @@ class Bitcoin_Wallet {
 
 	const POST_TYPE = 'bh-bitcoin-wallet';
 
+	/**
+	 * TODO: We are not yet setting the balance.
+	 */
 	const BALANCE_META_KEY                    = 'bitcoin_wallet_balance';
 	const LAST_DERIVED_ADDRESS_INDEX_META_KEY = 'last_derived_address_index';
 
+	/**
+	 * Meta key to store the payment gateway ids this wallet is used with.
+	 * `get_post_meta( $wallet_post_id, 'payment_gateway_ids', false )` returns an array of gateway ids.
+	 */
 	const GATEWAY_IDS_META_KEY = 'payment_gateway_ids';
-
 
 	/**
 	 * The actual data as retrieved by WordPress from the database.
@@ -80,7 +86,7 @@ class Bitcoin_Wallet {
 	/**
 	 * Get the current balance of this wallet, or null if it has never been checked.
 	 *
-	 * Must iterate across all addreses and sum them.
+	 * Must iterate across all addresses and sum them.
 	 *
 	 * @return ?string
 	 */

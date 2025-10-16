@@ -127,11 +127,12 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		// 946684800 is Y2K.
-		$last_checked = DateTimeImmutable::createFromFormat( 'U', 946684800 );
+		$last_checked = DateTimeImmutable::createFromFormat( 'U', '946684800' );
 
 		$sut->set_last_checked_time( $last_checked );
 		$sut->save();
 
+		/** @var WC_Order $order */
 		$order = wc_get_order( $order_id );
 		/** @var \DateTimeInterface $result */
 		$result = $order->get_meta( Order::LAST_CHECKED_META_KEY, true );

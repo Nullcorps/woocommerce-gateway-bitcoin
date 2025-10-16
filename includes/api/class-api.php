@@ -159,7 +159,7 @@ class API implements API_Interface {
 	 *
 	 * @param int $order_id The id of the (presumed) WooCommerce order to check.
 	 */
-	public function is_order_has_bitcoin_gateway( int $order_id ): bool {
+	public function is_order_has_bitcoin_gateway( int|string $order_id ): bool {
 		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) || ! function_exists( 'wc_get_order' ) ) {
 			return false;
 		}

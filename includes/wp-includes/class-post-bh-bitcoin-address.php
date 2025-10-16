@@ -135,6 +135,8 @@ class Post_BH_Bitcoin_Address {
 	 * @see get_posts()
 	 * @hooked parse_query
 	 * @see WP_Query::get_posts()
+	 *
+	 * @param WP_Query $query The WP_Query instance (passed by reference).
 	 */
 	public function add_post_statuses( WP_Query $query ): void {
 

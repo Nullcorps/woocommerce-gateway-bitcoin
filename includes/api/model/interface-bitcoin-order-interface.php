@@ -10,7 +10,13 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
+use DateTimeInterface;
 
+
+/**
+ * @mixin \WC_Order
+ */
 interface Bitcoin_Order_Interface {
 
 	public function get_btc_total_price(): Money;
@@ -19,13 +25,9 @@ interface Bitcoin_Order_Interface {
 
 	public function get_address(): Bitcoin_Address;
 
-	// public function get_id();
-	// public function get_status();
-	// public function get_date_created();
-	// public function add_order_note();
-	// public function payment_complete();
-	// public function is_paid();
-	// public function save();
-	// public function get_currency();
-	// public function get_date_paid();
+	public function get_gateway(): ?Bitcoin_Gateway;
+
+	public function set_amount_received( Money $updated_confirmed_value ): void;
+
+	public function set_last_checked_time( DateTimeInterface $last_checked_time ): void;
 }

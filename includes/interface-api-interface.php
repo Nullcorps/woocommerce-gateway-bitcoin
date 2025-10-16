@@ -31,11 +31,11 @@ interface API_Interface {
 	 *
 	 * @see https://github.com/BrianHenryIE/bh-wc-duplicate-payment-gateways
 	 *
-	 * @param int $order_id A WooCommerce order id (presumably).
+	 * @param int|numeric-string $order_id A WooCommerce order id (presumably).
 	 *
 	 * @return bool
 	 */
-	public function is_order_has_bitcoin_gateway( int $order_id ): bool;
+	public function is_order_has_bitcoin_gateway( int|string $order_id ): bool;
 
 	/**
 	 * Given a gateway id as a string, determine is it an instance of this Bitcoin gateway.
