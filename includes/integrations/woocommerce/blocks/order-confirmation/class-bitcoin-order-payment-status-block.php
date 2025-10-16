@@ -12,6 +12,11 @@ use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use WC_Order;
 
+/**
+ * Register the `bh-wp-bitcoin-gateway/payment-status` block.
+ *
+ * @see assets/js/frontend/woocommerce/blocks/order-confirmation/payment-status/block.json
+ */
 class Bitcoin_Order_Payment_Status_Block {
 
 	/**

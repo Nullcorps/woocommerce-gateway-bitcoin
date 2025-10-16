@@ -157,7 +157,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return void Echos HTML.
 	 */
-	public function column_status( WP_Post $item ) {
+	public function column_status( WP_Post $item ): void {
 
 		$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
 
@@ -170,7 +170,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return void Echos HTML.
 	 */
-	public function column_order_id( WP_Post $item ) {
+	public function column_order_id( WP_Post $item ): void {
 
 		$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
 
@@ -188,7 +188,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return void Echos HTML.
 	 */
-	public function column_transactions_count( WP_Post $item ) {
+	public function column_transactions_count( WP_Post $item ): void {
 
 		$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
 
@@ -206,7 +206,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return void Echos HTML.
 	 */
-	public function column_received( WP_Post $item ) {
+	public function column_received( WP_Post $item ): void {
 
 		$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );
 
@@ -226,7 +226,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return void Echos HTML.
 	 */
-	public function column_wallet( WP_Post $item ) {
+	public function column_wallet( WP_Post $item ): void {
 
 		try {
 			$bitcoin_address = $this->get_cached_bitcoin_address_object( $item );

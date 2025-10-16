@@ -9,6 +9,11 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Blocks\Order_
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
+/**
+ * Register the `bh-wp-bitcoin-gateway/payment-amount-received` block.
+ *
+ * @see assets/js/frontend/woocommerce/blocks/order-confirmation/payment-amount-received/block.json
+ */
 class Bitcoin_Order_Payment_Amount_Received_Block {
 
 	/**

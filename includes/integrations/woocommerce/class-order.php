@@ -8,10 +8,12 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use ActionScheduler;
+use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
@@ -54,10 +56,21 @@ class Order {
 	 *
 	 * 20 is the standard number of addresses a wallet is expected to seek forward to monitor for payments.
 	 *
+	 * TODO: Confirm note "some implementations of the action pass the order object too.
+	 *
 	 * @hooked woocommerce_new_order
-	 * Some implementations of the action pass the order object too.
+	 *
+	 * @see WC_Order_Data_Store_CPT::create()
+	 * @see WC_Order_Data_Store_CPT::update()
+	 * @see OrdersTableDataStore::create()
+	 * @see OrdersTableDataStore::update()
+	 *
+	 * @param int|numeric-string $order_id
+	 * @param WC_Order           $order
+	 *
+	 * @throws Exception
 	 */
-	public function todo_check_addresses_after_new_orders( int $order_id, ?WC_Order $order = null ): void {
+	public function todo_check_addresses_after_new_orders( int|string $order_id, WC_Order $order = null ): void {
 		if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
 			return;
 		}

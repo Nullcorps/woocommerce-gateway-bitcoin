@@ -115,7 +115,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Returns the exchange rate in a string, e.g. 'Current exchange rate: 1 BTC = $100,000'.
 	 *
-	 * @throws UnknownCurrencyException
+	 * @throws UnknownCurrencyException If the store currency is not an ISO 4217 brick/money supported currency code.
 	 */
 	protected function get_formatted_exchange_rate_string(): string {
 		try {

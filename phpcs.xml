@@ -16,17 +16,17 @@
 
     <exclude-pattern>/assets/</exclude-pattern>
     <exclude-pattern>/dist-archive/</exclude-pattern>
+    <exclude-pattern>/node_modules/</exclude-pattern>
     <exclude-pattern>/scratch/</exclude-pattern>
-    <exclude-pattern>/vendor-prefixed/*</exclude-pattern>
     <exclude-pattern>/tests/_data/</exclude-pattern>
     <exclude-pattern>/tests/_output/</exclude-pattern>
     <exclude-pattern>/tests/_support/</exclude-pattern>
     <exclude-pattern>/tests/e2e/</exclude-pattern>
-    <exclude-pattern>/node_modules/</exclude-pattern>
-
+    <exclude-pattern>/vendor-prefixed/*</exclude-pattern>
     <exclude-pattern>/vendor/*</exclude-pattern>
     <exclude-pattern>/wordpress/</exclude-pattern>
     <exclude-pattern>/wp-content/</exclude-pattern>
+    <exclude-pattern>/phpstanbootstrap.php</exclude-pattern>
 
     <!-- Do not require the object type in the comment, presuming it is strongly typed -->
     <rule ref="Squiz.Commenting.VariableComment.MissingVar">
@@ -129,6 +129,9 @@
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
     <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.Found">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.WP.AlternativeFunctions.json_encode_json_encode">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
 

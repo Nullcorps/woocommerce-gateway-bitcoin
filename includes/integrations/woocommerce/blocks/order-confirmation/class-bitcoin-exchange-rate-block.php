@@ -12,6 +12,11 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Blocks\Order_
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 
+/**
+ * Register the `bh-wp-bitcoin-gateway/exchange-rate` block.
+ *
+ * @see assets/js/frontend/woocommerce/blocks/order-confirmation/exchange-rate/block.json
+ */
 class Bitcoin_Exchange_Rate_Block {
 
 	/**

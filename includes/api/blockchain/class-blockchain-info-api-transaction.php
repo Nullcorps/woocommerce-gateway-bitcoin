@@ -26,7 +26,7 @@ class Blockchain_Info_Api_Transaction implements Transaction_Interface {
 	 * @throws Exception In the unlikely event that the timestamp is invalid.
 	 */
 	public function get_time(): DateTimeInterface {
-		return new DateTimeImmutable( '@' . $this->transaction->getTime(), DateTimeZone::UTC );
+		return new DateTimeImmutable( '@' . $this->transaction->getTime(), new DateTimeZone( 'UTC' ) );
 	}
 
 	public function get_value( string $to_address ): Money {
