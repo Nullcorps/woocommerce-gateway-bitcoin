@@ -8,7 +8,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use Codeception\Stub\Expected;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -134,12 +133,18 @@ class Bitcoin_Gateway_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	 */
 	public function test_checks_for_available_address_for_availability_uses_cache(): void {
 
-		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty( API_Interface::class );
+		$GLOBALS['bh_wp_bitcoin_gateway'] = $this->makeEmpty(
+			API_Interface::class,
+			array(
+				'is_fresh_address_available_for_gateway' => true,
+				'get_exchange_rate'                      => Money::of( 1, 'BTC' ),
+			)
+		);
 
 		$sut = new class() extends Bitcoin_Gateway {
 			public function __construct() {
 				parent::__construct();
-				$this->is_available = false;
+				$this->is_available_cache = false;
 			}
 		};
 
