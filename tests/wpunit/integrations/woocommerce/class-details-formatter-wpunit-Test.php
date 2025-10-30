@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use WC_Order;
 
 /**
- * @coversDefaultClass  \BrianHenryIE\WP_Bitcoin_Gateway\API\Details_Formatter
+ * @coversDefaultClass  \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Details_Formatter
  */
 class Details_Formatter_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
