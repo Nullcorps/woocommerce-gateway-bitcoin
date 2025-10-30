@@ -7,7 +7,7 @@
  * @package brianehnryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model;
 
 use BadMethodCallException;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -23,7 +23,7 @@ use WC_Payment_Gateways;
 /**
  * @mixin WC_Order
  */
-class Bitcoin_Order implements Bitcoin_Order_Interface {
+class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 
 	protected WC_Order $wc_order;
 

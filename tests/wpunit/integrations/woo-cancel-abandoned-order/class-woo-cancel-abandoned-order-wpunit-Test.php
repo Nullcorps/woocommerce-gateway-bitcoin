@@ -3,8 +3,8 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use Codeception\Stub\Expected;
 use stdClass;
 use WC_Order;
@@ -54,7 +54,7 @@ class Woo_Cancel_Abandoned_Order_Unit_Test extends \lucatume\WPBrowser\TestCase\
 		);
 
 		$bitcoin_order_mock = self::makeEmpty(
-			Bitcoin_Order::class,
+			WC_Bitcoin_Order::class,
 			array(
 				'get_address' => Expected::once( $bitcoin_address_mock ),
 			)
@@ -123,7 +123,7 @@ class Woo_Cancel_Abandoned_Order_Unit_Test extends \lucatume\WPBrowser\TestCase\
 			)
 		);
 		$bitcoin_order_mock = self::makeEmpty(
-			Bitcoin_Order::class,
+			WC_Bitcoin_Order::class,
 			array(
 				'get_address' => Expected::once( $address_mock ),
 			)

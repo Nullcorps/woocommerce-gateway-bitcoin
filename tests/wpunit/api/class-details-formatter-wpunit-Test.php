@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use WC_Order;
 
 /**
@@ -24,7 +24,7 @@ class Details_Formatter_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestC
 			)
 		);
 		$bitcoin_order = self::make(
-			Bitcoin_Order::class,
+			WC_Bitcoin_Order::class,
 			array(
 				'wc_order' => $wc_order,
 			)
@@ -50,7 +50,7 @@ class Details_Formatter_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestC
 		);
 
 		$bitcoin_order = self::make(
-			Bitcoin_Order::class,
+			WC_Bitcoin_Order::class,
 			array(
 				'get_address' => $address,
 			)

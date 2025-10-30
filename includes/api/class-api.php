@@ -14,14 +14,14 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigDecimal;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\RoundingMode;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order_Interface;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
@@ -275,12 +275,12 @@ class API implements API_Interface {
 	 * @param WC_Order $wc_order The WooCommerce order to check.
 	 * @param bool     $refresh Should the result be returned from cache or refreshed from remote APIs.
 	 *
-	 * @return Bitcoin_Order_Interface
+	 * @return WC_Bitcoin_Order_Interface
 	 * @throws Exception
 	 */
-	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): Bitcoin_Order_Interface {
+	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): WC_Bitcoin_Order_Interface {
 
-		$bitcoin_order = new Bitcoin_Order( $wc_order, $this->bitcoin_address_factory );
+		$bitcoin_order = new WC_Bitcoin_Order( $wc_order, $this->bitcoin_address_factory );
 
 		if ( $refresh ) {
 			$this->refresh_order( $bitcoin_order );
@@ -295,7 +295,7 @@ class API implements API_Interface {
 	 *
 	 * @throws Exception
 	 */
-	protected function refresh_order( Bitcoin_Order_Interface $bitcoin_order ): bool {
+	protected function refresh_order( WC_Bitcoin_Order_Interface $bitcoin_order ): bool {
 
 		$updated = false;
 

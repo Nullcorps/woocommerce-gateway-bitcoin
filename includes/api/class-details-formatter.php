@@ -2,8 +2,8 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order_Interface;
 use NumberFormatter;
 
 // $currency    = $order_details['currency'];
@@ -18,9 +18,9 @@ use NumberFormatter;
 // $btc_logo_url = $site_url . '/wp-content/plugins/bh-wp-bitcoin-gateway/assets/bitcoin.png';
 
 class Details_Formatter {
-	private Bitcoin_Order_Interface $order;
+	private WC_Bitcoin_Order_Interface $order;
 
-	public function __construct( Bitcoin_Order_Interface $order ) {
+	public function __construct( WC_Bitcoin_Order_Interface $order ) {
 		$this->order = $order;
 	}
 

@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WC_Order;
@@ -19,7 +19,7 @@ class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	public function test_check_unpaid_order(): void {
 
 		$logger             = new ColorLogger();
-		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
+		$bitcoin_order_mock = self::makeEmpty( WC_Bitcoin_Order::class );
 		$api                = $this->makeEmpty(
 			API_Interface::class,
 			array(
@@ -59,7 +59,7 @@ class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	public function test_check_unpaid_order_does_not_reschedule_job_when_order_status_paid(): void {
 
 		$logger             = new ColorLogger();
-		$bitcoin_order_mock = self::makeEmpty( Bitcoin_Order::class );
+		$bitcoin_order_mock = self::makeEmpty( WC_Bitcoin_Order::class );
 		$api                = $this->makeEmpty(
 			API_Interface::class,
 			array(

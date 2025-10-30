@@ -5,7 +5,7 @@
  * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
@@ -13,11 +13,10 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 use DateTimeInterface;
 
-
 /**
  * @mixin \WC_Order
  */
-interface Bitcoin_Order_Interface {
+interface WC_Bitcoin_Order_Interface {
 
 	public function get_btc_total_price(): Money;
 

@@ -8,12 +8,12 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order_Interface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
@@ -93,9 +93,9 @@ interface API_Interface {
 	 * @param WC_Order $wc_order   WooCommerce order object.
 	 * @param bool     $refresh Query remote APIs to refresh the details, or just return cached data.
 	 *
-	 * @return Bitcoin_Order_Interface
+	 * @return WC_Bitcoin_Order_Interface
 	 */
-	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): Bitcoin_Order_Interface;
+	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): WC_Bitcoin_Order_Interface;
 
 	/**
 	 * Returns the array from `get_order_details()` with additional keys for printing in HTML/email.

@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_Bitcoin_Gateway\API\Model;
+namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use WC_Order;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order
+ * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order
  */
 class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
@@ -35,7 +35,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 		$order->add_meta_data( Order::LAST_CHECKED_META_KEY, new \DateTime(), true );
 		$order_id = $order->save();
 
-		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
+		$sut = new WC_Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		$result = $sut->get_id();
 
@@ -66,7 +66,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 		$order->add_meta_data( Order::LAST_CHECKED_META_KEY, new \DateTime(), true );
 		$order_id = $order->save();
 
-		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
+		$sut = new WC_Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		$result = $sut->get_address();
 
@@ -96,7 +96,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 
 		add_filter( 'woocommerce_order_is_paid', '__return_true' );
 
-		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
+		$sut = new WC_Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		$result = $sut->is_paid();
 
@@ -124,7 +124,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 		$order->add_meta_data( Order::LAST_CHECKED_META_KEY, new DateTimeImmutable(), true );
 		$order_id = $order->save();
 
-		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
+		$sut = new WC_Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		// 946684800 is Y2K.
 		$last_checked = DateTimeImmutable::createFromFormat( 'U', '946684800' );
@@ -162,7 +162,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 		$order->add_meta_data( Order::LAST_CHECKED_META_KEY, new \DateTime(), true );
 		$order_id = $order->save();
 
-		$sut = new Bitcoin_Order( $order, $bitcoin_address_factory );
+		$sut = new WC_Bitcoin_Order( $order, $bitcoin_address_factory );
 
 		$result = $sut->get_status();
 

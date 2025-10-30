@@ -11,7 +11,7 @@ use ActionScheduler;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Bitcoin_Order;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Exception;
 use Psr\Log\LoggerAwareTrait;
