@@ -38,7 +38,7 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
-			array( BH_WP_Bitcoin_Gateway::class, '__construct' ),
+			array( BH_WP_Bitcoin_Gateway::class, 'register_hooks' ),
 			function () {}
 		);
 		\Patchwork\redefine(

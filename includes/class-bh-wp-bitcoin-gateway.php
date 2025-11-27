@@ -13,6 +13,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Blocks\Bitcoin_Image_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order\Woo_Cancel_Abandoned_Order;
@@ -26,8 +27,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\HPOS;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post_BH_Bitcoin_Wallet;
-use Exception;
-use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\AJAX;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
@@ -40,7 +39,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Templates;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Thank_You;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\CLI;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
-use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\Post;
+use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use WP_CLI;
@@ -57,16 +56,21 @@ use WP_CLI;
 class BH_WP_Bitcoin_Gateway {
 
 	/**
+	 * @param ContainerInterface $container The DI container.
+	 */
+	public function __construct(
+		protected ContainerInterface $container
+	) {
+	}
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the frontend-facing side of the site.
-	 *
-	 * @param ContainerInterface $container The DI container.
 	 */
-	public function __construct( protected ContainerInterface $container ) {
-
+	public function register_hooks(): void {
 		$this->set_locale();
 
 		$this->define_plugins_page_hooks();
@@ -276,12 +280,12 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_action_scheduler_hooks(): void {
 
-		/** @var Background_Jobs $background_jobs */
-		$background_jobs = $this->container->get( Background_Jobs::class );
+		/** @var Background_Jobs_Actions_Interface $background_jobs */
+		$background_jobs = $this->container->get( Background_Jobs_Actions_Interface::class );
 
-		add_action( Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK, array( $background_jobs, 'generate_new_addresses' ) );
-		add_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK, array( $background_jobs, 'check_unpaid_order' ) );
-		add_action( Background_Jobs::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_new_addresses_for_transactions' ) );
+		add_action( Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK, array( $background_jobs, 'generate_new_addresses' ) );
+		add_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_unpaid_order' ) );
+		add_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_new_addresses_for_transactions' ) );
 	}
 
 	/**

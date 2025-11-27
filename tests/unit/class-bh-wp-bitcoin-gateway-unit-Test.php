@@ -8,6 +8,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
@@ -58,6 +60,9 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		$container->bind( Settings_Interface::class, $settings );
 		$container->bind( LoggerInterface::class, ColorLogger::class );
 
+		$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
+		$container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
+
 		return $container;
 	}
 
@@ -71,7 +76,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( I18n::class ), 'load_plugin_textdomain' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	public function test_admin_hooks(): void {
@@ -87,7 +93,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Admin::class ), 'enqueue_scripts' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 
@@ -113,7 +120,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			2
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -131,7 +139,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Frontend_Assets::class ), 'enqueue_scripts' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -146,7 +155,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -169,7 +179,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Payment_Gateways::class ), 'add_logger_to_gateways' ),
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -191,7 +202,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -200,7 +212,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 	public function test_define_action_scheduler_hooks(): void {
 
 		\WP_Mock::expectActionAdded(
-			Background_Jobs::CHECK_UNPAID_ORDER_HOOK,
+			Background_Jobs::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK,
 			array( new AnyInstance( Background_Jobs::class ), 'check_unpaid_order' )
 		);
 
@@ -209,7 +221,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Background_Jobs::class ), 'generate_new_addresses' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -222,7 +235,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Admin_Order_UI::class ), 'register_address_transactions_meta_box' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -244,7 +258,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			2
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 
@@ -265,7 +280,8 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 
 	/**
@@ -278,6 +294,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( HPOS::class ), 'declare_compatibility' )
 		);
 
-		new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
+		$app->register_hooks();
 	}
 }

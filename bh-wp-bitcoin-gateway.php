@@ -109,5 +109,6 @@ $container->bind( Generate_Address_API_Interface::class, Nimq_API::class );
 $container->bind( Exchange_Rate_API_Interface::class, Bitfinex_API::class );
 
 $app = $container->get( BH_WP_Bitcoin_Gateway::class );
+$app->register_hooks();
 
 $GLOBALS['bh_wp_bitcoin_gateway'] = $container->get( API_Interface::class );
