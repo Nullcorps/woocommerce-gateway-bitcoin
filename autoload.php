@@ -20,6 +20,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Alley_Interactive\Autoloader\Autoloader;
 @require_once __DIR__ . '/vendor-prefixed/autoload.php';
 
 Autoloader::generate(
-	'BrianHenryIE\WP_Bitcoin_Gateway',
+	'BrianHenryIE\\WP_Bitcoin_Gateway',
 	__DIR__ . '/includes',
 )->register();
