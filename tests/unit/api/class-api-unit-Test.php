@@ -122,7 +122,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
 		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
-		$generage_address        = $this->makeEmpty( Generate_Address_API_Interface::class );
+		$generate_address        = $this->makeEmpty( Generate_Address_API_Interface::class );
 		$exchange_rate_api       = $this->makeEmpty(
 			Exchange_Rate_API_Interface::class,
 			array(
