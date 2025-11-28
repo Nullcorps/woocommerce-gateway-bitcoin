@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
 use Codeception\Stub\Expected;
 use DateTimeImmutable;
@@ -20,7 +20,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	public function test_get_id(): void {
 		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
 		$bitcoin_address_factory = self::make(
-			Bitcoin_Address_Factory::class,
+			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 123 ),
 				'get_by_post_id'          => Expected::once( $bitcoin_address_mock ),
@@ -51,7 +51,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 			array( 'get_raw_address' => Expected::once( 'success' ) )
 		);
 		$bitcoin_address_factory = self::make(
-			Bitcoin_Address_Factory::class,
+			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 123 ),
 				'get_by_post_id'          => Expected::once( $bitcoin_address_mock ),
@@ -79,7 +79,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	public function test_is_paid(): void {
 		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
 		$bitcoin_address_factory = self::make(
-			Bitcoin_Address_Factory::class,
+			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 123 ),
 				'get_by_post_id'          => Expected::once( $bitcoin_address_mock ),
@@ -109,7 +109,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	public function test_set_last_checked_time(): void {
 		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
 		$bitcoin_address_factory = self::make(
-			Bitcoin_Address_Factory::class,
+			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 123 ),
 				'get_by_post_id'          => Expected::once( $bitcoin_address_mock ),
@@ -146,7 +146,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	public function test_get_status(): void {
 		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
 		$bitcoin_address_factory = self::make(
-			Bitcoin_Address_Factory::class,
+			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 123 ),
 				'get_by_post_id'          => Expected::once( $bitcoin_address_mock ),

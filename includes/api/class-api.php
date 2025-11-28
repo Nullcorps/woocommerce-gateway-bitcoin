@@ -29,7 +29,7 @@ use DateTimeZone;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -75,7 +75,7 @@ class API implements API_Interface {
 	/**
 	 * Factory to save and fetch addresses from wp_posts.
 	 */
-	protected Bitcoin_Address_Factory $bitcoin_address_factory;
+	protected Bitcoin_Address_Repository $bitcoin_address_factory;
 
 	/**
 	 * Constructor
@@ -83,13 +83,13 @@ class API implements API_Interface {
 	 * @param Settings_Interface      $settings The plugin settings.
 	 * @param LoggerInterface         $logger A PSR logger.
 	 * @param Bitcoin_Wallet_Factory  $bitcoin_wallet_factory Wallet factory.
-	 * @param Bitcoin_Address_Factory $bitcoin_address_factory Address factory.
+	 * @param Bitcoin_Address_Repository $bitcoin_address_factory Address factory.
 	 */
 	public function __construct(
 		Settings_Interface $settings,
 		LoggerInterface $logger,
 		Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
-		Bitcoin_Address_Factory $bitcoin_address_factory,
+		Bitcoin_Address_Repository $bitcoin_address_factory,
 		Blockchain_API_Interface $blockchain_api,
 		Generate_Address_API_Interface $generate_address_api,
 		Exchange_Rate_API_Interface $exchange_rate_api

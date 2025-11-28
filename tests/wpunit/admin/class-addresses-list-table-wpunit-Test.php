@@ -2,7 +2,7 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Admin;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
@@ -62,7 +62,7 @@ class Addresses_List_Table_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTe
 
 		$wallet = $bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 		$address_post_id         = $bitcoin_address_factory->save_new( $address, $address_index, $wallet );
 
 		$this->post = get_post( $address_post_id );

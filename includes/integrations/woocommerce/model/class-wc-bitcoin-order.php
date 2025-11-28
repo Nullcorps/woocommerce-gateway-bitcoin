@@ -11,7 +11,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model;
 
 use BadMethodCallException;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
@@ -54,7 +54,7 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 		throw new BadMethodCallException();
 	}
 
-	public function __construct( WC_Order $wc_order, Bitcoin_Address_Factory $bitcoin_address_factory ) {
+	public function __construct( WC_Order $wc_order, Bitcoin_Address_Repository $bitcoin_address_factory ) {
 
 		$this->wc_order = $wc_order;
 

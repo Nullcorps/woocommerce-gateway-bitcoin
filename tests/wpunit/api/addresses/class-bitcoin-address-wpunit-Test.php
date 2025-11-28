@@ -15,7 +15,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	 */
 	public function test_last_modified_time_is_updated(): void {
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$wallet = $this->makeEmpty( Bitcoin_Wallet::class );
 
@@ -45,7 +45,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	 */
 	public function test_get_order_id_null_before_set(): void {
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$wallet = $this->makeEmpty( Bitcoin_Wallet::class );
 
@@ -63,7 +63,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	 */
 	public function test_get_order_id_after_set(): void {
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$wallet = $this->makeEmpty( Bitcoin_Wallet::class );
 
@@ -85,7 +85,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 	 */
 	public function test_set_status(): void {
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$wallet = $this->makeEmpty( Bitcoin_Wallet::class );
 
@@ -116,7 +116,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			)
 		);
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$sut = $bitcoin_address_factory->get_by_post_id( $post_id );
 
@@ -136,7 +136,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			)
 		);
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$sut = $bitcoin_address_factory->get_by_post_id( $post_id );
 
@@ -156,7 +156,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			)
 		);
 
-		$bitcoin_address_factory = new Bitcoin_Address_Factory();
+		$bitcoin_address_factory = new Bitcoin_Address_Repository();
 
 		$sut = $bitcoin_address_factory->get_by_post_id( $post_id );
 

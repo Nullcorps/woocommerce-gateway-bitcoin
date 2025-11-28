@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
@@ -36,7 +36,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings = $this->makeEmpty( Settings_Interface::class );
 
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
-		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
 		$transaction = self::makeEmpty(
 			Transaction_Interface::class,
@@ -84,7 +84,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$logger                  = new ColorLogger();
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
-		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Repository::class );
 		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
 		$generate_address_api    = $this->makeEmpty( Generate_Address_API_Interface::class );
 		$exchange_rate_api       = $this->makeEmpty( Exchange_Rate_API_Interface::class );
@@ -120,7 +120,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$logger                  = new ColorLogger();
 		$settings                = $this->makeEmpty( Settings_Interface::class );
 		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
-		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Factory::class );
+		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Repository::class );
 		$blockchain_api          = $this->makeEmpty( Blockchain_API_Interface::class );
 		$generate_address        = $this->makeEmpty( Generate_Address_API_Interface::class );
 		$exchange_rate_api       = $this->makeEmpty(

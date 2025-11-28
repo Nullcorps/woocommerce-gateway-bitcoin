@@ -10,7 +10,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Factory;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
@@ -132,7 +132,7 @@ class CLI extends WP_CLI_Command {
 		$input  = $args[0];
 		$format = isset( $assoc_args['format'] ) ? $assoc_args['format'] : 'table';
 
-		$address_factory = new Bitcoin_Address_Factory();
+		$address_factory = new Bitcoin_Address_Repository();
 
 		try {
 			switch ( get_post_type( intval( $input ) ) ) {

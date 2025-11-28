@@ -13,7 +13,7 @@ use wpdb;
 /**
  * Interface for creating/getting Bitcoin_Address objects stored in wp_posts table.
  */
-class Bitcoin_Address_Factory {
+class Bitcoin_Address_Repository {
 
 	/**
 	 * Given a bitcoin master public key, get the WordPress post_id it is saved under.
@@ -99,5 +99,40 @@ class Bitcoin_Address_Factory {
 	 */
 	public function get_by_post_id( int $post_id ): Bitcoin_Address {
 		return new Bitcoin_Address( $post_id );
+	}
+
+
+	/**
+	 * @param string $post_staus
+	 * @param int $number_posts Defaults to WP_Query's max of 200.
+	 *
+	 * @return \WP_Post[]
+	 */
+	protected function get_bitcoin_address_posts( string $post_staus, int $number_posts = 200 ): array {
+		$assigned_addresses = get_posts(
+			array(
+				'post_type'   => Bitcoin_Address::POST_TYPE,
+				'post_status' => $post_staus,
+				'orderby'     => 'post_modified',
+				'order'       => 'ASC',
+				'numberposts' => $number_posts,
+			)
+		);
+		return $assigned_addresses;
+	}
+
+	/**
+	 * @return \WP_Post[]
+	 */
+	public function get_assigned_bitcoin_addresses(): array {
+		return $this->get_bitcoin_address_posts( 'assigned' );
+	}
+
+	/**
+	 * Check do we have 1 assigned address.
+	 */
+	public function has_assigned_bitcoin_addresses(): bool {
+		$assigned_addresses = $this->get_bitcoin_address_posts( 'assigned', 1 );
+		return ! empty( $assigned_addresses );
 	}
 }
