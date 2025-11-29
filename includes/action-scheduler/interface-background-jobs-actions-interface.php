@@ -1,6 +1,8 @@
 <?php
 /**
  * Functions implemented by Background_Jobs class to hand WordPress actions
+ *
+ * @package brianhenryie/bh-wp-bitcoin-gateway
  */
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
@@ -32,8 +34,6 @@ interface Background_Jobs_Actions_Interface {
 	public function generate_new_addresses(): void;
 
 	public function check_new_addresses_for_transactions(): void;
-
-	public function check_for_assigned_addresses_repeating_action(): void;
 
 	public function check_assigned_addresses_for_transactions(): void;
 }

@@ -9,10 +9,16 @@
  * * getting order details for display
  *
  * @package    brianhenryie/bh-wp-bitcoin-gateway
+ *
+ * - TODO After x unpaid time, mark unpaid orders as failed/cancelled.
+ * - TODO: There should be a global cap on how long an address can be assigned without payment. Not something to handle in this class
+ * – TODO: hook into post_status changes (+count) to decide to schedule? Or call directly from API class when it assigns an Address to an Order?
  */
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
@@ -24,9 +30,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Details_Formatter;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Transaction_Formatter;
-use DateTimeImmutable;
-use DateTimeZone;
-use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
@@ -37,14 +40,16 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Thank_You;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
-use JsonException;
+use DateTimeImmutable;
+use DateTimeZone;
+use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WC_Order;
 use WC_Payment_Gateway;
 use WC_Payment_Gateways;
 
-class API implements API_Interface {
+class API implements API_Interface, API_Background_Jobs_Interface {
 	use LoggerAwareTrait;
 
 	/**
@@ -80,9 +85,9 @@ class API implements API_Interface {
 	/**
 	 * Constructor
 	 *
-	 * @param Settings_Interface      $settings The plugin settings.
-	 * @param LoggerInterface         $logger A PSR logger.
-	 * @param Bitcoin_Wallet_Factory  $bitcoin_wallet_factory Wallet factory.
+	 * @param Settings_Interface         $settings The plugin settings.
+	 * @param LoggerInterface            $logger A PSR logger.
+	 * @param Bitcoin_Wallet_Factory     $bitcoin_wallet_factory Wallet factory.
 	 * @param Bitcoin_Address_Repository $bitcoin_address_repository Address factory.
 	 */
 	public function __construct(
@@ -92,12 +97,13 @@ class API implements API_Interface {
 		Bitcoin_Address_Repository $bitcoin_address_repository,
 		Blockchain_API_Interface $blockchain_api,
 		Generate_Address_API_Interface $generate_address_api,
-		Exchange_Rate_API_Interface $exchange_rate_api
+		Exchange_Rate_API_Interface $exchange_rate_api,
+		protected Background_Jobs $background_jobs,
 	) {
 		$this->setLogger( $logger );
 		$this->settings = $settings;
 
-		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
+		$this->bitcoin_wallet_factory     = $bitcoin_wallet_factory;
 		$this->bitcoin_address_repository = $bitcoin_address_repository;
 
 		$this->blockchain_api       = $blockchain_api;
@@ -527,7 +533,7 @@ class API implements API_Interface {
 	 * @return Wallet_Generation_Result
 	 * @throws Exception
 	 */
-	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): Wallet_Generation_Result {
+	public function generate_new_wallet( string $master_public_key, ?string $gateway_id = null ): Wallet_Generation_Result {
 
 		$post_id = $this->bitcoin_wallet_factory->get_post_id_for_wallet( $master_public_key )
 			?? $this->bitcoin_wallet_factory->save_new( $master_public_key, $gateway_id );
@@ -654,6 +660,8 @@ class API implements API_Interface {
 	/**
 	 * @used-by Background_Jobs::check_new_addresses_for_transactions()
 	 *
+	 * @throws Rate_Limit_Exception
+	 *
 	 * @return array<string, array<string, Transaction_Interface>>
 	 */
 	public function check_new_addresses_for_transactions(): array {
@@ -703,17 +711,17 @@ class API implements API_Interface {
 			foreach ( $addresses as $bitcoin_address ) {
 				$result[ $bitcoin_address->get_raw_address() ] = $this->update_address_transactions( $bitcoin_address );
 			}
+		} catch ( Rate_Limit_Exception $exception ) {
+			throw $exception;
 		} catch ( Exception $exception ) {
 			// Reschedule if we hit 429 (there will always be at least one address to check if it 429s.).
 			$this->logger->debug( $exception->getMessage() );
 
-			$hook = Background_Jobs::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK;
-			if ( ! as_has_scheduled_action( $hook ) ) {
-				// TODO: Add new scheduled time to log.
-				$this->logger->debug( 'Exception during checking addresses for transactions, scheduling new background job' );
-				// TODO: Base the new time of the returned 429 header.
-				as_schedule_single_action( time() + ( 10 * MINUTE_IN_SECONDS ), $hook );
-			}
+			// Eh.
+			$this->background_jobs->schedule_check_newly_generated_bitcoin_addresses_for_transactions(
+				DateTimeImmutable::createFromFormat( 'U', time() + ( 15 * constant( MINUTE_IN_SECONDS ) ) ),
+			);
+
 		}
 
 		// TODO: After this is complete, there could be 0 fresh addresses (e.g. if we start at index 0 but 200 addresses
@@ -744,5 +752,15 @@ class API implements API_Interface {
 			// TODO: is empty array ok here?
 			return $address->get_blockchain_transactions() ?? array();
 		}
+
+		// TODO: This should be in the API class.
+		// if ( $is_paid ) {
+		//
+		// each address has one parent post (order)
+		//
+		// $order_post_id = $address_post->post_parent;
+		// do_action( 'bh_wp_bitcoin_gateway_payment_received', $address_post_id, $order_post_id, $order_post_type );
+		//
+		// }
 	}
 }

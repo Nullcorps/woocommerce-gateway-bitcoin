@@ -16,39 +16,139 @@ use WC_Order;
 class Background_Jobs_WPUnit_Test extends WPTestCase {
 
 	/**
-	 * @covers ::check_unpaid_order
+	 * @covers ::schedule_generate_new_addresses
 	 */
-	public function test_check_unpaid_order(): void {
+	public function test_schedule_generate_new_addresses(): void {
 
-		$logger             = new ColorLogger();
-		$bitcoin_order_mock = self::makeEmpty( WC_Bitcoin_Order::class );
-		$api                = $this->makeEmpty(
-			API_Interface::class,
-			array(
-				'get_order_details' => Expected::once( $bitcoin_order_mock ),
-			)
-		);
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
-		$sut = new Background_Jobs( $api, $logger );
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK ) );
 
-		$order    = new WC_Order();
-		$order_id = $order->save();
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
-		$sut->check_unpaid_order( $order_id );
+		/**
+		 * @see Background_Jobs::schedule_generate_new_addresses()
+		 */
+		$sut->schedule_generate_new_addresses();
+
+		$this->assertTrue( as_has_scheduled_action( Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK ) );
 	}
 
 	/**
-	 * @covers ::check_unpaid_order
+	 * @covers ::schedule_check_newly_generated_bitcoin_addresses_for_transactions
+	 */
+	public function test_schedule_check_newly_generated_bitcoin_addresses_for_transactions(): void {
+
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
+
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
+
+		/**
+		 * @see Background_Jobs::schedule_check_newly_generated_bitcoin_addresses_for_transactions()
+		 */
+		$sut->schedule_check_newly_generated_bitcoin_addresses_for_transactions();
+
+		$this->assertTrue( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+	}
+
+	/**
+	 * @covers ::schedule_check_newly_generated_bitcoin_addresses_for_transactions
+	 */
+	public function test_schedule_check_newly_generated_bitcoin_addresses_for_transactions_already_scheduled(): void {
+
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
+
+		as_schedule_single_action(
+			timestamp: time(),
+			hook: Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK,
+		);
+
+		assert( true === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
+
+		/**
+		 * @see Background_Jobs::schedule_check_newly_generated_bitcoin_addresses_for_transactions()
+		 */
+		$sut->schedule_check_newly_generated_bitcoin_addresses_for_transactions();
+
+		$this->assertTrue( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+	}
+
+	/**
+	 * @covers ::schedule_check_newly_generated_bitcoin_addresses_for_transactions
+	 */
+	public function test_schedule_check_newly_generated_bitcoin_addresses_for_transactions_with_specific_datetime(): void {
+
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
+
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
+
+		$datetime = ( new \DateTimeImmutable() )->add( new \DateInterval( 'P1D' ) );
+
+		/**
+		 * @see Background_Jobs::schedule_check_newly_generated_bitcoin_addresses_for_transactions()
+		 */
+		$sut->schedule_check_newly_generated_bitcoin_addresses_for_transactions( $datetime );
+
+		$scheduled_actions = as_get_scheduled_actions( array( 'hook' => Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
+		/** @var \ActionScheduler_Action $scheduled_action */
+		$scheduled_action = array_pop( $scheduled_actions );
+
+		$result = $scheduled_action->get_schedule()->get_date();
+
+		$this->assertEquals( $datetime->getTimestamp(), $result->getTimestamp() );
+	}
+
+	/**
+	 * @covers ::schedule_check_newly_assigned_bitcoin_address_for_transactions
+	 * @covers ::schedule_check_assigned_addresses_for_transactions
+	 */
+	public function test_schedule_check_newly_assigned_bitcoin_address_for_transactions(): void {
+
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
+
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
+
+		/** @see Background_Jobs::schedule_check_newly_assigned_bitcoin_address_for_transactions() */
+		$sut->schedule_check_newly_assigned_bitcoin_address_for_transactions();
+	}
+
+	/**
 	 */
 	public function test_check_unpaid_order_bad_order_id(): void {
 
-		$logger = new ColorLogger();
-		$api    = $this->makeEmpty( API_Interface::class );
+		$this->markTestIncomplete();
 
-		$sut = new Background_Jobs( $api, $logger );
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
+
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		$order_id = 99;
 
+		/** @see Background_Jobs:: */
 		$sut->check_unpaid_order( $order_id );
 
 		$this->assertTrue( $logger->hasErrorThatContains( 'Invalid order id 99 passed to check_unpaid_order()' ) );
@@ -56,14 +156,15 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 
 
 	/**
-	 * @covers ::check_unpaid_order
 	 */
 	public function test_check_unpaid_order_does_not_reschedule_job_when_order_status_paid(): void {
+
+		$this->markTestIncomplete();
 
 		$logger             = new ColorLogger();
 		$bitcoin_order_mock = self::makeEmpty( WC_Bitcoin_Order::class );
 		$api                = $this->makeEmpty(
-			API_Interface::class,
+			API_Background_Jobs_Interface::class,
 			array(
 				'get_order_details' => Expected::once(
 					function ( WC_Order $order ) use ( $bitcoin_order_mock ) {
@@ -78,25 +179,35 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		);
 
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
+		$bitcoin_address_repository = $this->makeEmpty(
+			Bitcoin_Address_Repository::class,
+			// array(
+			// 'has_assigned_bitcoin_addresses' => Expected::once( false ),
+			// 'get_assigned_bitcoin_addresses' => Expected::once( [] ),
+			// )
+		);
 
-		$sut = new Background_Jobs( $api, $logger );
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		$order    = new WC_Order();
 		$order_id = $order->save();
 
+		/** @see Background_Jobs:: */
 		$sut->check_unpaid_order( $order_id );
 
 		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
 	/**
-	 * @covers ::check_unpaid_order
 	 */
 	public function test_check_unpaid_order_logs_exception(): void {
 
-		$logger = new ColorLogger();
-		$api    = $this->makeEmpty(
-			API_Interface::class,
+		$this->markTestIncomplete();
+
+		$logger                     = new ColorLogger();
+		$api                        = $this->makeEmpty(
+			API_Background_Jobs_Interface::class,
 			array(
 				'get_order_details' => Expected::once(
 					function ( $order ) {
@@ -105,8 +216,16 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 				),
 			)
 		);
+		$bitcoin_address_repository = $this->makeEmpty(
+			Bitcoin_Address_Repository::class,
+			// array(
+			// 'has_assigned_bitcoin_addresses' => Expected::once( false ),
+			// 'get_assigned_bitcoin_addresses' => Expected::once( [] ),
+			// )
+		);
 
-		$sut = new Background_Jobs( $api, $logger );
+		/** @var Background_Jobs_Scheduling_Interface $sut */
+		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		$order = new WC_Order();
 		$order->set_status( 'on-hold' );

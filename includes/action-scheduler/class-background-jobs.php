@@ -1,119 +1,144 @@
 <?php
 /**
- * After five minutes check the unpaid order for payments.
- *  - TODO After x unpaid time, mark unpaid orders as failed/cancelled.
- * When the fresh address list falls below the cache threshold, generate new addresses.
+ * Functions for background job for checking addresses, generating addresses, etc.
+ *
+ * After new orders, wait five minutes and check for payments.
+ * While the destination address is waiting for payment, continue to schedue new checks every ten minutes (nblock generation time)
+ * Every hour, in case the previos check is not running correctly, check are there assigned Bitcoin addresses that we should check for transactions
+ * Schedule background job to generate new addresses as needed (fall below threshold defined elsewhere)
+ * After generating new addresses, check for existing transactions to ensure they are available to use
  *
  * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
-// TODO: hook into post_status changes (+count) to decide to schedule.
-
-use ActionScheduler;
-use Exception;
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use WC_Order;
 
 /**
- * Handles do_action initiated from Action Scheduler.
+ * Functions to schedule Action Scheduler jobs.
+ * Functions to handle `do_action` initiated from Action Scheduler.
  */
-class Background_Jobs {
+class Background_Jobs implements Background_Jobs_Scheduling_Interface, Background_Jobs_Actions_Interface {
 	use LoggerAwareTrait;
-
-	const CHECK_UNPAID_ORDER_HOOK               = 'bh_wp_bitcoin_gateway_check_unpaid_order';
-	const GENERATE_NEW_ADDRESSES_HOOK           = 'bh_wp_bitcoin_gateway_generate_new_addresses';
-	const CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK = 'bh_wp_bitcoin_gateway_check_new_addresses_transactions';
-
-	/**
-	 * Main class for carrying out the jobs.
-	 *
-	 * @var API_Interface
-	 */
-	protected API_Interface $api;
 
 	/**
 	 * Constructor
 	 *
-	 * @param API_Interface   $api Main plugin class.
-	 * @param LoggerInterface $logger PSR logger.
+	 * @param API_Background_Jobs_Interface $api Main plugin class.
+	 * @param Bitcoin_Address_Repository    $bitcoin_address_repository Object to learn if there are addresses to act on.
+	 * @param LoggerInterface               $logger PSR logger.
 	 */
-	public function __construct( API_Interface $api, LoggerInterface $logger ) {
+	public function __construct(
+		protected API_Background_Jobs_Interface $api,
+		protected Bitcoin_Address_Repository $bitcoin_address_repository,
+		LoggerInterface $logger
+	) {
 		$this->setLogger( $logger );
-		$this->api = $api;
 	}
 
 	/**
-	 * Query a Blockchain API for updates to the order. If the order is still awaiting payment, schedule another job
-	 * to check again soon.
+	 * TODO: Run on every request / plugin load.
+	 * TODO: a better name
+	 * Or think of a better background action to hook into. Plugin update? – even if the plugin isn't updated, its default/bare cron requirements are set.
 	 *
-	 * @hooked bh_wp_bitcoin_gateway_check_unpaid_order
-	 * @see self::CHECK_UNPAID_ORDER_HOOK
-	 *
-	 * @param int $order_id WooCommerce order id to check.
+	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
 	 */
-	public function check_unpaid_order( int $order_id ): void {
-
-		$context = array();
-
-		// How to find the action_id of the action currently being run?
-		$query = array(
-			'hook' => self::CHECK_UNPAID_ORDER_HOOK,
-			'args' => array( 'order_id' => $order_id ),
+	protected function ensure_schedule_repeating_actions(): void {
+		as_schedule_single_action(
+			timestamp: time(),
+			hook: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK,
+			unique: true,
 		);
-
-		$context['query'] = $query;
-
-		$action_id = ActionScheduler::store()->query_action( $query );
-		$claim_id  = ActionScheduler::store()->get_claim_id( $action_id );
-
-		$context['order_id']  = $order_id;
-		$context['task']      = $query;
-		$context['action_id'] = $action_id;
-		$context['claim_id']  = $claim_id;
-
-		$this->logger->debug(
-			"Running check_unpaid_order background task for `shop_order:{$order_id}` action id: {$action_id}, claim id: {$claim_id}",
-			$context
-		);
-
-		$order = wc_get_order( $order_id );
-
-		if ( ! ( $order instanceof WC_Order ) ) {
-			$this->logger->error( 'Invalid order id ' . $order_id . ' passed to check_unpaid_order() background job', array( 'order_id' => $order_id ) );
-			return;
-		}
-
-		if ( in_array( $order->get_status(), wc_get_is_paid_statuses(), true ) ) {
-			$this->logger->info( "`shop_order:{$order_id}` already paid, status: {$order->get_status()}.", array( 'order_id' => $order_id ) );
-
-			add_action(
-				'action_scheduler_after_process_queue',
-				function () use ( $query, $action_id, $order ) {
-					$this->logger->info( "Cancelling future update checks for `shop_order:{$order->get_id()}`, status: {$order->get_status()}." );
-					try {
-						as_unschedule_all_actions( $query['hook'], $query['args'] );
-					} catch ( \InvalidArgumentException $exception ) {
-						$this->logger->error( "Failed to as_unschedule_all_actions for action {$action_id}", array( 'exception' => $exception ) );
-					}
-				}
-			);
-			return;
-		}
-
-		try {
-			$result = $this->api->get_order_details( $order );
-		} catch ( Exception $exception ) {
-
-			// 403.
-			// TODO: Log better.
-			$this->logger->error( 'Error getting details for `shop_order:' . $order_id . '`', array( 'order_id' => $order_id ) );
-		}
 	}
 
+	/**
+	 * Schedule a background job to generate new addresses.
+	 */
+	public function schedule_generate_new_addresses(): void {
+		as_schedule_single_action(
+			timestamp: time(),
+			hook: self::GENERATE_NEW_ADDRESSES_HOOK,
+			unique: true
+		);
+	}
+
+	/**
+	 * Schedule a background job to check newly generated addresses to see do they have existing transactions.
+	 * We will use unused addresses for orders and then consider all transactions seen as related to that order.
+	 *
+	 * @see self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK
+	 *
+	 * @param ?DateTimeInterface $datetime Optional time, e.g. 429 reset time, or defaults to immediately.
+	 */
+	public function schedule_check_newly_generated_bitcoin_addresses_for_transactions(
+		?DateTimeInterface $datetime = null,
+	): void {
+		if ( as_has_scheduled_action( hook: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK )
+			&& ! doing_action( hook_name: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+
+			$this->logger->info(
+				message: 'Background_Jobs::schedule_check_new_addresses_for_transactions already scheduled.',
+			);
+
+			return;
+		}
+
+		$datetime = $datetime ?? new DateTimeImmutable( 'now' );
+
+		as_schedule_single_action(
+			timestamp: $datetime->getTimestamp(),
+			hook: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK,
+		);
+
+		$this->logger->info(
+			message: 'Background_Jobs::schedule_check_new_addresses_for_transactions scheduled job at {datetime}.',
+			context: array(
+				'datetime' => $datetime->format( 'Y-m-d H:i:s' ),
+			)
+		);
+	}
+
+	/**
+	 * When a new order is placed, let's schedule a check.
+	 *
+	 * We need time for the customer to pay plus time for the block to be verified.
+	 * If there's already a job scheduled for existing assigned orders, we'll leave it alone (its scheduled time should be under 10 minutes, or another new order under 15)
+	 * Otherwise we'll schedule it for 15 minutes out.
+	 *
+	 * Generally, 'newly assigned address' = 'new_order'.
+	 */
+	public function schedule_check_newly_assigned_bitcoin_address_for_transactions(): void {
+		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK )
+			&& ! doing_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+			return;
+		}
+		$this->schedule_check_assigned_addresses_for_transactions(
+			new DateTimeImmutable( 'now' )->add( new DateInterval( 'PT15M' ) )
+		);
+	}
+
+	/**
+	 * Schedule the next check for transactions for assigned addresses.
+	 *
+	 * @param ?DateTimeInterface $date_time In ten minutes for a regular check (time to generate a new block), or use the rate limit reset time.
+	 */
+	protected function schedule_check_assigned_addresses_for_transactions(
+		?DateTimeInterface $date_time = null
+	): void {
+		$date_time = $date_time ?? new DateTimeImmutable( 'now' );
+		as_schedule_single_action(
+			timestamp: $date_time->getTimestamp(),
+			hook: self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK,
+			unique: true,
+		);
+	}
 
 	/**
 	 * When available addresses fall below a threshold, more are generated on a background job.
@@ -125,22 +150,92 @@ class Background_Jobs {
 
 		$this->logger->debug( 'Starting generate_new_addresses() background job.' );
 
+		// TODO: return a meaningful result and log it.
 		$result = $this->api->generate_new_addresses();
 	}
-
 
 	/**
 	 * After new addresses have been created, we check to see are they fresh/available to use.
 	 * TODO It's not unlikely we'll hit 429 rate limits during this, so we'll loop through as many as we can,
 	 * then schedule a new job when we're told to stop.
 	 *
-	 * @hooked bh_wp_bitcoin_gateway_check_new_addresses_transactions
-	 * @see self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK
+	 * @hooked {@see self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK}
 	 */
 	public function check_new_addresses_for_transactions(): void {
 
 		$this->logger->debug( 'Starting check_new_addresses_for_transactions() background job.' );
 
-		$result = $this->api->check_new_addresses_for_transactions();
+		try {
+			$result = $this->api->check_new_addresses_for_transactions();
+		} catch ( Rate_Limit_Exception $exception ) {
+			$this->schedule_check_newly_generated_bitcoin_addresses_for_transactions(
+				$exception->get_reset_time()
+			);
+		}
+	}
+
+	/**
+	 * This is really just a failsafe in case the actual check gets unscheduled.
+	 * This should do nothing/return early when there are no assigned addresses.
+	 * New orders should have already scheduled a check with {@see self::schedule_check_newly_assigned_bitcoin_address_for_transactions()}
+	 *
+	 * @see self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK
+	 * @hooked self::CHECK_FOR_NEW_ADDRESSES_TRANSACTIONS_HOOK
+	 */
+	public function schedule_check_for_assigned_addresses_repeating_action(): void {
+		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK )
+			&& ! doing_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+			return;
+		}
+
+		if ( ! $this->bitcoin_address_repository->has_assigned_bitcoin_addresses() ) {
+			return;
+		}
+
+		$this->schedule_check_assigned_addresses_for_transactions(
+			new DateTimeImmutable( 'now' )
+		);
+	}
+
+	/**
+	 * Fetch all the addresses pending payments, ordered by last updated
+	 * query the Blockchain API for updates,
+	 * on rate-limit error, reschedule a check after the rate limit expires,
+	 * reschedule another check in ten minutes if there are still addresses awaiting payment.
+	 *
+	 * TODO: ensure addresses' updated date is changed after querying for transactions
+	 * TODO: use wp_comments table to log
+	 *
+	 * @hooked {@see self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK}
+	 */
+	public function check_assigned_addresses_for_transactions(): void {
+
+		// TODO: the actual work here is/should be done in API class.
+
+		// get all bitcoin address posts with 'assigned' status. (where 'assigned' means pending-payment and 'used' means paid).
+		$assigned_addresses = $this->bitcoin_address_repository->get_assigned_bitcoin_addresses();
+
+		// TODO: if 200 addresses were returned, check more.
+
+		// Attempt to check all addresses.
+		foreach ( $assigned_addresses as $bitcoin_address ) {
+			try {
+				$this->api->update_address_transactions( $bitcoin_address );
+
+			} catch ( Rate_Limit_Exception $rate_limit_exception ) {
+				// We have failed to check all the addresses that we should, so let's reschedule the check when the rate limit expires.
+				$this->schedule_check_assigned_addresses_for_transactions(
+					$rate_limit_exception->get_reset_time()
+				);
+				return;
+			}
+		}
+
+		// Is this correct? I think it should be ~if result count = 200, date is immediate, otherwise date is 10 minutes from now.
+		if ( $this->bitcoin_address_repository->has_assigned_bitcoin_addresses() ) {
+			$this->schedule_check_assigned_addresses_for_transactions(
+				new DateTimeImmutable( 'now' )
+			);
+		}
 	}
 }

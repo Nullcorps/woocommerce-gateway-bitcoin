@@ -7,11 +7,13 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Plugins_Page;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order\Woo_Cancel_Abandoned_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\lucatume\DI52\Container;
@@ -59,6 +61,13 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		);
 		$container->bind( Settings_Interface::class, $settings );
 		$container->bind( LoggerInterface::class, ColorLogger::class );
+
+		$container->bind(
+			API_Background_Jobs_Interface::class,
+			function () {
+				return self::makeEmpty( API_Background_Jobs_Interface::class );
+			}
+		);
 
 		$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
 		$container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
