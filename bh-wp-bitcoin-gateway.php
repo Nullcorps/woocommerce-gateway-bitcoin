@@ -28,6 +28,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Nimq_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
@@ -105,7 +106,9 @@ $container->singleton(
 	}
 );
 
+$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
 $container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
+
 $container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
 $container->bind( Generate_Address_API_Interface::class, Nimq_API::class );
 $container->bind( Exchange_Rate_API_Interface::class, Bitfinex_API::class );
