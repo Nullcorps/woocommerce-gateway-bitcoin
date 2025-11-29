@@ -139,7 +139,7 @@ class Bitcoin_Address_Repository {
 	}
 
 	/**
-	 * Check do we have 1 assigned address.
+	 * Check do we have at least 1 assigned address, i.e. an address waiting for transactions.
 	 */
 	public function has_assigned_bitcoin_addresses(): bool {
 		$assigned_addresses = $this->get_bitcoin_address_posts( 'assigned', 1 );
