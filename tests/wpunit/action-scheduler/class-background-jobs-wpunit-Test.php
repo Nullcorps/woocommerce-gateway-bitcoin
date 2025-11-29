@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;

@@ -54,7 +54,7 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 		throw new BadMethodCallException();
 	}
 
-	public function __construct( WC_Order $wc_order, Bitcoin_Address_Repository $bitcoin_address_factory ) {
+	public function __construct( WC_Order $wc_order, Bitcoin_Address_Repository $bitcoin_address_repository ) {
 
 		$this->wc_order = $wc_order;
 
@@ -64,7 +64,7 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 			if ( is_null( $bitcoin_address_post_id ) ) {
 				throw new \Exception( 'Problem with order Bitcoin address.' );
 			}
-			$this->address = $bitcoin_address_factory->get_by_post_id( $bitcoin_address_post_id );
+			$this->address = $bitcoin_address_repository->get_by_post_id( $bitcoin_address_post_id );
 		} catch ( \Exception $exception ) {
 			// $this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new \Exception( 'Problem with order Bitcoin address.' );

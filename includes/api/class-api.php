@@ -75,7 +75,7 @@ class API implements API_Interface {
 	/**
 	 * Factory to save and fetch addresses from wp_posts.
 	 */
-	protected Bitcoin_Address_Repository $bitcoin_address_factory;
+	protected Bitcoin_Address_Repository $bitcoin_address_repository;
 
 	/**
 	 * Constructor
@@ -83,13 +83,13 @@ class API implements API_Interface {
 	 * @param Settings_Interface      $settings The plugin settings.
 	 * @param LoggerInterface         $logger A PSR logger.
 	 * @param Bitcoin_Wallet_Factory  $bitcoin_wallet_factory Wallet factory.
-	 * @param Bitcoin_Address_Repository $bitcoin_address_factory Address factory.
+	 * @param Bitcoin_Address_Repository $bitcoin_address_repository Address factory.
 	 */
 	public function __construct(
 		Settings_Interface $settings,
 		LoggerInterface $logger,
 		Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
-		Bitcoin_Address_Repository $bitcoin_address_factory,
+		Bitcoin_Address_Repository $bitcoin_address_repository,
 		Blockchain_API_Interface $blockchain_api,
 		Generate_Address_API_Interface $generate_address_api,
 		Exchange_Rate_API_Interface $exchange_rate_api
@@ -98,7 +98,7 @@ class API implements API_Interface {
 		$this->settings = $settings;
 
 		$this->bitcoin_wallet_factory  = $bitcoin_wallet_factory;
-		$this->bitcoin_address_factory = $bitcoin_address_factory;
+		$this->bitcoin_address_repository = $bitcoin_address_repository;
 
 		$this->blockchain_api       = $blockchain_api;
 		$this->generate_address_api = $generate_address_api;
@@ -222,7 +222,7 @@ class API implements API_Interface {
 		$this->logger->info(
 			sprintf(
 				'Assigned `bh-bitcoin-address:%d` %s to `shop_order:%d`.',
-				$this->bitcoin_address_factory->get_post_id_for_address( $btc_address->get_raw_address() ),
+				$this->bitcoin_address_repository->get_post_id_for_address( $btc_address->get_raw_address() ),
 				$btc_address->get_raw_address(),
 				$order->get_id()
 			)
@@ -282,7 +282,7 @@ class API implements API_Interface {
 	 */
 	public function get_order_details( WC_Order $wc_order, bool $refresh = true ): WC_Bitcoin_Order_Interface {
 
-		$bitcoin_order = new WC_Bitcoin_Order( $wc_order, $this->bitcoin_address_factory );
+		$bitcoin_order = new WC_Bitcoin_Order( $wc_order, $this->bitcoin_address_repository );
 
 		if ( $refresh ) {
 			$this->refresh_order( $bitcoin_order );
@@ -609,11 +609,11 @@ class API implements API_Interface {
 
 			$new_address_string = $this->generate_address_api->generate_address( $wallet->get_xpub(), $address_index );
 
-			if ( ! is_null( $this->bitcoin_address_factory->get_post_id_for_address( $new_address_string ) ) ) {
+			if ( ! is_null( $this->bitcoin_address_repository->get_post_id_for_address( $new_address_string ) ) ) {
 				continue;
 			}
 
-			$bitcoin_address_new_post_id = $this->bitcoin_address_factory->save_new( $new_address_string, $address_index, $wallet );
+			$bitcoin_address_new_post_id = $this->bitcoin_address_repository->save_new( $new_address_string, $address_index, $wallet );
 
 			$generated_addresses_post_ids[] = $bitcoin_address_new_post_id;
 			++$generated_addresses_count;
@@ -622,7 +622,7 @@ class API implements API_Interface {
 
 		$generated_addresses = array_map(
 			function ( int $post_id ): Bitcoin_Address {
-				return $this->bitcoin_address_factory->get_by_post_id( $post_id );
+				return $this->bitcoin_address_repository->get_by_post_id( $post_id );
 			},
 			$generated_addresses_post_ids
 		);
@@ -681,7 +681,7 @@ class API implements API_Interface {
 
 			$post_id = $post->ID;
 
-			$addresses[] = $this->bitcoin_address_factory->get_by_post_id( $post_id );
+			$addresses[] = $this->bitcoin_address_repository->get_by_post_id( $post_id );
 
 		}
 
