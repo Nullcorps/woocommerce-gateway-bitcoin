@@ -21,7 +21,7 @@ class Bitcoin_Order_Confirmation_Block {
 
 	public function __construct(
 		protected Settings_Interface $settings,
-		protected Bitcoin_Address_Repository $bitcoin_address_factory,
+		protected Bitcoin_Address_Repository $bitcoin_address_repository,
 	) {
 	}
 
@@ -136,7 +136,7 @@ class Bitcoin_Order_Confirmation_Block {
 		return new Details_Formatter(
 			new WC_Bitcoin_Order(
 				$order,
-				$this->bitcoin_address_factory,
+				$this->bitcoin_address_repository,
 			)
 		);
 	}
