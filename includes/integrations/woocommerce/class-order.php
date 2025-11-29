@@ -10,6 +10,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 use ActionScheduler;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -88,7 +89,7 @@ class Order {
 
 		// Schedule address generation if needed.
 		if ( $num_remaining_addresses < 20 ) {
-			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+			$hook = Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK;
 			if ( ! as_has_scheduled_action( $hook ) ) {
 				$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
 				as_schedule_single_action( time(), $hook );
@@ -118,7 +119,7 @@ class Order {
 		}
 
 		// Schedule background check for payment.
-		$hook = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args = array( 'order_id' => $order_id );
 
 		if ( ! as_has_scheduled_action( $hook, $args ) ) {
@@ -161,7 +162,7 @@ class Order {
 			'status_to'   => $status_to,
 		);
 
-		$hook  = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook  = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args  = array( 'order_id' => $order_id );
 		$query = array(
 			'hook' => $hook,

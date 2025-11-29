@@ -75,7 +75,7 @@ class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			)
 		);
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut = new Background_Jobs( $api, $logger );
 
@@ -84,7 +84,7 @@ class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 
 		$sut->check_unpaid_order( $order_id );
 
-		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
 	/**

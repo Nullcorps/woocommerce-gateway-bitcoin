@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Codeception\Stub\Expected;
 
@@ -30,11 +30,11 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$order    = new \WC_Order();
 		$order_id = $order->save();
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut->schedule_check_for_transactions( $order_id, 'pending', 'on-hold' );
 
-		$this->assertTrue( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		$this->assertTrue( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
 	/**
@@ -55,11 +55,11 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$order    = new \WC_Order();
 		$order_id = $order->save();
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut->schedule_check_for_transactions( $order_id, 'pending', 'processing' );
 
-		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
 
@@ -81,11 +81,11 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$order    = new \WC_Order();
 		$order_id = $order->save();
 
-		assert( false === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut->schedule_check_for_transactions( $order_id, 'pending', 'on-hold' );
 
-		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
 	/**
@@ -106,16 +106,16 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$order    = new \WC_Order();
 		$order_id = $order->save();
 
-		$hook              = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook              = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args              = array( 'order_id' => $order_id );
 		$timestamp         = time() + ( 5 * MINUTE_IN_SECONDS );
 		$recurring_seconds = ( 5 * MINUTE_IN_SECONDS );
 		as_schedule_recurring_action( $timestamp, $recurring_seconds, $hook, $args );
 
-		assert( true === as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		assert( true === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut->unschedule_check_for_transactions( $order_id, 'on-hold', 'processing' );
 
-		$this->assertFalse( as_has_scheduled_action( Background_Jobs::CHECK_UNPAID_ORDER_HOOK ) );
+		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 }

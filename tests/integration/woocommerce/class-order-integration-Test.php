@@ -22,7 +22,7 @@ class Order_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$order->set_status( 'on-hold' );
 		$order->save();
 
-		$hook = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args = array( 'order_id' => $order_id );
 
 		assert( as_has_scheduled_action( $hook, $args ) );
