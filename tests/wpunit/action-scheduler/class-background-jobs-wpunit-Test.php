@@ -6,12 +6,13 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 use WC_Order;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs
  */
-class Background_Jobs_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class Background_Jobs_WPUnit_Test extends WPTestCase {
 
 	/**
 	 * @covers ::check_unpaid_order

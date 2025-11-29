@@ -9,8 +9,9 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
-class Rest_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class Rest_Integration_Test extends WPTestCase {
 	public function test_post_type_is_available_in_rest(): void {
 
 		$rest_server = rest_get_server();

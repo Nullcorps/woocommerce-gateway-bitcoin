@@ -10,11 +10,12 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Frontend_Assets;
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes\I18n;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Class Develop_Test
  */
-class BH_WP_Bitcoin_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class BH_WP_Bitcoin_Gateway_Integration_Test extends WPTestCase {
 
 	/**
 	 * @return array{string, string, string}

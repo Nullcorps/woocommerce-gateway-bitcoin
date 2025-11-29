@@ -3,13 +3,14 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\WP_Logger\API\BH_WP_PSR_Logger;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 
 /**
  * @coversNothing
  */
-class Payment_Gateway_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class Payment_Gateway_Integration_Test extends WPTestCase {
 
 	/**
 	 * Test the correct logger is set when the plugin is loaded normally.
