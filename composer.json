@@ -19,8 +19,7 @@
       "cweagans/composer-patches": true,
       "dealerdirect/phpcodesniffer-composer-installer": true,
       "johnpbloch/wordpress-core-installer": true,
-      "phpstan/extension-installer": true,
-      "brianhenryie/composer-phpstorm": true
+      "phpstan/extension-installer": true
     },
     "platform": {
       "php": "8.4"
@@ -157,7 +156,6 @@
     "10up/wp_mock": "*",
     "antecedent/patchwork": "^2.1",
     "brianhenryie/color-logger": "^1.2",
-    "brianhenryie/composer-phpstorm": "dev-master",
     "brianhenryie/strauss": "^0.26.2",
     "cweagans/composer-patches": "^1.7",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
@@ -248,18 +246,6 @@
     },
     "symlinks": {
       "vendor/woocommerce/woocommerce-gateway-dummy/woocommerce-gateway-dummy": "wp-content/plugins/woocommerce-gateway-dummy"
-    },
-    "phpstorm": {
-      "exclude_folders": {
-        "folders": [
-          "vendor/php-stubs/woocommerce-stubs",
-          "vendor/wordpress/wordpress/src",
-          "vendor/wordpress/wordpress/build",
-          "wp-content/plugins/bh-wp-bitcoin-gateway",
-          "wordpress/wp-content"
-        ],
-        "composer-symlinks": false
-      }
     },
     "enable-patching": "true"
   },

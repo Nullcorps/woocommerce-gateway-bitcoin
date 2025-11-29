@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cfd250c5c736a074230df20fd1ca3426",
+    "content-hash": "0de084f9e71dd087fa9536838c1e35bb",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
@@ -3330,65 +3330,6 @@
                 "source": "https://github.com/BrianHenryIE/bh-color-logger/tree/1.3.0"
             },
             "time": "2025-06-19T02:53:35+00:00"
-        },
-        {
-            "name": "brianhenryie/composer-phpstorm",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/BrianHenryIE/composer-phpstorm.git",
-                "reference": "793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/BrianHenryIE/composer-phpstorm/zipball/793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc",
-                "reference": "793b2f5dfaaef78dacf06fb6a933e4a6ac0b6afc",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2.0",
-                "symfony/filesystem": "*"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0",
-                "phpunit/phpunit": "*",
-                "squizlabs/php_codesniffer": "*"
-            },
-            "default-branch": true,
-            "type": "composer-plugin",
-            "extra": {
-                "class": "\\BrianHenryIE\\ComposerPhpStorm\\ComposerPhpStorm"
-            },
-            "autoload": {
-                "psr-4": {
-                    "BrianHenryIE\\ComposerPhpStorm\\": "src/"
-                },
-                "exclude-from-classmap": [
-                    "/tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brian Henry",
-                    "email": "BrianHenryIE@gmail.com"
-                }
-            ],
-            "description": "Composer script to exclude folders from PhpStorm code navigation.",
-            "homepage": "https://github.com/BrianHenryIE/composer-phpstorm",
-            "keywords": [
-                "composer",
-                "excludefolder",
-                "phpstorm"
-            ],
-            "support": {
-                "issues": "https://github.com/BrianHenryIE/composer-phpstorm/issues",
-                "source": "https://github.com/BrianHenryIE/composer-phpstorm/tree/0.4"
-            },
-            "time": "2024-06-18T19:16:34+00:00"
         },
         {
             "name": "brianhenryie/simple-php-code-parser",
@@ -14457,7 +14398,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "brianhenryie/bh-php-blockchain-info": 20,
-        "brianhenryie/composer-phpstorm": 20,
         "impress-org/givewp-example-gateway": 20,
         "kporras07/composer-symlinks": 20,
         "woocommerce/woocommerce": 20,
