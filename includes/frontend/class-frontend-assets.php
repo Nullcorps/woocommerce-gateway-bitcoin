@@ -144,6 +144,9 @@ var bh_wp_bitcoin_gateway_order_details = $order_details_json;
 EOD;
 
 		wp_add_inline_script(
+		// TODO: move this into WooCommerce specific file
+		// 'bh-wp-bitcoin-gateway-shortcode-checkout-thank-you',
+		// 'bh-wp-bitcoin-gateway-woocommerce-thank-you-classic-theme',
 			'bh-wp-bitcoin-gateway-shortcode-thank-you',
 			$script,
 			'before'
