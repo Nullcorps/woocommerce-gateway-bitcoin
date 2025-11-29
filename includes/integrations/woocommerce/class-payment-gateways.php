@@ -23,13 +23,13 @@ class Payment_Gateways {
 	use LoggerAwareTrait;
 
 	/**
-	 * Check can the server run the plugin math.
+	 * Check can the server run the plugin math. // TODO: This may be outdated.
 	 * Get the list of Bitcoin gateways to register with WooCommerce Blocks checkout.
 	 */
 	protected API_Interface $api;
 
 	/**
-	 * Passed to Bitcoin_Gateway_Blocks_Checkout_Support.
+	 * Passed to {@see Bitcoin_Gateway_Blocks_Checkout_Support}.
 	 */
 	protected Settings_Interface $settings;
 
