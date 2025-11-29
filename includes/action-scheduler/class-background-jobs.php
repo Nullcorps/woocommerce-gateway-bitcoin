@@ -4,7 +4,7 @@
  *
  * After new orders, wait five minutes and check for payments.
  * While the destination address is waiting for payment, continue to schedue new checks every ten minutes (nblock generation time)
- * Every hour, in case the previos check is not running correctly, check are there assigned Bitcoin addresses that we should check for transactions
+ * Every hour, in case the previous check is not running correctly, check are there assigned Bitcoin addresses that we should check for transactions
  * Schedule background job to generate new addresses as needed (fall below threshold defined elsewhere)
  * After generating new addresses, check for existing transactions to ensure they are available to use
  *
@@ -44,16 +44,19 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	}
 
 	/**
-	 * TODO: Run on every request / plugin load.
-	 * TODO: a better name
-	 * Or think of a better background action to hook into. Plugin update? – even if the plugin isn't updated, its default/bare cron requirements are set.
+	 * On every request, ensure we have the hourly check scheduled.
 	 *
+	 * @hooked action_scheduler_init
+	 * f
 	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
+	 * @see https://crontab.guru/every-1-hour
+	 * @see https://github.com/woocommerce/action-scheduler/issues/749
 	 */
-	protected function ensure_schedule_repeating_actions(): void {
-		as_schedule_single_action(
+	public function ensure_schedule_repeating_actions(): void {
+		as_schedule_cron_action(
 			timestamp: time(),
-			hook: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK,
+			schedule: '0 * * * *',
+			hook: self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK,
 			unique: true,
 		);
 	}
@@ -82,6 +85,7 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	): void {
 		if ( as_has_scheduled_action( hook: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK )
 			&& ! doing_action( hook_name: self::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+			/** @see https://github.com/woocommerce/action-scheduler/issues/903 */
 
 			$this->logger->info(
 				message: 'Background_Jobs::schedule_check_new_addresses_for_transactions already scheduled.',
@@ -132,11 +136,15 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	protected function schedule_check_assigned_addresses_for_transactions(
 		?DateTimeInterface $date_time = null
 	): void {
+		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK )
+			&& ! doing_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+			return;
+		}
+
 		$date_time = $date_time ?? new DateTimeImmutable( 'now' );
 		as_schedule_single_action(
 			timestamp: $date_time->getTimestamp(),
 			hook: self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK,
-			unique: true,
 		);
 	}
 
@@ -183,8 +191,7 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 * @hooked self::CHECK_FOR_NEW_ADDRESSES_TRANSACTIONS_HOOK
 	 */
 	public function schedule_check_for_assigned_addresses_repeating_action(): void {
-		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK )
-			&& ! doing_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
+		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
 			return;
 		}
 
@@ -206,35 +213,23 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 * TODO: ensure addresses' updated date is changed after querying for transactions
 	 * TODO: use wp_comments table to log
 	 *
+	 * If we have failed to check all the addresses that we should, so let's reschedule the check when
+	 * the rate limit expires. The addresses that were successfully checked should have their updated
+	 * time udpated, so the next addresses in sequence will be the next checked.
+	 * TODO: should the rescheduling be handled here or in the API class?
+	 *
 	 * @hooked {@see self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK}
 	 */
 	public function check_assigned_addresses_for_transactions(): void {
 
-		// TODO: the actual work here is/should be done in API class.
+		$this->logger->info( 'Starting check_assigned_addresses_for_transactions() background job.' );
 
-		// get all bitcoin address posts with 'assigned' status. (where 'assigned' means pending-payment and 'used' means paid).
-		$assigned_addresses = $this->bitcoin_address_repository->get_assigned_bitcoin_addresses();
+		try {
+			$result = $this->api->check_assigned_addresses_for_transactions();
 
-		// TODO: if 200 addresses were returned, check more.
-
-		// Attempt to check all addresses.
-		foreach ( $assigned_addresses as $bitcoin_address ) {
-			try {
-				$this->api->update_address_transactions( $bitcoin_address );
-
-			} catch ( Rate_Limit_Exception $rate_limit_exception ) {
-				// We have failed to check all the addresses that we should, so let's reschedule the check when the rate limit expires.
-				$this->schedule_check_assigned_addresses_for_transactions(
-					$rate_limit_exception->get_reset_time()
-				);
-				return;
-			}
-		}
-
-		// Is this correct? I think it should be ~if result count = 200, date is immediate, otherwise date is 10 minutes from now.
-		if ( $this->bitcoin_address_repository->has_assigned_bitcoin_addresses() ) {
+		} catch ( Rate_Limit_Exception $rate_limit_exception ) {
 			$this->schedule_check_assigned_addresses_for_transactions(
-				new DateTimeImmutable( 'now' )
+				$rate_limit_exception->get_reset_time()
 			);
 		}
 	}

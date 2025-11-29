@@ -221,13 +221,23 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 	public function test_define_action_scheduler_hooks(): void {
 
 		\WP_Mock::expectActionAdded(
-			Background_Jobs::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK,
-			array( new AnyInstance( Background_Jobs::class ), 'check_unpaid_order' )
+			Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK,
+			array( new AnyInstance( Background_Jobs::class ), 'generate_new_addresses' )
 		);
 
 		\WP_Mock::expectActionAdded(
-			Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK,
-			array( new AnyInstance( Background_Jobs::class ), 'generate_new_addresses' )
+			Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK,
+			array( new AnyInstance( Background_Jobs::class ), 'check_new_addresses_for_transactions' )
+		);
+
+		\WP_Mock::expectActionAdded(
+			Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK,
+			array( new AnyInstance( Background_Jobs::class ), 'check_assigned_addresses_for_transactions' )
+		);
+
+		\WP_Mock::expectActionAdded(
+			Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK,
+			array( new AnyInstance( Background_Jobs::class ), 'ensure_schedule_repeating_actions' )
 		);
 
 		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
