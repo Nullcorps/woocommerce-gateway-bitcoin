@@ -2,11 +2,14 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
+use ActionScheduler_Action;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use Codeception\Stub\Expected;
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
+use DateInterval;
+use DateTimeImmutable;
+use Exception;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WC_Order;
 
@@ -100,7 +103,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		/** @var Background_Jobs_Scheduling_Interface $sut */
 		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
-		$datetime = ( new \DateTimeImmutable() )->add( new \DateInterval( 'P1D' ) );
+		$datetime = new DateTimeImmutable()->add( new DateInterval( 'P1D' ) );
 
 		/**
 		 * @see Background_Jobs::schedule_check_newly_generated_bitcoin_addresses_for_transactions()
@@ -108,7 +111,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		$sut->schedule_check_newly_generated_bitcoin_addresses_for_transactions( $datetime );
 
 		$scheduled_actions = as_get_scheduled_actions( array( 'hook' => Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
-		/** @var \ActionScheduler_Action $scheduled_action */
+		/** @var ActionScheduler_Action $scheduled_action */
 		$scheduled_action = array_pop( $scheduled_actions );
 
 		$result = $scheduled_action->get_schedule()->get_date();
@@ -211,7 +214,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 			array(
 				'get_order_details' => Expected::once(
 					function ( $order ) {
-						throw new \Exception( 'Exception during updating order.' );
+						throw new Exception( 'Exception during updating order.' );
 					}
 				),
 			)
