@@ -44,24 +44,6 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	}
 
 	/**
-	 * On every request, ensure we have the hourly check scheduled.
-	 *
-	 * @hooked action_scheduler_init
-	 * f
-	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
-	 * @see https://crontab.guru/every-1-hour
-	 * @see https://github.com/woocommerce/action-scheduler/issues/749
-	 */
-	public function ensure_schedule_repeating_actions(): void {
-		as_schedule_cron_action(
-			timestamp: time(),
-			schedule: '0 * * * *',
-			hook: self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK,
-			unique: true,
-		);
-	}
-
-	/**
 	 * Schedule a background job to generate new addresses.
 	 */
 	public function schedule_generate_new_addresses(): void {
@@ -232,5 +214,24 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 				$rate_limit_exception->get_reset_time()
 			);
 		}
+	}
+
+	/**
+	 * On every request, ensure we have the hourly check scheduled.
+	 *
+	 * @hooked action_scheduler_init
+	 *
+	 * @see \ActionScheduler::init()
+	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
+	 * @see https://crontab.guru/every-1-hour
+	 * @see https://github.com/woocommerce/action-scheduler/issues/749
+	 */
+	public function ensure_schedule_repeating_actions(): void {
+		as_schedule_cron_action(
+			timestamp: time(),
+			schedule: '0 * * * *',
+			hook: self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK,
+			unique: true,
+		);
 	}
 }

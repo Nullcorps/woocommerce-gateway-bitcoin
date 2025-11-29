@@ -27,7 +27,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK ) );
 
-		/** @var Background_Jobs_Scheduling_Interface $sut */
+		/** @var Background_Jobs_Actions_Interface $sut */
 		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		/**
@@ -170,7 +170,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		);
 		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
-		/** @var Background_Jobs_Scheduling_Interface $sut */
+		/** @var Background_Jobs_Actions_Interface $sut */
 		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK ) );
@@ -195,7 +195,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		);
 		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
-		/** @var Background_Jobs_Scheduling_Interface $sut */
+		/** @var Background_Jobs_Actions_Interface $sut */
 		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
@@ -230,7 +230,6 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 
 		$this->assertTrue( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
-
 
 	/**
 	 * @covers ::schedule_check_for_assigned_addresses_repeating_action
