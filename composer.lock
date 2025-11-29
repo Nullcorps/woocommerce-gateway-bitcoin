@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0de084f9e71dd087fa9536838c1e35bb",
+    "content-hash": "199a8cd868ca883f508e9519b0f17c08",
     "packages": [
         {
             "name": "alleyinteractive/wordpress-autoloader",
