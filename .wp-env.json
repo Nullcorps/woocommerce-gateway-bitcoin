@@ -36,5 +36,5 @@
     "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer",
     "wp-content/plugins/wp-mail-logging": "./wp-content/plugins/wp-mail-logging"
   },
-  "phpVersion": "8.0"
+  "phpVersion": "8.4"
 }

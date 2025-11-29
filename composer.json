@@ -23,7 +23,7 @@
       "brianhenryie/composer-phpstorm": true
     },
     "platform": {
-      "php": "8.0.30"
+      "php": "8.4"
     }
   },
   "autoload": {
@@ -135,7 +135,7 @@
     }
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.4",
     "ext-bcmath": "*",
     "ext-intl": "*",
     "ext-json": "*",
@@ -295,7 +295,7 @@
       "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
     ],
     "php-compatibility": [
-      "phpcs -p includes templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
+      "phpcs -p includes templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.4-"
     ],
     "create-plugin-archive": [
       "wp i18n make-pot includes languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
