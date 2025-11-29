@@ -26,6 +26,11 @@
       "php": "8.0.30"
     }
   },
+  "autoload": {
+    "classmap":  [
+      "includes"
+    ]
+  },
   "autoload-dev": {
       "psr-4": {
         "BrianHenryIE\\WP_Bitcoin_Gateway\\": [
@@ -153,7 +158,7 @@
     "antecedent/patchwork": "^2.1",
     "brianhenryie/color-logger": "^1.2",
     "brianhenryie/composer-phpstorm": "dev-master",
-    "brianhenryie/strauss": "dev-master",
+    "brianhenryie/strauss": "^0.26.2",
     "cweagans/composer-patches": "^1.7",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "impress-org/give-next-gen": "^0.2",
@@ -210,6 +215,10 @@
           "symfony/polyfill-php80"
         ],
         "file_patterns": [
+          "#[^/]*/[^/]*/\\.#",
+          "#[^/]*/[^/]*/tests/#",
+          "#[^/]*/[^/]*/test/#",
+          "#[^/]*/[^/]*/test-plugin/#",
           "#myclabs/php-enum/stubs/Stringable.php#"
         ]
       },
@@ -218,8 +227,12 @@
           "phpseclib/bcmath_compat",
           "phpseclib/mcrypt_compat"
         ],
+        "namespaces": [
+          "WpOrg\\Requests"
+        ],
         "file_patterns": [
-          "/^psr.*$/"
+          "/^psr.*$/",
+          "art4/requests-psr18-adapter/v1-compat"
         ]
       },
       "override_autoload": {
