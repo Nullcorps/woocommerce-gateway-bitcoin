@@ -64,3 +64,6 @@ parameters:
         - # Don't report skipped tests
           identifier: deadCode.unreachable
           path: tests
+        - # Allow using PhpDoc to use narrower interface types for classes.
+          identifier: varTag.nativeType
+          path: tests
