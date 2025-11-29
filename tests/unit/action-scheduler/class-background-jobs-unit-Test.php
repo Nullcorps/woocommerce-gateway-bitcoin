@@ -6,6 +6,7 @@ use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use Codeception\Stub\Expected;
+use WP_Mock;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs
@@ -14,11 +15,11 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 
 	protected function setUp(): void {
 		parent::setUp();
-		\WP_Mock::setUp();
+		WP_Mock::setUp();
 	}
 
 	public function tearDown(): void {
-		\WP_Mock::tearDown();
+		WP_Mock::tearDown();
 		parent::tearDown();
 	}
 
