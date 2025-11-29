@@ -175,4 +175,9 @@ interface API_Interface {
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>}>
 	 */
 	public function check_new_addresses_for_transactions(): array;
+
+	/**
+	 * The main function for checking for payments received.
+	 */
+	public function check_assigned_addresses_for_transactions(): array;
 }

@@ -763,4 +763,15 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		//
 		// }
 	}
+
+	/**
+	 * TODO: The return value should be a structured summary that can be used in a log message.
+	 */
+	public function check_assigned_addresses_for_transactions(): array {
+
+		foreach ( $this->bitcoin_address_repository->get_assigned_bitcoin_addresses() as $bitcoin_address ) {
+			$this->update_address_transactions( $bitcoin_address );
+		}
+		return array();
+	}
 }
