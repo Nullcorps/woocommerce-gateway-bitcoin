@@ -104,7 +104,7 @@ class Bitcoin_Address_Repository {
 
 	/**
 	 * @param string $post_staus
-	 * @param int $number_posts Defaults to WP_Query's max of 200.
+	 * @param int    $number_posts Defaults to WP_Query's max of 200.
 	 *
 	 * @return \WP_Post[]
 	 */
@@ -124,8 +124,18 @@ class Bitcoin_Address_Repository {
 	/**
 	 * @return \WP_Post[]
 	 */
-	public function get_assigned_bitcoin_addresses(): array {
+	public function get_assigned_bitcoin_addresses_wp_posts(): array {
 		return $this->get_bitcoin_address_posts( 'assigned' );
+	}
+
+	/**
+	 * @return Bitcoin_Address[]
+	 */
+	public function get_assigned_bitcoin_addresses(): array {
+		return array_map(
+			fn( \WP_Post $bitcoin_address_wp_post ) => new Bitcoin_Address( $bitcoin_address_wp_post->ID ),
+			$this->get_bitcoin_address_posts( 'assigned' )
+		);
 	}
 
 	/**
