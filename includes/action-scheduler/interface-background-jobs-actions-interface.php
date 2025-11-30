@@ -23,7 +23,7 @@ interface Background_Jobs_Actions_Interface {
 	 * Fetch all addresses pending payment ("assigned") and query remote API for payments. Handle rate limited responses.
 	 * Reschedule a check in ten minutes for addresses still unpaid. This is a non-repeating action when there are no addresses with 'assigned' status.
 	 */
-	const string CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK = 'bh_wp_bitcoin_gateway_check_assigned_addresses_tranactions';
+	const string CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK = 'bh_wp_bitcoin_gateway_check_assigned_addresses_transactions';
 
 	/**
 	 * Once/hour check are there any addresses that need to be checked. This is a repeating action. If there is
