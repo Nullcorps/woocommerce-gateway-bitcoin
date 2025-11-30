@@ -347,6 +347,10 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 
 		$gateway = $bitcoin_order->get_gateway();
 
+		if ( ! $gateway ) {
+			return false;
+		}
+
 		// $confirmations = $gateway->get_confirmations();
 		$required_confirmations = 3;
 
