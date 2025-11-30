@@ -47,15 +47,15 @@ jobs:
           # model: "claude-opus-4-1-20250805"
 
           # Direct prompt for automated review (no @claude mention needed)
-#          prompt: |
-#            Please review this pull request and provide feedback on:
-#            - Code quality and best practices
-#            - Potential bugs or issues
-#            - Performance considerations
-#            - Security concerns
-#            - Test coverage
-#
-#            Be constructive and helpful in your feedback.
+          #          prompt: |
+          #            Please review this pull request and provide feedback on:
+          #            - Code quality and best practices
+          #            - Potential bugs or issues
+          #            - Performance considerations
+          #            - Security concerns
+          #            - Test coverage
+          #
+          #            Be constructive and helpful in your feedback.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           # use_sticky_comment: true
@@ -104,4 +104,4 @@ jobs:
           #   !contains(github.event.pull_request.title, '[WIP]')
 
           # Re-use one comment for each updated Claude evaluation.
-          use_sticky_comment: true
+#          use_sticky_comment: true
