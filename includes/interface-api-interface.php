@@ -8,6 +8,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Check_Assigned_Addresses_For_Transactions_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
@@ -174,10 +175,10 @@ interface API_Interface {
 	 *
 	 * @return array<string, array{address:Bitcoin_Address, transactions:array<string, Transaction_Interface>}>
 	 */
-	public function check_new_addresses_for_transactions(): array;
+	public function check_new_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result;
 
 	/**
 	 * The main function for checking for payments received.
 	 */
-	public function check_assigned_addresses_for_transactions(): array;
+	public function check_assigned_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result;
 }
