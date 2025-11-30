@@ -18,6 +18,8 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Order;
 use DateTimeInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 use WC_Order;
 use WC_Payment_Gateways;
 
@@ -25,6 +27,7 @@ use WC_Payment_Gateways;
  * @mixin WC_Order
  */
 class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
+	use LoggerAwareTrait;
 
 	protected WC_Order $wc_order;
 
@@ -55,7 +58,10 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 		throw new BadMethodCallException();
 	}
 
-	public function __construct( WC_Order $wc_order, Bitcoin_Address_Repository $bitcoin_address_repository ) {
+	public function __construct(
+		WC_Order $wc_order,
+		Bitcoin_Address_Repository $bitcoin_address_repository
+	) {
 
 		$this->wc_order = $wc_order;
 
@@ -70,6 +76,8 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 			// $this->logger->warning( "`shop_order:{$order->get_id()}` has no Bitcoin address.", array( 'order_id' => $order->get_id() ) );
 			throw new \Exception( 'Problem with order Bitcoin address.' );
 		}
+
+		$this->setLogger( new NullLogger() );
 	}
 
 	/**
