@@ -141,11 +141,11 @@ class WC_Bitcoin_Order implements WC_Bitcoin_Order_Interface {
 	 * Query a Blockchain API for updates to the order. If the order is still awaiting payment, schedule another job
 	 * to check again soon.
 	 *
-	 * @hooked bh_wp_bitcoin_gateway_check_unpaid_order
-	 *
 	 * @param int $order_id WooCommerce order id to check.
 	 *
-	 * @see self::CHECK_ASSIGNED_ADDRESSES_HOOK
+	 * @deprecated Old code that may or may not be used again. Pulled from Background_Jobs. Probably duplicating the
+	 * function used by the admin order ui update button.
+	 * @see https://github.com/BrianHenryIE/bh-wp-bitcoin-gateway/pull/3
 	 */
 	public function check_unpaid_order( int $order_id ): void {
 
