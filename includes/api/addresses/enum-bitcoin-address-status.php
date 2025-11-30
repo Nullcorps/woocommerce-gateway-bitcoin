@@ -12,6 +12,8 @@ enum Bitcoin_Address_Status: string {
 	case ASSIGNED = 'assigned';
 	case USED     = 'used';
 
-	// inherent WordPress status
-	case DRAFT = 'draft';
+	// Inherent WordPress status.
+	case DRAFT   = 'draft';
+	case PUBLISH = 'publish';
+	case ALL     = 'all';
 }
