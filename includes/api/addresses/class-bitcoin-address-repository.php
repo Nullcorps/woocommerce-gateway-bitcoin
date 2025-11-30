@@ -70,7 +70,7 @@ class Bitcoin_Address_Repository {
 			'post_name'    => sanitize_title( $address ), // An indexed column.
 			'post_excerpt' => $address,
 			'post_title'   => $address,
-			'post_status'  => 'unknown',
+			'post_status'  => Bitcoin_Address_Status::UNKNOWN->value,
 			'post_parent'  => $wallet->get_post_id(),
 			'meta_input'   => array(
 				Bitcoin_Address::DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY => $address_index,
@@ -108,11 +108,11 @@ class Bitcoin_Address_Repository {
 	 *
 	 * @return \WP_Post[]
 	 */
-	protected function get_bitcoin_address_posts( string $post_staus, int $number_posts = 200 ): array {
+	protected function get_bitcoin_address_posts( Bitcoin_Address_Status $post_staus, int $number_posts = 200 ): array {
 		$assigned_addresses = get_posts(
 			array(
 				'post_type'   => Bitcoin_Address::POST_TYPE,
-				'post_status' => $post_staus,
+				'post_status' => $post_staus->value,
 				'orderby'     => 'post_modified',
 				'order'       => 'ASC',
 				'numberposts' => $number_posts,
@@ -125,7 +125,7 @@ class Bitcoin_Address_Repository {
 	 * @return \WP_Post[]
 	 */
 	public function get_assigned_bitcoin_addresses_wp_posts(): array {
-		return $this->get_bitcoin_address_posts( 'assigned' );
+		return $this->get_bitcoin_address_posts( Bitcoin_Address_Status::ASSIGNED );
 	}
 
 	/**
@@ -134,7 +134,7 @@ class Bitcoin_Address_Repository {
 	public function get_assigned_bitcoin_addresses(): array {
 		return array_map(
 			fn( \WP_Post $bitcoin_address_wp_post ) => new Bitcoin_Address( $bitcoin_address_wp_post->ID ),
-			$this->get_bitcoin_address_posts( 'assigned' )
+			$this->get_bitcoin_address_posts( Bitcoin_Address_Status::ASSIGNED )
 		);
 	}
 
@@ -142,7 +142,7 @@ class Bitcoin_Address_Repository {
 	 * Check do we have at least 1 assigned address, i.e. an address waiting for transactions.
 	 */
 	public function has_assigned_bitcoin_addresses(): bool {
-		$assigned_addresses = $this->get_bitcoin_address_posts( 'assigned', 1 );
+		$assigned_addresses = $this->get_bitcoin_address_posts( Bitcoin_Address_Status::ASSIGNED, 1 );
 		return ! empty( $assigned_addresses );
 	}
 }

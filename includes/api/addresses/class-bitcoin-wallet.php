@@ -107,7 +107,7 @@ class Bitcoin_Wallet {
 			array(
 				'post_parent'    => $this->post->ID,
 				'post_type'      => Bitcoin_Address::POST_TYPE,
-				'post_status'    => 'unused',
+				'post_status'    => Bitcoin_Address_Status::UNUSED->value,
 				'orderby'        => 'ID',
 				'order'          => 'ASC',
 				'posts_per_page' => -1,
