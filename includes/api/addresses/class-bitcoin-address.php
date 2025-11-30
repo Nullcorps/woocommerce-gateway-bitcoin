@@ -39,7 +39,7 @@ class Bitcoin_Address {
 	protected WP_Post $post;
 
 	protected int $post_id;
-	protected string $status;
+	protected Bitcoin_Address_Status $status;
 	protected int $wallet_parent_post_id;
 	protected ?int $derivation_path_sequence_number;
 	protected string $raw_address;
@@ -68,7 +68,7 @@ class Bitcoin_Address {
 		$this->post                            = $post;
 		$this->post_id                         = $post_id;
 		$this->wallet_parent_post_id           = $this->post->post_parent;
-		$this->status                          = $this->post->post_status;
+		$this->status                          = Bitcoin_Address_Status::from( $this->post->post_status );
 		$this->derivation_path_sequence_number = (int) get_post_meta( $post_id, self::DERIVATION_PATH_SEQUENCE_NUMBER_META_KEY, true );
 		$this->raw_address                     = $this->post->post_excerpt;
 		$this->transactions                    = get_post_meta( $post_id, self::TRANSACTION_META_KEY, true ) ?: null;
@@ -139,9 +139,9 @@ class Bitcoin_Address {
 		);
 
 		if ( empty( $refreshed_transactions ) ) {
-			$update['post_status'] = 'unused';
-		} elseif ( 'unknown' === $this->get_status() ) {
-			$update['post_status'] = 'used';
+			$update['post_status'] = Bitcoin_Address_Status::UNUSED->value;
+		} elseif ( Bitcoin_Address_Status::UNKNOWN->value === $this->get_status() ) {
+			$update['post_status'] = Bitcoin_Address_Status::USED->value;
 		}
 
 		/** @var int|\WP_Error $result */
@@ -163,7 +163,7 @@ class Bitcoin_Address {
 	 * @return ?Money Null if unknown.
 	 */
 	public function get_balance(): ?Money {
-		return 'unknown' === $this->get_status() ? null : $this->balance;
+		return Bitcoin_Address_Status::UNKNOWN->value === $this->get_status() ? null : $this->balance;
 	}
 
 	/**
@@ -198,7 +198,7 @@ class Bitcoin_Address {
 	 * @return string unknown|unused|assigned|used.
 	 */
 	public function get_status(): string {
-		return $this->status;
+		return $this->status->value;
 	}
 
 	/**
@@ -209,12 +209,12 @@ class Bitcoin_Address {
 	 * TODO: Throw an exception if an invalid status is set. Maybe in the `wp_insert_post_data` filter.
 	 * TODO: Maybe throw an exception if the update fails.
 	 *
-	 * @param string $status Status to assign.
+	 * @param Bitcoin_Address_Status $status Status to assign.
 	 */
-	public function set_status( string $status ): void {
+	public function set_status( Bitcoin_Address_Status $status ): void {
 
-		if ( ! in_array( $status, array( 'unknown', 'unused', 'assigned', 'used' ), true ) ) {
-			throw new InvalidArgumentException( "{$status} should be one of unknown|unused|assigned|used" );
+		if ( ! in_array( $status, Bitcoin_Address_Status::cases(), true ) ) {
+			throw new InvalidArgumentException( "{$status->value} should be one of unknown|unused|assigned|used" );
 		}
 
 		/** @var int|\WP_Error $result */
@@ -222,7 +222,7 @@ class Bitcoin_Address {
 			array(
 				'post_type'   => self::POST_TYPE,
 				'ID'          => $this->post->ID,
-				'post_status' => $status,
+				'post_status' => $status->value,
 			)
 		);
 
@@ -257,7 +257,7 @@ class Bitcoin_Address {
 		);
 
 		if ( 'assigned' !== $this->get_status() ) {
-			$update['post_status'] = 'assigned';
+			$update['post_status'] = Bitcoin_Address_Status::ASSIGNED->value;
 		}
 
 		/** @var int|\WP_Error $result */

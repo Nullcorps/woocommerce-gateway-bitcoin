@@ -19,6 +19,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Status;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use WP_Query;
@@ -75,7 +76,7 @@ class Post_BH_Bitcoin_Address {
 		register_post_type( BITCOIN_ADDRESS::POST_TYPE, $args );
 
 		register_post_status(
-			'unknown',
+			Bitcoin_Address_Status::UNKNOWN->value,
 			array(
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unknown', 'post' ),
@@ -88,7 +89,7 @@ class Post_BH_Bitcoin_Address {
 		);
 
 		register_post_status(
-			'unused',
+			Bitcoin_Address_Status::UNUSED->value,
 			array(
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Unused', 'post' ),
@@ -101,7 +102,7 @@ class Post_BH_Bitcoin_Address {
 		);
 
 		register_post_status(
-			'assigned',
+			Bitcoin_Address_Status::ASSIGNED->value,
 			array(
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Assigned', 'post' ),
@@ -114,7 +115,7 @@ class Post_BH_Bitcoin_Address {
 		);
 
 		register_post_status(
-			'used',
+			Bitcoin_Address_Status::USED->value,
 			array(
 				'post_type'                 => array( Bitcoin_Address::POST_TYPE ),
 				'label'                     => _x( 'Used', 'post' ),

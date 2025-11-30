@@ -18,6 +18,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Status;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
@@ -223,7 +224,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address->get_raw_address() );
 		$order->save();
 
-		$btc_address->set_status( 'assigned' );
+		$btc_address->set_status( Bitcoin_Address_Status::ASSIGNED );
 
 		$this->logger->info(
 			sprintf(
@@ -676,7 +677,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		$posts = get_posts(
 			array(
 				'post_type'      => Bitcoin_Address::POST_TYPE,
-				'post_status'    => 'unknown',
+				'post_status'    => Bitcoin_Address_Status::UNKNOWN->value,
 				'posts_per_page' => 100,
 				'orderby'        => 'ID',
 				'order'          => 'ASC',

@@ -236,7 +236,7 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::expectActionAdded(
-			Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK,
+			'action_scheduler_init',
 			array( new AnyInstance( Background_Jobs::class ), 'ensure_schedule_repeating_actions' )
 		);
 

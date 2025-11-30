@@ -93,7 +93,7 @@ class Bitcoin_Address_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 
 		$sut = $bitcoin_address_repository->get_by_post_id( $bitcoin_address_post_id );
 
-		$sut->set_status( 'assigned' );
+		$sut->set_status( Bitcoin_Address_Status::ASSIGNED );
 
 		$sut = $bitcoin_address_repository->get_by_post_id( $bitcoin_address_post_id );
 
