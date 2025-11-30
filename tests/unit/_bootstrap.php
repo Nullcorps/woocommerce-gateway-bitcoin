@@ -14,7 +14,11 @@
  *
  * @var string[] $xdebug_info
  */
-$xdebug_info = xdebug_info( 'mode' ) ?? array();
+if ( function_exists( 'xdebug_info' ) ) {
+	$xdebug_info = xdebug_info( 'mode' ) ?? array();
+} else {
+	$xdebug_info = array();
+}
 
 /**
  * Do not use Patchwork if coverage is enabled.

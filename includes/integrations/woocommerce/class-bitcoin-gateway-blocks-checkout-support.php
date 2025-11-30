@@ -123,7 +123,7 @@ class Bitcoin_Gateway_Blocks_Checkout_Support extends AbstractPaymentMethodType 
 								Currency::of(
 									get_woocommerce_currency()
 								)
-							)->getAmount()->toFloat()
+							)?->getAmount()->toFloat() ?? ''
 						)
 					)
 				)

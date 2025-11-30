@@ -62,8 +62,8 @@ class Addresses_List_Table_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTe
 
 		$wallet = $bitcoin_wallet_factory->get_by_post_id( $wallet_post_id );
 
-		$bitcoin_address_factory = new Bitcoin_Address_Repository();
-		$address_post_id         = $bitcoin_address_factory->save_new( $address, $address_index, $wallet );
+		$bitcoin_address_repository = new Bitcoin_Address_Repository();
+		$address_post_id            = $bitcoin_address_repository->save_new( $address, $address_index, $wallet );
 
 		$this->post = get_post( $address_post_id );
 

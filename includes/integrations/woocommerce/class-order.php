@@ -10,6 +10,8 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 use ActionScheduler;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -52,6 +54,30 @@ class Order {
 	}
 
 	/**
+	 * TODO: hook.
+	 *
+	 * @hooked on API check payments do_action.
+	 * NOT ~~@hooked Bitcoin_Address post type's status changed event~~
+	 */
+	public function on_bitcoin_address_post_type_post_status_change( \WP_Post $post, Bitcoin_Address $bitcoin_address ): void {
+
+		$order_id = $post->post_parent;
+
+		$wc_order = wc_get_order( $order_id );
+
+		if ( ! ( $wc_order instanceof WC_Order ) ) {
+			return;
+		}
+
+		// if($bitcoin_address->get_confirmed_balance())
+
+		$wc_order->set_status( 'wc-processing' );
+		$wc_order->maybe_set_date_paid();
+	}
+
+	/**
+	 * TODO: this should be moved to post status change hook for bitcoin addresses post type
+	 *
 	 * When a new order is created, if it's a Bitcoin order, check the remaining number of unused addresses
 	 *
 	 * 20 is the standard number of addresses a wallet is expected to seek forward to monitor for payments.
@@ -60,17 +86,17 @@ class Order {
 	 *
 	 * @hooked woocommerce_new_order
 	 *
-	 * @see WC_Order_Data_Store_CPT::create()
-	 * @see WC_Order_Data_Store_CPT::update()
-	 * @see OrdersTableDataStore::create()
-	 * @see OrdersTableDataStore::update()
-	 *
 	 * @param int|numeric-string $order_id
 	 * @param WC_Order           $order
 	 *
 	 * @throws Exception
+	 * @see OrdersTableDataStore::update()
+	 *
+	 * @see WC_Order_Data_Store_CPT::create()
+	 * @see WC_Order_Data_Store_CPT::update()
+	 * @see OrdersTableDataStore::create()
 	 */
-	public function todo_check_addresses_after_new_orders( int|string $order_id, WC_Order $order = null ): void {
+	public function todo_check_addresses_after_new_orders( int|string $order_id, ?WC_Order $order = null ): void {
 		if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
 			return;
 		}
@@ -88,14 +114,13 @@ class Order {
 
 		// Schedule address generation if needed.
 		if ( $num_remaining_addresses < 20 ) {
-			$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
+			$hook = Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK;
 			if ( ! as_has_scheduled_action( $hook ) ) {
 				$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
 				as_schedule_single_action( time(), $hook );
 			}
 		}
 	}
-
 
 	/**
 	 * When an order's status is set to "on-hold", schedule a background job to check for payments.
@@ -118,7 +143,7 @@ class Order {
 		}
 
 		// Schedule background check for payment.
-		$hook = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args = array( 'order_id' => $order_id );
 
 		if ( ! as_has_scheduled_action( $hook, $args ) ) {
@@ -143,6 +168,7 @@ class Order {
 	 */
 	public function unschedule_check_for_transactions( int|string $order_id, string $status_from, string $status_to ): void {
 
+		// TODO: failed, custom statuses
 		if ( in_array( $status_to, array( 'pending', 'on-hold' ), true ) ) {
 			return;
 		}
@@ -161,7 +187,7 @@ class Order {
 			'status_to'   => $status_to,
 		);
 
-		$hook  = Background_Jobs::CHECK_UNPAID_ORDER_HOOK;
+		$hook  = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
 		$args  = array( 'order_id' => $order_id );
 		$query = array(
 			'hook' => $hook,

@@ -14,7 +14,7 @@
  * Description:            Accept Bitcoin payments using self-custodied wallets, and no external account. Calculates wallet addresses locally and uses open APIs to verify payments. For an emphasis on privacy & sovereignty.
  * Version:                2.0.0-beta-8
  * Requires at least:      5.9
- * Requires PHP:           8.0
+ * Requires PHP:           8.4
  * Author:                 Nullcorps, BrianHenryIE
  * Author URI:             https://github.com/Nullcorps/
  * License:                GNU General Public License v3.0
@@ -27,6 +27,10 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Nimq_API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\API;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Blockstream_Info_API;
@@ -103,6 +107,10 @@ $container->singleton(
 		);
 	}
 );
+
+$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
+$container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
+$container->bind( API_Background_Jobs_Interface::class, API::class );
 
 $container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
 $container->bind( Generate_Address_API_Interface::class, Nimq_API::class );

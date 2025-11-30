@@ -14,6 +14,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Admin\Register_List_Tables;
 use BrianHenryIE\WP_Bitcoin_Gateway\Frontend\Blocks\Bitcoin_Image_Block;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\Woo_Cancel_Abandoned_Order\Woo_Cancel_Abandoned_Order;
@@ -280,12 +281,14 @@ class BH_WP_Bitcoin_Gateway {
 	 */
 	protected function define_action_scheduler_hooks(): void {
 
-		/** @var Background_Jobs_Actions_Interface $background_jobs */
+		/** @var Background_Jobs_Actions_Interface&Background_Jobs_Scheduling_Interface $background_jobs */
 		$background_jobs = $this->container->get( Background_Jobs_Actions_Interface::class );
 
 		add_action( Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK, array( $background_jobs, 'generate_new_addresses' ) );
-		add_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_unpaid_order' ) );
 		add_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_new_addresses_for_transactions' ) );
+		add_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_assigned_addresses_for_transactions' ) );
+		add_action( Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK, array( $background_jobs, 'schedule_check_for_assigned_addresses_repeating_action' ) );
+		add_action( 'action_scheduler_init', array( $background_jobs, 'ensure_schedule_repeating_actions' ) );
 	}
 
 	/**

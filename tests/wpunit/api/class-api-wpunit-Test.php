@@ -28,26 +28,26 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		?Settings_Interface $settings = null,
 		?LoggerInterface $logger = null,
 		?Bitcoin_Wallet_Factory $bitcoin_wallet_factory = null,
-		?Bitcoin_Address_Repository $bitcoin_address_factory = null,
+		?Bitcoin_Address_Repository $bitcoin_address_repository = null,
 		?Blockchain_API_Interface $blockchain_api = null,
 		?Generate_Address_API_Interface $generate_address_api = null,
 		?Exchange_Rate_API_Interface $exchange_rate_api = null,
 		?Background_Jobs $background_jobs = null,
 	): API {
-		$settings                = $settings ?? $this->makeEmpty( Settings_Interface::class );
-		$logger                  = $logger ?? new ColorLogger();
-		$bitcoin_wallet_factory  = $bitcoin_wallet_factory ?? $this->makeEmpty( Bitcoin_Wallet_Factory::class );
-		$bitcoin_address_factory = $bitcoin_address_factory ?? $this->makeEmpty( Bitcoin_Address_Repository::class );
-		$blockchain_api          = $blockchain_api ?? $this->makeEmpty( Blockchain_API_Interface::class );
-		$generate_address_api    = $generate_address_api ?? $this->makeEmpty( Generate_Address_API_Interface::class );
-		$exchange_rate_api       = $exchange_rate_api ?? $this->makeEmpty( Exchange_Rate_API_Interface::class );
-		$background_jobs         = $background_jobs ?? $this->makeEmpty( Background_Jobs::class );
+		$settings                   = $settings ?? $this->makeEmpty( Settings_Interface::class );
+		$logger                     = $logger ?? new ColorLogger();
+		$bitcoin_wallet_factory     = $bitcoin_wallet_factory ?? $this->makeEmpty( Bitcoin_Wallet_Factory::class );
+		$bitcoin_address_repository = $bitcoin_address_repository ?? $this->makeEmpty( Bitcoin_Address_Repository::class );
+		$blockchain_api             = $blockchain_api ?? $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api       = $generate_address_api ?? $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api          = $exchange_rate_api ?? $this->makeEmpty( Exchange_Rate_API_Interface::class );
+		$background_jobs            = $background_jobs ?? $this->makeEmpty( Background_Jobs::class );
 
 		$api = new API(
 			$settings,
 			$logger,
 			$bitcoin_wallet_factory,
-			$bitcoin_address_factory,
+			$bitcoin_address_repository,
 			$blockchain_api,
 			$generate_address_api,
 			$exchange_rate_api,
@@ -75,8 +75,8 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			)
 		);
 
-		$address                 = $this->makeEmpty( Bitcoin_Address::class );
-		$bitcoin_address_factory = $this->makeEmpty(
+		$address                    = $this->makeEmpty( Bitcoin_Address::class );
+		$bitcoin_address_repository = $this->makeEmpty(
 			Bitcoin_Address_Repository::class,
 			array(
 				'save_new'       => Expected::exactly( 5, 123 ),
@@ -86,7 +86,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$sut = $this->get_sut(
 			bitcoin_wallet_factory: $bitcoin_wallet_factory,
-			bitcoin_address_factory: $bitcoin_address_factory,
+			bitcoin_address_repository: $bitcoin_address_repository,
 		);
 
 		$result = $sut->generate_new_addresses_for_wallet( $test_xpub, 5 );
@@ -361,7 +361,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$bitcoin_wallet_factory = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 
-		$bitcoin_address_factory = $this->makeEmpty(
+		$bitcoin_address_repository = $this->makeEmpty(
 			Bitcoin_Address_Repository::class,
 			array(
 				'get_post_id_for_address' => Expected::once( 456 ),
@@ -387,7 +387,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$sut = $this->get_sut(
 			bitcoin_wallet_factory: $bitcoin_wallet_factory,
-			bitcoin_address_factory: $bitcoin_address_factory,
+			bitcoin_address_repository: $bitcoin_address_repository,
 			blockchain_api: $blockchain_api,
 		);
 

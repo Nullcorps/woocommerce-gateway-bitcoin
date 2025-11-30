@@ -8,11 +8,13 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\WP_Includes;
 
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
  *
  * @see I18n
  */
-class I18n_Integration_Test extends \Codeception\TestCase\WPTestCase {
+class I18n_Integration_Test extends WPTestCase {
 
 	/**
 	 * AFAICT, this will fail until a translation has been added.

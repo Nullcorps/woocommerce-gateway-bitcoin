@@ -23,10 +23,10 @@ class API_Integration_Test extends WPTestCase {
 		$logger   = new ColorLogger();
 		$settings = $this->makeEmpty( Settings_Interface::class );
 
-		$bitcoin_wallet_factory  = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
-		$bitcoin_address_factory = $this->makeEmpty( Bitcoin_Address_Repository::class );
+		$bitcoin_wallet_factory     = $this->makeEmpty( Bitcoin_Wallet_Factory::class );
+		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
-		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_factory );
+		$sut = new API( $settings, $logger, $bitcoin_wallet_factory, $bitcoin_address_repository );
 
 		$factory         = new Bitcoin_Address_Repository();
 		$post_id         = $factory->save_new( $test_wallet_address, $address_index, $wallet );

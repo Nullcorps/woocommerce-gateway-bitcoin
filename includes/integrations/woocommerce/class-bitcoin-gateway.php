@@ -66,7 +66,13 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	 * @param ?API_Interface $api The main plugin functions.
 	 */
 	public function __construct( ?API_Interface $api = null ) {
-		// TODO: Set the logger externally.
+
+		/**
+		 * Set a null logger to prevent null pointer exceptions. Later this will be correctly set
+		 * with the plugin's real logger.
+		 *
+		 * @see Payment_Gateways::add_logger_to_gateways()
+		 */
 		$this->setLogger( new NullLogger() );
 
 		$this->api = $api ?? $GLOBALS['bh_wp_bitcoin_gateway'];
@@ -86,8 +92,18 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 		$this->title       = $this->get_option( 'title' );
 		$this->description = $this->get_option( 'description' );
 
-		// Actions.
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+		/**
+		 * This class extends WC_Payment_Gateway which extends WC_Settings_API. Each instance needs
+		 *
+		 * @see WC_Settings_API::process_admin_options()
+		 */
+		add_action(
+			'woocommerce_update_options_payment_gateways_' . $this->id,
+			array(
+				$this,
+				'process_admin_options',
+			)
+		);
 		add_action( 'admin_notices', array( $this, 'display_errors' ), 9999 );
 	}
 
