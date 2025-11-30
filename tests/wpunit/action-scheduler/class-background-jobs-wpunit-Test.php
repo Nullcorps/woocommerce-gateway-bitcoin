@@ -25,6 +25,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		$api                        = $this->makeEmpty( API_Background_Jobs_Interface::class );
 		$bitcoin_address_repository = $this->makeEmpty( Bitcoin_Address_Repository::class );
 
+		as_unschedule_all_actions( Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK );
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK ) );
 
 		/** @var Background_Jobs_Actions_Interface $sut */
