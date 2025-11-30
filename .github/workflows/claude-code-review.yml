@@ -21,15 +21,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write
+      issues: write
       id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Fetch base branch
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
 
       - name: Run Claude Code Review
         id: claude-review
@@ -42,15 +47,15 @@ jobs:
           # model: "claude-opus-4-1-20250805"
 
           # Direct prompt for automated review (no @claude mention needed)
-          prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
-            
-            Be constructive and helpful in your feedback.
+#          prompt: |
+#            Please review this pull request and provide feedback on:
+#            - Code quality and best practices
+#            - Potential bugs or issues
+#            - Performance considerations
+#            - Security concerns
+#            - Test coverage
+#
+#            Be constructive and helpful in your feedback.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           # use_sticky_comment: true
@@ -62,6 +67,26 @@ jobs:
           #   - For API endpoints: Security, input validation, and error handling
           #   - For React components: Performance, accessibility, and best practices
           #   - For tests: Coverage, edge cases, and test quality
+          # Provide explicit context about the PR
+          prompt: |
+            This is an automated code review for PR #${{ github.event.pull_request.number }}.
+            
+            PR Title: ${{ github.event.pull_request.title }}
+            Base Branch: ${{ github.event.pull_request.base.ref }}
+            Head Branch: ${{ github.event.pull_request.head.ref }}
+            
+            Please review the changes in this pull request by comparing the head branch to the base branch.
+            
+            Use: git diff origin/${{ github.event.pull_request.base.ref }}...HEAD
+            
+            Provide feedback on:
+            - Code quality and best practices
+            - Potential bugs or issues
+            - Performance considerations
+            - Security concerns
+            - Test coverage
+            
+            Be constructive and helpful in your feedback.
 
           # Optional: Different prompts for different authors
           # direct_prompt: |
@@ -71,6 +96,7 @@ jobs:
 
           # Optional: Add specific tools for running tests or linting
           # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
+          allowed_tools: "Bash(git:*,gh:*),View,GlobTool,GrepTool,BatchTool,StrReplace,CreateFile"
 
           # Optional: Skip review for certain conditions
           # if: |
