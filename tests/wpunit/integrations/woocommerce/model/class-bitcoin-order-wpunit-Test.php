@@ -18,7 +18,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	 * @covers ::__construct
 	 */
 	public function test_get_id(): void {
-		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
+		$bitcoin_address_mock       = self::make( Bitcoin_Address::class );
 		$bitcoin_address_repository = self::make(
 			Bitcoin_Address_Repository::class,
 			array(
@@ -46,7 +46,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	 * @covers ::get_address
 	 */
 	public function test_get_address(): void {
-		$bitcoin_address_mock    = self::make(
+		$bitcoin_address_mock       = self::make(
 			Bitcoin_Address::class,
 			array( 'get_raw_address' => Expected::once( 'success' ) )
 		);
@@ -77,7 +77,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	 * No covers because it uses a __call @method.
 	 */
 	public function test_is_paid(): void {
-		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
+		$bitcoin_address_mock       = self::make( Bitcoin_Address::class );
 		$bitcoin_address_repository = self::make(
 			Bitcoin_Address_Repository::class,
 			array(
@@ -107,7 +107,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	 * @covers ::set_last_checked_time
 	 */
 	public function test_set_last_checked_time(): void {
-		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
+		$bitcoin_address_mock       = self::make( Bitcoin_Address::class );
 		$bitcoin_address_repository = self::make(
 			Bitcoin_Address_Repository::class,
 			array(
@@ -144,7 +144,7 @@ class Bitcoin_Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase 
 	 * No covers because it uses a __call @method.
 	 */
 	public function test_get_status(): void {
-		$bitcoin_address_mock    = self::make( Bitcoin_Address::class );
+		$bitcoin_address_mock       = self::make( Bitcoin_Address::class );
 		$bitcoin_address_repository = self::make(
 			Bitcoin_Address_Repository::class,
 			array(

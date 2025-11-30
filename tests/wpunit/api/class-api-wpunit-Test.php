@@ -34,14 +34,14 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		?Exchange_Rate_API_Interface $exchange_rate_api = null,
 		?Background_Jobs $background_jobs = null,
 	): API {
-		$settings                = $settings ?? $this->makeEmpty( Settings_Interface::class );
-		$logger                  = $logger ?? new ColorLogger();
-		$bitcoin_wallet_factory  = $bitcoin_wallet_factory ?? $this->makeEmpty( Bitcoin_Wallet_Factory::class );
+		$settings                   = $settings ?? $this->makeEmpty( Settings_Interface::class );
+		$logger                     = $logger ?? new ColorLogger();
+		$bitcoin_wallet_factory     = $bitcoin_wallet_factory ?? $this->makeEmpty( Bitcoin_Wallet_Factory::class );
 		$bitcoin_address_repository = $bitcoin_address_repository ?? $this->makeEmpty( Bitcoin_Address_Repository::class );
-		$blockchain_api          = $blockchain_api ?? $this->makeEmpty( Blockchain_API_Interface::class );
-		$generate_address_api    = $generate_address_api ?? $this->makeEmpty( Generate_Address_API_Interface::class );
-		$exchange_rate_api       = $exchange_rate_api ?? $this->makeEmpty( Exchange_Rate_API_Interface::class );
-		$background_jobs         = $background_jobs ?? $this->makeEmpty( Background_Jobs::class );
+		$blockchain_api             = $blockchain_api ?? $this->makeEmpty( Blockchain_API_Interface::class );
+		$generate_address_api       = $generate_address_api ?? $this->makeEmpty( Generate_Address_API_Interface::class );
+		$exchange_rate_api          = $exchange_rate_api ?? $this->makeEmpty( Exchange_Rate_API_Interface::class );
+		$background_jobs            = $background_jobs ?? $this->makeEmpty( Background_Jobs::class );
 
 		$api = new API(
 			$settings,
@@ -75,7 +75,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			)
 		);
 
-		$address                 = $this->makeEmpty( Bitcoin_Address::class );
+		$address                    = $this->makeEmpty( Bitcoin_Address::class );
 		$bitcoin_address_repository = $this->makeEmpty(
 			Bitcoin_Address_Repository::class,
 			array(
