@@ -9,22 +9,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write  # Changed from 'read' - needs write to post comments
-      issues: write          # Changed from 'read' - needs write to post comments
-      id-token: write
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Changed from 1 - needs full history for PR diff
+          fetch-depth: 0
 
       - name: Run Claude Code Review
-        uses: anthropics/claude-code-action@v1
+        uses: grll/claude-code-action@beta  # Community fork with OAuth support
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          show_full_output: true
-          # For automated execution, use prompt parameter
+          use_oauth: true
+          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+          secrets_admin_pat: ${{ secrets.SECRETS_ADMIN_PAT }}
+
           prompt: |
             Please review this pull request and provide feedback on:
             - Code quality and best practices
@@ -34,9 +36,3 @@ jobs:
             - Test coverage
             
             Be constructive and helpful in your feedback.
-
-          # Optional: Configure Claude's behavior
-          claude_args: "--max-turns 10"
-
-          # Re-use one comment for each updated Claude evaluation.
-          use_sticky_comment: true
