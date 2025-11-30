@@ -23,6 +23,9 @@ use Psr\Log\LoggerInterface;
 class Blockstream_Info_API implements Blockchain_API_Interface, LoggerAwareInterface {
 	use LoggerAwareTrait;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct( LoggerInterface $logger ) {
 		$this->logger = $logger;
 	}
