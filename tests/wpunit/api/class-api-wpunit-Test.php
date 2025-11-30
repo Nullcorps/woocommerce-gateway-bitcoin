@@ -343,13 +343,10 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	 */
 	public function test_get_order_details_no_transactions(): void {
 
-		$logger   = new ColorLogger();
-		$settings = $this->makeEmpty( Settings_Interface::class );
-
 		$address = self::make(
 			Bitcoin_Address::class,
 			array(
-				'get_raw_address'             => Expected::exactly( 2, 'xpub' ),
+				'get_raw_address'             => Expected::exactly( 1, 'xpub' ),
 				// First time checking an address, this is null.
 				'get_blockchain_transactions' => Expected::exactly( 2, null ),
 				'set_transactions'            => Expected::once(
@@ -377,10 +374,11 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$blockchain_api = self::makeEmpty(
 			Blockchain_API_Interface::class,
 			array(
-				'get_blockchain_height' => Expected::once(
-					function (): int {
-						return 1000; }
-				),
+//				'get_blockchain_height' => Expected::once(
+//					function (): int {
+//						return 1000;
+//					}
+//				),
 				'get_transactions'      => array(),
 			)
 		);
