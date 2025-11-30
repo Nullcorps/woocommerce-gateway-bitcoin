@@ -104,4 +104,4 @@ jobs:
           #   !contains(github.event.pull_request.title, '[WIP]')
 
           # Re-use one comment for each updated Claude evaluation.
-          use_sticky_comment: true
+#          use_sticky_comment: true
