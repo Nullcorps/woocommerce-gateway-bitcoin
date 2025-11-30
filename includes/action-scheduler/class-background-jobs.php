@@ -198,7 +198,7 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 *
 	 * If we have failed to check all the addresses that we should, so let's reschedule the check when
 	 * the rate limit expires. The addresses that were successfully checked should have their updated
-	 * time udpated, so the next addresses in sequence will be the next checked.
+	 * time updated, so the next addresses in sequence will be the next checked.
 	 * TODO: should the rescheduling be handled here or in the API class?
 	 *
 	 * @hooked {@see self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK}
@@ -213,6 +213,14 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 		} catch ( Rate_Limit_Exception $rate_limit_exception ) {
 			$this->schedule_check_assigned_addresses_for_transactions(
 				$rate_limit_exception->get_reset_time()
+			);
+		}
+
+		// If we are still waiting for payments, schedule another check in ten minutes.
+		// TODO: Is this better placed in API class?
+		if ( $this->bitcoin_address_repository->has_assigned_bitcoin_addresses() ) {
+			$this->schedule_check_assigned_addresses_for_transactions(
+				new DateTimeImmutable( 'now' )->add( new DateInterval( 'PT10M' ) )
 			);
 		}
 	}
