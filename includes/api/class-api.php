@@ -224,7 +224,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		$order->add_meta_data( Order::BITCOIN_ADDRESS_META_KEY, $btc_address->get_raw_address() );
 		$order->save();
 
-		$btc_address->set_status( 'assigned' );
+		$btc_address->set_status( Bitcoin_Address_Status::ASSIGNED );
 
 		$this->logger->info(
 			sprintf(

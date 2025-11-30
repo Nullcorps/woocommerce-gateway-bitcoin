@@ -4,6 +4,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Status;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigNumber;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
@@ -293,8 +294,8 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 				array(
 					'get_raw_address' => 'success',
 					'set_status'      => Expected::once(
-						function ( $status ) {
-							assert( 'assigned' === $status );
+						function ( Bitcoin_Address_Status $status ) {
+							assert( 'assigned' === $status->value );
 						}
 					),
 				)

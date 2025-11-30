@@ -103,8 +103,8 @@ class Bitcoin_Address_Repository {
 
 
 	/**
-	 * @param string $post_staus
-	 * @param int    $number_posts Defaults to WP_Query's max of 200.
+	 * @param Bitcoin_Address_Status $post_staus
+	 * @param int                    $number_posts Defaults to WP_Query's max of 200.
 	 *
 	 * @return \WP_Post[]
 	 */

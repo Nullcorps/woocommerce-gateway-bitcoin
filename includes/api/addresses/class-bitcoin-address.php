@@ -209,25 +209,12 @@ class Bitcoin_Address {
 	 * TODO: Throw an exception if an invalid status is set. Maybe in the `wp_insert_post_data` filter.
 	 * TODO: Maybe throw an exception if the update fails.
 	 *
-	 * @param string $status Status to assign.
+	 * @param Bitcoin_Address_Status $status Status to assign.
 	 */
-	public function set_status( string $status ): void {
+	public function set_status( Bitcoin_Address_Status $status ): void {
 
-		if ( ! in_array( $status, array( 'unknown', 'unused', 'assigned', 'used' ), true ) ) {
-			throw new InvalidArgumentException( "{$status} should be one of unknown|unused|assigned|used" );
-		}
-
-		$post_status_names = array_map(
-			fn( Bitcoin_Address_Status $case ) => $case->value,
-			Bitcoin_Address_Status::cases()
-		);
-
-		if ( ! in_array(
-			$status,
-			$post_status_names,
-			true
-		) ) {
-			throw new InvalidArgumentException( "{$status} should be one of unknown|unused|assigned|used" );
+		if ( ! in_array( $status, Bitcoin_Address_Status::cases(), true ) ) {
+			throw new InvalidArgumentException( "{$status->value} should be one of unknown|unused|assigned|used" );
 		}
 
 		/** @var int|\WP_Error $result */
@@ -235,12 +222,12 @@ class Bitcoin_Address {
 			array(
 				'post_type'   => self::POST_TYPE,
 				'ID'          => $this->post->ID,
-				'post_status' => $status,
+				'post_status' => $status->value,
 			)
 		);
 
 		if ( ! is_wp_error( $result ) ) {
-			$this->status = Bitcoin_Address_Status::from( $status );
+			$this->status = $status;
 		} else {
 			throw new RuntimeException( $result->get_error_message() );
 		}
@@ -270,7 +257,7 @@ class Bitcoin_Address {
 		);
 
 		if ( 'assigned' !== $this->get_status() ) {
-			$update['post_status'] = Bitcoin_Address_Status::ASSIGNED;
+			$update['post_status'] = Bitcoin_Address_Status::ASSIGNED->value;
 		}
 
 		/** @var int|\WP_Error $result */
