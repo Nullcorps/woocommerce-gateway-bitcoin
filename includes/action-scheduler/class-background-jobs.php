@@ -15,6 +15,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Bitcoin_Gateway;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -169,8 +170,8 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 * This should do nothing/return early when there are no assigned addresses.
 	 * New orders should have already scheduled a check with {@see self::schedule_check_newly_assigned_bitcoin_address_for_transactions()}
 	 *
-	 * @see self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK
-	 * @hooked self::CHECK_FOR_NEW_ADDRESSES_TRANSACTIONS_HOOK
+	 * @hooked {@see self::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK}
+	 * @see self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK
 	 */
 	public function schedule_check_for_assigned_addresses_repeating_action(): void {
 		if ( as_has_scheduled_action( self::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) ) {
@@ -220,6 +221,7 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 * On every request, ensure we have the hourly check scheduled.
 	 *
 	 * @hooked action_scheduler_init
+	 * @see BH_WP_Bitcoin_Gateway::define_action_scheduler_hooks()
 	 *
 	 * @see \ActionScheduler::init()
 	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
@@ -227,6 +229,7 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	 * @see https://github.com/woocommerce/action-scheduler/issues/749
 	 */
 	public function ensure_schedule_repeating_actions(): void {
+		// TODO: what is the precise behaviour of unique here? If it already exists, it should not change the existing one.
 		as_schedule_cron_action(
 			timestamp: time(),
 			schedule: '0 * * * *',
