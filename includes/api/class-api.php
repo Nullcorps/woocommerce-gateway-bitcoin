@@ -55,6 +55,8 @@ use WC_Payment_Gateways;
 class API implements API_Interface, API_Background_Jobs_Interface {
 	use LoggerAwareTrait;
 
+	protected Background_Jobs $background_jobs;
+
 	/**
 	 * Constructor
 	 *
@@ -67,12 +69,6 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 * @param Exchange_Rate_API_Interface $exchange_rate_api Object/client to fetch the exchange rate
 	 * @param Background_Jobs_Scheduling_Interface $background_jobs Object to schedule background jobs.
 	 */
-	/**
-	 * Object to derive payment addresses.
-	 */
-	/**
-	 * API to calculate prices.
-	 */
 	public function __construct(
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
@@ -81,9 +77,17 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		protected Blockchain_API_Interface $blockchain_api,
 		protected Generate_Address_API_Interface $generate_address_api,
 		protected Exchange_Rate_API_Interface $exchange_rate_api,
-		protected Background_Jobs_Scheduling_Interface $background_jobs,
 	) {
 		$this->setLogger( $logger );
+	}
+
+	/**
+	 * Set the background jobs scheduler.
+	 *
+	 * @param Background_Jobs $background_jobs The background jobs scheduler.
+	 */
+	public function set_background_jobs( Background_Jobs $background_jobs ): void {
+		$this->background_jobs = $background_jobs;
 	}
 
 	/**
@@ -698,7 +702,6 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 			$this->background_jobs->schedule_check_newly_generated_bitcoin_addresses_for_transactions(
 				DateTimeImmutable::createFromFormat( 'U', (string) ( time() + ( 15 * constant( (string) MINUTE_IN_SECONDS ) ) ) ),
 			);
-
 		}
 
 		// TODO: After this is complete, there could be 0 fresh addresses (e.g. if we start at index 0 but 200 addresses

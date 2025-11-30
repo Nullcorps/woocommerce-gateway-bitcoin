@@ -83,6 +83,28 @@ register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) 
 
 $container = new Container();
 
+$container->singleton(
+	Background_Jobs::class,
+	static function ( Container $container ) {
+		return $container->make( Background_Jobs::class );
+	}
+);
+
+$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
+$container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
+
+$container->singleton(
+	API::class,
+	static function ( Container $container ) {
+		$api = $container->make( API::class );
+		$background_jobs = $container->get( Background_Jobs::class );
+		$api->set_background_jobs( $background_jobs );
+		return $api;
+	}
+);
+
+$container->bind( API_Background_Jobs_Interface::class, API::class );
+
 $container->bind( API_Interface::class, API::class );
 $container->bind( Settings_Interface::class, Settings::class );
 $container->bind( LoggerInterface::class, Logger::class );
@@ -107,10 +129,6 @@ $container->singleton(
 		);
 	}
 );
-
-$container->bind( Background_Jobs_Scheduling_Interface::class, Background_Jobs::class );
-$container->bind( Background_Jobs_Actions_Interface::class, Background_Jobs::class );
-$container->bind( API_Background_Jobs_Interface::class, API::class );
 
 $container->bind( Blockchain_API_Interface::class, Blockstream_Info_API::class );
 $container->bind( Generate_Address_API_Interface::class, Nimq_API::class );
