@@ -18,6 +18,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\API;
 
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Status;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
@@ -59,36 +60,28 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 *
 	 * @param Settings_Interface         $settings The plugin settings.
 	 * @param LoggerInterface            $logger A PSR logger.
-	 * @param Bitcoin_Wallet_Factory     $bitcoin_wallet_factory Wallet factory.
-	 * @param Bitcoin_Address_Repository $bitcoin_address_repository Address factory.
+	 * @param Bitcoin_Wallet_Factory     $bitcoin_wallet_factory Wallet repository.
+	 * @param Bitcoin_Address_Repository $bitcoin_address_repository Repository to save and fetch addresses from wp_posts.
+	 * @param Blockchain_API_Interface $blockchain_api The object/client to query the blockchain for transactions
+	 * @param Generate_Address_API_Interface $generate_address_api Object that does the maths to generate new addresses for a wallet.
+	 * @param Exchange_Rate_API_Interface $exchange_rate_api Object/client to fetch the exchange rate
+	 * @param Background_Jobs_Scheduling_Interface $background_jobs Object to schedule background jobs.
+	 */
+	/**
+	 * Object to derive payment addresses.
+	 */
+	/**
+	 * API to calculate prices.
 	 */
 	public function __construct(
-		/**
-		 * Plugin settings.
-		 */
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
-		/**
-		 * Factory to save and fetch wallets from wp_posts.
-		 */
 		protected Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
-		/**
-		 * Factory to save and fetch addresses from wp_posts.
-		 */
 		protected Bitcoin_Address_Repository $bitcoin_address_repository,
-		/**
-		 * API to query transactions.
-		 */
 		protected Blockchain_API_Interface $blockchain_api,
-		/**
-		 * Object to derive payment addresses.
-		 */
 		protected Generate_Address_API_Interface $generate_address_api,
-		/**
-		 * API to calculate prices.
-		 */
 		protected Exchange_Rate_API_Interface $exchange_rate_api,
-		protected Background_Jobs $background_jobs,
+		protected Background_Jobs_Scheduling_Interface $background_jobs,
 	) {
 		$this->setLogger( $logger );
 	}
@@ -646,7 +639,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 *
 	 * @throws Rate_Limit_Exception
 	 *
-	 * @return array<string, array<string, Transaction_Interface>>
+	 * @return Check_Assigned_Addresses_For_Transactions_Result (was: array<string, array<string, Transaction_Interface>>)
 	 */
 	public function check_new_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result {
 
@@ -666,7 +659,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		if ( empty( $posts ) ) {
 			$this->logger->debug( 'No addresses with "unknown" status to check' );
 
-			return array(); // TODO: return something meaningful.
+			return new Check_Assigned_Addresses_For_Transactions_Result(); // TODO: return something meaningful.
 		}
 
 		foreach ( $posts as $post ) {
@@ -685,7 +678,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 *
 	 * @param Bitcoin_Address[] $addresses Array of address objects to query and update.
 	 *
-	 * @return array<string, array<string, Transaction_Interface>>
+	 * @return Check_Assigned_Addresses_For_Transactions_Result (was array<string, array<string, Transaction_Interface>>))
 	 */
 	public function check_addresses_for_transactions( array $addresses ): Check_Assigned_Addresses_For_Transactions_Result {
 
@@ -703,7 +696,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 
 			// Eh.
 			$this->background_jobs->schedule_check_newly_generated_bitcoin_addresses_for_transactions(
-				DateTimeImmutable::createFromFormat( 'U', time() + ( 15 * constant( MINUTE_IN_SECONDS ) ) ),
+				DateTimeImmutable::createFromFormat( 'U', (string) ( time() + ( 15 * constant( (string) MINUTE_IN_SECONDS ) ) ) ),
 			);
 
 		}
