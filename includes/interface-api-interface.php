@@ -119,7 +119,7 @@ interface API_Interface {
 	 *
 	 * @return Wallet_Generation_Result
 	 */
-	public function generate_new_wallet( string $master_public_key, string $gateway_id = null ): Wallet_Generation_Result;
+	public function generate_new_wallet( string $master_public_key, ?string $gateway_id = null ): Wallet_Generation_Result;
 
 	/**
 	 * For each Bitcoin gateway, calls `generate_new_addresses_for_wallet()`.
