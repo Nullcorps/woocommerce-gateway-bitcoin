@@ -3,6 +3,7 @@
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Frontend;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\API_WooCommerce_Interface;
 use Codeception\Stub\Expected;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
@@ -37,7 +38,7 @@ class Frontend_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger   = new ColorLogger();
 		$api      = $this->makeEmpty(
-			API_Interface::class,
+			API_WooCommerce_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once(
 					function ( int $order_id ) {

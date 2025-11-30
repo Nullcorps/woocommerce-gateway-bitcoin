@@ -15,7 +15,6 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
-use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
@@ -42,9 +41,9 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Used to generate new wallets when the xpub is entered, and to fetch addresses when orders are placed.
 	 *
-	 * @var ?API_Interface
+	 * @var ?API_WooCommerce_Interface
 	 */
-	protected ?API_Interface $api = null;
+	protected ?API_WooCommerce_Interface $api = null;
 
 	/**
 	 * The plugin settings.
@@ -63,9 +62,9 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Constructor for the gateway.
 	 *
-	 * @param ?API_Interface $api The main plugin functions.
+	 * @param ?API_WooCommerce_Interface $api The main plugin functions.
 	 */
-	public function __construct( ?API_Interface $api = null ) {
+	public function __construct( ?API_WooCommerce_Interface $api = null ) {
 
 		/**
 		 * Set a null logger to prevent null pointer exceptions. Later this will be correctly set

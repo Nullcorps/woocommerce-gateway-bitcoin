@@ -77,7 +77,7 @@ class Order_Unit_Test extends \Codeception\Test\Unit {
 
 		$logger = new ColorLogger();
 		$api    = $this->makeEmpty(
-			API_Interface::class,
+			API_WooCommerce_Interface::class,
 			array(
 				'is_order_has_bitcoin_gateway' => Expected::once( false ),
 			)
