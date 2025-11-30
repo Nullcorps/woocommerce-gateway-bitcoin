@@ -374,12 +374,12 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$blockchain_api = self::makeEmpty(
 			Blockchain_API_Interface::class,
 			array(
-//				'get_blockchain_height' => Expected::once(
-//					function (): int {
-//						return 1000;
-//					}
-//				),
-				'get_transactions'      => array(),
+				// 'get_blockchain_height' => Expected::once(
+				// function (): int {
+				// return 1000;
+				// }
+				// ),
+					'get_transactions' => array(),
 			)
 		);
 
