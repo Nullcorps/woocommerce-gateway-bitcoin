@@ -5,6 +5,7 @@ namespace BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Check_Assigned_Addresses_For_Transactions_Result;
 use Codeception\Stub\Expected;
 use WP_Mock;
 
@@ -60,7 +61,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'check_new_addresses_for_transactions' => Expected::once(
 					function () {
-						return array();
+						return new Check_Assigned_Addresses_For_Transactions_Result();
 					}
 				),
 			)
@@ -89,7 +90,7 @@ class Background_Jobs_Unit_Test extends \Codeception\Test\Unit {
 			array(
 				'check_assigned_addresses_for_transactions' => Expected::once(
 					function () {
-						return array();
+						return new Check_Assigned_Addresses_For_Transactions_Result();
 					}
 				),
 			)

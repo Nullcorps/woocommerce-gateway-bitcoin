@@ -21,6 +21,7 @@ use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\API_Background_Jobs_Interfa
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Status;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Blockchain\Rate_Limit_Exception;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Addresses_Generation_Result;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Check_Assigned_Addresses_For_Transactions_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Transaction_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Model\Wallet_Generation_Result;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Math\BigDecimal;
@@ -54,36 +55,6 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	use LoggerAwareTrait;
 
 	/**
-	 * Plugin settings.
-	 */
-	protected Settings_Interface $settings;
-
-	/**
-	 * API to query transactions.
-	 */
-	protected Blockchain_API_Interface $blockchain_api;
-
-	/**
-	 * API to calculate prices.
-	 */
-	protected Exchange_Rate_API_Interface $exchange_rate_api;
-
-	/**
-	 * Object to derive payment addresses.
-	 */
-	protected Generate_Address_API_Interface $generate_address_api;
-
-	/**
-	 * Factory to save and fetch wallets from wp_posts.
-	 */
-	protected Bitcoin_Wallet_Factory $bitcoin_wallet_factory;
-
-	/**
-	 * Factory to save and fetch addresses from wp_posts.
-	 */
-	protected Bitcoin_Address_Repository $bitcoin_address_repository;
-
-	/**
 	 * Constructor
 	 *
 	 * @param Settings_Interface         $settings The plugin settings.
@@ -92,24 +63,34 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 * @param Bitcoin_Address_Repository $bitcoin_address_repository Address factory.
 	 */
 	public function __construct(
-		Settings_Interface $settings,
+		/**
+		 * Plugin settings.
+		 */
+		protected Settings_Interface $settings,
 		LoggerInterface $logger,
-		Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
-		Bitcoin_Address_Repository $bitcoin_address_repository,
-		Blockchain_API_Interface $blockchain_api,
-		Generate_Address_API_Interface $generate_address_api,
-		Exchange_Rate_API_Interface $exchange_rate_api,
+		/**
+		 * Factory to save and fetch wallets from wp_posts.
+		 */
+		protected Bitcoin_Wallet_Factory $bitcoin_wallet_factory,
+		/**
+		 * Factory to save and fetch addresses from wp_posts.
+		 */
+		protected Bitcoin_Address_Repository $bitcoin_address_repository,
+		/**
+		 * API to query transactions.
+		 */
+		protected Blockchain_API_Interface $blockchain_api,
+		/**
+		 * Object to derive payment addresses.
+		 */
+		protected Generate_Address_API_Interface $generate_address_api,
+		/**
+		 * API to calculate prices.
+		 */
+		protected Exchange_Rate_API_Interface $exchange_rate_api,
 		protected Background_Jobs $background_jobs,
 	) {
 		$this->setLogger( $logger );
-		$this->settings = $settings;
-
-		$this->bitcoin_wallet_factory     = $bitcoin_wallet_factory;
-		$this->bitcoin_address_repository = $bitcoin_address_repository;
-
-		$this->blockchain_api       = $blockchain_api;
-		$this->generate_address_api = $generate_address_api;
-		$this->exchange_rate_api    = $exchange_rate_api;
 	}
 
 	/**
@@ -119,8 +100,6 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 * @used-by Thank_You::print_instructions()
 	 *
 	 * @param string $gateway_id The id of the gateway to check.
-	 *
-	 * @return bool
 	 */
 	public function is_bitcoin_gateway( string $gateway_id ): bool {
 		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) || ! class_exists( WC_Payment_Gateway::class ) ) {
@@ -669,7 +648,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 *
 	 * @return array<string, array<string, Transaction_Interface>>
 	 */
-	public function check_new_addresses_for_transactions(): array {
+	public function check_new_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result {
 
 		$addresses = array();
 
@@ -708,7 +687,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	 *
 	 * @return array<string, array<string, Transaction_Interface>>
 	 */
-	public function check_addresses_for_transactions( array $addresses ): array {
+	public function check_addresses_for_transactions( array $addresses ): Check_Assigned_Addresses_For_Transactions_Result {
 
 		$result = array();
 
@@ -733,7 +712,7 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 		// are already used). => We really need to generate new addresses until we have some.
 
 		// TODO: Return something useful.
-		return $result;
+		return new Check_Assigned_Addresses_For_Transactions_Result();
 	}
 
 	/**
@@ -772,11 +751,11 @@ class API implements API_Interface, API_Background_Jobs_Interface {
 	/**
 	 * TODO: The return value should be a structured summary that can be used in a log message.
 	 */
-	public function check_assigned_addresses_for_transactions(): array {
+	public function check_assigned_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result {
 
 		foreach ( $this->bitcoin_address_repository->get_assigned_bitcoin_addresses() as $bitcoin_address ) {
 			$this->update_address_transactions( $bitcoin_address );
 		}
-		return array();
+		return new Check_Assigned_Addresses_For_Transactions_Result();
 	}
 }
