@@ -27,7 +27,7 @@ class Bitcoin_Gateway_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCas
 			API_Interface::class,
 			array(
 				'generate_new_wallet'               => Expected::once(
-					function ( string $xpub_after, string $gateway_id = null ) {
+					function ( string $xpub_after, ?string $gateway_id = null ) {
 						$mock_wallet = \Codeception\Stub::makeEmpty( Bitcoin_Wallet::class );
 						return new Wallet_Generation_Result( $mock_wallet, array(), array() );
 					}
