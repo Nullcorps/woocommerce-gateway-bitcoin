@@ -230,16 +230,18 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 	/**
 	 * On every request, ensure we have the hourly check scheduled.
 	 *
-	 * @hooked action_scheduler_init
-	 * @see BH_WP_Bitcoin_Gateway::define_action_scheduler_hooks()
+	 * @hooked action_scheduler_run_recurring_actions_schedule_hook
+	 * @see \ActionScheduler_RecurringActionScheduler
 	 *
-	 * @see \ActionScheduler::init()
+	 * @used-by BH_WP_Bitcoin_Gateway::define_action_scheduler_hooks()
 	 * @see self::schedule_check_for_assigned_addresses_repeating_action()
+	 *
 	 * @see https://crontab.guru/every-1-hour
 	 * @see https://github.com/woocommerce/action-scheduler/issues/749
 	 */
 	public function ensure_schedule_repeating_actions(): void {
 		// TODO: what is the precise behaviour of unique here? If it already exists, it should not change the existing one.
+		// TODO: add warning log if thus makes a difference, it shows that the other scheduling was not working correctly.
 		as_schedule_cron_action(
 			timestamp: time(),
 			schedule: '0 * * * *',

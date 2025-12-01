@@ -288,7 +288,7 @@ class BH_WP_Bitcoin_Gateway {
 		add_action( Background_Jobs_Actions_Interface::CHECK_NEW_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_new_addresses_for_transactions' ) );
 		add_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK, array( $background_jobs, 'check_assigned_addresses_for_transactions' ) );
 		add_action( Background_Jobs_Actions_Interface::CHECK_FOR_ASSIGNED_ADDRESSES_HOOK, array( $background_jobs, 'schedule_check_for_assigned_addresses_repeating_action' ) );
-		add_action( 'action_scheduler_init', array( $background_jobs, 'ensure_schedule_repeating_actions' ) );
+		add_action( 'action_scheduler_run_recurring_actions_schedule_hook', array( $background_jobs, 'ensure_schedule_repeating_actions' ) );
 	}
 
 	/**
