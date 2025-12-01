@@ -16,7 +16,7 @@ use Exception;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
-use function BrianHenryIE\WP_Bitcoin_Gateway\;
+use WP_REST_Server;
 
 // TODO check for stray requests: exchange rate query seems to be happening too frequently.
 // https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD
@@ -120,7 +120,7 @@ EOT;
 add_action( 'admin_footer', __NAMESPACE__ . '\order_link' );
 
 
-( new \BrianHenryIE\WP_Bitcoin_Gateway\E2E_Test_Helper_Plugin() )->register_hooks();
+( new \BrianHenryIE\WP_Bitcoin_Gateway\Development_Plugin\E2E_Test_Helper_Plugin() )->register_hooks();
 
 class E2E_Test_Helper_Plugin {
 
@@ -235,7 +235,7 @@ class E2E_Test_Helper_Plugin {
 	 *
 	 * @hooked rest_api_init
 	 */
-	public function bh_activate_theme() {
+	public function bh_activate_theme(): void {
 		register_rest_route(
 			'e2e-test-helper/v1',
 			'/activate',
@@ -313,7 +313,7 @@ class E2E_Test_Helper_Plugin {
 			'e2e-test-helper/v1',
 			'/action_scheduler/search',
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
+				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'action_scheduler_search' ),
 				'permission_callback' => '__return_true',
 			)
@@ -394,7 +394,7 @@ class E2E_Test_Helper_Plugin {
 			'e2e-test-helper/v1',
 			'/action_scheduler/(?P<id>[\d]+)',
 			array(
-				'methods'             => \WP_REST_Server::DELETABLE,
+				'methods'             => WP_REST_Server::DELETABLE,
 				'callback'            => array( $this, 'action_scheduler_delete' ),
 				'permission_callback' => '__return_true',
 			)
