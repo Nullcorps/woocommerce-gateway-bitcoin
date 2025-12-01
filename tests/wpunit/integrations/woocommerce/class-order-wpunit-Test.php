@@ -65,7 +65,6 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}
 
-
 	/**
 	 * @covers ::schedule_check_for_transactions
 	 */
@@ -88,38 +87,6 @@ class Order_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		assert( false === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 
 		$sut->schedule_check_for_transactions( $order_id, 'pending', 'on-hold' );
-
-		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
-	}
-
-	/**
-	 * @covers ::unschedule_check_for_transactions
-	 */
-	public function test_unschedule_check_for_transactions(): void {
-
-		$logger               = new ColorLogger();
-		$background_jobs_mock = $this->makeEmpty( Background_Jobs_Scheduling_Interface::class );
-		$api                  = $this->makeEmpty(
-			API_WooCommerce_Interface::class,
-			array(
-				'is_order_has_bitcoin_gateway' => Expected::once( true ),
-			)
-		);
-
-		$sut = new Order( $api, $background_jobs_mock, $logger );
-
-		$order    = new \WC_Order();
-		$order_id = $order->save();
-
-		$hook              = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
-		$args              = array( 'order_id' => $order_id );
-		$timestamp         = time() + ( 5 * MINUTE_IN_SECONDS );
-		$recurring_seconds = ( 5 * MINUTE_IN_SECONDS );
-		as_schedule_recurring_action( $timestamp, $recurring_seconds, $hook, $args );
-
-		assert( true === as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
-
-		$sut->unschedule_check_for_transactions( $order_id, 'on-hold', 'processing' );
 
 		$this->assertFalse( as_has_scheduled_action( Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK ) );
 	}

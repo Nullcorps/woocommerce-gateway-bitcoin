@@ -212,7 +212,6 @@ class BH_WP_Bitcoin_Gateway {
 		$order = $this->container->get( Order::class );
 
 		add_action( 'woocommerce_order_status_changed', array( $order, 'schedule_check_for_transactions' ), 10, 3 );
-		add_action( 'woocommerce_order_status_changed', array( $order, 'unschedule_check_for_transactions' ), 10, 3 );
 	}
 
 	/**

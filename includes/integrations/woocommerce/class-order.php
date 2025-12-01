@@ -115,7 +115,7 @@ class Order {
 		// Schedule address generation if needed.
 		if ( $num_remaining_addresses < 20 ) {
 			$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
-			$this->background_jobs->schedule_check_newly_assigned_bitcoin_address_for_transactions();
+			$this->background_jobs->schedule_check_assigned_bitcoin_address_for_transactions();
 		}
 	}
 
@@ -140,66 +140,6 @@ class Order {
 		}
 
 		// Schedule background check for payment.
-		$hook = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
-		$args = array( 'order_id' => $order_id );
-
-		if ( ! as_has_scheduled_action( $hook, $args ) ) {
-			$timestamp         = time() + ( 10 * MINUTE_IN_SECONDS );
-			$recurring_seconds = ( 10 * MINUTE_IN_SECONDS );
-			$this->logger->debug( "New order created, `shop_order:{$order_id}`, scheduling background job to check for payments" );
-			as_schedule_recurring_action( $timestamp, $recurring_seconds, $hook, $args );
-		}
-	}
-
-	/**
-	 * When an order's status changes away from "pending" and "on-hold", cancel the scheduled background.
-	 *
-	 * E.g. when the order is paid or canceled.
-	 *
-	 * @hooked woocommerce_order_status_changed
-	 * @see WC_Order::status_transition()
-	 *
-	 * @param int|numeric-string $order_id The id of the order whose status has changed.
-	 * @param string             $status_from The old status.
-	 * @param string             $status_to The new status.
-	 */
-	public function unschedule_check_for_transactions( int|string $order_id, string $status_from, string $status_to ): void {
-
-		// TODO: failed, custom statuses
-		if ( in_array( $status_to, array( 'pending', 'on-hold' ), true ) ) {
-			return;
-		}
-
-		if ( ! $this->api->is_order_has_bitcoin_gateway( $order_id ) ) {
-			return;
-		}
-
-		if ( empty( $status_to ) ) {
-			$status_to = 'trash?';
-		}
-
-		$context = array(
-			'order_id'    => $order_id,
-			'status_from' => $status_from,
-			'status_to'   => $status_to,
-		);
-
-		$hook  = Background_Jobs_Actions_Interface::CHECK_ASSIGNED_ADDRESSES_TRANSACTIONS_HOOK;
-		$args  = array( 'order_id' => $order_id );
-		$query = array(
-			'hook' => $hook,
-			'args' => $args,
-		);
-
-		$context['action_scheduler_query'] = $query;
-
-		$actions = as_get_scheduled_actions( $query );
-		if ( ! empty( $actions ) ) {
-			$action_id = array_key_first( $actions );
-			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to, running `as_unschedule_all_actions` for check_unpaid_order job, action_id $action_id.", $context );
-			as_unschedule_all_actions( $hook, $args );
-		} else {
-			$this->logger->debug( "`shop_order:{$order_id}` status changed from $status_from to $status_to. No check_unpaid_order background job present to cancel.", $context );
-		}
+		$this->background_jobs->schedule_check_assigned_bitcoin_address_for_transactions();
 	}
 }

@@ -141,7 +141,7 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 	}
 
 	/**
-	 * @covers ::schedule_check_newly_assigned_bitcoin_address_for_transactions
+	 * @covers ::schedule_check_assigned_bitcoin_address_for_transactions
 	 * @covers ::schedule_check_assigned_addresses_for_transactions
 	 */
 	public function test_schedule_check_newly_assigned_bitcoin_address_for_transactions(): void {
@@ -153,8 +153,8 @@ class Background_Jobs_WPUnit_Test extends WPTestCase {
 		/** @var Background_Jobs_Scheduling_Interface $sut */
 		$sut = new Background_Jobs( $api, $bitcoin_address_repository, $logger );
 
-		/** @see Background_Jobs::schedule_check_newly_assigned_bitcoin_address_for_transactions() */
-		$sut->schedule_check_newly_assigned_bitcoin_address_for_transactions();
+		/** @see Background_Jobs::schedule_check_assigned_bitcoin_address_for_transactions() */
+		$sut->schedule_check_assigned_bitcoin_address_for_transactions();
 	}
 
 	/**

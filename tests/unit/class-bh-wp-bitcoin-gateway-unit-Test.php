@@ -210,13 +210,6 @@ class BH_WP_Bitcoin_Gateway_Unit_Test extends \Codeception\Test\Unit {
 			3
 		);
 
-		\WP_Mock::expectActionAdded(
-			'woocommerce_order_status_changed',
-			array( new AnyInstance( Order::class ), 'unschedule_check_for_transactions' ),
-			10,
-			3
-		);
-
 		$app = new BH_WP_Bitcoin_Gateway( $this->get_container() );
 		$app->register_hooks();
 	}
