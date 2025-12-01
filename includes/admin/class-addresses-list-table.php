@@ -100,7 +100,7 @@ class Addresses_List_Table extends \WP_Posts_List_Table {
 			if ( 'title' === $key ) {
 
 				$new_columns['status']               = 'Status';
-				$new_columns['order_id']             = 'Order';
+				$new_columns['order_id']             = 'Order'; // TODO: Change to ~"assigned to".
 				$new_columns['transactions_count']   = 'Transactions';
 				$new_columns['received']             = 'Received';
 				$new_columns['wallet']               = 'Wallet';
