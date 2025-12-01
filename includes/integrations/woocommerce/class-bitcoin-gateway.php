@@ -7,13 +7,11 @@
 
 namespace BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce;
 
-use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet_Factory;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Currency;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Exception\UnknownCurrencyException;
 use BrianHenryIE\WP_Bitcoin_Gateway\Brick\Money\Money;
 use BrianHenryIE\WP_Bitcoin_Gateway\Settings_Interface;
 use Exception;
-use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -298,7 +296,7 @@ class Bitcoin_Gateway extends WC_Payment_Gateway {
 				),
 				wc_get_checkout_url()
 			);
-			$settings_fields['description']['description'] .= ' <a href="' . esc_url( $checkout_url ) . '">View checkout</a>.';
+			$settings_fields['description']['description'] .= ' <a href="' . esc_url( $checkout_url ) . '" title="Adds an item to your cart and opens the checkout in a new tab.">Visit checkout</a>.';
 		}
 
 		$saved_xpub = $this->plugin_settings->get_master_public_key( $this->id );
