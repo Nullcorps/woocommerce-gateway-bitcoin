@@ -8,6 +8,8 @@
  * Schedule background job to generate new addresses as needed (fall below threshold defined elsewhere)
  * After generating new addresses, check for existing transactions to ensure they are available to use
  *
+ * TODO we need to always be checking the next address that might be assigned to ensure it is still unused.
+ *
  * @package    brianhenryie/bh-wp-bitcoin-gateway
  */
 
