@@ -55,19 +55,21 @@ class API implements API_Interface, API_Background_Jobs_Interface, API_WooCommer
 	use LoggerAwareTrait;
 	use API_WooCommerce_Trait;
 
+	/**
+	 * @var Background_Jobs Object to schedule background jobs.
+	 */
 	protected Background_Jobs $background_jobs;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Settings_Interface                   $settings The plugin settings.
-	 * @param LoggerInterface                      $logger A PSR logger.
-	 * @param Bitcoin_Wallet_Factory               $bitcoin_wallet_factory Wallet repository.
-	 * @param Bitcoin_Address_Repository           $bitcoin_address_repository Repository to save and fetch addresses from wp_posts.
-	 * @param Blockchain_API_Interface             $blockchain_api The object/client to query the blockchain for transactions
-	 * @param Generate_Address_API_Interface       $generate_address_api Object that does the maths to generate new addresses for a wallet.
-	 * @param Exchange_Rate_API_Interface          $exchange_rate_api Object/client to fetch the exchange rate
-	 * @param Background_Jobs_Scheduling_Interface $background_jobs Object to schedule background jobs.
+	 * @param Settings_Interface             $settings The plugin settings.
+	 * @param LoggerInterface                $logger A PSR logger.
+	 * @param Bitcoin_Wallet_Factory         $bitcoin_wallet_factory Wallet repository.
+	 * @param Bitcoin_Address_Repository     $bitcoin_address_repository Repository to save and fetch addresses from wp_posts.
+	 * @param Blockchain_API_Interface       $blockchain_api The object/client to query the blockchain for transactions.
+	 * @param Generate_Address_API_Interface $generate_address_api Object that does the maths to generate new addresses for a wallet.
+	 * @param Exchange_Rate_API_Interface    $exchange_rate_api Object/client to fetch the exchange rate.
 	 */
 	public function __construct(
 		protected Settings_Interface $settings,
@@ -295,31 +297,14 @@ class API implements API_Interface, API_Background_Jobs_Interface, API_WooCommer
 	 */
 	public function check_new_addresses_for_transactions(): Check_Assigned_Addresses_For_Transactions_Result {
 
-		$addresses = array();
+		// 'orderby'        => 'ID',
+		// 'order'          => 'ASC',
+		$addresses = $this->bitcoin_address_repository->get_unknown_bitcoin_addresses();
 
-		// Get all wallets whose status is unknown.
-		$posts = get_posts(
-			array(
-				'post_type'      => Bitcoin_Address::POST_TYPE,
-				'post_status'    => Bitcoin_Address_Status::UNKNOWN->value,
-				'posts_per_page' => 100,
-				'orderby'        => 'ID',
-				'order'          => 'ASC',
-			)
-		);
-
-		if ( empty( $posts ) ) {
+		if ( empty( $addresses ) ) {
 			$this->logger->debug( 'No addresses with "unknown" status to check' );
 
 			return new Check_Assigned_Addresses_For_Transactions_Result(); // TODO: return something meaningful.
-		}
-
-		foreach ( $posts as $post ) {
-
-			$post_id = $post->ID;
-
-			$addresses[] = $this->bitcoin_address_repository->get_by_post_id( $post_id );
-
 		}
 
 		return $this->check_addresses_for_transactions( $addresses );
