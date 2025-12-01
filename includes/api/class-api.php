@@ -272,12 +272,7 @@ class API implements API_Interface, API_Background_Jobs_Interface, API_WooCommer
 
 			// Schedule more generation after it determines how many unused addresses are available.
 			if ( count( $wallet->get_fresh_addresses() ) < 20 ) {
-
-				$hook = Background_Jobs::GENERATE_NEW_ADDRESSES_HOOK;
-				if ( ! as_has_scheduled_action( $hook ) ) {
-					as_schedule_single_action( time(), $hook );
-					$this->logger->debug( 'New generate new addresses background job scheduled.' );
-				}
+				$this->background_jobs->schedule_generate_new_addresses();
 			}
 		}
 

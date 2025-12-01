@@ -53,6 +53,8 @@ class Background_Jobs implements Background_Jobs_Scheduling_Interface, Backgroun
 			hook: self::GENERATE_NEW_ADDRESSES_HOOK,
 			unique: true
 		);
+		// TODO: check was it already scheduled.
+		$this->logger->info( 'New generate new addresses background job scheduled.' );
 	}
 
 	/**
