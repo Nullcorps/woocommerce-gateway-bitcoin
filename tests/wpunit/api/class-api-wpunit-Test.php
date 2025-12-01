@@ -52,8 +52,8 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			$blockchain_api,
 			$generate_address_api,
 			$exchange_rate_api,
-			$background_jobs,
 		);
+		$api->set_background_jobs( $background_jobs );
 
 		return $api;
 	}
