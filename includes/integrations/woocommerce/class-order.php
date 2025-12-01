@@ -11,7 +11,9 @@ use ActionScheduler;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs;
 use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Actions_Interface;
+use BrianHenryIE\WP_Bitcoin_Gateway\Action_Scheduler\Background_Jobs_Scheduling_Interface;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address;
+use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Address_Repository;
 use BrianHenryIE\WP_Bitcoin_Gateway\API\Addresses\Bitcoin_Wallet;
 use BrianHenryIE\WP_Bitcoin_Gateway\Integrations\WooCommerce\Model\WC_Bitcoin_Order;
 use BrianHenryIE\WP_Bitcoin_Gateway\API_Interface;
@@ -27,11 +29,6 @@ use WC_Order;
 class Order {
 	use LoggerAwareTrait;
 
-	/**
-	 * Used to check is the gateway a Bitcoin gateway.
-	 */
-	protected API_Interface $api;
-
 	const BITCOIN_ADDRESS_META_KEY = 'bh_wp_bitcoin_gateway_address';
 
 	const EXCHANGE_RATE_AT_TIME_OF_PURCHASE_META_KEY = 'bh_wp_bitcoin_gateway_exchange_rate_at_time_of_purchase';
@@ -45,12 +42,15 @@ class Order {
 	/**
 	 * Constructor.
 	 *
-	 * @param API_Interface   $api The main plugin functions.
+	 * @param API_Interface   $api The main plugin functions. Used to check is the gateway a Bitcoin gateway.
 	 * @param LoggerInterface $logger A PSR logger.
 	 */
-	public function __construct( API_Interface $api, LoggerInterface $logger ) {
+	public function __construct(
+		protected API_Interface $api,
+		protected Background_Jobs_Scheduling_Interface $background_jobs,
+		LoggerInterface $logger
+	) {
 		$this->setLogger( $logger );
-		$this->api = $api;
 	}
 
 	/**
@@ -114,11 +114,8 @@ class Order {
 
 		// Schedule address generation if needed.
 		if ( $num_remaining_addresses < 20 ) {
-			$hook = Background_Jobs_Actions_Interface::GENERATE_NEW_ADDRESSES_HOOK;
-			if ( ! as_has_scheduled_action( $hook ) ) {
-				$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
-				as_schedule_single_action( time(), $hook );
-			}
+			$this->logger->debug( "Under 20 addresses ($num_remaining_addresses) remaining, scheduling generate_new_addresses background job.", array( 'num_remaining_addresses' => $num_remaining_addresses ) );
+			$this->background_jobs->schedule_check_newly_assigned_bitcoin_address_for_transactions();
 		}
 	}
 
