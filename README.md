@@ -8,7 +8,7 @@ the public API providers somewhat but you have a choice which to use).
 
 **************************************************************************************************
 PLEASE NOTE: 
-Brian has created a much improved fork of this project which you should probably use instead:
+Brian has created a much improved fork of this project (now using LLM so proceed with caution ¯\_ (ツ)_/¯ ):
 https://github.com/BrianHenryIE/woocommerce-gateway-bitcoin
 **************************************************************************************************
 
